@@ -124,4 +124,20 @@ impl<S: CommentStore + 'static> CommentModeration for ApiModeration<S> {
             deleted.map(drop).map_err(moderation_error)
         })
     }
+
+    fn mark_spam(&self, id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>> {
+        Box::pin(async move {
+            let spam = self.0.mark_spam(CommentId::new(id)).await;
+            let spam = spam.map_err(moderation_error)?;
+            Ok(api_shape(&spam, Audience::Moderators))
+        })
+    }
+
+    fn not_spam(&self, id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>> {
+        Box::pin(async move {
+            let back = self.0.not_spam(CommentId::new(id)).await;
+            let back = back.map_err(moderation_error)?;
+            Ok(api_shape(&back, Audience::Moderators))
+        })
+    }
 }

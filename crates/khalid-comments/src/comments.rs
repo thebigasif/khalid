@@ -166,6 +166,41 @@ impl<S: CommentStore> Comments<S> {
         Ok(deleted)
     }
 
+    /// Marks comment `id` as spam, which hides it, and returns it.
+    ///
+    /// # Errors
+    ///
+    /// [`CommentsError::NotFound`] when there is no such comment, and
+    /// [`CommentsError::Store`] when the store fails.
+    pub async fn mark_spam(&self, id: CommentId) -> Result<Comment, CommentsError> {
+        let was = self.store.get(id).await?;
+        let was = was.ok_or(CommentsError::NotFound { id })?;
+        let spam = self.store.set_status(id, CommentStatus::Spam).await?;
+        let spam = spam.ok_or(CommentsError::NotFound { id })?;
+        if was.status == CommentStatus::Approved {
+            self.shown_changed(&spam.post);
+        }
+        Ok(spam)
+    }
+
+    /// Puts comment `id` back in the queue when it is spam, and returns
+    /// it. A comment that is not spam is returned as it is, so a shown
+    /// comment is never hidden by mistake.
+    ///
+    /// # Errors
+    ///
+    /// [`CommentsError::NotFound`] when there is no such comment, and
+    /// [`CommentsError::Store`] when the store fails.
+    pub async fn not_spam(&self, id: CommentId) -> Result<Comment, CommentsError> {
+        let was = self.store.get(id).await?;
+        let was = was.ok_or(CommentsError::NotFound { id })?;
+        if was.status != CommentStatus::Spam {
+            return Ok(was);
+        }
+        let back = self.store.set_status(id, CommentStatus::Pending).await?;
+        back.ok_or(CommentsError::NotFound { id })
+    }
+
     /// The newest `limit` comments with `status`, or with any status,
     /// newest first: the moderation queue.
     ///

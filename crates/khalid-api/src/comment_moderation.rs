@@ -50,6 +50,23 @@ pub trait CommentModeration: Send + Sync {
     /// [`ModerationError::NotFound`] when there is no such comment, and
     /// [`ModerationError::Store`] when it cannot be written.
     fn delete(&self, id: i64) -> BoxFuture<'_, Result<(), ModerationError>>;
+
+    /// Marks comment `id` as spam, which hides it, and returns it.
+    ///
+    /// # Errors
+    ///
+    /// [`ModerationError::NotFound`] when there is no such comment, and
+    /// [`ModerationError::Store`] when it cannot be written.
+    fn mark_spam(&self, id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>>;
+
+    /// Puts comment `id` back in the queue when it is spam, and returns it.
+    /// A comment that is not spam is returned as it is.
+    ///
+    /// # Errors
+    ///
+    /// [`ModerationError::NotFound`] when there is no such comment, and
+    /// [`ModerationError::Store`] when it cannot be written.
+    fn not_spam(&self, id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>>;
 }
 
 /// Why a comment could not be moderated.
@@ -99,6 +116,14 @@ impl CommentModeration for NoComments {
     }
 
     fn delete(&self, _id: i64) -> BoxFuture<'_, Result<(), ModerationError>> {
+        Box::pin(async { Err(ModerationError::NotFound) })
+    }
+
+    fn mark_spam(&self, _id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>> {
+        Box::pin(async { Err(ModerationError::NotFound) })
+    }
+
+    fn not_spam(&self, _id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>> {
         Box::pin(async { Err(ModerationError::NotFound) })
     }
 }

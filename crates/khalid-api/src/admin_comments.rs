@@ -1,5 +1,5 @@
-//! The Admin API's comment routes: the moderation queue, approve, reply
-//! and delete (plan Phase 5, task 5.4).
+//! The Admin API's comment routes: the moderation queue, approve, reply,
+//! delete, and spam and back (plan Phase 5, task 5.4).
 
 use std::sync::Arc;
 
@@ -38,6 +38,7 @@ pub(crate) fn routes(comments: Moderation, door: AdminDoor) -> OpenApiRouter {
         .routes(routes!(approve_comment))
         .routes(routes!(reply_to_comment))
         .routes(routes!(delete_comment))
+        .routes(routes!(mark_spam, not_spam))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(comments)
@@ -177,6 +178,62 @@ async fn delete_comment(
     let deleted = comments.delete(id).await;
     deleted.map_err(|error| problem(error, uri.path()))?;
     Ok(StatusCode::NO_CONTENT)
+}
+
+/// Marks a comment as spam, which hides it from its post. Needs `posts:write`.
+#[utoipa::path(
+    post, path = "/comments/{id}/spam/", tag = "admin comments",
+    security(("admin_key" = [])),
+    params(("id" = i64, Path, description = "The comment's identity")),
+    responses(
+        (status = 200, description = "The comment, marked as spam", body = AdminComments),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "No comment has this identity", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn mark_spam(
+    State(comments): State<Moderation>,
+    Extension(principal): Extension<Principal>,
+    Path(id): Path<String>,
+    OriginalUri(uri): OriginalUri,
+) -> Result<Json<AdminComments>, Problem> {
+    require(&principal, Scope::PostsWrite)?;
+    let id = id.parse().map_err(|_| missing(uri.path()))?;
+    let spam = comments.mark_spam(id).await;
+    let comment = spam.map_err(|error| problem(error, uri.path()))?;
+    Ok(Json(AdminComments {
+        comments: vec![comment],
+    }))
+}
+
+/// Puts a comment marked as spam back in the moderation queue, waiting
+/// for approval. A comment that is not spam is left as it is. Needs
+/// `posts:write`.
+#[utoipa::path(
+    delete, path = "/comments/{id}/spam/", tag = "admin comments",
+    security(("admin_key" = [])),
+    params(("id" = i64, Path, description = "The comment's identity")),
+    responses(
+        (status = 200, description = "The comment, waiting again", body = AdminComments),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "No comment has this identity", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn not_spam(
+    State(comments): State<Moderation>,
+    Extension(principal): Extension<Principal>,
+    Path(id): Path<String>,
+    OriginalUri(uri): OriginalUri,
+) -> Result<Json<AdminComments>, Problem> {
+    require(&principal, Scope::PostsWrite)?;
+    let id = id.parse().map_err(|_| missing(uri.path()))?;
+    let back = comments.not_spam(id).await;
+    let comment = back.map_err(|error| problem(error, uri.path()))?;
+    Ok(Json(AdminComments {
+        comments: vec![comment],
+    }))
 }
 
 /// The problem a moderation error at `path` answers with.
