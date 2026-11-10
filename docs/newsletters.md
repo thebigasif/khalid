@@ -106,3 +106,20 @@ khalid --site <folder> newsletter digest --list weekly
 ```
 
 sends one email that lists every post published since the last digest, each with its title and link. The first digest looks back seven days. With nothing new it sends nothing, so it is safe to run from a timer, such as a systemd timer or a cron job once a week. `--label` narrows it to a segment and `--language` picks the posts' language.
+
+## In the admin and the Admin API
+
+The admin's Subscribers screen does all of the above except the digest while `khalid serve` runs: it lists your readers, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and sign-up form, sends a published post, and shows the numbers. Only the owner and admins see it, because addresses are personal data.
+
+The same routes are in the Admin API, for a key with the `subscribers:write` scope:
+
+| Route | What it does |
+|---|---|
+| `GET /api/admin/v1/subscribers/` | Lists readers, newest first. Filter with `status` (`pending`, `confirmed` or `unsubscribed`), `list`, `label` and `q` (text in the address), page with `page` and `limit`. |
+| `PUT /api/admin/v1/subscribers/{id}/labels/{label}/` | Gives a reader a label. A reader who unsubscribed gets none. |
+| `DELETE /api/admin/v1/subscribers/{id}/labels/{label}/` | Takes a label away. |
+| `DELETE /api/admin/v1/subscribers/{id}/` | Forgets a reader: their address, newsletters, labels and links are removed. The totals of emails sent stay, as they name no one. |
+| `GET /api/admin/v1/newsletters/` | Each newsletter with its confirmed and waiting readers and its sign-up form, whether the site can send now (`ready`, `no_mail` or `no_postal_address`), and the numbers of every email sent. |
+| `POST /api/admin/v1/newsletters/{name}/sends/` | Sends a published post, `{"post": "en.what-a-sitemap-does", "labels": ["paid"]}`, once. It answers `202` with the send's key as the copies start to leave. |
+
+No route adds a subscriber. Readers join only through the form and the link in its email, so every address on the list asked to be there.

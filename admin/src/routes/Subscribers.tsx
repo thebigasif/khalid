@@ -5,6 +5,7 @@ import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { subscriberWords } from "../strings/subscriberWords";
 import { NewsletterCards } from "../subscribers/NewsletterCards";
+import { ReaderTable } from "../subscribers/ReaderTable";
 import { SendPost } from "../subscribers/SendPost";
 import { SentTable } from "../subscribers/SentTable";
 
@@ -23,6 +24,7 @@ export function Subscribers() {
         <NewsletterCards newsletters={newsletters} />
         <SendPost newsletters={newsletters} sending={sending} />
         <SentTable sends={sends} />
+        <ReaderTable newsletters={newsletters} />
       </>
     );
   }
