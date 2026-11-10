@@ -17,6 +17,14 @@ export type AdminAiVisitors = {
   tools: AdminToolVisitors[];
 };
 
+/** One page of a form's answers. */
+export type AdminAnswers = {
+  /** The answers on this page, newest first. */
+  answers: FormAnswer[];
+  /** Pagination. */
+  meta: Meta;
+};
+
 /** One try at sending a delivery: the receiver's status, or why it could not be reached. Exactly one of the two is there. */
 export type AdminAttempt = {
   /** When it was made. */
@@ -233,6 +241,12 @@ export type AdminDesign = {
   tokens: Record<string, string>;
   /** When `theme/tokens.toml` last changed, or `null` when the site has no such file yet. A change sends it back. */
   updated_at?: string | null;
+};
+
+/** The forms visitors answered. */
+export type AdminForms = {
+  /** Each form with at least one answer, the one answered last first. */
+  forms: FormSummary[];
 };
 
 /** Issues as the Admin API wraps them. */
@@ -624,6 +638,14 @@ export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_d
 
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
+
+/** One field of an answer. */
+export type AnswerField = {
+  /** The field's name in the form block. */
+  name: string;
+  /** What the visitor typed. */
+  value: string;
+};
 
 /** An author in one language, in API shape. */
 export type Author = {
@@ -1022,6 +1044,28 @@ export type FontChoice = {
   label: string;
   /** The CSS font list the file writes for it. */
   stack: string;
+};
+
+/** One answer a visitor sent. */
+export type FormAnswer = {
+  /** Each field in the order the form sent them. */
+  fields: AnswerField[];
+  /** Its identity: a later answer has a larger number. */
+  id: number;
+  /** The address of the page the form was on. */
+  page: string;
+  /** When it was sent. */
+  sent_at: string;
+};
+
+/** One form and how many answers it has. */
+export type FormSummary = {
+  /** How many answers are kept, spam left out. */
+  answers: number;
+  /** The form's id, as its block names it. */
+  id: string;
+  /** When the newest answer was sent. */
+  last_at: string;
 };
 
 /** The lint publish gate's answer for a post as it stands. */
@@ -2690,6 +2734,36 @@ export interface Operations {
       body: DesignChanges;
     };
     output: SiteDesign;
+  };
+  /** Lists the forms visitors answered, with how many answers each has and when the newest came. Spam caught by the trap is left out. Needs `subscribers:write`. */
+  list_forms: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminForms;
+  };
+  /** Lists one page of a form's answers, newest first, each field in the order the form sent them. A form with no answers lists none. Needs `subscribers:write`. */
+  list_answers: {
+    input: {
+      path: {
+        /** The form's id, as its block names it */
+        id: string;
+      };
+      query?: {
+        /** The page, from 1. */
+        page?: number;
+        /** Answers per page: 25 when not given, from 1 to 100. */
+        limit?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminAnswers;
   };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {

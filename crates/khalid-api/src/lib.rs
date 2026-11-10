@@ -25,6 +25,7 @@ mod admin_draft_threads;
 mod admin_duplicate;
 mod admin_entries;
 mod admin_follow_ups;
+mod admin_forms;
 mod admin_key;
 mod admin_not_found;
 mod admin_pages;
