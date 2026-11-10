@@ -28,6 +28,9 @@ adresse = "adresse"
 methoden = "methoden"
 sensibel = "sensibel"
 instituto = "instituto"
+# Spanish and French title words for page kinds (khalid-lint page_kind.rs).
+opiniones = "opiniones"
+complet = "complet"
 # Words the demo publications use on purpose: an author's first name, the
 # gardener's "first earlies" (early potatoes), audio's equivalent input
 # noise (EIN), the No Derivatives licence (ND), and the misspelt variable a
@@ -49,6 +52,8 @@ mabe = "mabe"
 # typos knows English only. German and Spanish content is checked by its
 # writer, not by an English dictionary that reads "Sie" and "frase" as typos.
 extend-exclude = ["target/", "node_modules/", "*.lock", ".claude/skills/rust-best-practices/references/", "**/content/de/", "**/content/es/", "crates/khalid-render/strings/de.toml", "crates/khalid-newsletter/strings/de.toml","crates/khalid-lint/src/german.rs",
+  # Filler words in seven languages, for matching searches to headings.
+  "crates/khalid-search-console/src/filler.rs",
   # A photo credit quotes the photo's title and its author's name as the
   # photographer wrote them, misspellings and other languages included.
   "**/ATTRIBUTION.md", "**/pages/photo-credits/",
