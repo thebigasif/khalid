@@ -88,7 +88,7 @@ mod workbench;
 
 pub use brand::Brand;
 pub use color::Rgb;
-pub use contrast::{ColorToken, ContrastFix, MARK_CONTRAST, TEXT_CONTRAST};
+pub use contrast::{ColorToken, ContrastCheck, ContrastFix, MARK_CONTRAST, TEXT_CONTRAST};
 pub use design::DesignFile;
 pub use fetch::{
     MAX_CSS_BYTES, MAX_HTML_BYTES, MAX_STYLESHEETS, Origin, SiteSource, Stylesheet, fetch_site,

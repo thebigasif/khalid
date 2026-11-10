@@ -3,7 +3,7 @@
 use std::fmt;
 
 use crate::color::Hsl;
-use crate::{Colors, Rgb, ThemeTokens};
+use crate::{Colors, Rgb, ThemeTokens, TokenName};
 
 /// The contrast WCAG 2.2 AA asks of text (success criterion 1.4.3).
 pub const TEXT_CONTRAST: f64 = 4.5;
@@ -53,6 +53,16 @@ impl ColorToken {
         match self {
             Self::Accent => MARK_CONTRAST,
             Self::Text | Self::Muted | Self::Link => TEXT_CONTRAST,
+        }
+    }
+
+    /// The token as the `locked` list names it.
+    pub fn token_name(self) -> TokenName {
+        match self {
+            Self::Text => TokenName::Text,
+            Self::Muted => TokenName::Muted,
+            Self::Link => TokenName::Link,
+            Self::Accent => TokenName::Accent,
         }
     }
 
@@ -191,6 +201,63 @@ impl ThemeTokens {
             });
         }
         fixes
+    }
+}
+
+/// One colour pair the templates draw: a colour on a ground, how much
+/// contrast it has, and whether that meets WCAG 2.2 AA.
+#[derive(Debug, Clone, Copy, PartialEq)]
+#[non_exhaustive]
+pub struct ContrastCheck {
+    /// The colour drawn, such as [`TokenName::Link`].
+    pub token: TokenName,
+    /// What it is drawn on: [`TokenName::Background`] or
+    /// [`TokenName::Surface`].
+    pub ground: TokenName,
+    /// The contrast, rounded down to one decimal, so a failing 4.47 never
+    /// reads as a passing 4.5.
+    pub ratio: f64,
+    /// The least contrast the colour needs: [`TEXT_CONTRAST`] for text,
+    /// [`MARK_CONTRAST`] for the accent.
+    pub target: f64,
+    /// Whether the contrast meets the target.
+    pub passes: bool,
+    /// When the colour fails on either ground, the nearest shade that
+    /// passes on both, as [`ThemeTokens::fix_contrast`] would pick it.
+    pub nearest: Option<Rgb>,
+}
+
+impl ThemeTokens {
+    /// The contrast of the text, quiet text, link and accent colours on the
+    /// background and on the surface, in the order of [`ColorToken::ALL`],
+    /// each on the background first. Nothing is changed.
+    pub fn contrast_checks(&self) -> Vec<ContrastCheck> {
+        // A copy, since `slot` hands out a place to write.
+        let mut colors = self.colors;
+        let grounds = [
+            (TokenName::Background, colors.background),
+            (TokenName::Surface, colors.surface),
+        ];
+        let both = grounds.map(|(_, ground)| ground);
+        let mut checks = Vec::new();
+        for token in ColorToken::ALL {
+            let color = *token.slot(&mut colors);
+            let target = token.target();
+            let nearest =
+                (worst(color, &both) < target).then(|| nearest_passing(color, &both, target));
+            for (ground, behind) in grounds {
+                let contrast = color.contrast(behind);
+                checks.push(ContrastCheck {
+                    token: token.token_name(),
+                    ground,
+                    ratio: (contrast * 10.0).floor() / 10.0,
+                    target,
+                    passes: contrast >= target,
+                    nearest,
+                });
+            }
+        }
+        checks
     }
 }
 
