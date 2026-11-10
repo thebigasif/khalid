@@ -106,23 +106,28 @@ form{max-width:40rem}
   <section class="panel" id="scripts" aria-labelledby="h-scripts">
     <h2 id="h-scripts">Scripts</h2>
     <form action="privacy.html" method="post">
-      <p class="hint">Your own code from <code>[code]</code> in site.toml. Each script waits until a reader allows its category. A script with no category counts as Marketing, the strictest.</p>
+      <p class="hint">Your own code, such as the snippet an analytics or ads tool gives you. It is saved to <code>[code]</code> in site.toml. Each script waits until a reader allows its category. A script with no category counts as Marketing, the strictest.</p>
       <div class="script">
-        <pre><code>&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-DEMO"&gt;&lt;/script&gt;</code></pre>
+        <div class="field"><label for="h1">Code for the head</label><span class="hint" id="h1-hint">Goes in the head of every page, the part readers do not see. It may hold script, meta, link and style.</span><textarea id="h1" rows="4" aria-describedby="h1-hint">&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-DEMO"&gt;&lt;/script&gt;</textarea></div>
+        <div class="field"><label for="b1">Code for the end of the page</label><span class="hint" id="b1-hint">Goes at the end of every page. It may hold script only.</span><textarea id="b1" rows="4" aria-describedby="b1-hint"></textarea></div>
         <div class="field"><label for="c1">Category</label><select id="c1"><option>Preferences: remembers settings</option><option selected>Analytics: counts visits</option><option>Marketing: ads and tracking</option><option>None: sets no cookie, tracks no one</option></select></div>
         <div class="field"><label for="v1">Who runs it</label><span class="hint" id="v1-hint">The company readers see in the banner and on the privacy page.</span><input id="v1" value="Google Analytics" aria-describedby="v1-hint"></div>
         <div class="field"><label for="p1">Their privacy policy</label><input id="p1" type="url" value="https://policies.google.com/privacy"></div>
+        <button class="btn" type="button">Remove script 1</button>
       </div>
       <div class="script">
-        <pre><code>&lt;script src="https://example.com/blog/assets/reading-time.js"&gt;&lt;/script&gt;</code></pre>
         <p><span class="tag">No category: counts as Marketing</span></p>
+        <div class="field"><label for="h2">Code for the head</label><textarea id="h2" rows="4"></textarea></div>
+        <div class="field"><label for="b2">Code for the end of the page</label><textarea id="b2" rows="4">&lt;script src="https://example.com/blog/assets/reading-time.js"&gt;&lt;/script&gt;</textarea></div>
         <div class="field"><label for="c2">Category</label><select id="c2"><option>Preferences: remembers settings</option><option>Analytics: counts visits</option><option selected>Marketing: ads and tracking</option><option>None: sets no cookie, tracks no one</option></select></div>
         <div class="field"><label for="v2">Who runs it</label><input id="v2" value=""></div>
+        <button class="btn" type="button">Remove script 2</button>
       </div>
+      <p><button class="btn" type="button">Add a script</button></p>
       <button class="btn primary" type="submit">Save this part</button>
     </form>
     <h3>When the site has no scripts</h3>
-    <div class="empty"><p><b>No scripts of your own yet.</b> Readers see no banner, because nothing waits for their yes. Videos and other embeds still ask for themselves.</p><p class="muted">Add code to <code>[code]</code> in site.toml, then tag it here.</p></div>
+    <div class="empty"><p><b>No scripts of your own yet.</b> Readers see no banner, because nothing waits for their yes. Videos and other embeds still ask for themselves.</p><p class="muted">Add the snippet your tool gives you, then pick what it waits for. Khalid starts using it after a restart.</p><p><button class="btn" type="button">Add a script</button></p></div>
     <h3>When the site is built as plain files</h3>
     <div class="empty"><p><b>This blog is built as plain files.</b> A small script in each page asks readers and keeps their choice. Readers with scripts off get nothing optional, and choices are not counted.</p></div>
   </section>

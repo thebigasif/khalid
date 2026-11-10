@@ -53,10 +53,18 @@ export const privacyWords = {
     toolNameHint: "Named on your privacy page, such as Cookiebot.",
   },
   scripts: {
-    lede: "Your own code from [code] in site.toml. Each script waits until a reader allows its category. A script with no category counts as Marketing, the strictest.",
+    lede: "Your own code, such as the snippet an analytics or ads tool gives you. It is saved to [code] in site.toml. Each script waits until a reader allows its category. A script with no category counts as Marketing, the strictest.",
     list: "Your scripts",
     script: (n: number) => `Script ${n}`,
     untagged: "No category: counts as Marketing",
+    head: "Code for the head",
+    headHint:
+      "Goes in the head of every page, the part readers do not see. It may hold script, meta, link and style.",
+    body: "Code for the end of the page",
+    bodyHint: "Goes at the end of every page. It may hold script only.",
+    add: "Add a script",
+    remove: (n: number) => `Remove script ${n}`,
+    noneLeft: "No scripts left. Save to take them out of site.toml.",
     category: "Category",
     vendor: "Who runs it",
     vendorHint: "The company readers see in the banner and on the privacy page.",
@@ -65,7 +73,8 @@ export const privacyWords = {
     noScripts: "No scripts of your own yet.",
     noScriptsWhy:
       "Readers see no banner, because nothing waits for their yes. Videos and other embeds still ask for themselves.",
-    noScriptsFix: "Add code to [code] in site.toml, then tag it here.",
+    noScriptsFix:
+      "Add the snippet your tool gives you, then pick what it waits for. Khalid starts using it after a restart.",
     staticTitle: "This blog is built as plain files.",
     staticWhy:
       "A small script in each page asks readers and keeps their choice. Readers with scripts off get nothing optional, and choices are not counted.",
