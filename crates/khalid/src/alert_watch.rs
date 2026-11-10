@@ -1,8 +1,10 @@
 //! The alert checks `khalid serve` runs once an hour (KH-GRO-6): a burst
 //! of 404s against the last reading of the 404 log, the certificate in
 //! `data/https/` when the server has one, and live posts left unchanged
-//! too long. A scheduled post the linter refuses is raised by the
-//! scheduler as it happens, and broken links by `khalid audit`.
+//! too long. The same round sends the later steps of each newsletter's
+//! welcome sequence that fell due (G39). A scheduled post the linter
+//! refuses is raised by the scheduler as it happens, and broken links by
+//! `khalid audit`.
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -17,7 +19,7 @@ use khalid_api::resources::Collection;
 use khalid_core::{AlertSettings, Config};
 use khalid_db::{Database, SiteId};
 use khalid_https::{Domain, HttpsFolder};
-use khalid_newsletter::Mailer;
+use khalid_newsletter::{Mailer, Newsletter};
 use serde_json::Value;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
@@ -72,6 +74,9 @@ pub(crate) struct Sources {
     pub(crate) visitors: Option<Arc<dyn VisitorLogStore>>,
     /// The speed and uptime watch and how often it looks, when it does.
     pub(crate) watch: Option<(SiteWatch, Duration)>,
+    /// The newsletter, when the site sends mail, whose later welcome steps
+    /// go out in the same hourly round (G39).
+    pub(crate) welcomes: Option<Newsletter>,
 }
 
 /// Alerts made ready before the server listens, started once the site's
@@ -197,6 +202,13 @@ async fn round(
     if let Some(log) = &sources.visitors {
         crawl_alerts::round(alerting, log.as_ref(), at).await;
     }
+    if let Some(newsletter) = &sources.welcomes {
+        match newsletter.send_due_welcomes().await {
+            Ok(0) => {}
+            Ok(sent) => tracing::info!(sent, "later welcome emails went out"),
+            Err(error) => tracing::warn!(%error, "the welcome emails due were not read"),
+        }
+    }
     alerting.tidy().await;
     now.or(before)
 }
@@ -285,6 +297,7 @@ mod tests {
             settings: config.alerts().clone(),
             visitors: None,
             watch: None,
+            welcomes: None,
         };
         log.record("/blog/old/", at).await.unwrap();
         let before = counts(&*sources.misses).await;
