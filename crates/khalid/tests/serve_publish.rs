@@ -1,7 +1,8 @@
 //! Publishing on a running `khalid serve` through the Admin API fires the
 //! signed `post.published` webhook to the site's webhook list and sends
 //! the post's address to `IndexNow`, once each (KH-API-3, KH-SEO-11, CTO
-//! answers 2026-10-27 section 4).
+//! answers 2026-10-27 section 4). A schedule and a preview link outlive a
+//! restart, and fall due on a clock the hidden `--test-clock-ahead` moves.
 
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -102,10 +103,18 @@ fn new_key(site: &Path, args: &[&str]) -> String {
 /// Starts `khalid serve`, reaching the stand-in hosts on loopback.
 #[cfg(test)]
 fn start(site: &Path) -> Server {
+    start_ahead(site, 0)
+}
+
+/// Starts `khalid serve` as [`start`] does, with the scheduler and preview
+/// links reading a clock `seconds` ahead.
+#[cfg(test)]
+fn start_ahead(site: &Path, seconds: u32) -> Server {
     let mut child = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", site.to_str().unwrap()])
         .args(["--test-hosts", HOSTS])
         .args(["serve", "--listen", "127.0.0.1:0", "--json"])
+        .args(["--test-clock-ahead", &seconds.to_string()])
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
@@ -323,4 +332,92 @@ async fn a_preview_link_shows_the_draft_with_noindex_and_nothing_else() {
     );
     let public = page(&server, "/blog/choosing-anchor-text/").0;
     assert_eq!(public, 404, "the draft is still not public");
+}
+
+/// A day on the clock `--test-clock-ahead` moves, in seconds.
+const DAY: u32 = 24 * 60 * 60;
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_post_scheduled_before_a_restart_goes_live_once_its_time_has_passed() {
+    let receiver = MockServer::start().await;
+    Mock::given(method("POST"))
+        .respond_with(ResponseTemplate::new(200))
+        .mount(&receiver)
+        .await;
+    let (site, _) = demo_site(&receiver).await;
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let new = json!({"posts": [{"title": "Choosing anchor text", "author": "asif",
+        "markdown": "Anchor text is the visible words of a link.\n\n\
+        Read [why internal links matter](/blog/why-internal-links-matter/) first."}]});
+    let (_, made) = send(&server, &key, "POST", "/api/admin/v1/posts/", &new);
+    let tomorrow = SystemClock.now() + TimeDelta::days(1);
+    let schedule = json!({"posts": [{"status": "scheduled", "published_at": tomorrow,
+        "updated_at": made["posts"][0]["updated_at"]}]});
+    let route = "/api/admin/v1/posts/en.choosing-anchor-text/";
+    let (status, scheduled) = send(&server, &key, "PUT", route, &schedule);
+    assert_eq!(status, 200, "{scheduled}");
+    let page_path = "/blog/choosing-anchor-text/";
+    assert_eq!(page(&server, page_path).0, 404, "not live before its time");
+    drop(server);
+
+    // Stopped for two days: the time passed while nothing ran.
+    let server = start_ahead(site.path(), 2 * DAY);
+    let hooks = received(&receiver, "/khalid").await;
+    assert_eq!(hooks.len(), 1, "post.published fires once, at the start");
+    let body: Value = serde_json::from_slice(&hooks[0].body).unwrap();
+    assert_eq!(body["post"]["id"], "en.choosing-anchor-text", "{body}");
+    assert_eq!(body["post"]["updated_by"], "scheduler", "{body}");
+    let searches = received(&receiver, "/indexnow").await;
+    let address = "https://www.example.com/blog/choosing-anchor-text/";
+    let told = searches.iter().any(|one| {
+        let search: Value = serde_json::from_slice(&one.body).unwrap();
+        search["urlList"]
+            .as_array()
+            .unwrap()
+            .contains(&json!(address))
+    });
+    assert!(told, "IndexNow hears about the post");
+    let shown = (0..200).any(|_| {
+        std::thread::sleep(Duration::from_millis(100));
+        page(&server, page_path).0 == 200
+    });
+    assert!(
+        shown,
+        "the scheduled post was never served after the restart"
+    );
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_preview_link_outlives_a_restart_and_expires_on_time() {
+    let receiver = MockServer::start().await;
+    let (site, _) = demo_site(&receiver).await;
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let new = json!({"posts": [{"title": "Choosing anchor text", "author": "asif",
+        "markdown": "Anchor text is the visible words of a link."}]});
+    send(&server, &key, "POST", "/api/admin/v1/posts/", &new);
+    let route = "/api/admin/v1/posts/en.choosing-anchor-text/preview-link/";
+    let (status, links) = send(&server, &key, "POST", route, &Value::Null);
+    assert_eq!(status, 201, "{links}");
+    let url = links["preview_links"][0]["url"].as_str().unwrap();
+    let path = url.strip_prefix("https://www.example.com").unwrap();
+    drop(server);
+
+    // The demo site keeps the default: a link works for seven days.
+    let server = start_ahead(site.path(), 6 * DAY);
+    let (status, _, body) = page(&server, path);
+    assert_eq!(status, 200, "six days on, the link still opens: {body}");
+    assert!(body.contains("Anchor text is the visible words of a link."));
+    drop(server);
+
+    let server = start_ahead(site.path(), 8 * DAY);
+    let (status, head, body) = page(&server, path);
+    assert_eq!(status, 410, "eight days on, the link has expired: {body}");
+    assert!(
+        body.contains("<h1>This preview link has expired</h1>"),
+        "{body}"
+    );
+    assert!(!body.contains("Anchor text is the visible words"), "{body}");
+    assert!(head.contains("x-robots-tag: noindex, nofollow"), "{head}");
 }

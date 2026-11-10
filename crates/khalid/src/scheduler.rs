@@ -17,12 +17,13 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use khalid_api::publish_door::{PublishDoor, Ran};
-use khalid_core::{Clock, SystemClock};
+use khalid_core::Clock;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 use tokio::time::MissedTickBehavior;
 
 use crate::alerts::Alerting;
+use crate::serve_https::ServeClock;
 
 /// How often the schedules are looked at, so a post goes live at most this
 /// long after its time.
@@ -48,16 +49,17 @@ impl Scheduling {
 }
 
 /// Starts the scheduler on `door` and the drafts of the site `folder`,
-/// raising each post the linter refuses through `alerting`, and sending
-/// the `weekly` email when the site gets one. Must be called inside the
-/// tokio runtime. The first round runs at once, so a time that passed
-/// while the server was stopped is acted on at start.
+/// whose times fall due by `clock`, raising each post the linter refuses
+/// through `alerting`, and sending the `weekly` email when the site gets
+/// one. Must be called inside the tokio runtime. The first round runs at
+/// once, so a time that passed while the server was stopped is acted on at
+/// start.
 pub(crate) fn start(
-    (door, folder): (Arc<PublishDoor>, &Path),
+    (door, folder, clock): (&Arc<PublishDoor>, &Path, ServeClock),
     (alerting, weekly): (Arc<Alerting>, Option<Arc<WeeklyEmail>>),
 ) -> Scheduling {
     let (stop, mut stopped) = oneshot::channel();
-    let folder = folder.to_path_buf();
+    let (door, folder) = (Arc::clone(door), folder.to_path_buf());
     let task = tokio::spawn(async move {
         let mut ticks = tokio::time::interval(EVERY);
         ticks.set_missed_tick_behavior(MissedTickBehavior::Delay);
@@ -83,7 +85,7 @@ pub(crate) fn start(
             }
             let site = folder.clone();
             let moved =
-                tokio::task::spawn_blocking(move || entries::publish_due(&site, SystemClock.now()));
+                tokio::task::spawn_blocking(move || entries::publish_due(&site, clock.now()));
             for file in moved.await.unwrap_or_default() {
                 tracing::info!(file, "a scheduled entry went live");
             }

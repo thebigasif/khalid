@@ -42,8 +42,8 @@ pub(crate) struct HttpsListen {
     /// The TLS address and the port 80 address, when not the usual ones.
     pub(crate) addresses: (Option<SocketAddr>, Option<SocketAddr>),
     pub(crate) outbound: Outbound,
-    /// The clock renewal reads.
-    pub(crate) clock: RenewalClock,
+    /// The clock renewal reads, ahead only in a test build.
+    pub(crate) clock: ServeClock,
 }
 
 /// The hidden flags of `khalid serve` in a test build.
@@ -58,27 +58,29 @@ pub(crate) struct ServeTestArgs {
     /// apart, even when answering on loopback.
     #[arg(long, hide = true, value_name = "SECONDS")]
     pub(crate) watch_every: Option<u64>,
-    /// Test builds only: renewal reads a clock this many seconds ahead,
-    /// so a certificate falls due while the server runs.
-    #[arg(long, hide = true, value_name = "SECONDS", requires = "domain")]
+    /// Test builds only: certificate renewal, the scheduler and preview
+    /// links read a clock this many seconds ahead, so a certificate, a
+    /// schedule or a link falls due in seconds.
+    #[arg(long, hide = true, value_name = "SECONDS")]
     pub(crate) test_clock_ahead: Option<u32>,
 }
 
 /// The computer's clock, ahead by a set time in a test build only, so a
-/// test can make a certificate fall due in seconds.
+/// test can make a certificate, a schedule or a preview link fall due in
+/// seconds.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) struct RenewalClock {
+pub(crate) struct ServeClock {
     ahead: TimeDelta,
 }
 
-impl RenewalClock {
+impl ServeClock {
     /// The clock for `args`: the computer's own, or ahead as the hidden
     /// `--test-clock-ahead` asks in a test build.
     #[cfg_attr(
         not(feature = "test-util"),
         expect(unused_variables, reason = "only test builds read the flag")
     )]
-    fn new(args: &ServeArgs) -> Self {
+    pub(crate) fn new(args: &ServeArgs) -> Self {
         #[cfg(feature = "test-util")]
         if let Some(seconds) = args.test.test_clock_ahead {
             return Self {
@@ -91,7 +93,7 @@ impl RenewalClock {
     }
 }
 
-impl Clock for RenewalClock {
+impl Clock for ServeClock {
     fn now(&self) -> DateTime<Utc> {
         let now = SystemClock.now();
         now.checked_add_signed(self.ahead).unwrap_or(now)
@@ -154,7 +156,7 @@ fn listen(cli: &Cli, mode: Mode, https: &ServeArgs) -> Result<Listen, UserMessag
         directory,
         addresses: (https.https_listen, https.http_listen),
         outbound,
-        clock: RenewalClock::new(https),
+        clock: ServeClock::new(https),
     })))
 }
 
