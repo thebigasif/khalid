@@ -16,6 +16,7 @@ use crate::keys::{Principal, Scope};
 use crate::presence::{Claim, PostPresence};
 use crate::problem::Problem;
 use crate::publish_door::PublishDoor;
+use crate::staff_names::NameBook;
 
 /// A check-in: what the editor asks for while the post is open.
 #[derive(Debug, Deserialize, ToSchema)]
@@ -37,7 +38,7 @@ pub(crate) struct CheckIn {
     params(("id" = String, Path, description = "The post's identity")),
     request_body = CheckIn,
     responses(
-        (status = 200, description = "Who holds the lock, and who else has the post open", body = PostPresence),
+        (status = 200, description = "Who holds the lock, and who else has the post open, each by identity and name", body = PostPresence),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "No post has this identity", body = Problem, content_type = "application/problem+json"),
@@ -46,7 +47,7 @@ pub(crate) struct CheckIn {
 )]
 pub(crate) async fn check_in(
     State(posts): State<Arc<PublishDoor>>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     Path(id): Path<String>,
     OriginalUri(uri): OriginalUri,
     body: Result<Json<CheckIn>, JsonRejection>,
@@ -57,8 +58,8 @@ pub(crate) async fn check_in(
     found
         .map_err(|error| Problem::internal(&error))?
         .ok_or_else(|| missing(uri.path()))?;
-    let who = principal.id().as_str();
-    Ok(Json(posts.check_in(&id, who, body.claim)))
+    let seen = posts.check_in(&id, principal.id().as_str(), body.claim);
+    Ok(Json(seen.named(&book.names().await)))
 }
 
 /// Notes that the caller closed the post, so the next in line holds its
