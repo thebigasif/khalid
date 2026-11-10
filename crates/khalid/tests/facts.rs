@@ -143,6 +143,99 @@ fn a_broken_facts_file_stops_lint_and_build_with_a_plain_message() {
 }
 
 #[test]
+fn build_writes_the_current_value_where_a_post_names_the_fact() {
+    let site = site(FACTS);
+    let post = within(
+        site.path(),
+        "content/en/posts/2026-09-14-why-internal-links-matter.md",
+    );
+    let placed = NEW_PRICE.replace("29 USD a month", "[[fact:pro-plan-price]]");
+    fs::write(&post, placed).unwrap();
+    let output = khalid(site.path(), &["build"]);
+    assert_eq!(output.status.code(), Some(0), "{}", text(&output.stderr));
+    let page = within(site.path(), "public/why-internal-links-matter/index.html");
+    let html = fs::read_to_string(&page).unwrap();
+    assert!(
+        html.contains("The Pro plan costs 29 USD a month."),
+        "{html}"
+    );
+    assert!(!html.contains("fact:"), "{html}");
+
+    let lint = khalid(site.path(), &["lint", "--json"]);
+    let json: Value = serde_json::from_str(&text(&lint.stdout)).unwrap();
+    let due = found(&json, "fact-not-checked");
+    assert!(
+        due.iter()
+            .any(|(slug, _)| slug == "why-internal-links-matter"),
+        "the linter reads the value the reader sees: {json}"
+    );
+}
+
+#[test]
+fn build_stops_at_a_fact_the_registry_lacks() {
+    let site = site(FACTS);
+    let post = within(
+        site.path(),
+        "content/en/posts/2026-09-14-why-internal-links-matter.md",
+    );
+    let placed = NEW_PRICE.replace("29 USD a month", "[[fact:team-size]]");
+    fs::write(&post, placed).unwrap();
+    let output = khalid(site.path(), &["build"]);
+    assert_eq!(output.status.code(), Some(1));
+    let said = text(&output.stderr);
+    assert!(said.contains("[[fact:team-size]] names no fact"), "{said}");
+    assert!(said.contains("Add a [team-size] table"), "{said}");
+    let lint = khalid(site.path(), &["lint", "--json"]);
+    let said = text(&lint.stdout);
+    assert_eq!(lint.status.code(), Some(1), "{said}");
+    let json: Value = serde_json::from_str(&said).unwrap();
+    let what = json["error"]["what"].as_str().unwrap_or_default();
+    assert!(what.contains("[[fact:team-size]] names no fact"), "{json}");
+}
+
+#[test]
+fn lint_warns_about_a_check_still_to_come_and_points_at_the_source() {
+    let ahead = FACTS.replace("2020-01-01", "2999-01-01");
+    let site = site(&format!(
+        "{ahead}source = \"https://example.com/pricing/\"\n"
+    ));
+    let output = khalid(site.path(), &["lint", "--json"]);
+    let json: Value = serde_json::from_str(&text(&output.stdout)).unwrap();
+    let price = (
+        "why-internal-links-matter".to_owned(),
+        "pro-plan-price".to_owned(),
+    );
+    assert_eq!(
+        found(&json, "fact-checked-in-future"),
+        vec![price],
+        "{json}"
+    );
+    assert!(found(&json, "fact-not-checked").is_empty(), "{json}");
+    let findings = json["findings"].as_array().unwrap();
+    let ahead = findings
+        .iter()
+        .find(|f| f["rule"] == "fact-checked-in-future");
+    let suggests = ahead.map(|finding| finding["suggestions"].clone());
+    assert_eq!(
+        suggests,
+        Some(serde_json::json!(["https://example.com/pricing/"]))
+    );
+}
+
+#[test]
+fn a_source_that_is_not_a_web_address_stops_lint_with_the_fix() {
+    let site = site(&format!("{FACTS}source = \"the pricing page\"\n"));
+    let output = khalid(site.path(), &["lint"]);
+    assert_eq!(output.status.code(), Some(1));
+    let said = text(&output.stderr);
+    assert!(
+        said.contains("has a source that is not a web address"),
+        "{said}"
+    );
+    assert!(said.contains("source = \"https://"), "{said}");
+}
+
+#[test]
 fn build_leaves_out_an_old_value_when_the_site_makes_it_block() {
     let site = site(FACTS);
     let rules = "[rules]\nfact-old-value = \"block\"\n";

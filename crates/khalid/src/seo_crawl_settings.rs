@@ -2,7 +2,9 @@
 //! blog and what every feed carries (audit G11, KH-SEO-6, KH-SEO-7).
 //! `[seo.links]` becomes the link policy through `LinkPolicy::from`.
 
-use khalid_core::{CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, LlmsTxtSettings};
+use khalid_core::{
+    AiTraining, CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, LlmsTxtSettings,
+};
 use khalid_seo::{
     BotAccess, FeedContent, FeedFormat, MetaTemplate, RobotsLine, RobotsPath, SeoSite, UrlPath,
     UserAgent,
@@ -45,6 +47,11 @@ pub(crate) fn crawlers(
             site.crawlers.bots.insert(agent, access);
         }
     }
+    site.crawlers.ai_training = if settings.ai_training == AiTraining::Block {
+        BotAccess::Blocked
+    } else {
+        BotAccess::Allowed
+    };
     site.crawlers.disallow_search = settings.disallow_search;
     for line in &settings.extra_lines {
         let line = RobotsLine::try_new(line)

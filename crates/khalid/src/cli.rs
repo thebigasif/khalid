@@ -139,6 +139,9 @@ pub(crate) enum Command {
         /// The folder to write the pages to [default: public in the site folder]
         #[arg(long, value_name = "FOLDER")]
         out: Option<PathBuf>,
+        /// Do not tell search engines which posts are new or updated since the last build
+        #[arg(long)]
+        no_indexnow: bool,
     },
     /// Check one post or the whole site against the SEO rules, and score
     /// each post out of 100
@@ -323,6 +326,12 @@ pub(crate) enum Command {
         #[command(subcommand)]
         command: AnalyticsCommand,
     },
+    /// Print the script that completes Khalid's commands on Tab, for bash, zsh, fish, powershell or elvish
+    Completions(crate::completions::CompletionsArgs),
+    /// Write a manual page for khalid and for each command into a folder
+    #[cfg(feature = "man")]
+    #[command(hide = true)]
+    Man(crate::man::ManArgs),
 }
 
 /// The Search Console commands, for the property `[search_console]` names.

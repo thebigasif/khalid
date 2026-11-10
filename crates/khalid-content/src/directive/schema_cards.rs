@@ -1,7 +1,7 @@
 //! Reads the cards that describe one thing: an event, a course, a book and
 //! a dataset (brief G15).
 
-use chrono::{DateTime, FixedOffset};
+use chrono::{DateTime, FixedOffset, NaiveDate, NaiveTime};
 
 use super::Attributes;
 use crate::{
@@ -193,6 +193,26 @@ fn dataset(attributes: &Attributes, body: &[&str]) -> Result<DatasetBlock, Block
             .transpose()?,
         description,
     })
+}
+
+/// The `uploaded` date of a video or an embed: a day such as `2024-05-16`,
+/// read as midnight UTC like a post's date, or a [`moment`].
+///
+/// # Errors
+///
+/// [`BlockError::Value`] when the value is neither.
+pub(super) fn uploaded(
+    attributes: &Attributes,
+) -> Result<Option<DateTime<FixedOffset>>, BlockError> {
+    attributes.parsed(
+        "uploaded",
+        |text| {
+            let day = NaiveDate::parse_from_str(text, "%Y-%m-%d").ok();
+            day.map(|day| day.and_time(NaiveTime::MIN).and_utc().fixed_offset())
+                .or_else(|| moment(text))
+        },
+        "an uploaded date is written as 2024-05-16, or with its time, such as 2024-05-16T09:30+02:00",
+    )
 }
 
 /// Reads `2026-11-12T18:00+00:00`, with seconds or without, and `Z` for UTC.

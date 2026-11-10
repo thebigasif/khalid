@@ -1,11 +1,12 @@
 //! The content tree: `content/<language>/<collection>/<entry>`.
 
 use std::fs;
+use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
 
 use khalid_core::Locale;
 
-use crate::{ContentError, ContentHash};
+use crate::{ContentError, ContentHash, FACTS_FILE};
 
 /// The folder in `content/` that holds the newsletters' own files, such as
 /// their welcome emails (task 5.9). It is not a language, and nothing in it
@@ -24,6 +25,7 @@ const NEWSLETTERS: &str = "newsletters";
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ContentTree {
     languages: Vec<Language>,
+    facts: Option<String>,
 }
 
 /// One language folder, such as `content/en`.
@@ -58,7 +60,8 @@ impl ContentTree {
     /// Returns [`ContentError::Read`] when a file or folder cannot be read,
     /// [`ContentError::NotALanguage`] for a language folder whose name is not
     /// a language tag, and [`ContentError::FolderWithoutIndex`] for a folder
-    /// entry with no `index.md`.
+    /// entry with no `index.md`. Reads `facts.toml` beside `content/` too,
+    /// when the site has one, since posts show its values.
     pub fn walk(site: &Path) -> Result<Self, ContentError> {
         let mut languages = Vec::new();
         for (name, rel) in folders(site, Path::new("content"))? {
@@ -78,12 +81,25 @@ impl ContentTree {
                 collections,
             });
         }
-        Ok(Self { languages })
+        let facts = match fs::read_to_string(under(site, Path::new(FACTS_FILE))) {
+            Ok(text) => Some(text),
+            Err(error) if error.kind() == ErrorKind::NotFound => None,
+            Err(source) => {
+                let path = PathBuf::from(FACTS_FILE);
+                return Err(ContentError::Read { path, source });
+            }
+        };
+        Ok(Self { languages, facts })
     }
 
     /// The language folders, in name order.
     pub fn languages(&self) -> &[Language] {
         &self.languages
+    }
+
+    /// The text of the site's `facts.toml`, when it has one.
+    pub fn facts(&self) -> Option<&str> {
+        self.facts.as_deref()
     }
 }
 

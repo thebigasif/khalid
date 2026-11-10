@@ -158,10 +158,6 @@ fn read(out: &Path, rel: &str) -> String {
     fs::read_to_string(file).unwrap()
 }
 
-/// Built pages serve does not answer yet. Serve has one not-found page, the
-/// default language's, so a missing German address gets the English one.
-const NOT_SERVED_AS_BUILT: [&str; 1] = ["de/404.html"];
-
 #[test]
 fn serve_answers_every_built_page_with_the_head_build_wrote() {
     let site = demo_copy();
@@ -170,9 +166,6 @@ fn serve_answers_every_built_page_with_the_head_build_wrote() {
     let files = html_files(out.path());
     assert!(files.len() > 10, "{files:?}");
     for rel in &files {
-        if NOT_SERVED_AS_BUILT.contains(&rel.as_str()) {
-            continue;
-        }
         let (path, want) = served_at(rel);
         let (status, body) = get(&server, &path);
         assert_eq!(status, want, "{path}");
@@ -274,4 +267,27 @@ fn the_served_not_found_page_is_kept_out_of_search() {
         "{head}"
     );
     assert!(!head.contains("hreflang"), "{head}");
+}
+
+#[test]
+fn a_missing_address_gets_the_not_found_page_of_its_language() {
+    let site = demo_copy();
+    let server = start(site.path());
+    let (status, german) = get(&server, "/blog/de/missing/");
+    assert_eq!(status, 404);
+    assert!(german.contains(r#"<html lang="de" dir="ltr">"#), "{german}");
+    assert!(
+        german.contains("<h1>Diese Seite gibt es nicht</h1>"),
+        "{german}"
+    );
+    let (status, english) = get(&server, "/blog/missing/");
+    assert_eq!(status, 404);
+    assert!(
+        english.contains(r#"<html lang="en" dir="ltr">"#),
+        "{english}"
+    );
+    assert!(
+        english.contains("<h1>This page does not exist</h1>"),
+        "{english}"
+    );
 }

@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use khalid_core::{Locale, ParseLocaleError};
 
-use crate::BlockError;
+use crate::{BlockError, FactError};
 
 /// Why a content file could not be read.
 #[derive(Debug, thiserror::Error)]
@@ -113,4 +113,20 @@ pub enum ContentError {
         /// What the maths reader found, in a phrase.
         problem: String,
     },
+    /// A `[[fact:key]]` names no fact in `facts.toml`.
+    #[error(
+        "{}, line {line}: there is no fact called {key} in facts.toml",
+        path.display()
+    )]
+    Fact {
+        /// The file.
+        path: PathBuf,
+        /// The 1-based line in the file.
+        line: usize,
+        /// The key as written after `fact:`.
+        key: String,
+    },
+    /// `facts.toml` is not a fact registry.
+    #[error("facts.toml: {0}")]
+    Facts(#[from] FactError),
 }

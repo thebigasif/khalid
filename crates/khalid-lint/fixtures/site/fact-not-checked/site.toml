@@ -5,6 +5,7 @@
 key = "pro-plan-price"
 value = "29 USD a month"
 checked = "2026-03-01"
+source = "https://example.com/pricing/"
 
 [[facts]]
 key = "founded"

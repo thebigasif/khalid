@@ -34,6 +34,7 @@ fn tour() -> VideoBlock {
         thumbnail: None,
         description: Some("Where posts, pages and settings live.".to_owned()),
         duration: Some(Duration::from_secs(125)),
+        uploaded: None,
     }
 }
 
@@ -80,6 +81,23 @@ fn a_duration_too_long_to_count_is_refused() {
     assert!(
         error("::video{src=\"/a.mp4\" title=\"A\" poster=\"/a.jpg\" duration=\"99999999999999999:00:00\"}\n")
             .contains("duration is written as")
+    );
+}
+
+/// A video may give the day it was first published, such as when it came
+/// from another site; otherwise the post's date stands for it.
+#[test]
+fn a_video_may_give_its_upload_date() {
+    let markdown =
+        "::video{src=\"/a.mp4\" title=\"A\" poster=\"/a.jpg\" uploaded=\"2023-02-01T08:00Z\"}\n";
+    let BlockKind::Video(video) = round_trip(markdown) else {
+        panic!("not a video");
+    };
+    let day = video.uploaded.map(|date| date.to_rfc3339());
+    assert_eq!(day.as_deref(), Some("2023-02-01T08:00:00+00:00"));
+    assert!(
+        error("::video{src=\"/a.mp4\" title=\"A\" poster=\"/a.jpg\" uploaded=\"yesterday\"}\n")
+            .contains("uploaded date")
     );
 }
 

@@ -11,12 +11,12 @@ use std::path::{Path, PathBuf};
 
 use khalid_content::SiteContent;
 use khalid_core::{Clock, Config, UserMessage};
-use khalid_lint::{LintFact, Linter, PublishGate, Report, Verdict};
+use khalid_lint::{Linter, PublishGate, Report, Verdict};
 use khalid_routes::Routes;
 
 use crate::lint_input::{self, LintInput};
 use crate::site_briefs::Briefs;
-use crate::{lint, lint_message, site_briefs, site_facts};
+use crate::{lint, lint_message, site_briefs};
 
 /// A dated post the gate keeps off the site, and the report saying why.
 #[derive(Debug)]
@@ -28,13 +28,12 @@ pub(crate) struct Refused {
 }
 
 /// Every dated post of `content` the gate refuses, judged with the `site`
-/// folder's `lint.toml`, fact registry and briefs, on today's date from
-/// `clock`.
+/// folder's `lint.toml` and briefs and the content's fact registry, on
+/// today's date from `clock`.
 ///
 /// # Errors
 ///
-/// What, why and fix when `lint.toml`, the fact registry or a brief cannot
-/// be read.
+/// What, why and fix when `lint.toml` or a brief cannot be read.
 pub(crate) fn screen(
     site: &Path,
     (config, routes, content): (&Config, &Routes, &SiteContent),
@@ -42,26 +41,23 @@ pub(crate) fn screen(
 ) -> Result<Vec<Refused>, UserMessage> {
     let settings = lint::lint_settings(site)?;
     let linter = Linter::new(&settings, clock).map_err(|error| lint_message::of(&error))?;
-    let facts = site_facts::load(site)?;
     let briefs = site_briefs::load(site)?;
-    Ok(refused(&linter, content, config, routes, (facts, briefs)))
+    Ok(refused(&linter, content, config, routes, briefs))
 }
 
 /// Each dated post in `content` that `gate` refuses, in the order the
 /// posts were read. Empty when every post may go live. Each post first
 /// gets the quick yes or no, and only a refused post the full verdict with
 /// its warnings, so a 10,000-post site stays inside its budget. Posts are
-/// held to `facts`, the site's fact registry, and to their `briefs`.
+/// held to the content's fact registry and to their `briefs`.
 pub(crate) fn refused(
     gate: &dyn PublishGate,
     content: &SiteContent,
     config: &Config,
     routes: &Routes,
-    (facts, briefs): (Vec<LintFact>, Briefs),
+    briefs: Briefs,
 ) -> Vec<Refused> {
-    let input = LintInput::new(content, config, routes.clone())
-        .with_facts(facts)
-        .with_briefs(briefs);
+    let input = LintInput::new(content, config, routes.clone()).with_briefs(briefs);
     let (site, documents) = lint_input::lint_site(content, config, &input);
     site.posts
         .iter()
