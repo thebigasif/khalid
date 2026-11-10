@@ -589,20 +589,32 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      # The browser install sometimes stalls on a download. Each try gets 6
-      # minutes; a stalled try is stopped and run once more. A normal
-      # install takes about 1.
+      # The browser and its Ubuntu packages, kept between runs, so a run
+      # seldom waits on a mirror (scripts/ci/browsers.sh says why).
+      - name: The browsers' cache key
+        id: browsers
+        run: ./scripts/ci/browsers.sh key chromium
+      - name: The browsers, kept between runs
+        id: browser-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       - name: Tools, at the versions scripts/demo-check/package.json pins
-        timeout-minutes: 14
+        timeout-minutes: 22
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
-          for try in 1 2; do
-            if timeout 360 npx --prefix scripts/demo-check playwright install --with-deps chromium; then
-              exit 0
-            fi
-            echo "The browser install stalled or failed (try $try of 2)."
-          done
-          exit 1
+          ./scripts/ci/browsers.sh install chromium
+      - name: Keep the browsers for the next run
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       # Lighthouse runs that fail to start a page (NO_NAVSTART) are tried
       # once more inside the script; a low score is never retried.
       - name: Demo check
@@ -643,28 +655,36 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      # The browser and its Ubuntu packages, kept between runs, so a run
+      # seldom waits on a mirror (scripts/ci/browsers.sh says why).
+      - name: The browsers' cache key
+        id: browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: ./scripts/ci/browsers.sh key "$BROWSER"
+      - name: The browsers, kept between runs
+        id: browser-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       - name: Tools, at the versions scripts/demo-check/package.json pins
-        timeout-minutes: 14
+        timeout-minutes: 22
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
           npm install --prefix scripts/demo-check --no-audit --no-fund
-          # WebKit's system packages can take more than six minutes. A try
-          # that runs out of time leaves apt-get holding the dpkg lock, so
-          # the next try first stops it and waits for the lock to clear.
-          for try in 1 2; do
-            if timeout 900 npx --prefix scripts/demo-check playwright install --with-deps "$BROWSER"; then
-              exit 0
-            fi
-            echo "The browser install stalled or failed (try $try of 2)."
-            sudo pkill -x apt-get || true
-            for wait in $(seq 1 60); do
-              sudo fuser /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock >/dev/null 2>&1 || break
-              sleep 5
-            done
-            sudo dpkg --configure -a || true
-          done
-          exit 1
+          ./scripts/ci/browsers.sh install "$BROWSER"
+      - name: Keep the browsers for the next run
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/.cache/ms-playwright
+            ~/.cache/khalid/apt-archives
+          key: ${{ steps.browsers.outputs.key }}
       - name: The demos' pictures, kept between runs
         uses: actions/cache/restore@v6
         with:
