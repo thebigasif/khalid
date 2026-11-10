@@ -133,6 +133,74 @@ describe("a file's details", () => {
     expect(screen.queryByText(words.saved)).toBeNull();
   });
 
+  it("deletes the file on the copy it was read from, and goes back to the library", async () => {
+    signedIn();
+    const route = `/media/${pdf().id}/`;
+    const sent = mediaBlog({
+      "GET /media/": () => mediaPage([]),
+      [`GET ${route}`]: () => json(200, { media: [pdf()] }),
+      [`DELETE ${route}`]: () => new Response(null, { status: 204 }),
+    });
+    renderAt(`/media/${pdf().id}`);
+    const remove = await screen.findByRole("button", {
+      name: en.media.remove.submit(pdf().name),
+    });
+    expect(screen.getByText(en.media.remove.lede)).toBeVisible();
+    await userEvent.click(remove);
+    expect(await screen.findByText(en.media.library.empty)).toBeVisible();
+    const deleted = sent.find((request) => request.method === "DELETE");
+    const query = new URL(deleted?.url ?? "http://localhost/").searchParams;
+    expect(query.get("updated_at")).toBe(pdf().updated_at);
+  });
+
+  it("keeps a file a post still uses, and says where it is used", async () => {
+    signedIn();
+    const inUse = {
+      type: "https://khalid.dev/problems/conflict",
+      title: "Someone else changed this first",
+      status: 409,
+      detail:
+        "This file is still used in content/en/posts/page-weight.md. Deleting it would leave a broken picture or link there.",
+      fix: "Remove the file from those places first, then delete it.",
+      rule: "uses",
+    };
+    const route = `/media/${item().id}/`;
+    mediaBlog({
+      [`GET ${route}`]: () => json(200, { media: [item()] }),
+      [`DELETE ${route}`]: () => json(409, inUse),
+    });
+    renderAt(`/media/${item().id}`);
+    const remove = await screen.findByRole("button", {
+      name: en.media.remove.submit(item().name),
+    });
+    await userEvent.click(remove);
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent(en.media.remove.inUse);
+    expect(alert).toHaveTextContent("content/en/posts/page-weight.md");
+    expect(alert).not.toHaveTextContent(inUse.title);
+    expect(screen.getByRole("heading", { level: 1, name: item().name })).toBeVisible();
+  });
+
+  it("offers the library's folders as the owner types one", async () => {
+    signedIn();
+    const route = `/media/${pdf().id}/`;
+    const folders = [
+      { name: "guides", items: 0 },
+      { name: "guides/2026", items: 3 },
+    ];
+    mediaBlog({
+      [`GET ${route}`]: () => json(200, { media: [pdf()] }),
+      "GET /media/folders/": () => json(200, { folders }),
+    });
+    renderAt(`/media/${pdf().id}`);
+    const folder = await screen.findByLabelText(en.media.library.folder);
+    const list = document.getElementById(folder.getAttribute("list") ?? "");
+    await waitFor(() => expect(list?.querySelectorAll("option")).toHaveLength(2));
+    const offered = [...(list?.querySelectorAll("option") ?? [])].map((option) => option.value);
+    expect(offered).toEqual(["guides", "guides/2026"]);
+    expect(await axeViolations()).toEqual([]);
+  });
+
   it("says so when no file has this identity", async () => {
     signedIn();
     mediaBlog({ "GET /media/0000/": () => json(404, {}) });

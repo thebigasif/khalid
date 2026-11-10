@@ -43,8 +43,10 @@ pub use crop::Crop;
 pub use derive::{Avif, DerivedFile, DerivedImage, derive, derive_in_background, derive_with};
 pub use file_name::{FileName, ParseFileNameError};
 pub use focal_point::{FocalPoint, ParseFocalPointError};
-pub use folder::{Folder, ParseFolderError};
-pub use library::{EditPictureError, Library, Upload, UploadMediaError, Uploaded};
+pub use folder::{Folder, FolderCount, ParseFolderError};
+pub use library::{
+    DeleteMediaError, EditPictureError, Library, Upload, UploadMediaError, Uploaded,
+};
 pub use media_cache::MediaCache;
 pub use media_edit::{EditMediaError, MediaEdit};
 pub use media_error::MediaError;

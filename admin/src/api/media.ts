@@ -92,6 +92,31 @@ export async function editMedia(id: string, edit: MediaEdit): Promise<Reply<Medi
   }
 }
 
+/** Deletes one item and its file for good, on the copy `updatedAt` names. */
+export async function deleteMedia(id: string, updatedAt: string): Promise<Reply<null>> {
+  try {
+    const { error, response } = await api.DELETE("/api/admin/v1/media/{id}/", {
+      params: { path: { id }, query: { updated_at: updatedAt } },
+    });
+    return response.ok ? { data: null } : failed(error, response);
+  } catch {
+    return failed(null, undefined);
+  }
+}
+
+/** The names of the library's folders, such as `guides/2026`, in order. */
+export async function listFolders(): Promise<Reply<string[]>> {
+  try {
+    const { data, error, response } = await api.GET("/api/admin/v1/media/folders/");
+    if (data === undefined) {
+      return failed(error, response);
+    }
+    return { data: data.folders.map((folder) => folder.name) };
+  } catch {
+    return failed(null, undefined);
+  }
+}
+
 /**
  * Sends `file` to the library, into `folder` or the top when empty. The
  * bytes go as they are, which the typed client cannot send, so this one

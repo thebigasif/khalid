@@ -11,8 +11,8 @@ use axum::{Extension, Json, middleware};
 use chrono::{DateTime, Utc};
 use khalid_core::UserMessage;
 use khalid_media::{
-    ContentKey, EditMediaError, FocalPoint, Folder, Kind, Library, MediaEdit, MediaItem, Refusal,
-    StockSearch, Upload, UploadMediaError, Uploaded,
+    ContentKey, DeleteMediaError, EditMediaError, FocalPoint, Folder, Kind, Library, MediaEdit,
+    MediaItem, Refusal, StockSearch, Upload, UploadMediaError, Uploaded,
 };
 use serde::Deserialize;
 use utoipa::IntoParams;
@@ -20,15 +20,19 @@ use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
 use crate::admin_api::BASE;
+use crate::admin_delete::DeleteQuery;
 use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::content_api::check_fields;
 use crate::content_store::select;
 use crate::keys::{Principal, Scope};
+use crate::media_uses::MediaUses;
 use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::query::{ListQuery, RawListQuery};
-use crate::resources::{AdminMedia, MediaEditBody, MediaEdits, MediaItems, MediaList};
+use crate::resources::{
+    AdminMedia, MediaEditBody, MediaEdits, MediaFolder, MediaFolders, MediaItems, MediaList,
+};
 use crate::staff_names::NameBook;
 use crate::{media_picture, media_search};
 
@@ -39,6 +43,9 @@ pub struct MediaLibrary {
     site: String,
     /// Photo and GIF search for the editor, when the server has it.
     pub(crate) search: Option<Arc<StockSearch>>,
+    /// Who finds the site files that still name an item, so it is not
+    /// deleted under them; `None` deletes without asking.
+    uses: Option<Arc<dyn MediaUses>>,
 }
 
 impl MediaLibrary {
@@ -51,7 +58,16 @@ impl MediaLibrary {
             library,
             site,
             search: None,
+            uses: None,
         }
+    }
+
+    /// The same library, refusing to delete an item `uses` finds in the
+    /// site's files.
+    #[must_use]
+    pub fn with_uses(mut self, uses: Arc<dyn MediaUses>) -> Self {
+        self.uses = Some(uses);
+        self
     }
 
     /// `item` as the Admin API sends it, with the full address readers
@@ -68,7 +84,8 @@ type Media = Option<MediaLibrary>;
 pub(crate) fn routes(media: Media, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(upload_media, list_media))
-        .routes(routes!(read_media, edit_media))
+        .routes(routes!(read_media, edit_media, delete_media))
+        .routes(routes!(list_media_folders))
         .routes(routes!(media_search::search_pictures))
         .routes(routes!(media_search::photo_used))
         .routes(routes!(media_picture::copy_picture))
@@ -249,6 +266,123 @@ async fn edit_media(
     };
     let media = vec![media.shown(&item)];
     Ok(Json(MediaItems { media }))
+}
+
+/// Deletes an item and its file for good. The delete names the
+/// `updated_at` of the copy it was made on, and is a 409 when the item
+/// changed since (RULES.md BL-API-7), or when a post, a page or the theme
+/// still names the file, since deleting it would break them. Needs
+/// `media:write`.
+#[utoipa::path(
+    delete, path = "/media/{id}/", tag = "admin media",
+    security(("admin_key" = [])),
+    params(("id" = String, Path, description = "The item's identity"), DeleteQuery),
+    responses(
+        (status = 204, description = "The item and its file are gone"),
+        (status = 400, description = "updated_at is missing or is not a time", body = Problem, content_type = "application/problem+json"),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks media:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "No item has this identity", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The item changed after the copy the delete was made on, or site files still name it", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn delete_media(
+    State(media): State<Media>,
+    Extension(principal): Extension<Principal>,
+    Path(id): Path<String>,
+    OriginalUri(uri): OriginalUri,
+    query: Result<Query<DeleteQuery>, QueryRejection>,
+) -> Result<StatusCode, Problem> {
+    require(&principal, Scope::MediaWrite)?;
+    let media = media.ok_or_else(no_library)?;
+    let seen = query.ok().and_then(|Query(query)| query.updated_at);
+    let seen = seen.ok_or_else(no_copy)?;
+    let item = ContentKey::parse(&id)
+        .and_then(|id| media.library.get(&id))
+        .ok_or_else(|| missing(uri.path()))?;
+    if let Some(uses) = &media.uses {
+        let files = uses
+            .using(&item)
+            .await
+            .map_err(|error| Problem::internal(&error))?;
+        if !files.is_empty() {
+            return Err(in_use(&files));
+        }
+    }
+    match media.library.delete(&item.id, seen).await {
+        Ok(_) => Ok(StatusCode::NO_CONTENT),
+        Err(DeleteMediaError::NotFound) => Err(missing(uri.path())),
+        Err(DeleteMediaError::Stale {
+            updated_at,
+            updated_by,
+        }) => Err(changed_since(updated_at, &updated_by)),
+        Err(error) => Err(Problem::internal(&error)),
+    }
+}
+
+fn no_copy() -> Problem {
+    let message = UserMessage::new(
+        "This delete does not say which copy of the item it was made on.",
+        "Without it, an item someone changed a moment ago could be deleted unseen.",
+        "Add updated_at with the time the item last changed, such as ?updated_at=2026-10-20T08:30:00Z.",
+    );
+    Problem::new(ProblemType::InvalidQuery, &message).with_rule("updated_at")
+}
+
+fn changed_since(updated_at: DateTime<Utc>, updated_by: &str) -> Problem {
+    let when = updated_at.format("%Y-%m-%d %H:%M UTC");
+    let message = UserMessage::new(
+        format!("{updated_by} changed this item at {when}, after the copy you saw."),
+        "It was not deleted, so you can see their change first.",
+        "Fetch the item again, and delete it with its new updated_at if it should still go.",
+    );
+    Problem::new(ProblemType::Conflict, &message).with_rule("updated_at")
+}
+
+/// The 409 for an item the site `files` still name.
+fn in_use(files: &[String]) -> Problem {
+    let shown: Vec<&str> = files.iter().take(3).map(String::as_str).collect();
+    let more = files.len().saturating_sub(shown.len());
+    let list = match more {
+        0 => shown.join(", "),
+        more => format!("{} and {more} more", shown.join(", ")),
+    };
+    let message = UserMessage::new(
+        format!("This file is still used in {list}."),
+        "Deleting it would leave a broken picture or link there.",
+        "Remove the file from those places first, then delete it.",
+    );
+    Problem::new(ProblemType::Conflict, &message).with_rule("uses")
+}
+
+/// Lists the library's folders by name: each one that holds an item, and
+/// each one above it, with how many items it holds itself. The top of the
+/// library is never listed. Needs `media:write`.
+#[utoipa::path(
+    get, path = "/media/folders/", tag = "admin media",
+    security(("admin_key" = [])),
+    responses(
+        (status = 200, description = "The folders", body = MediaFolders),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks media:write", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn list_media_folders(
+    State(media): State<Media>,
+    Extension(principal): Extension<Principal>,
+) -> Result<Json<MediaFolders>, Problem> {
+    require(&principal, Scope::MediaWrite)?;
+    let media = media.ok_or_else(no_library)?;
+    let folders = media
+        .library
+        .folders()
+        .into_iter()
+        .map(|counted| MediaFolder {
+            name: counted.folder.as_str().to_owned(),
+            items: counted.items,
+        })
+        .collect();
+    Ok(Json(MediaFolders { folders }))
 }
 
 /// The edit `body` asks for, with its folder and focal point checked.

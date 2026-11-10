@@ -107,6 +107,42 @@ async fn a_bucket_that_refuses_says_so_with_its_status() {
 }
 
 #[tokio::test]
+async fn deletes_a_signed_file_and_a_missing_one_is_already_gone() {
+    let server = MockServer::start().await;
+    Mock::given(method("DELETE"))
+        .and(path(OBJECT))
+        .and(header_regex("authorization", "^AWS4-HMAC-SHA256 "))
+        .respond_with(ResponseTemplate::new(204))
+        .expect(1)
+        .mount(&server)
+        .await;
+    Mock::given(method("DELETE"))
+        .respond_with(ResponseTemplate::new(404))
+        .mount(&server)
+        .await;
+    let (key, name) = file();
+    let storage = bucket(&server);
+    storage.delete(&key, &name).await.unwrap();
+    let other = ContentKey::parse("0000000000000000").unwrap();
+    storage.delete(&other, &name).await.unwrap();
+}
+
+#[tokio::test]
+async fn a_bucket_that_refuses_a_delete_says_so() {
+    let server = MockServer::start().await;
+    Mock::given(method("DELETE"))
+        .respond_with(ResponseTemplate::new(403))
+        .mount(&server)
+        .await;
+    let (key, name) = file();
+    let error = bucket(&server).delete(&key, &name).await.unwrap_err();
+    assert!(
+        matches!(error, MediaError::Bucket { status: 403 }),
+        "{error:?}"
+    );
+}
+
+#[tokio::test]
 async fn readers_fetch_a_bucket_file_from_its_public_address() {
     let server = MockServer::start().await;
     let (key, name) = file();

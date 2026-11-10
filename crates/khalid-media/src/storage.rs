@@ -122,6 +122,30 @@ impl Storage {
         }
     }
 
+    /// Removes the file `name` of the item `key`. A file that is not there
+    /// is already gone, so a delete that stopped half way can run again.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MediaError::Write`] when a local file cannot be removed,
+    /// [`MediaError::Worker`] when the thread that removes it stops, and
+    /// [`MediaError::Reach`] or [`MediaError::Bucket`] when a bucket cannot
+    /// be reached or refuses.
+    pub async fn delete(&self, key: &ContentKey, name: &FileName) -> Result<(), MediaError> {
+        match self {
+            Self::S3(bucket) => bucket.delete(key, name).await,
+            Self::Local(local) => {
+                let path = local.path(key, name)?;
+                blocking(move || match fs::remove_file(&path) {
+                    Ok(()) => Ok(()),
+                    Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(()),
+                    Err(source) => Err(MediaError::Write { path, source }),
+                })
+                .await
+            }
+        }
+    }
+
     /// Where readers fetch the file `name` of the item `key`.
     pub fn address(&self, key: &ContentKey, name: &FileName) -> FileAddress {
         match self {

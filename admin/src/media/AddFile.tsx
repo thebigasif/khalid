@@ -6,6 +6,7 @@ import { isData } from "../api/redirects";
 import { Problem } from "../components/Problem";
 import { Toast } from "../components/Toast";
 import { en, type UserMessage } from "../strings/en";
+import { FOLDER_CHOICES, FolderChoices } from "./FolderChoices";
 
 /** The screen's one focus: a file into the library, with what became of it. */
 export function AddFile() {
@@ -71,9 +72,11 @@ export function AddFile() {
             <input
               id="media-folder"
               aria-describedby="media-folder-hint"
+              list={FOLDER_CHOICES}
               value={folder}
               onChange={(event) => setFolder(event.target.value)}
             />
+            <FolderChoices />
           </div>
           <button type="submit" className="btn primary">
             {words.submit}

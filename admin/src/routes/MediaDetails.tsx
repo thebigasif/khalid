@@ -5,6 +5,7 @@ import { readMedia } from "../api/media";
 import { isData } from "../api/redirects";
 import { Problem } from "../components/Problem";
 import { DetailsForm } from "../editor/ai/AiDetailsForm";
+import { DeleteFile } from "../media/DeleteFile";
 import { fileSummary } from "../media/MediaTable";
 import { day } from "../strings/dates";
 import { en } from "../strings/en";
@@ -63,6 +64,7 @@ export function MediaDetails() {
       </p>
       <p role="status">{copied ? words.copied : null}</p>
       <DetailsForm key={item.id} item={item} />
+      <DeleteFile item={item} />
     </>
   );
 }
