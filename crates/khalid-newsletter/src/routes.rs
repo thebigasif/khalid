@@ -244,7 +244,17 @@ async fn leave(
         .or_else(|| form.ok().and_then(|Form(link)| link.token))
         .unwrap_or_default();
     match newsletter.unsubscribe(&token).await {
-        Ok(Unsubscribed::Done) => page(&shared, StatusCode::OK, Page::Left),
+        Ok(Unsubscribed::Done) => {
+            // A reader who leaves in this browser no longer reads gated
+            // content in it. Other devices keep their cookie until it runs
+            // out, as no request checks who holds one.
+            let mut response = page(&shared, StatusCode::OK, Page::Left);
+            let forget = newsletter.pass().map(ReaderPass::forget);
+            if let Some(Ok(forget)) = forget.map(HeaderValue::try_from) {
+                response.headers_mut().insert(header::SET_COOKIE, forget);
+            }
+            response
+        }
         Ok(_) => page(&shared, StatusCode::NOT_FOUND, Page::Unknown),
         Err(error) => failed(&shared, &error),
     }

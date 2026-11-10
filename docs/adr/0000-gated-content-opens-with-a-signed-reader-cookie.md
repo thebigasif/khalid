@@ -19,7 +19,7 @@ The `:::gated` block shows a note and a sign-up form and never its body (KH-GRO-
 
 ## Consequences
 
-- Unsubscribing does not take the cookie back; it runs out after 180 days. Checking the subscriber on every request would need a database read per gated page.
+- Unsubscribing empties the cookie in the browser that unsubscribes (`Max-Age=0`). Other devices keep theirs until it runs out after 180 days: checking the subscriber on every request would need a database read per gated page, and the cookie holds no one to check.
 - The table of contents and the feeds come from the public page, so a heading inside a gated part is not in either. The search index and the Content API never see the gated body.
 - Images inside a gated part get no generated sizes, because sizes are made from the public page.
 - A static build has no server, so gated content stays locked there, as the static lock card says.
