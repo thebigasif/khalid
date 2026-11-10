@@ -1,5 +1,6 @@
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
+import { realUpdateWords } from "./realUpdateWords";
 import { records } from "./records";
 import { LIVE, WAITS } from "./restartWords";
 import { serpdadWords } from "./serpdadWords";
@@ -341,6 +342,7 @@ export const en = {
     },
   },
   webhooks: webhookWords,
+  realUpdate: realUpdateWords,
   team: teamWords,
   site: {
     title: "Settings",
