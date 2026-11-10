@@ -1,5 +1,6 @@
-//! The subscriber routes of the Admin API (G39, plan 4.6): the list with
-//! its filters and pages, labels, and forgetting a reader. Every route
+//! The subscriber and newsletter routes of the Admin API (G39, plan 4.6):
+//! the list with its filters and pages, labels, forgetting a reader, the
+//! newsletters with their counts, and sending a post once. Every route
 //! needs `subscribers:write`.
 
 #![cfg(test)]
@@ -281,6 +282,7 @@ async fn a_key_without_the_scope_sees_no_reader() {
     let router = router(Some(three()));
     for (method, path) in [
         ("GET", "/subscribers/"),
+        ("GET", "/newsletters/"),
         ("DELETE", "/subscribers/1/"),
     ] {
         let (status, json) = send(&router, WRITER, (method, path), None).await;
@@ -334,11 +336,90 @@ async fn a_forgotten_reader_is_gone() {
 }
 
 #[tokio::test]
+async fn the_newsletters_show_their_readers_and_form() {
+    let router = router(Some(three()));
+    let (status, json) = send(&router, OWNER, ("GET", "/newsletters/"), None).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let main = &json["newsletters"][0];
+    assert_eq!(
+        (main["name"].as_str(), main["confirmed"].as_u64()),
+        (Some("main"), Some(2))
+    );
+    assert_eq!(main["pending"], 1);
+    assert!(main["form"].as_str().unwrap().starts_with("<form"));
+    assert_eq!(json["sending"], "ready");
+    assert_eq!(json["sends"], json!([]));
+}
+
+#[tokio::test]
+async fn a_post_goes_out_once() {
+    let router = router(Some(three()));
+    let body = json!({"post": "en.hello", "labels": ["paid"]});
+    let route = ("POST", "/newsletters/main/sends/");
+    let (status, json) = send(&router, OWNER, route, Some(&body)).await;
+    assert_eq!(status, StatusCode::ACCEPTED, "{json}");
+    assert_eq!(json, json!({"key": "post:en/hello"}));
+    let (_, json) = send(&router, OWNER, ("GET", "/newsletters/"), None).await;
+    let sent = json!({"key": "post:en/hello", "list": "main", "sent": 2, "failed": 0, "unsubscribed": 1, "started_at": "2026-11-02T08:00:00Z"});
+    assert_eq!(json["sends"], json!([sent]));
+    let (status, json) = send(&router, OWNER, route, Some(&body)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    assert!(json["title"].is_string());
+}
+
+#[tokio::test]
+async fn a_send_names_what_is_wrong() {
+    let router = router(Some(three()));
+    let cases = [
+        (
+            "/newsletters/weekly/sends/",
+            json!({"post": "en.hello"}),
+            StatusCode::NOT_FOUND,
+        ),
+        (
+            "/newsletters/main/sends/",
+            json!({"post": "en.draft"}),
+            StatusCode::UNPROCESSABLE_ENTITY,
+        ),
+        (
+            "/newsletters/main/sends/",
+            json!({"slug": "hello"}),
+            StatusCode::UNPROCESSABLE_ENTITY,
+        ),
+    ];
+    for (path, body, expected) in cases {
+        let (status, json) = send(&router, OWNER, ("POST", path), Some(&body)).await;
+        assert_eq!(status, expected, "{path} {body}: {json}");
+    }
+}
+
+#[tokio::test]
+async fn a_site_that_cannot_send_says_what_it_lacks() {
+    let desk = Arc::new(Desk {
+        readiness: Some(SendReadiness::NoPostalAddress),
+        ..Desk::default()
+    });
+    let router = router(Some(desk));
+    let (_, json) = send(&router, OWNER, ("GET", "/newsletters/"), None).await;
+    assert_eq!(json["sending"], "no_postal_address");
+    let body = json!({"post": "en.hello"});
+    let route = ("POST", "/newsletters/main/sends/");
+    let (status, json) = send(&router, OWNER, route, Some(&body)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    assert!(
+        json["detail"].as_str().unwrap().contains("postal address"),
+        "{json}"
+    );
+}
+
+#[tokio::test]
 async fn a_server_with_no_subscribers_lists_none() {
     let router = router(None);
     let (status, json) = send(&router, OWNER, ("GET", "/subscribers/"), None).await;
     assert_eq!(status, StatusCode::OK, "{json}");
     assert_eq!(json["subscribers"], json!([]));
+    let (_, json) = send(&router, OWNER, ("GET", "/newsletters/"), None).await;
+    assert_eq!(json["sending"], "no_mail");
     let (status, _) = send(&router, OWNER, ("DELETE", "/subscribers/1/"), None).await;
     assert_eq!(status, StatusCode::NOT_FOUND);
 }
