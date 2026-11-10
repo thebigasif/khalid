@@ -48,7 +48,7 @@ pub(crate) struct Every {
 pub(crate) fn every(args: &ServeArgs, config: &Config) -> Every {
     let watch = site_watch::every(args, config);
     #[cfg(feature = "test-util")]
-    if let Some(seconds) = args.alert_every {
+    if let Some(seconds) = args.test.alert_every {
         let checks = Duration::from_secs(seconds);
         return Every { checks, watch };
     }

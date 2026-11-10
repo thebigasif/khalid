@@ -64,6 +64,31 @@ fn a_long_video_description_is_cut_to_the_schema_limit() {
 }
 
 #[test]
+fn the_video_checks_refuse_what_google_refuses() {
+    let page = "https://www.example.com/blog/why-internal-links-matter/";
+    let mut post = post_with_media();
+    post.videos[0].source = VideoSource::Player(url(page));
+    let xml = Sitemap::from_pages(&demo_site(), &[post]).unwrap().to_xml();
+    assert_eq!(
+        check_urlset(&xml, google_extensions),
+        Err("video:player_loc is the page's own address".to_owned())
+    );
+    let xml = Sitemap::from_pages(&demo_site(), &[post_with_media()])
+        .unwrap()
+        .to_xml()
+        .replacen("<video:duration>312</video:duration>\n", "", 1)
+        .replacen(
+            "      <video:title>",
+            "      <video:duration>312</video:duration>\n      <video:title>",
+            1,
+        );
+    assert_eq!(
+        check_urlset(&xml, google_extensions),
+        Err("video:title is out of the schema's order".to_owned())
+    );
+}
+
+#[test]
 fn a_page_lists_at_most_a_thousand_images() {
     let mut post = internal_links_post();
     post.images = (0..1200)

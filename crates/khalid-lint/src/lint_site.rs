@@ -51,6 +51,15 @@ pub trait SiteView {
         &[]
     }
 
+    /// Other hosts that are this site, such as the main site's
+    /// `example.com` for a blog on `blog.example.com`, each with its
+    /// subdomains, from `internal_domains` in `site.toml`. The host of the
+    /// address and the `www.` and apex pair of its domain count without
+    /// being listed.
+    fn own_hosts(&self) -> &[String] {
+        &[]
+    }
+
     /// The site's collections from `routes.toml`, in the file's order.
     /// Empty when unknown, and the rules that need them skip.
     fn collections(&self) -> &[LintCollection] {
@@ -93,6 +102,8 @@ pub struct LintSite {
     pub host: Option<String>,
     /// The host names of the other sites in the same process.
     pub sibling_hosts: Vec<String>,
+    /// Other hosts that are this site, each with its subdomains.
+    pub own_hosts: Vec<String>,
     /// The site's collections.
     pub collections: Vec<LintCollection>,
     /// The facts the site keeps in its fact registry.
@@ -132,6 +143,10 @@ impl SiteView for LintSite {
 
     fn sibling_hosts(&self) -> &[String] {
         &self.sibling_hosts
+    }
+
+    fn own_hosts(&self) -> &[String] {
+        &self.own_hosts
     }
 
     fn collections(&self) -> &[LintCollection] {

@@ -18,16 +18,20 @@ const DATED: [&str; 3] = ["review-due", "stale-post", "stale-page"];
 
 /// Every block the showcase shows. Recipes are left out: recipe markup on a
 /// page that is not a recipe breaks the search engines' rules.
-const BLOCKS: [&str; 29] = [
+const BLOCKS: [&str; 33] = [
     "audio",
+    "book",
     "bookmark",
     "business",
     "button",
     "callout",
     "chart",
     "columns",
+    "course",
     "cta",
+    "dataset",
     "embed",
+    "event",
     "faq",
     "figure",
     "file",
@@ -60,14 +64,9 @@ const DEPTH: [(&str, usize); 4] = [
 ];
 
 /// The structured data types the showcase writes by hand in a post's
-/// `schema` field, one page each.
-const SCHEMA_TYPES: [&str; 5] = [
-    "ClaimReview",
-    "Course",
-    "Dataset",
-    "ItemList",
-    "PodcastEpisode",
-];
+/// `schema` field, one page each. Courses and datasets have their own
+/// blocks.
+const SCHEMA_TYPES: [&str; 3] = ["ClaimReview", "ItemList", "PodcastEpisode"];
 
 /// The English and German address of the same page differ only in this
 /// part.

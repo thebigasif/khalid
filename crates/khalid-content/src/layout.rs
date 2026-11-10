@@ -1,6 +1,15 @@
 //! Blocks that lay out a post's own words: pros and cons and columns side
 //! by side (templates spec 4.4). They carry no schema.
 
+/// One picture in a gallery, written `![alt](src)` on its own line.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GalleryImage {
+    /// The image's address.
+    pub src: String,
+    /// The text that describes the image.
+    pub alt: String,
+}
+
 /// One card of a `::::columns` block, written `:::column{title="..."}`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Column {

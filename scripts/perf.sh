@@ -18,11 +18,20 @@
 # links. The admin's initial JavaScript is each script admin/dist's
 # index.html loads at once, gzipped at level 9 as
 # admin/scripts/size-budget.mjs counts; it is measured only when
-# admin/dist holds a build, because this script does not run npm.
+# admin/dist holds a build, because this script does not run npm. CI
+# hands over the build its Admin job made and sets PERF_REQUIRE_ADMIN=1,
+# so there a missing admin fails instead of going unmeasured.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
+
+if [ "${PERF_REQUIRE_ADMIN:-}" = 1 ] && [ ! -f admin/dist/index.html ]; then
+  echo "The admin's JavaScript cannot be measured: admin/dist holds no built admin."
+  echo "Without it, the admin's size budget is not checked."
+  echo "Build it with \`npm ci && npm run build\` in admin/, or hand over CI's build, then run this again."
+  exit 1
+fi
 
 # CI hands over the release binaries it already built, one at a time, as
 # KHALID_BIN and KHALID_PERF_BIN. Without them they are built here, one at a

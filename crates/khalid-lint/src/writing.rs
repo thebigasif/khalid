@@ -195,7 +195,7 @@ pub(crate) const VAGUE_OPENERS: &[&str] = &[
 ///
 /// Hedge words, vague openers and trailing which-chains are flagged in
 /// the paragraphs that answer a question-style heading, where an answer
-/// engine lifts the text.
+/// engine lifts the text. Each kind found brings its own plain fix.
 #[derive(Debug)]
 pub(crate) struct PlainAnswer {
     pub(crate) hedges: Vec<&'static str>,
@@ -211,22 +211,7 @@ impl Rule for PlainAnswer {
         let mut hits = Vec::new();
         for heading in question_headings(post) {
             for line in answer_paragraphs(post, &heading.text) {
-                let lower = line.to_lowercase();
-                let mut found: Vec<&str> = self
-                    .hedges
-                    .iter()
-                    .copied()
-                    .filter(|word| lower.contains(word))
-                    .collect();
-                found.extend(
-                    self.openers
-                        .iter()
-                        .copied()
-                        .filter(|opener| lower.starts_with(opener)),
-                );
-                if lower.ends_with("which") {
-                    found.push("which");
-                }
+                let (found, fixes) = self.unclear(line);
                 if !found.is_empty() {
                     hits.push(
                         Hit::about(format!(
@@ -234,7 +219,7 @@ impl Rule for PlainAnswer {
                             heading.text,
                             found.join(", ")
                         ))
-                        .suggesting(vec!["say the claim outright and drop the hedge".to_owned()]),
+                        .suggesting(fixes),
                     );
                 }
             }
@@ -245,6 +230,63 @@ impl Rule for PlainAnswer {
     fn default_severity(&self) -> Severity {
         Severity::Warn
     }
+}
+
+impl PlainAnswer {
+    /// The hedge words, vague openers and which-chains in `paragraph`, in
+    /// that order, and one plain fix for each kind found. A word counts
+    /// only whole, so "unusually" holds no "usually"; an opener counts at
+    /// the start of any sentence; two `, which` in one sentence are a
+    /// chain. The audit's `hedged-answer` check reads a paragraph the same
+    /// way.
+    fn unclear(&self, paragraph: &str) -> (Vec<&'static str>, Vec<String>) {
+        let mut found = Vec::new();
+        let mut fixes = Vec::new();
+        let all = plain_words(paragraph);
+        let hedges = self.hedges.iter().filter(|hedge| has_phrase(&all, hedge));
+        found.extend(hedges);
+        if !found.is_empty() {
+            fixes.push("say the claim outright and drop the hedge".to_owned());
+        }
+        let sentences: Vec<&str> = paragraph.split(['.', '!', '?']).collect();
+        let words: Vec<String> = sentences
+            .iter()
+            .map(|sentence| plain_words(sentence))
+            .collect();
+        for opener in &self.openers {
+            let start = format!(" {opener} ");
+            if words.iter().any(|sentence| sentence.starts_with(&start)) {
+                found.push(*opener);
+                fixes.push(format!(
+                    "start the sentence with its point, not with \"{opener}\""
+                ));
+            }
+        }
+        let chained = |sentence: &&str| sentence.to_lowercase().matches(", which").count() > 1;
+        if sentences.iter().any(chained) {
+            found.push("which ... which");
+            fixes.push(
+                "end the sentence before the second \", which\" and start a new one".to_owned(),
+            );
+        }
+        (found, fixes)
+    }
+}
+
+/// `text` in lowercase as its words with one space around each, so a
+/// phrase is found only whole.
+fn plain_words(text: &str) -> String {
+    let words: Vec<String> = text
+        .split(|c: char| !(c.is_alphanumeric() || c == '\''))
+        .filter(|word| !word.is_empty())
+        .map(str::to_lowercase)
+        .collect();
+    format!(" {} ", words.join(" "))
+}
+
+/// Whether `words`, made by [`plain_words`], holds `phrase` whole.
+fn has_phrase(words: &str, phrase: &str) -> bool {
+    words.contains(&format!(" {phrase} "))
 }
 
 /// The paragraph lines that answer the heading `text`, until the next
@@ -325,5 +367,69 @@ mod tests {
             assert_eq!(hits.len(), 1, "{hits:?}");
             assert!(hits[0].contains(&format!("of {words} words")), "{hits:?}");
         }
+    }
+
+    /// What the plain-answer rule says about `answer` under the question,
+    /// as its subject and its fixes.
+    fn plain_hits(answer: &str) -> Vec<(String, Vec<String>)> {
+        let rule = PlainAnswer {
+            hedges: HEDGE_WORDS.to_vec(),
+            openers: VAGUE_OPENERS.to_vec(),
+        };
+        rule.check(&answered(&[answer.to_owned()]), &LintSite::default())
+            .iter()
+            .map(|hit| {
+                let subject = hit.subject().unwrap_or_default().to_owned();
+                (subject, hit.suggestions().to_vec())
+            })
+            .collect()
+    }
+
+    #[test]
+    fn a_hedge_counts_only_as_a_whole_word() {
+        assert_eq!(plain_hits("Links are unusually quiet helpers."), []);
+        let hits = plain_hits("Links are usually helpers.");
+        assert_eq!(hits.len(), 1, "{hits:?}");
+        assert!(hits[0].0.ends_with("uses usually"), "{hits:?}");
+    }
+
+    #[test]
+    fn a_vague_opener_fires_at_the_start_of_any_sentence() {
+        let hits = plain_hits("Links help readers. There are three kinds of link.");
+        assert_eq!(hits.len(), 1, "{hits:?}");
+        assert!(hits[0].0.ends_with("uses there are"), "{hits:?}");
+        assert_eq!(
+            hits[0].1,
+            ["start the sentence with its point, not with \"there are\""]
+        );
+        assert_eq!(plain_hits("Readers say there are three kinds."), []);
+    }
+
+    #[test]
+    fn two_trailing_whiches_in_one_sentence_are_a_chain() {
+        let hits = plain_hits("Add links, which help readers, which help search engines.");
+        assert_eq!(hits.len(), 1, "{hits:?}");
+        assert!(hits[0].0.ends_with("uses which ... which"), "{hits:?}");
+        assert_eq!(
+            hits[0].1,
+            ["end the sentence before the second \", which\" and start a new one"]
+        );
+        assert_eq!(
+            plain_hits("Add links, which help readers. They help engines too."),
+            []
+        );
+    }
+
+    #[test]
+    fn each_pattern_found_brings_its_own_fix() {
+        let hits = plain_hits("There is perhaps a rule, which helps, which matters.");
+        assert_eq!(hits.len(), 1, "{hits:?}");
+        assert!(
+            hits[0]
+                .0
+                .ends_with("uses perhaps, there is, which ... which"),
+            "{hits:?}"
+        );
+        assert_eq!(hits[0].1.len(), 3, "{hits:?}");
     }
 }

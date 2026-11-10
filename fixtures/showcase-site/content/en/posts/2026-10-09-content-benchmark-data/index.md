@@ -16,7 +16,6 @@ tags: [research, measurement]
 image:
   src: cover.svg
   alt: A spreadsheet of content benchmark data with an orange header row, beside a download arrow
-schema: '{"@context":"https://schema.org","@type":"Dataset","name":"Larkspur content benchmark 2026, sample rows","description":"Illustrative sample rows in the shape of the fictional Larkspur content benchmark of 140 small business blogs, read in August 2026. One row per blog: sector, posts in twelve months, author names, blank meta descriptions, updates, shared calendar and sourced numbers. Made for the Khalid demo; the values are not real measurements.","url":"https://www.example.com/blog/content-benchmark-data/","keywords":["content benchmark","blog audit","content marketing","small business blogs","sample data"],"creator":{"@type":"Organization","name":"Larkspur Studio","url":"https://www.example.com/blog/","logo":"https://www.example.com/blog/about/logo.svg"},"license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":true,"temporalCoverage":"2026-08","variableMeasured":["blog_id","sector","posts_published_12m","has_author_names","blank_meta_share","updated_in_12m","shared_calendar","sourced_numbers"],"distribution":{"@type":"DataDownload","encodingFormat":"text/csv","contentUrl":"https://www.example.com/blog/content-benchmark-data/benchmark-2026-sample.csv"}}'
 ---
 
 This page shares the benchmark data behind our 2026 content benchmark, in the shape we used to count it. You get a CSV file with one row per blog, a data dictionary that explains each column, our method, and the terms for reuse. Open it in any spreadsheet and run your own counts.
@@ -29,7 +28,9 @@ Larkspur Studio and this benchmark are fictional. The rows are illustrative samp
 
 ## Download the benchmark data
 
-::file{src="benchmark-2026-sample.csv" title="Content benchmark 2026, sample rows (CSV)"}
+:::dataset{name="Larkspur content benchmark 2026, sample rows" keywords="content benchmark, blog audit, content marketing, small business blogs, sample data" license="https://creativecommons.org/licenses/by/4.0/" download="benchmark-2026-sample.csv"}
+Illustrative sample rows in the shape of the fictional Larkspur content benchmark of 140 small business blogs, read in August 2026. One row per blog. Made for the Khalid demo: the values are not real measurements.
+:::
 
 The file holds twenty sample rows, not every blog we read in 2026. Each row is one blog, named only by a short code. We never publish the names of the blogs we read. Our [news post on opening the data](/blog/news/benchmark-data-open/) explains why we share it. The full write-up of the findings lives on its own page, [the 2026 content benchmark](/blog/content-benchmark/), with five findings and what to fix first.
 
@@ -106,7 +107,7 @@ Larkspur Studio (2026). Content benchmark 2026, sample rows. Larkspur Ledger. ht
 
 ## How this page is marked up
 
-This page carries [[glossary:structured-data|structured data for a dataset]]. It names the file, its licence, the month it covers and the columns it holds, so dataset search tools can list it. Khalid writes it from the post's settings.
+This page carries [[glossary:structured-data|structured data for a dataset]]. It names the file, its licence and the words people search for it by, so dataset search tools can list it. Khalid writes it from the dataset card under "Download the benchmark data".
 
 If the numbers prompt you to act, our guides on [refreshing posts that slipped](/blog/content-refresh/) and [planning a calendar your team will keep](/blog/content-calendar/) are good next steps. The wider [content strategy guide](/blog/content-strategy-guide/) puts both in context.
 

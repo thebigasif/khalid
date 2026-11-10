@@ -19,7 +19,10 @@ const DEMO: SiteSettings = {
   restart_needed: false,
 };
 
-/** A blog with the demo settings that records each change and then needs a restart. */
+/**
+ * A blog with the demo settings that records each change. As `khalid serve`
+ * does, it needs a restart only once the languages change, not the name.
+ */
 function blog() {
   const changes: SiteChange[] = [];
   let site = DEMO;
@@ -28,7 +31,8 @@ function blog() {
     "PUT /settings/": async (request) => {
       const body: { settings: SiteChange } = await request.json();
       changes.push(body.settings);
-      site = { ...DEMO, name: body.settings.name ?? DEMO.name, restart_needed: true };
+      const restart_needed = site.restart_needed || body.settings.languages !== undefined;
+      site = { ...DEMO, name: body.settings.name ?? DEMO.name, restart_needed };
       return json(200, { settings: site });
     },
   });
@@ -52,7 +56,7 @@ describe("the Settings screen", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
-  it("saves only the changed name, and says a restart applies it", async () => {
+  it("saves only the changed name, and says the blog uses it with no restart", async () => {
     signedIn();
     const changes = blog();
     renderAt("/settings");
@@ -60,9 +64,9 @@ describe("the Settings screen", () => {
     await userEvent.clear(name);
     await userEvent.type(name, "Field Notes");
     await userEvent.click(screen.getByRole("button", { name: en.site.save }));
-    expect(await screen.findByText(en.site.saved)).toBeVisible();
+    expect(await screen.findByText(en.site.live)).toBeVisible();
     expect(changes).toEqual([{ updated_at: DEMO.updated_at, name: "Field Notes" }]);
-    expect(await screen.findByText(en.site.restart)).toBeVisible();
+    expect(screen.queryByText(en.site.restart)).toBeNull();
   });
 
   it("adds, orders and saves the home page sections as one list", async () => {
@@ -90,7 +94,7 @@ describe("the Settings screen", () => {
     );
     expect(await axeViolations()).toEqual([]);
     await userEvent.click(screen.getByRole("button", { name: HOME.save }));
-    expect(await screen.findByText(en.site.saved)).toBeVisible();
+    expect(await screen.findByText(en.site.live)).toBeVisible();
     expect(changes).toEqual([
       {
         updated_at: DEMO.updated_at,
@@ -99,7 +103,7 @@ describe("the Settings screen", () => {
     ]);
   });
 
-  it("sends the languages as a list, and nothing when nothing changed", async () => {
+  it("sends the languages as a list, says they wait for a restart, and nothing when nothing changed", async () => {
     signedIn();
     const changes = blog();
     renderAt("/settings");
@@ -109,5 +113,6 @@ describe("the Settings screen", () => {
     await userEvent.click(screen.getByRole("button", { name: en.site.save }));
     expect(await screen.findByText(en.site.saved)).toBeVisible();
     expect(changes).toEqual([{ updated_at: DEMO.updated_at, languages: ["en", "de", "fr"] }]);
+    expect(await screen.findByText(en.site.restart)).toBeVisible();
   });
 });

@@ -20,7 +20,7 @@ use khalid_api::redirect_desk::RedirectDesk;
 use khalid_api::resources::{AdminAuthor, AdminPage, AdminSnippet};
 use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
-use khalid_core::{Config, SystemClock};
+use khalid_core::{Config, Environment, SystemClock};
 use khalid_db::{
     AnalyticsTable, AuditTable, ConsentProofTable, Database, KeyTable, SerpdadTable, SiteId,
     WebhookTable,
@@ -55,7 +55,11 @@ pub(crate) type Desks = (
 pub(crate) type ApiParts<'a> = (
     (LiveContent, Arc<PublishDoor>, SitePosts),
     Desks,
-    (&'a Database, SiteId, (&'a Path, &'a Config)),
+    (
+        &'a Database,
+        SiteId,
+        (&'a Path, &'a Config, &'a Environment),
+    ),
     (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 );
 
@@ -65,11 +69,12 @@ pub(crate) type ApiParts<'a> = (
 /// `id`, the post checks, schema templates, pages, snippets, authors, tags,
 /// categories and settings of the site in `site`, the super-admin routes
 /// over `panel`, and comments on drafts emailed through `mailer` when the
-/// site sends mail.
+/// site sends mail. The settings and schema templates read `site.toml` with
+/// `env`, the environment the server started with.
 pub(crate) fn api_router(
     (content, door, posts): (LiveContent, Arc<PublishDoor>, SitePosts),
     (comments, media, redirects, follow_ups, ai): Desks,
-    (database, id, (site, config)): (&Database, SiteId, (&Path, &Config)),
+    (database, id, (site, config, env)): (&Database, SiteId, (&Path, &Config, &Environment)),
     (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 ) -> Router {
     let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
@@ -86,19 +91,20 @@ pub(crate) fn api_router(
             id,
             SystemClock,
         ))),
-        trash: Some(Arc::new(posts)),
+        trash: Some(Arc::new(posts.clone())),
         audit: Some(AuditDesk::new(
             Arc::new(AuditTable::new(database.clone(), id)),
             SystemClock,
         )),
-        checks: Some(Arc::new(SitePosts::new(site, config.clone(), SystemClock))),
-        schema_templates: Some(Arc::new(SiteSchemaTemplates::new(site, config))),
+        // The same posts the door publishes, judged with the live settings.
+        checks: Some(Arc::new(posts)),
+        schema_templates: Some(Arc::new(SiteSchemaTemplates::new(site, config, env))),
         pages: Some(Arc::new(SiteEntries::<AdminPage>::new(site, config))),
         snippets: Some(Arc::new(SiteEntries::<AdminSnippet>::new(site, config))),
         authors: Some(Arc::new(SiteEntries::<AdminAuthor>::new(site, config))),
         tags: Some(Arc::new(SiteTags::new(site, config))),
         categories: Some(Arc::new(SiteCategories::new(site, config))),
-        settings: Some(Arc::new(SiteSettings::new(site, config))),
+        settings: Some(Arc::new(SiteSettings::new(site, config, env))),
         templates: Some(Arc::from(look::admin_templates())),
         analytics: AnalyticsDesk::new(
             Arc::new(AnalyticsTable::new(database.clone(), id)),
@@ -150,12 +156,12 @@ pub(crate) fn with_apis(
     (apis, desks, at, helpers): ApiParts<'_>,
     hook: Router,
 ) -> Router {
-    let (database, id, (site, config)) = at;
+    let (database, id, (site, config, env)) = at;
     let (database, site, config) = (database.clone(), site.to_path_buf(), config.clone());
-    let rest = app.clone();
+    let (rest, env) = (app.clone(), env.clone());
     let blog = config.clone();
     let app = late_api::router_under(app, api_roots(&blog), move || {
-        let at = (&database, id, (site.as_path(), &config));
+        let at = (&database, id, (site.as_path(), &config, &env));
         api_router(apis, desks, at, helpers)
             .merge(hook)
             .fallback_service(rest)

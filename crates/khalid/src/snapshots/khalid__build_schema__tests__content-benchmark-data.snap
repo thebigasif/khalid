@@ -1,0 +1,32 @@
+---
+source: crates/khalid/src/build_schema_tests.rs
+expression: "SchemaGraph::new(cards).to_json()"
+---
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Dataset",
+      "@id": "https://www.example.com/blog/content-benchmark-data/#dataset-1",
+      "name": "Larkspur content benchmark 2026, sample rows",
+      "description": "Illustrative sample rows in the shape of the fictional Larkspur content benchmark of 140 small business blogs, read in August 2026. One row per blog. Made for the Khalid demo: the values are not real measurements.",
+      "url": "https://www.example.com/blog/content-benchmark-data/",
+      "keywords": [
+        "content benchmark",
+        "blog audit",
+        "content marketing",
+        "small business blogs",
+        "sample data"
+      ],
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@type": "Person",
+        "name": "Maren Okafor"
+      },
+      "distribution": {
+        "@type": "DataDownload",
+        "contentUrl": "https://www.example.com/blog/content-benchmark-data/benchmark-2026-sample.csv"
+      }
+    }
+  ]
+}

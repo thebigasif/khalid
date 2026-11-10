@@ -1,15 +1,17 @@
 // The words of the SEO settings screen, where every `[seo]` setting of
 // site.toml is changed. They sit in their own file so en.ts stays short.
+import { LIVE, WAITS } from "./restartWords";
+
 export const seoWords = {
   title: "SEO settings",
-  lede: "How your blog shows up in search engines, on social networks and to AI tools. Each part saves to site.toml on its own, and the blog uses it after Khalid restarts.",
+  lede: "How your blog shows up in search engines, on social networks and to AI tools. Each part saves to site.toml on its own, and the blog uses it within a few seconds.",
   loading: "Reading the SEO settings",
   sections: "Parts of the SEO settings",
   save: "Save this part",
-  saved: "Saved to site.toml. The blog uses it after Khalid restarts.",
+  saved: "Saved to site.toml.",
+  live: LIVE,
   unchanged: "Nothing to save: this part is as site.toml has it.",
-  restart:
-    "Some saved settings wait for a restart. Until Khalid restarts, the blog keeps the ones it started with.",
+  restart: WAITS,
   tabs: {
     appearance: "Search appearance",
     index: "Show in search",
