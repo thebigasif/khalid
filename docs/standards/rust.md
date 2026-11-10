@@ -50,7 +50,7 @@ Choose from this list first. Adding another needs the sentence BL-DEP-1 asks for
 | Serialisation | `serde`, `serde_json`, `toml` |
 | Errors | `thiserror` in libraries. `anyhow` only in `crates/khalid` and only to wrap at the very top |
 | CLI | `clap` with derive |
-| Logging | `tracing`, `tracing-subscriber` |
+| Logging | `tracing`; `khalid serve` writes the lines itself (`server_log.rs`), without `tracing-subscriber` |
 | HTTP client | `reqwest` with `rustls-tls`, wrapped once in `khalid-outbound` |
 | Images | `image`, `ravif`, `webp`, `fast_image_resize` |
 | Syntax colours | `syntect` |
