@@ -248,6 +248,12 @@ checks! {
     MixedContent => "mixed-content", Https, Error, "Mixed content",
         "Browsers block or warn about files loaded without HTTPS, so the page may break.",
         "Load the file over https, or keep a copy with the site.";
+    /// A page has a part that only works with scripts on: a form with no
+    /// action, a link to `#` or `javascript:`, or a notice asking readers
+    /// to turn on JavaScript (`docs/plan.md` section 6, "Needs JavaScript").
+    NeedsJavaScript => "needs-javascript", Resources, Warning, "Page needs JavaScript to work",
+        "Readers with scripts off, and crawlers that run none, cannot use that part of the page.",
+        "In the template override or raw HTML, give each form an action and each link a real address, and remove any notice asking readers to turn on JavaScript.";
     /// A page lacks one of the Open Graph tags a shared link needs.
     OpenGraphIncomplete => "open-graph-incomplete", Social, Notice, "Open Graph tags incomplete",
         "A shared link without these tags shows a plain card that few people click.",
