@@ -8,6 +8,14 @@ import { settleRouters } from "./routers";
 // page. Five seconds still fails fast when the text truly never comes.
 configure({ asyncUtilTimeout: 5000 });
 
+// jsdom has no layout, so its Range lacks the two measuring methods. The
+// editor (ProseMirror) calls them to scroll the cursor into view, and a test
+// that leaves an editor open long enough would fail with
+// "target.getClientRects is not a function". An empty box is enough here.
+const emptyBox = { x: 0, y: 0, width: 0, height: 0, top: 0, right: 0, bottom: 0, left: 0 };
+Range.prototype.getClientRects ??= () => [] as unknown as DOMRectList;
+Range.prototype.getBoundingClientRect ??= () => ({ ...emptyBox, toJSON: () => emptyBox });
+
 afterEach(async () => {
   // Let a page the test opened finish loading while the router is still
   // mounted, so nothing of it runs after the test file's jsdom is gone.

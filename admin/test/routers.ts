@@ -22,6 +22,12 @@ export function track(router: Loading) {
  */
 export async function settleRouters() {
   const routers = made.splice(0);
+  // waitFor yields to the event loop even when it has nothing to wait for.
+  // In a test with no router, that pause let an editor's queued work run
+  // before the clean-up, so skip it.
+  if (routers.length === 0) {
+    return;
+  }
   await waitFor(() => {
     for (const router of routers) {
       if (router.state.status !== "idle") {

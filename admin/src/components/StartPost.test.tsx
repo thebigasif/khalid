@@ -77,7 +77,9 @@ describe("starting a post", () => {
         const account = { id: 1, email: "lena@example.com", name: "Lena", role: "writer" };
         return json(200, { account: { ...account, author: "de.lena-vogt" }, csrf: "csrf-test" });
       }
-      if (request.method === "POST") {
+      // Only the new post's own request. The editor, once open, also checks
+      // in on the post's presence with a POST of its own.
+      if (request.method === "POST" && !new URL(request.url).pathname.endsWith("/presence/")) {
         bodies.push(await request.json());
       }
       return json(request.method === "POST" ? 201 : 200, { posts: [DRAFT] });
