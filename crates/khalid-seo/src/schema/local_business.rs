@@ -79,6 +79,11 @@ pub struct LocalBusiness {
     pub map: Option<AbsoluteUrl>,
     /// Its point on the map, for `geo` and `locations.kml`.
     pub geo: Option<GeoPoint>,
+    /// Its email address.
+    pub email: Option<String>,
+    /// Its own website. When not set, a site's location points at the
+    /// site's home and a business card at its page.
+    pub url: Option<AbsoluteUrl>,
 }
 
 impl LocalBusiness {
@@ -93,6 +98,8 @@ impl LocalBusiness {
             price_range: None,
             map: None,
             geo: None,
+            email: None,
+            url: None,
         }
     }
 }
@@ -143,38 +150,75 @@ fn hours_node(hours: &OpeningHours) -> SchemaValue {
 
 /// One node per location, at `<home>#location-<n>`, each part of the publisher.
 pub(crate) fn business_nodes(site: &SeoSite) -> Result<Vec<SchemaNode>, SeoError> {
+    (1..)
+        .zip(&site.locations)
+        .map(|(number, business)| location_node(site, business, number))
+        .collect()
+}
+
+/// The node of the site's location numbered `number`, at
+/// `<home>#location-<n>`: the same id on every page that shows it, so
+/// engines see one place.
+pub(crate) fn location_node(
+    site: &SeoSite,
+    business: &LocalBusiness,
+    number: usize,
+) -> Result<SchemaNode, SeoError> {
     let home = site_home(site)?;
-    let mut nodes = Vec::with_capacity(site.locations.len());
-    for (number, business) in (1..).zip(&site.locations) {
-        let mut node = SchemaNode::new(&business.business_type)
-            .with_id(node_id(&home, &format!("location-{number}"))?)
-            .with("name", SchemaValue::text(&business.name))
-            .with("url", SchemaValue::Url(home.clone()))
-            .with("address", address_node(&business.address))
-            .with(
-                "parentOrganization",
-                SchemaValue::Reference(publisher_id(site)?),
-            );
-        if let Some(telephone) = &business.telephone {
-            node.set("telephone", SchemaValue::text(telephone));
-        }
-        if !business.opening_hours.is_empty() {
-            let hours = business.opening_hours.iter().map(hours_node).collect();
-            node.set("openingHoursSpecification", SchemaValue::List(hours));
-        }
-        if let Some(price) = &business.price_range {
-            node.set("priceRange", SchemaValue::text(price));
-        }
-        if let Some(map) = &business.map {
-            node.set("hasMap", SchemaValue::Url(map.clone()));
-        }
-        if let Some(geo) = business.geo {
-            let point = SchemaNode::new("GeoCoordinates")
-                .with("latitude", SchemaValue::Number(geo.latitude()))
-                .with("longitude", SchemaValue::Number(geo.longitude()));
-            node.set("geo", SchemaValue::Node(Box::new(point)));
-        }
-        nodes.push(node);
+    let url = business.url.clone().unwrap_or_else(|| home.clone());
+    let node = SchemaNode::new(&business.business_type)
+        .with_id(node_id(&home, &format!("location-{number}"))?)
+        .with("name", SchemaValue::text(&business.name))
+        .with("url", SchemaValue::Url(url))
+        .with("address", address_node(&business.address))
+        .with(
+            "parentOrganization",
+            SchemaValue::Reference(publisher_id(site)?),
+        );
+    Ok(with_details(node, business))
+}
+
+/// The node of a business card, block `number` on the page at `page`, at
+/// `<page>#business-<n>`. A card may name any business, so it is not made
+/// part of the site's publisher.
+pub(crate) fn business_card_node(
+    business: &LocalBusiness,
+    page: &AbsoluteUrl,
+    number: usize,
+) -> Result<SchemaNode, SeoError> {
+    let url = business.url.clone().unwrap_or_else(|| page.clone());
+    let node = SchemaNode::new(&business.business_type)
+        .with_id(node_id(page, &format!("business-{number}"))?)
+        .with("name", SchemaValue::text(&business.name))
+        .with("url", SchemaValue::Url(url))
+        .with("address", address_node(&business.address));
+    Ok(with_details(node, business))
+}
+
+/// `node` with the business's phone, email, hours, prices, map and point,
+/// each where it is set.
+fn with_details(mut node: SchemaNode, business: &LocalBusiness) -> SchemaNode {
+    if let Some(telephone) = &business.telephone {
+        node.set("telephone", SchemaValue::text(telephone));
     }
-    Ok(nodes)
+    if let Some(email) = &business.email {
+        node.set("email", SchemaValue::text(email));
+    }
+    if !business.opening_hours.is_empty() {
+        let hours = business.opening_hours.iter().map(hours_node).collect();
+        node.set("openingHoursSpecification", SchemaValue::List(hours));
+    }
+    if let Some(price) = &business.price_range {
+        node.set("priceRange", SchemaValue::text(price));
+    }
+    if let Some(map) = &business.map {
+        node.set("hasMap", SchemaValue::Url(map.clone()));
+    }
+    if let Some(geo) = business.geo {
+        let point = SchemaNode::new("GeoCoordinates")
+            .with("latitude", SchemaValue::Number(geo.latitude()))
+            .with("longitude", SchemaValue::Number(geo.longitude()));
+        node.set("geo", SchemaValue::Node(Box::new(point)));
+    }
+    node
 }

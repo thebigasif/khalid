@@ -53,7 +53,7 @@ events! {
     PostPublishedEdited => "post.published.edited",
     /// A live post was taken down.
     PostUnpublished => "post.unpublished",
-    /// A post was given a future publish time.
+    /// A post was given a future publish time, a new one, or none.
     PostScheduled => "post.scheduled",
     /// A post was deleted.
     PostDeleted => "post.deleted",
@@ -63,7 +63,7 @@ events! {
     PagePublishedEdited => "page.published.edited",
     /// A live page was taken down.
     PageUnpublished => "page.unpublished",
-    /// A page was given a future publish time.
+    /// A page was given a future publish time, a new one, or none.
     PageScheduled => "page.scheduled",
     /// A page was deleted.
     PageDeleted => "page.deleted",
@@ -73,7 +73,7 @@ events! {
     GlossaryTermPublishedEdited => "glossary-term.published.edited",
     /// A live glossary term was taken down.
     GlossaryTermUnpublished => "glossary-term.unpublished",
-    /// A glossary term was given a future publish time.
+    /// A glossary term was given a future publish time, a new one, or none.
     GlossaryTermScheduled => "glossary-term.scheduled",
     /// A glossary term was deleted.
     GlossaryTermDeleted => "glossary-term.deleted",
@@ -83,7 +83,7 @@ events! {
     CaseStudyPublishedEdited => "case-study.published.edited",
     /// A live case study was taken down.
     CaseStudyUnpublished => "case-study.unpublished",
-    /// A case study was given a future publish time.
+    /// A case study was given a future publish time, a new one, or none.
     CaseStudyScheduled => "case-study.scheduled",
     /// A case study was deleted.
     CaseStudyDeleted => "case-study.deleted",
@@ -93,7 +93,7 @@ events! {
     ChangelogEntryPublishedEdited => "changelog-entry.published.edited",
     /// A live changelog entry was taken down.
     ChangelogEntryUnpublished => "changelog-entry.unpublished",
-    /// A changelog entry was given a future publish time.
+    /// A changelog entry was given a future publish time, a new one, or none.
     ChangelogEntryScheduled => "changelog-entry.scheduled",
     /// A changelog entry was deleted.
     ChangelogEntryDeleted => "changelog-entry.deleted",

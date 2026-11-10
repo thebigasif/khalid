@@ -7,8 +7,10 @@ mod common;
 mod sitemap_index_xsd;
 mod sitemap_xsd;
 
-use common::{demo_site, internal_links_post, internal_links_post_de, locale, path};
-use khalid_seo::{PageKind, SeoPage, SitemapSet, UrlPath, link_translations};
+use std::time::Duration;
+
+use common::{at, demo_site, internal_links_post, internal_links_post_de, locale, path, url};
+use khalid_seo::{PageKind, SeoPage, SitemapSet, UrlPath, Video, VideoSource, link_translations};
 use sitemap_index_xsd::check_sitemapindex;
 use sitemap_xsd::{check_urlset, google_extensions};
 
@@ -97,6 +99,55 @@ fn a_file_is_split_at_fifty_thousand_addresses() {
     );
     let first = set.files()[0].sitemap.to_xml();
     assert_eq!(check_urlset(&first, google_extensions), Ok(50_000));
+}
+
+fn post_with_video() -> SeoPage {
+    let mut post = internal_links_post();
+    let mut video = Video::new(
+        "Internal links in five minutes",
+        "A short walk through adding internal links to an older post.",
+        url("https://i.ytimg.com/vi/aqz-KE-bpKQ/hqdefault.jpg"),
+        VideoSource::Player(url("https://www.youtube-nocookie.com/embed/aqz-KE-bpKQ")),
+    );
+    video.duration = Some(Duration::from_secs(312));
+    video.uploaded = Some(at(2026, 9, 12, 10));
+    post.videos = vec![video];
+    post
+}
+
+#[test]
+fn videos_get_their_own_file_listed_in_the_index() {
+    let pages = [post_with_video(), internal_links_post_de()];
+    let set = SitemapSet::from_pages(&demo_site(), &pages).unwrap();
+    let paths: Vec<String> = set.files().iter().map(|f| f.path.to_string()).collect();
+    assert_eq!(
+        paths,
+        [
+            "/sitemaps/posts-en-1.xml",
+            "/sitemaps/posts-de-1.xml",
+            "/sitemaps/videos-en-1.xml",
+        ]
+    );
+    let index = set.index().to_xml();
+    assert!(
+        index.contains("<loc>https://www.example.com/blog/sitemaps/videos-en-1.xml</loc>"),
+        "{index}"
+    );
+    let posts = set.files()[0].sitemap.to_xml();
+    assert!(!posts.contains("<video:video>"), "{posts}");
+    let videos = set.files()[2].sitemap.to_xml();
+    assert_eq!(check_urlset(&videos, google_extensions), Ok(1));
+    insta::assert_snapshot!(videos);
+}
+
+#[test]
+fn a_site_without_videos_writes_no_video_file() {
+    let set = demo_set();
+    assert!(
+        set.files()
+            .iter()
+            .all(|file| !file.path.as_str().contains("videos")),
+    );
 }
 
 #[test]

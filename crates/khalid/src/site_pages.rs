@@ -49,7 +49,7 @@ struct Site {
     folder: PathBuf,
     /// What the pages are made with now. Each render takes one copy, so a
     /// reload never mixes two sets of settings in one render.
-    settings: RwLock<Arc<Settings>>,
+    settings: Arc<RwLock<Arc<Settings>>>,
     /// How to read the settings again, set only by `khalid serve`.
     reload: OnceLock<reload::Reload>,
     feed: Option<ContentFeed>,
@@ -177,7 +177,7 @@ impl SitePages {
         };
         Ok(Self(Arc::new(Site {
             folder: folder.to_path_buf(),
-            settings: RwLock::new(Arc::new(settings)),
+            settings: Arc::new(RwLock::new(Arc::new(settings))),
             reload: OnceLock::new(),
             feed,
             outline: Mutex::default(),
@@ -596,4 +596,4 @@ mod search;
 mod saved;
 
 #[path = "site_reload.rs"]
-mod reload;
+pub(crate) mod reload;

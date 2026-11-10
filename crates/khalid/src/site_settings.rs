@@ -1,8 +1,9 @@
 //! The Admin API's core settings on a running site: `site.toml`, edited in
 //! place so its comments and tables stay as written, checked as `khalid
 //! serve` checks it at start before anything is written, and written
-//! atomically (RULES.md BL-RUN-9). The running server keeps the settings
-//! it started with, so a saved change applies after a restart.
+//! atomically (RULES.md BL-RUN-9). `khalid serve` puts most saved settings
+//! in use at once (see `site_reload.rs`); the ones it reads only at start
+//! (see [`settings_events::start_only`]) wait for a restart.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -13,13 +14,12 @@ use khalid_api::content_store::BoxFuture;
 use khalid_api::entry_store::EntryStoreError;
 use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
 use khalid_api::settings_store::{SettingsError, SettingsStore};
-use khalid_core::{
-    Config, ConfigError, Environment, Mode, OptionValue, PrivacySettings, SeoSettings, SiteCode,
-};
+use khalid_core::{Config, ConfigError, Environment, Mode, OptionValue};
 use khalid_theme::Look;
 use toml_edit::{Array, DocumentMut, Item, Table, Value};
 
 use crate::atomic;
+use crate::settings_events;
 use crate::site_config;
 
 mod home;
@@ -30,14 +30,17 @@ mod privacy;
 #[derive(Debug, Clone)]
 pub(crate) struct SiteSettings {
     site: PathBuf,
-    /// The core settings the server started with.
-    running: Core,
+    /// The settings the server started with.
+    start: Arc<Config>,
+    /// The environment the server started with, which holds the keys a
+    /// bucket or mail needs and may set the address. Never answered.
+    env: Arc<Environment>,
     /// Held while a change is checked and written, so no two interleave.
     writing: Arc<Mutex<()>>,
 }
 
 /// The core settings, as a change may set them.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone)]
 struct Core {
     name: String,
     address: String,
@@ -45,10 +48,7 @@ struct Core {
     default_language: String,
     languages: Vec<String>,
     template: TemplateSetting,
-    seo: SeoSettings,
     mode: Mode,
-    code: SiteCode,
-    privacy: PrivacySettings,
 }
 
 impl Core {
@@ -79,21 +79,20 @@ impl Core {
                 .iter()
                 .map(|l| l.as_str().to_owned())
                 .collect(),
-            seo: config.seo().clone(),
             mode: config.mode(),
-            code: config.code().clone(),
-            privacy: config.privacy().clone(),
         }
     }
 }
 
 impl SiteSettings {
     /// The settings in `site`'s `site.toml`, for a server that started with
-    /// `running`. Every step runs on a blocking thread (RULES.md BL-RUN-7).
-    pub(crate) fn new(site: &Path, running: &Config) -> Self {
+    /// `start` read with `env` on top, as `site.toml` is read again here.
+    /// Every step runs on a blocking thread (RULES.md BL-RUN-7).
+    pub(crate) fn new(site: &Path, start: &Config, env: &Environment) -> Self {
         Self {
             site: site.to_path_buf(),
-            running: Core::of(running),
+            start: Arc::new(start.clone()),
+            env: Arc::new(env.clone()),
             writing: Arc::new(Mutex::new(())),
         }
     }
@@ -117,8 +116,8 @@ impl SiteSettings {
     /// The settings `text` holds, checked, as last changed at `changed`.
     fn settings(&self, text: &str, changed: DateTime<Utc>) -> Result<AdminSettings, SettingsError> {
         let config = self.checked(text)?;
+        let restart_needed = !settings_events::start_only(&self.start, &config).is_empty();
         let core = Core::of(&config);
-        let restart_needed = core != self.running;
         Ok(AdminSettings {
             name: core.name,
             address: core.address,
@@ -138,7 +137,7 @@ impl SiteSettings {
 
     /// `text` as a config, when it passes every check made at start.
     fn checked(&self, text: &str) -> Result<Config, SettingsError> {
-        let config = Config::from_toml(&self.path(), text, &Environment::empty());
+        let config = Config::from_toml(&self.path(), text, &self.env);
         let config = config.map_err(refused)?;
         site_config::check(&self.site, &config).map_err(|message| SettingsError::Refused {
             field: "address".to_owned(),
@@ -312,6 +311,77 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
+
+    /// A bucket and mail through an SMTP server that signs in, whose keys
+    /// and password live in the environment.
+    const BUCKET_AND_MAIL: &str = "\n[media.s3]\nendpoint = \"https://s3.example.com\"\n\
+        bucket = \"notes\"\nregion = \"auto\"\npublic_address = \"https://media.example.com/\"\n\n\
+        [mail]\nfrom = \"news@example.com\"\n\n[mail.smtp]\nhost = \"smtp.example.com\"\n\
+        username = \"news@example.com\"\n";
+
+    /// The keys, password and address of a server started with them, all
+    /// made for these tests.
+    fn started_with() -> Environment {
+        Environment::from_pairs(&[
+            (Environment::S3_ACCESS_KEY_ID, "made-for-this-test"),
+            (Environment::S3_SECRET_ACCESS_KEY, "made-for-this-test"),
+            (Environment::SMTP_PASSWORD, "made-for-this-test"),
+            (Environment::ADDRESS, "https://notes.example.org/"),
+        ])
+    }
+
+    /// A folder whose `site.toml` is the demo site's and then `more`, and
+    /// its settings for a server started on it with `env`.
+    fn site_with(more: &str, env: &Environment) -> (tempfile::TempDir, SiteSettings) {
+        let folder = tempfile::tempdir().unwrap();
+        let mut demo = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        demo.push("../../fixtures/demo-site/site.toml");
+        let text = format!("{}{more}", fs::read_to_string(demo).unwrap());
+        let mut file = folder.path().to_path_buf();
+        file.push(Config::FILE_NAME);
+        fs::write(&file, &text).unwrap();
+        let start = Config::from_toml(&file, &text, env).unwrap();
+        let settings = SiteSettings::new(folder.path(), &start, env);
+        (folder, settings)
+    }
+
+    /// A change of the name alone, made on `read`.
+    fn renamed(read: &AdminSettings) -> SettingsChange {
+        let change = serde_json::json!({"name": "Notes", "updated_at": read.updated_at});
+        serde_json::from_value(change).unwrap()
+    }
+
+    #[test]
+    fn a_site_with_a_bucket_and_signed_in_mail_reads_and_saves_with_the_start_keys() {
+        let (_folder, settings) = site_with(BUCKET_AND_MAIL, &started_with());
+        let read = settings.read_now().unwrap();
+        assert!(!read.restart_needed);
+        let saved = settings.change_now(renamed(&read)).unwrap();
+        assert_eq!(saved.name, "Notes");
+        assert!(!saved.restart_needed);
+    }
+
+    #[test]
+    fn the_address_from_the_environment_is_the_one_in_use_and_waits_for_nothing() {
+        let (_folder, settings) = site_with("", &started_with());
+        let read = settings.read_now().unwrap();
+        assert_eq!(read.address, "https://notes.example.org/");
+        assert!(!read.restart_needed);
+        let change = serde_json::json!({"address": "https://www.example.net",
+            "updated_at": read.updated_at});
+        let saved = settings.change_now(serde_json::from_value(change).unwrap());
+        assert!(!saved.unwrap().restart_needed, "the environment still wins");
+    }
+
+    #[test]
+    fn a_start_only_setting_saved_still_waits_for_a_restart() {
+        let (_folder, settings) = site_with("", &Environment::empty());
+        let read = settings.read_now().unwrap();
+        let change = serde_json::json!({"address": "https://www.example.net",
+            "updated_at": read.updated_at});
+        let saved = settings.change_now(serde_json::from_value(change).unwrap());
+        assert!(saved.unwrap().restart_needed);
+    }
 
     #[test]
     fn a_new_template_replaces_every_option_and_keeps_the_call_to_action() {

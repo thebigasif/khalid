@@ -52,7 +52,7 @@ describe("the SEO settings screen", () => {
     await userEvent.click(screen.getByRole("radio", { name: "»" }));
     await userEvent.type(screen.getByLabelText(WORDS.tagline), "Plain notes on search");
     await userEvent.click(screen.getByRole("button", { name: seoWords.save }));
-    expect(await screen.findByText(seoWords.saved)).toBeVisible();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
     expect(changes).toEqual([
       {
         updated_at: SEO_DEMO.updated_at,
@@ -65,6 +65,6 @@ describe("the SEO settings screen", () => {
         },
       },
     ]);
-    expect(await screen.findByText(seoWords.restart)).toBeVisible();
+    expect(screen.queryByText(seoWords.restart)).toBeNull();
   });
 });

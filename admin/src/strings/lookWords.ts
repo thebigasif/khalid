@@ -1,9 +1,11 @@
 // The words of the Look screen, where the blog's template is chosen.
 // en.ts carries them as en.look; they sit in their own file so en.ts
 // stays short.
+import { LIVE, WAITS } from "./restartWords";
+
 export const lookWords = {
   title: "Look",
-  lede: "A template sets how your blog's pages are laid out: what the home page leads with, and what sits around a post. Your colours, fonts and logo stay the same in every template. Your choice is saved to site.toml, and the blog uses it after Khalid restarts.",
+  lede: "A template sets how your blog's pages are laid out: what the home page leads with, and what sits around a post. Your colours, fonts and logo stay the same in every template. Your choice is saved to site.toml, and the blog uses it within a few seconds.",
   loading: "Reading the templates",
   choose: "Choose a template",
   inUse: "In use",
@@ -16,9 +18,9 @@ export const lookWords = {
   linesHint: (most: number) => `One per line, up to ${most}.`,
   save: "Save the look",
   saved: "Saved to site.toml.",
+  live: LIVE,
   unchanged: "Nothing to save: this is the look your blog has.",
-  restart:
-    "Your blog shows the new look after Khalid restarts. Until then it keeps the look it started with.",
+  restart: WAITS,
   // What each reader feature a template turns on or off is, in a few words.
   // A key not listed here shows as its own words.
   reader: {

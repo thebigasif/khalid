@@ -1,6 +1,7 @@
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { records } from "./records";
+import { LIVE, WAITS } from "./restartWords";
 import { serpdadWords } from "./serpdadWords";
 import { signInWords } from "./signInWords";
 import { sitesWords } from "./sites";
@@ -39,8 +40,8 @@ export const en = {
     title: "Schema templates",
     lede: "Schema is information for search engines about what a page holds. Khalid writes it for every post. A template adds one more kind to every post in a collection, so every guide is marked as a course without anyone thinking about it.",
     loading: "Reading the schema templates",
-    restart:
-      "Saved to site.toml. The blog uses it after Khalid restarts; until then, previews show the templates it started with.",
+    live: LIVE,
+    restart: WAITS,
     inUse: "Templates in use",
     none: "No templates yet. Every post still carries the schema Khalid writes for it.",
     every: (target: string, name: string, type: string) =>
@@ -368,9 +369,10 @@ export const en = {
     careful:
       "Changing the address or the folder changes the link to every post, feed and sitemap. Add a redirect for the old addresses, or links from other sites will break.",
     restart:
-      "Restart Khalid on the server to use these settings. The running blog read site.toml when it started, and the file has changed since.",
+      "Restart Khalid on the server to use the new address, folder or languages. Khalid reads them only when it starts. Your other changes are already in use.",
     save: "Save settings",
     saved: "Saved to site.toml.",
+    live: LIVE,
     unchanged: "Nothing changed, so nothing was saved.",
   },
   account: {

@@ -7,8 +7,8 @@ use comrak::{Arena, Options, parse_document};
 use khalid_core::{AbsoluteUrl, ParseUrlError, Slug};
 
 use crate::{
-    BusinessBlock, ChartBlock, Column, FormField, HowToBlock, ProductBlock, ProsConsBlock,
-    Question, RecipeBlock, ReviewBlock, VideoBlock,
+    BusinessBlock, ChartBlock, Column, FormField, GalleryImage, HowToBlock, ProductBlock,
+    ProsConsBlock, Question, RecipeBlock, ReviewBlock, SchemaCard, VideoBlock,
 };
 
 use crate::directive::{Form, directive, opening, unknown_hint};
@@ -252,15 +252,9 @@ pub enum BlockKind {
     /// `:::chart{type="..." title="..."}` with CSV lines as the body, or
     /// `src="data.csv"`: numbers drawn as a picture at build time.
     Chart(ChartBlock),
-}
-
-/// One picture in a gallery, written `![alt](src)` on its own line.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct GalleryImage {
-    /// The image's address.
-    pub src: String,
-    /// The text that describes the image.
-    pub alt: String,
+    /// `:::event`, `:::course`, `::book` or `:::dataset`: a card for one
+    /// thing search engines know by its schema.org type.
+    Card(SchemaCard),
 }
 
 /// Who sees an HTML block.

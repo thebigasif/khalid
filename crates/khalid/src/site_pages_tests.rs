@@ -296,7 +296,7 @@ fn text_at(pages: &[khalid_server::Page], path: &str) -> String {
 fn a_full_render_reads_changed_settings_and_keeps_them_when_the_file_breaks() {
     let site = demo_copy();
     let source = pages(site.path());
-    source.reload_with(Environment::empty());
+    source.reload_with(Environment::empty(), None);
     let mut file = site.path().to_path_buf();
     file.push("site.toml");
     let settings = fs::read_to_string(&file).unwrap();

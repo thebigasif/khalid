@@ -82,8 +82,9 @@ pub(crate) struct SettingsChanges {
 /// and each value must pass the checks `khalid serve` makes at start. The
 /// change carries the `updated_at` of the copy it was made on; when
 /// `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The
-/// running server reads `site.toml` at start, so `restart_needed` says
-/// when a restart applies the change. Needs `settings:write`.
+/// running server puts most settings in use once saved; `restart_needed`
+/// says when one it reads only at start, such as `address`, waits for a
+/// restart. Needs `settings:write`.
 #[utoipa::path(
     put, path = "/settings/", tag = "admin settings",
     security(("admin_key" = [])),

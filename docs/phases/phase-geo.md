@@ -6,61 +6,61 @@ From the research of 28 October 2026. Decisions: `docs/decisions/2026-10-28-geo-
 
 ### S1. Passkeys on webauthn-rs
 
-- Status: `todo`
+- Status: `done` (#895). `khalid-auth` uses `webauthn-rs` 0.6 (`passkey_site.rs`, `passkey_store.rs`); the hand-built `passkey.rs` and `passkey/` are gone, and no CBOR or attestation parsing is left in the crate. Argon2 stays for passwords. Proof: `crates/khalid-auth/tests/passkey_site.rs` and `passkey_accounts.rs` register and sign in with `webauthn-authenticator-rs`'s `SoftPasskey`, and refuse a replayed counter, another key, another origin and another challenge.
 - Replace the hand-built WebAuthn code in `crates/khalid-auth/src/passkey.rs`, `passkey/` and `passkey_store.rs` with `webauthn-rs`. Keep Argon2 for passwords. `tower-sessions` for `session.rs` is optional.
 - Done when: Passkey registration and sign-in pass with a soft authenticator, and no hand-built WebAuthn parsing remains.
 
 ### F1. An `updated` date on posts
 
-- Status: `todo`
+- Status: `done` (#703, #865, #895). `updated:` and `updated_note:` are in the front matter (`khalid-content`). `build_seo.rs` feeds `updated` to `dateModified` and the sitemap `lastmod`; the stale-post rule reads it. Proof: `build_ledger` test `ledger_shows_the_updated_date_in_place_of_the_published_one`, the `build_seo__a_post_head` and `build_files__the_sitemap_of_english_posts` snapshots (2026-10-20 in both), `serve_indexnow` test `a_new_updated_date_in_a_live_post_file_is_sent_to_indexnow`, and `admin_real_update` for the API switch.
 - Add `updated:` and an optional what-changed note to post front matter (fixes B1). Feed them to the visible date, `dateModified`, sitemap `lastmod` and IndexNow. The stale-post rule reads the updated date.
 - Done when: A post with `updated:` shows it on the page, in JSON-LD, in the sitemap, and triggers IndexNow.
 
 ### P1. FAQ answers visible
 
-- Status: `todo`
+- Status: `done` (#703). The FAQ and toggle blocks write `<details open>` (`khalid-content/src/render/steps.rs`, `layout.rs`). Proof: `blocks_faq` test `the_answers_are_in_the_page_with_scripts_off` and the `blocks_leaf` toggle snapshot.
 - FAQ and toggle blocks render their answers open by default, not collapsed in `<details>` (fixes B3).
 - Done when: The FAQ block's answers are in the visible page with scripts off.
 
 ### P2. Scripts-off check in CI
 
-- Status: `todo`
+- Status: `done` (#747, then the main CI split). The `Demo site check` job runs `scripts/demo-check.sh` on every pull request, push to main and nightly run, and feeds the required `Demo` check. `scripts/demo-check/browse.mjs` loads each page with scripts off and fails when it does not show the same text and links.
 - Run `scripts/demo-check.sh` on every CI build (fixes B4). Waits for the workflow token scope (decision notes).
 - Done when: CI fails when a page breaks with scripts off.
 
 ### P5. Author proof
 
-- Status: `todo`
+- Status: `done` (#703 for the schema and lint, this stack for the audit). Post JSON-LD names the author as a `Person` with `url`, `sameAs`, `jobTitle` and `hasCredential` (`build_seo__a_post_head` snapshot). `khalid lint` warns with `no-about-page` (fixture `site/no-about-page`), and `khalid audit` now warns with `about-missing` (`crates/khalid-audit/tests/checks_trust.rs`).
 - Author `url` and `sameAs` in the post schema, a credentials field, and a site warning when there is no About or contact page (fixes B2).
 - Done when: Post JSON-LD names the author with url and sameAs, and the audit warns without an About page.
 
 ### W1. Answer capsule
 
-- Status: `todo`
+- Status: `done` (#703, fixed in #942). Rule `answer-capsule` with `answer-min-words` and `answer-max-words` in `lint.toml`. Proof: fixtures `answer-capsule` and `answer-capsule-long`, and the unit tests in `khalid-lint/src/writing.rs`.
 - A question-style heading is followed by a standalone answer of 40 to 60 words, adjustable in `lint.toml` (D3).
 - Done when: The rule fires on a short or missing answer and teaches the fix in plain words.
 
 ### W2. Paragraph length
 
-- Status: `todo`
+- Status: `done` (#703). Rule `long-paragraph` with `paragraph-max-words` in `lint.toml`. Proof: fixture `long-paragraph`. The default later moved from 225 to 150 words with the Yoast analysis (#934); a site can set 225 again.
 - Warn above about 225 words per paragraph; target 75 to 225, one idea each.
 - Done when: Fixture with a long paragraph gets the warning.
 
 ### W3. Plain sentences
 
-- Status: `todo`
+- Status: `done` (#703, completed in this stack). Rule `plain-answer` flags hedge words, vague openers and which-chains, each with its own plain fix, and reads an answer as the audit's `hedged-answer` check does. Proof: fixtures `plain-answer` (hedge), `plain-answer-opener` and `plain-answer-which`.
 - Flag hedge words, vague openers and trailing which-chains in answer paragraphs.
 - Done when: Fixtures for each pattern fire with a plain fix.
 
 ### W4. Sourced statistics
 
-- Status: `todo`
+- Status: `done` (#703, narrowed in #942). Rule `sourced-statistics`. Proof: fixture `sourced-statistics`, and the unit tests in `khalid-lint/src/statistics.rs`: a bare statistic warns, a dated one (`In 2024, 47% ...`) or one with a linked source does not.
 - Warn when a number has no linked source or no year near it.
 - Done when: A bare statistic gets the warning; a sourced, dated one does not.
 
 ### A1. AI search audit checks
 
-- Status: `todo`
+- Status: `done` (#865). `khalid audit` has an AI search group per page: `answer-capsule`, `paragraph-too-long`, `hedged-answer`, `unsourced-number`, `hidden-answer` (P1), `date-not-shown` and `stale-page` (F1), with the limits read from `lint.toml`. `llms-missing` and `llms-format` stay as notices. P3 is a later task, so it has no check yet. Proof: `crates/khalid-audit/tests/checks_writing.rs` and `checks_shown.rs`.
 - Replace the llms.txt-only AI search checks (open PR #663) with checks built on W1 to W4, P1 to P3 and F1. Keep llms.txt as low priority.
 - Done when: `khalid audit` reports the new checks per page.
 

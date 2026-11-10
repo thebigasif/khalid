@@ -397,10 +397,11 @@ fn post_page(
     seo.reading_minutes = (config.reader().reading_time).then(|| post.reading_time.minutes());
     let name = seo.author.clone().unwrap_or_default();
     seo.author_profile = build_reader::author_profile(config, locale, (front, &name), authors)?;
-    let body = (&rendered.structured[..], &rendered.links[..]);
-    build_schema::fill(&mut seo, config, (path.as_str(), &name), body)?;
+    // Images first: a video embed without a still of its own shows the lead.
     let images = (front.image.as_ref(), &rendered.images[..]);
     build_schema::images(&mut seo, config, &path, images)?;
+    let body = (&rendered.structured[..], &rendered.links[..]);
+    build_schema::fill(&mut seo, config, (path.as_str(), &name), body)?;
     seo.custom_schema = build_schema::custom(&doc.path, front.schema.as_deref())?;
     let meta = meta(config, title, description, path, PageKind::Article)?;
     let body = PageBody::Post(Box::new(post));

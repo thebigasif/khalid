@@ -1,5 +1,7 @@
-# An internal link with `nofollow`, in any case, is flagged. Other `rel`
-# words on an internal link, and `nofollow` on an external one, are fine.
+# An internal link with `nofollow`, in any case, is flagged. So is a full
+# address on one of the site's own hosts: its own, the www and apex pair of
+# its domain, and a host it lists with its subdomains. Other `rel` words on
+# an internal link, and `nofollow` on another site's link, are fine.
 extends = "clean"
 
 [[links]]
@@ -18,4 +20,40 @@ rel = ["noopener"]
 kind = "external"
 target = "https://developers.google.com/search/docs/crawling-indexing/links-crawlable"
 text = "Google's guide to links"
+rel = ["nofollow"]
+
+[[links]]
+kind = "external"
+target = "https://blog.example.com/archive/"
+text = "the archive"
+rel = ["nofollow"]
+
+[[links]]
+kind = "external"
+target = "https://example.com/pricing/"
+text = "our prices"
+rel = ["nofollow"]
+
+[[links]]
+kind = "external"
+target = "http://WWW.Example.com"
+text = "the main site"
+rel = ["nofollow", "noopener"]
+
+[[links]]
+kind = "external"
+target = "https://help.shop.example.net/returns/"
+text = "how returns work"
+rel = ["nofollow"]
+
+[[links]]
+kind = "external"
+target = "https://forum.example.com/"
+text = "the forum"
+rel = ["nofollow"]
+
+[[links]]
+kind = "external"
+target = "https://notexample.com/"
+text = "a lookalike name"
 rel = ["nofollow"]

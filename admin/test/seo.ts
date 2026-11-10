@@ -17,7 +17,7 @@ export const SEO_DEMO: SiteSettings = {
   restart_needed: false,
 };
 
-/** A blog with `site`'s settings that records each change, then needs a restart. */
+/** A blog with `site`'s settings that records each change, in use with no restart. */
 export function seoBlog(site: SiteSettings = SEO_DEMO): SiteChange[] {
   const changes: SiteChange[] = [];
   let now = site;
@@ -27,7 +27,7 @@ export function seoBlog(site: SiteSettings = SEO_DEMO): SiteChange[] {
       const body: { settings: SiteChange } = await request.json();
       changes.push(body.settings);
       const seo = { ...now.seo, ...body.settings.seo };
-      now = { ...now, seo, updated_at: "2026-11-02T09:05:00Z", restart_needed: true };
+      now = { ...now, seo, updated_at: "2026-11-02T09:05:00Z" };
       return json(200, { settings: now });
     },
   });
