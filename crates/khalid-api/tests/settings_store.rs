@@ -51,7 +51,7 @@ async fn the_settings_are_sent_in_api_shape() {
             "name": "Field Notes on SEO", "address": "https://www.example.com",
             "mount": "/blog/", "default_language": "en", "languages": ["en", "de"],
             "mode": "server", "template": {"name": "classic", "options": {}}, "seo": {},
-            "privacy": {}, "code": [],
+            "privacy": {}, "code": [], "home_sections": [],
             "updated_at": "2026-10-20T09:00:00Z", "restart_needed": false,
         })
     );
