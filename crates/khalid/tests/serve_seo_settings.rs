@@ -51,3 +51,32 @@ fn seo_parts_are_saved_into_site_toml_and_a_bad_one_saves_nothing() {
     let after = std::fs::read_to_string(&file).unwrap();
     assert_eq!(after, text, "nothing was written");
 }
+
+#[test]
+fn the_ai_training_switch_round_trips_and_reaches_robots_txt() {
+    let site = demo_copy();
+    let owner = ["--name", "Owner", "--scope", "settings:write"];
+    let key = new_key(site.path(), &owner);
+    let server = start(site.path(), &key);
+    let (_, read) = server.admin("GET", "/api/admin/v1/settings/", None);
+    let seen = read["settings"]["updated_at"].as_str().unwrap();
+    let wrong = json!({"settings": {"updated_at": seen,
+        "seo": {"crawlers": {"ai_training": "maybe"}}}});
+    let (status, body) = server.admin("PUT", "/api/admin/v1/settings/", Some(&wrong));
+    assert_eq!(status, 422, "{body}");
+
+    let change = json!({"settings": {"updated_at": seen,
+        "seo": {"crawlers": {"ai_training": "block"}}}});
+    let (status, saved) = server.admin("PUT", "/api/admin/v1/settings/", Some(&change));
+    assert_eq!(status, 200, "{saved}");
+    let (_, read) = server.admin("GET", "/api/admin/v1/settings/", None);
+    assert_eq!(
+        read["settings"]["seo"]["crawlers"],
+        json!({"ai_training": "block"}),
+        "{read}"
+    );
+    let (status, robots) = server.raw("GET", "/robots.txt", &[], None);
+    assert_eq!(status, 200, "{robots}");
+    assert!(robots.contains("User-agent: GPTBot\n"), "{robots}");
+    assert!(!robots.contains("OAI-SearchBot"), "{robots}");
+}

@@ -1,0 +1,9 @@
+---
+source: crates/khalid-seo/tests/robots_txt.rs
+assertion_line: 167
+expression: robots
+---
+User-agent: *
+Allow: /blog/
+
+Sitemap: https://www.example.com/blog/sitemap.xml

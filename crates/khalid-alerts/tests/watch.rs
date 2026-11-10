@@ -6,6 +6,9 @@ use khalid_alerts::{Answer, Finding, Kind, Probe, site_down, slow_site};
 
 const HOME: &str = "https://www.example.com/blog/";
 
+/// The watch's default round.
+const FIVE: Duration = Duration::minutes(5);
+
 #[cfg(test)]
 fn at(minute: i64) -> DateTime<Utc> {
     Utc.with_ymd_and_hms(2026, 11, 3, 9, 0, 0).unwrap() + Duration::minutes(minute)
@@ -77,23 +80,66 @@ fn the_middle_answer_time_of_the_last_hour_over_the_limit_is_slow() {
         probe(40, Answer::Unreached, 10_000),
         ok(50, 2_000),
     ];
-    let found = slow_site(&probes, 1_000, HOME, at(55));
+    let found = slow_site(&probes, 1_000, FIVE, HOME, at(55));
     assert_eq!(
         found,
         [Finding {
             key: "slow-site:https://www.example.com/blog/".to_owned(),
-            line: "https://www.example.com/blog/ took 1500 ms in the middle of 4 answers in the last hour; the limit is 1000 ms.".to_owned(),
+            line: "https://www.example.com/blog/ took 1500 ms in the middle of 4 answers in the last 60 minutes; the limit is 1000 ms.".to_owned(),
         }]
     );
-    assert_eq!(slow_site(&probes, 1_500, HOME, at(55)), [], "not over");
-    assert_eq!(slow_site(&probes, 0, HOME, at(55)), [], "0 is off");
+    assert_eq!(
+        slow_site(&probes, 1_500, FIVE, HOME, at(55)),
+        [],
+        "not over"
+    );
+    assert_eq!(slow_site(&probes, 0, FIVE, HOME, at(55)), [], "0 is off");
     assert!(Kind::SlowSite.clears());
 }
 
 #[test]
 fn fewer_than_three_answers_in_the_hour_say_nothing_about_speed() {
     let probes = [ok(10, 3_000), ok(20, 3_000)];
-    assert_eq!(slow_site(&probes, 1_000, HOME, at(30)), []);
+    assert_eq!(slow_site(&probes, 1_000, FIVE, HOME, at(30)), []);
+}
+
+/// Three slow looks `every` minutes apart, the last one at minute 0.
+#[cfg(test)]
+fn three_slow_looks(every: i64) -> [Probe; 3] {
+    [ok(-2 * every, 3_000), ok(-every, 3_000), ok(0, 3_000)]
+}
+
+#[test]
+fn a_watch_every_30_minutes_still_finds_a_slow_site() {
+    let every = Duration::minutes(30);
+    let found = slow_site(&three_slow_looks(30), 1_000, every, HOME, at(0));
+    assert_eq!(found.len(), 1, "{found:?}");
+    assert!(
+        found[0]
+            .line
+            .contains("of 3 answers in the last 90 minutes"),
+        "{found:?}"
+    );
+}
+
+#[test]
+fn a_watch_every_60_minutes_still_finds_a_slow_site() {
+    let every = Duration::minutes(60);
+    let found = slow_site(&three_slow_looks(60), 1_000, every, HOME, at(0));
+    assert_eq!(found.len(), 1, "{found:?}");
+    assert!(
+        found[0]
+            .line
+            .contains("of 3 answers in the last 180 minutes"),
+        "{found:?}"
+    );
+}
+
+#[test]
+fn a_look_older_than_three_rounds_says_nothing_about_speed() {
+    let every = Duration::minutes(30);
+    let probes = [ok(-90, 3_000), ok(-30, 3_000), ok(0, 3_000)];
+    assert_eq!(slow_site(&probes, 1_000, every, HOME, at(0)), []);
 }
 
 #[test]

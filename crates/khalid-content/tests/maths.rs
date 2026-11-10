@@ -21,7 +21,10 @@ fn the_maths_fixture_renders_to_mathml_with_no_script() {
         8,
         "six inline, two block: {html}"
     );
-    assert_eq!(html.matches("<math display=\"block\"").count(), 2, "{html}");
+    // Each block formula sits in a box that scrolls on its own, so a long
+    // one never makes the page scroll sideways on a phone (G37).
+    let boxed = "<span class=\"maths\"><math display=\"block\"";
+    assert_eq!(html.matches(boxed).count(), 2, "{html}");
     assert!(!html.contains("<script"), "{html}");
     assert!(html.contains("costs $5 a month"), "{html}");
     insta::assert_snapshot!(html);

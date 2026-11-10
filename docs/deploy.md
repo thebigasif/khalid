@@ -282,7 +282,7 @@ email = "owner@example.com"
 not_found_spike = 50     # new 404s in one hour that count as a burst
 stale_after_days = 365   # 0 switches the stale-post alert off
 watch_minutes = 5        # how often the speed and uptime watch looks; 0 switches it off
-slow_ms = 1000           # a slower middle answer time over an hour is an alert; 0 switches it off
+slow_ms = 1000           # a slower middle answer time over an hour, or three looks, is an alert; 0 switches it off
 ```
 
 ### Speed and uptime

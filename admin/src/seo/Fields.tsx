@@ -38,16 +38,19 @@ type CheckProps = {
   hint?: string;
   checked: boolean;
   onChange: (on: boolean) => void;
+  /** Shown but not changeable, when another setting decides it. */
+  disabled?: boolean;
 };
 
 /** One switch, with its hint under the words when it needs one. */
-export function Check({ id, label, hint, checked, onChange }: CheckProps) {
+export function Check({ id, label, hint, checked, onChange, disabled }: CheckProps) {
   return (
     <div className="choice">
       <input
         id={id}
         type="checkbox"
         checked={checked}
+        disabled={disabled}
         aria-describedby={hint === undefined ? undefined : `${id}-hint`}
         onChange={(event) => onChange(event.target.checked)}
       />

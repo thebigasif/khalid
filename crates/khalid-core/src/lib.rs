@@ -86,8 +86,8 @@ pub use search_console_settings::{SearchConsoleProperty, SearchConsoleSettings};
 pub use secret::Secret;
 pub use seo_breadcrumb_settings::{BreadcrumbSettings, BreadcrumbTaxonomy};
 pub use seo_head_settings::{
-    CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, ImageSettings, SocialSettings,
-    TemplateSettings, TitleSettings, VerificationSettings,
+    AiTraining, CrawlerSettings, FeedContentSetting, FeedKind, FeedSettings, ImageSettings,
+    SocialSettings, TemplateSettings, TitleSettings, VerificationSettings,
 };
 pub use seo_publisher_settings::{
     HoursSettings, LocalSettings, LocationSettings, PublisherSettings, PublisherType,
