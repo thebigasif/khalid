@@ -1,0 +1,2 @@
+Added
+- The site audit warns when a page sets a part wider than a phone screen: a `width` or `min-width` over 320 pixels in a `style` attribute or a `<style>` block, or a table with a `width` over 320. The new check is `fixed-width`. It reads every built page, so it catches a template override and a raw HTML block in a post alike. Rules inside a media query for wide screens or print are left alone, and so are the `width` of images, videos and frames, which the default styles scale down. One page is one warning, naming the first such part and how many more there are.

@@ -33,6 +33,7 @@ pub(crate) fn body_issues(
     {
         found.add(Check::HstsMissing, "");
     }
+    fixed_width(page, found);
 }
 
 /// The amount of text, against the page's size.
@@ -119,4 +120,17 @@ fn extras(page: &Page, found: &mut Found<'_>) {
             format!("block {}", at.saturating_add(1)),
         );
     }
+}
+
+/// The parts of the page wider than a phone screen, named by the first,
+/// so one page is one issue however many it holds.
+fn fixed_width(page: &Page, found: &mut Found<'_>) {
+    let [first, rest @ ..] = page.wide() else {
+        return;
+    };
+    let detail = match rest.len() {
+        0 => first.clone(),
+        more => format!("{first}, and {more} more"),
+    };
+    found.add(Check::FixedWidth, detail);
 }

@@ -6,6 +6,7 @@ use khalid_core::AbsoluteUrl;
 use scraper::{ElementRef, Html};
 use url::Url;
 
+use crate::fixed_width;
 use crate::outline::Outline;
 use crate::scripted;
 use crate::{Alternate, Block, Image, Link, Robots};
@@ -24,6 +25,7 @@ pub struct Page {
     structured_data: Vec<String>,
     links: Vec<Link>,
     images: Vec<Image>,
+    wide: Vec<String>,
     resources: Vec<AbsoluteUrl>,
     words: usize,
     text_bytes: usize,
@@ -49,6 +51,7 @@ impl Page {
         while let Some((element, seen)) = stack.pop() {
             page.element(element, &base);
             page.outline.element(element);
+            page.wide.extend(fixed_width::part(element));
             let name = element.value().name();
             let seen = (seen || name == "body")
                 && !matches!(name, "script" | "style" | "template" | "noscript");
@@ -194,6 +197,12 @@ impl Page {
     /// Every stylesheet, script and image the page loads, in order.
     pub fn resources(&self) -> &[AbsoluteUrl] {
         &self.resources
+    }
+
+    /// Each part of the page set wider than a phone screen in pixels, such
+    /// as a table with `width="900"`, in words, in order.
+    pub fn wide(&self) -> &[String] {
+        &self.wide
     }
 
     /// How many words the reader sees, outside scripts and styles.
