@@ -199,10 +199,12 @@ export type AdminDayViews = {
   views: number;
 };
 
-/** The newest deliveries of one webhook. */
+/** One page of one webhook's deliveries. */
 export type AdminDeliveries = {
-  /** At most 50, newest first. */
+  /** The deliveries, newest first. */
   deliveries: AdminDelivery[];
+  /** The `before` that lists the next, older page, or null on the last page. */
+  next?: number | null;
 };
 
 /** One message a webhook sent, with every try. */
@@ -3764,12 +3766,18 @@ export interface Operations {
     };
     output: null;
   };
-  /** Lists the 50 newest messages one webhook that is on sent, newest first, each with every try and where it stands. The bodies sent are left out. Needs `webhooks:manage`. */
+  /** Lists the messages one webhook that is on sent, newest first, a page at a time, each with every try and where it stands. The bodies sent are left out. Needs `webhooks:manage`. */
   list_deliveries: {
     input: {
       path: {
         /** The webhook's identity */
         id: number;
+      };
+      query?: {
+        /** Only deliveries older than this one, by its `id`: the `next` of the page before. Left out, the list starts at the newest. */
+        before?: number;
+        /** From 1 to 100; 50 when left out. */
+        limit?: number;
       };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */

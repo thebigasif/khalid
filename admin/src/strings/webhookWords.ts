@@ -70,7 +70,9 @@ export const webhookWords = {
       why: "Only a webhook that is on shows what it sent. It may have been switched off.",
       fix: "Go back to your webhooks and pick one from the list.",
     },
-    list: "The last 50 messages",
+    list: "Messages sent",
+    older: "Show older messages",
+    newest: "Back to the newest",
     listLede:
       "Newest first. A receiver answers with a number: 200 to 299 means it got the message.",
     none: "Nothing sent yet. A message goes out the next time this happens on your blog.",

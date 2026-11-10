@@ -187,11 +187,47 @@ async fn the_log_lists_what_a_webhook_sent_newest_first_with_every_try() {
             {"id": 1, "event": "comment.added", "state": "delivered",
              "state_at": "2026-10-27T09:00:00Z", "attempts": [
                 {"at": "2026-10-27T09:00:00Z", "status": 200}]}
-        ]})
+        ], "next": null})
     );
     for path in ["/webhooks/7/deliveries/", "/webhooks/first/deliveries/"] {
         let (status, json) = send(&router, MANAGER, ("GET", path)).await;
         assert_eq!(status, StatusCode::NOT_FOUND, "{path}: {json}");
+    }
+}
+
+#[tokio::test]
+async fn the_log_pages_back_through_older_deliveries() {
+    let store = store().await;
+    for id in 1..=5 {
+        store.record(delivery(id, id, vec![Outcome::Answered { status: 200 }]));
+    }
+    let router = router(store);
+    let ids = |json: &Value| -> Vec<i64> {
+        let listed = json["deliveries"].as_array().cloned().unwrap_or_default();
+        listed.iter().filter_map(|d| d["id"].as_i64()).collect()
+    };
+    let first = "/webhooks/1/deliveries/?limit=2";
+    let (status, json) = send(&router, MANAGER, ("GET", first)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!((ids(&json), json["next"].clone()), (vec![5, 4], json!(4)));
+    let second = "/webhooks/1/deliveries/?limit=2&before=4";
+    let (_, json) = send(&router, MANAGER, ("GET", second)).await;
+    assert_eq!((ids(&json), json["next"].clone()), (vec![3, 2], json!(2)));
+    let last = "/webhooks/1/deliveries/?limit=2&before=2";
+    let (_, json) = send(&router, MANAGER, ("GET", last)).await;
+    assert_eq!((ids(&json), json["next"].clone()), (vec![1], Value::Null));
+    let (_, json) = send(&router, MANAGER, ("GET", "/webhooks/1/deliveries/")).await;
+    assert_eq!(
+        ids(&json),
+        [5, 4, 3, 2, 1],
+        "50 to a page when none is asked"
+    );
+
+    for wrong in ["limit=0", "limit=101", "before=newest", "page=2"] {
+        let path = format!("/webhooks/1/deliveries/?{wrong}");
+        let (status, json) = send(&router, MANAGER, ("GET", &path)).await;
+        assert_eq!(status, StatusCode::BAD_REQUEST, "{wrong}: {json}");
+        assert_eq!(json["rule"], "limit", "{wrong}: {json}");
     }
 }
 

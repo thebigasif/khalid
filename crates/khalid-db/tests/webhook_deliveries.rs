@@ -58,7 +58,7 @@ async fn the_newest_deliveries_of_one_webhook_come_back_with_their_attempts() {
         ids.push(delivery.id().get());
     }
 
-    let newest = table.deliveries(mine.id().get(), 2).await.unwrap();
+    let newest = table.deliveries(mine.id().get(), None, 2).await.unwrap();
     let listed: Vec<i64> = newest.iter().map(|d| d.id().get()).collect();
     assert_eq!(listed, [ids[3], ids[2]], "the two newest of this webhook");
     let delivery = &newest[0];
@@ -70,6 +70,13 @@ async fn the_newest_deliveries_of_one_webhook_come_back_with_their_attempts() {
             at: nine + TimeDelta::minutes(4)
         }
     );
-    let unknown = table.deliveries(99, 50).await.unwrap();
+    let older = table
+        .deliveries(mine.id().get(), Some(ids[2]), 2)
+        .await
+        .unwrap();
+    let listed: Vec<i64> = older.iter().map(|d| d.id().get()).collect();
+    assert_eq!(listed, [ids[0]], "the page below the second newest");
+    assert_eq!(older[0].attempts().len(), 2);
+    let unknown = table.deliveries(99, None, 50).await.unwrap();
     assert_eq!(unknown, []);
 }

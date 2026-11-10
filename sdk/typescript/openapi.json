@@ -8662,7 +8662,7 @@
         "tags": [
           "admin webhooks"
         ],
-        "summary": "Lists the 50 newest messages one webhook that is on sent, newest\nfirst, each with every try and where it stands. The bodies sent are\nleft out. Needs `webhooks:manage`.",
+        "summary": "Lists the messages one webhook that is on sent, newest first, a page\nat a time, each with every try and where it stands. The bodies sent\nare left out. Needs `webhooks:manage`.",
         "operationId": "list_deliveries",
         "parameters": [
           {
@@ -8673,6 +8673,27 @@
             "schema": {
               "type": "integer",
               "format": "int64"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Only deliveries older than this one, by its `id`: the `next` of\nthe page before. Left out, the list starts at the newest.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "From 1 to 100; 50 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
             }
           },
           {
@@ -8687,11 +8708,21 @@
         ],
         "responses": {
           "200": {
-            "description": "The webhook's newest deliveries",
+            "description": "One page of the webhook's deliveries",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminDeliveries"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The limit is not from 1 to 100, or before is not a number",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -11944,7 +11975,7 @@
       },
       "AdminDeliveries": {
         "type": "object",
-        "description": "The newest deliveries of one webhook.",
+        "description": "One page of one webhook's deliveries.",
         "required": [
           "deliveries"
         ],
@@ -11954,7 +11985,15 @@
             "items": {
               "$ref": "#/components/schemas/AdminDelivery"
             },
-            "description": "At most 50, newest first."
+            "description": "The deliveries, newest first."
+          },
+          "next": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "The `before` that lists the next, older page, or null on the last\npage."
           }
         }
       },
