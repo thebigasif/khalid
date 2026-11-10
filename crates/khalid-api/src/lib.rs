@@ -66,6 +66,7 @@ pub mod link_suggestions;
 pub mod media_api;
 mod media_picture;
 mod media_search;
+pub mod media_uses;
 pub mod not_found_log;
 pub mod pagination;
 pub mod post_check;

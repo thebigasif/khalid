@@ -24,6 +24,9 @@ use khalid_server::ranged;
 
 use crate::exit::Exit;
 
+#[path = "media_uses.rs"]
+mod media_uses;
+
 /// A file never changes at its address, since the key in it is a hash of
 /// its bytes, so a browser may keep it for a year without asking again.
 const CACHED: &str = "public, max-age=31536000, immutable";
@@ -58,7 +61,9 @@ pub(crate) async fn open(
     let (library, api) = opened(site, config, bucket, outbound)
         .await
         .map_err(|message| (message, Exit::Failure))?;
-    let api = api.with_search(stock_search(config, pictures, outbound));
+    let api = api
+        .with_search(stock_search(config, pictures, outbound))
+        .with_uses(Arc::new(media_uses::SiteMediaUses::new(site)));
     Ok((api, router(library, config)))
 }
 

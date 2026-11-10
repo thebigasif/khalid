@@ -1,4 +1,5 @@
-//! Deleting a media item through the Admin API.
+//! Deleting a media item and listing the library's folders through the
+//! Admin API. A file the site still names is never deleted.
 
 mod common;
 
@@ -11,12 +12,14 @@ use axum::http::{Request, StatusCode};
 use chrono::{TimeZone, Utc};
 use khalid_api::api;
 use khalid_api::comment_moderation::NoComments;
+use khalid_api::content_store::BoxFuture;
 use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::media_api::MediaLibrary;
+use khalid_api::media_uses::{MediaUses, MediaUsesError};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
 use khalid_core::{FixedClock, Locale};
-use khalid_media::{Library, Storage};
+use khalid_media::{Library, MediaItem, Storage};
 use serde_json::Value;
 use tower::ServiceExt;
 
@@ -28,9 +31,30 @@ const WRITER: &str =
 
 const PDF: &[u8] = b"%PDF-1.7\nA checklist for choosing a CRM\n%%EOF\n";
 
-/// The API with the media library of `site`.
+/// A site where the posts named in it use every file called `name`.
+#[derive(Debug)]
+struct UsedIn {
+    name: &'static str,
+    posts: Vec<String>,
+}
+
+impl MediaUses for UsedIn {
+    fn using<'a>(
+        &'a self,
+        item: &'a MediaItem,
+    ) -> BoxFuture<'a, Result<Vec<String>, MediaUsesError>> {
+        let posts = if item.name.as_str() == self.name {
+            self.posts.clone()
+        } else {
+            Vec::new()
+        };
+        Box::pin(async move { Ok(posts) })
+    }
+}
+
+/// The API with the media library of `site`, whose posts use `used`.
 #[cfg(test)]
-async fn app(site: &Path) -> Router {
+async fn app(site: &Path, used: UsedIn) -> Router {
     let hashing = KeyHashing::fast_for_tests();
     let key = |text: &str, scope| {
         let token = text.parse::<KeyToken>().unwrap();
@@ -46,7 +70,8 @@ async fn app(site: &Path) -> Router {
     let english = Locale::try_new("en").unwrap();
     let library = Library::open(site, Storage::local(site), &english, Arc::new(clock));
     let library = Arc::new(library.await.unwrap());
-    let media = MediaLibrary::new(library, "https://www.example.com/blog");
+    let media =
+        MediaLibrary::new(library, "https://www.example.com/blog").with_uses(Arc::new(used));
     api::router_with_media(content, door, keys, Arc::new(NoComments), media).0
 }
 
@@ -86,10 +111,18 @@ async fn upload(app: &Router, name: &str, folder: &str, bytes: &[u8]) -> (String
     (text("id"), text("updated_at"))
 }
 
+#[cfg(test)]
+fn nobody() -> UsedIn {
+    UsedIn {
+        name: "",
+        posts: Vec::new(),
+    }
+}
+
 #[tokio::test]
 async fn an_unused_item_is_deleted_with_the_copy_last_read() {
     let site = tempfile::tempdir().unwrap();
-    let app = app(site.path()).await;
+    let app = app(site.path(), nobody()).await;
     let (id, updated_at) = upload(&app, "checklist.pdf", "guides", PDF).await;
     let uri = format!("/api/admin/v1/media/{id}/?updated_at={updated_at}");
     let (status, _) = send(&app, "DELETE", &uri, UPLOADER, b"").await;
@@ -104,7 +137,7 @@ async fn an_unused_item_is_deleted_with_the_copy_last_read() {
 #[tokio::test]
 async fn a_delete_needs_updated_at_the_current_copy_and_media_write() {
     let site = tempfile::tempdir().unwrap();
-    let app = app(site.path()).await;
+    let app = app(site.path(), nobody()).await;
     let (id, _) = upload(&app, "checklist.pdf", "", PDF).await;
     let bare = format!("/api/admin/v1/media/{id}/");
     let (status, body) = send(&app, "DELETE", &bare, UPLOADER, b"").await;
@@ -124,4 +157,31 @@ async fn a_delete_needs_updated_at_the_current_copy_and_media_write() {
     assert_eq!(status, StatusCode::FORBIDDEN);
     let (status, _) = send(&app, "GET", &bare, UPLOADER, b"").await;
     assert_eq!(status, StatusCode::OK, "nothing was deleted");
+}
+
+#[tokio::test]
+async fn a_file_a_post_still_uses_is_not_deleted() {
+    let site = tempfile::tempdir().unwrap();
+    let posts = ["a", "b", "c", "d"].map(|slug| format!("content/posts/{slug}.md"));
+    let used = UsedIn {
+        name: "checklist.pdf",
+        posts: posts.to_vec(),
+    };
+    let app = app(site.path(), used).await;
+    let (id, updated_at) = upload(&app, "checklist.pdf", "", PDF).await;
+    let uri = format!("/api/admin/v1/media/{id}/?updated_at={updated_at}");
+    let (status, body) = send(&app, "DELETE", &uri, UPLOADER, b"").await;
+    assert_eq!(status, StatusCode::CONFLICT, "{body}");
+    assert_eq!(body["rule"], "uses");
+    let detail = body["detail"].as_str().unwrap();
+    assert!(
+        detail.starts_with(
+            "This file is still used in content/posts/a.md, content/posts/b.md, \
+             content/posts/c.md and 1 more."
+        ),
+        "{detail}"
+    );
+    let read = format!("/api/admin/v1/media/{id}/");
+    let (status, _) = send(&app, "GET", &read, UPLOADER, b"").await;
+    assert_eq!(status, StatusCode::OK);
 }
