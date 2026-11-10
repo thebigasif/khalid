@@ -1,3 +1,4 @@
+import { altReplaceWords } from "./altReplaceWords";
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { realUpdateWords } from "./realUpdateWords";
@@ -111,6 +112,7 @@ export const en = {
       action: "Action",
       edit: (name: string) => `Edit details of ${name}`,
       editText: "Edit details",
+      replace: altReplaceWords,
     },
     details: {
       back: "Back to media",
