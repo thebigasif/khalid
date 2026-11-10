@@ -42,6 +42,23 @@ pub(crate) struct Search {
     pub(crate) security: SecurityHeaders,
 }
 
+impl Search {
+    /// What the search route reads: the pages of `source`, the database of
+    /// site `id`, and the headers of every page.
+    pub(crate) fn of(
+        source: &SitePages,
+        (database, id): (&Database, SiteId),
+        security: &SecurityHeaders,
+    ) -> Self {
+        Self {
+            pages: source.clone(),
+            db: database.clone(),
+            site: id,
+            security: security.clone(),
+        }
+    }
+}
+
 /// The query string of a search page: the words, and `typing` when the
 /// reader script asks while the reader is still typing.
 #[derive(Debug, Deserialize)]

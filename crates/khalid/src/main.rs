@@ -111,6 +111,7 @@ mod newsletter_digest;
 mod newsletter_files;
 mod newsletter_send;
 mod outbound;
+mod outside_writes;
 mod own_descriptions;
 mod page_code;
 mod page_counts;

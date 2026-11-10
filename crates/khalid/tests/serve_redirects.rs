@@ -341,3 +341,31 @@ fn a_renamed_post_keeps_its_old_address_while_serving_and_across_a_restart() {
         "/blog/writing-title-tags/",
     );
 }
+
+#[test]
+fn a_redirect_another_process_stores_answers_without_a_restart() {
+    let site = demo_copy();
+    let server = start(site.path());
+    let mut list = site.path().to_path_buf();
+    list.push("moves.csv");
+    fs::write(
+        &list,
+        "from,to,status,match\n/blog/old-guide/,/blog/,301,exact\n",
+    )
+    .unwrap();
+    let imported = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args([
+            "--site",
+            site.path().to_str().unwrap(),
+            "redirects",
+            "import",
+        ])
+        .arg(&list)
+        .output()
+        .unwrap();
+    let said = String::from_utf8_lossy(&imported.stdout);
+    let why = String::from_utf8_lossy(&imported.stderr);
+    assert_eq!(imported.status.code(), Some(0), "{why}");
+    assert!(said.contains("within a few seconds"), "{said}");
+    moves(&server, "/blog/old-guide/", "/blog/");
+}

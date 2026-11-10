@@ -17,7 +17,7 @@ use crate::cli::{Output, RedirectsCommand};
 use crate::doctor_files::counted;
 use crate::exit::Exit;
 use crate::redirects_explain::{self, Aliases};
-use crate::{db, db_message, report, site_config};
+use crate::{db, db_message, outside_writes, report, site_config};
 
 /// The JSON shape of `khalid redirects import --json`.
 #[derive(Serialize)]
@@ -89,6 +89,12 @@ fn import(site: &Path, config: &Config, file: &Path, output: Output) -> Done {
     let stored = stored
         .map_err(|refusal| (refused(&refusal), Exit::Failure))?
         .len();
+    if let Err(error) = outside_writes::note(site) {
+        report::notice(&format!(
+            "Khalid could not tell a running khalid serve about them ({error}). \
+             Start it again to answer them."
+        ));
+    }
     Ok(match output {
         Output::Json => report::json(
             &ImportedBody {
@@ -109,7 +115,7 @@ fn import(site: &Path, config: &Config, file: &Path, output: Output) -> Done {
             };
             let text = format!(
                 "Stored {} from {shown}.\n{note}\
-                 A running khalid serve answers them once it is started again.\n",
+                 A running khalid serve answers them within a few seconds.\n",
                 counted(stored, "redirect")
             );
             report::text(&text, Exit::Success)

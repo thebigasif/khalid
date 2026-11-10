@@ -5,7 +5,8 @@
 //! same round it moves each page, glossary term, case study and changelog
 //! entry whose `publish_at` has come from `drafts/` to `content/`, which
 //! the next render announces. Once an hour it sends the weekly Search
-//! Console email when a week has passed since the last one.
+//! Console email when a week has passed since the last one. Each round
+//! also reads the stores another process, such as `khalid mcp`, wrote to.
 
 mod entries;
 mod weekly_email;
@@ -23,6 +24,7 @@ use tokio::task::JoinHandle;
 use tokio::time::MissedTickBehavior;
 
 use crate::alerts::Alerting;
+use crate::outside_writes::Reloads;
 
 /// How often the schedules are looked at, so a post goes live at most this
 /// long after its time.
@@ -48,13 +50,15 @@ impl Scheduling {
 }
 
 /// Starts the scheduler on `door` and the drafts of the site `folder`,
-/// raising each post the linter refuses through `alerting`, and sending
-/// the `weekly` email when the site gets one. Must be called inside the
-/// tokio runtime. The first round runs at once, so a time that passed
-/// while the server was stopped is acted on at start.
+/// raising each post the linter refuses through `alerting`, sending the
+/// `weekly` email when the site gets one, and reading the stores in
+/// `reloads` again after another process wrote to them. Must be called
+/// inside the tokio runtime. The first round runs at once, so a time that
+/// passed while the server was stopped is acted on at start.
 pub(crate) fn start(
     (door, folder): (Arc<PublishDoor>, &Path),
     (alerting, weekly): (Arc<Alerting>, Option<Arc<WeeklyEmail>>),
+    mut reloads: Reloads,
 ) -> Scheduling {
     let (stop, mut stopped) = oneshot::channel();
     let folder = folder.to_path_buf();
@@ -87,6 +91,7 @@ pub(crate) fn start(
             for file in moved.await.unwrap_or_default() {
                 tracing::info!(file, "a scheduled entry went live");
             }
+            reloads.round().await;
             // After the posts, so asking Google never holds a post back.
             if let Some(weekly) = weekly.as_ref().filter(|_| rounds.is_multiple_of(HOURLY)) {
                 weekly.round().await;
