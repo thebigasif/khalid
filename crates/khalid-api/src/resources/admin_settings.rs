@@ -50,6 +50,8 @@ pub struct AdminSettings {
     /// The home page's sections from `[reader] home_sections`, top first.
     /// Empty means one list of the newest posts.
     pub home_sections: Vec<HomeSectionSetting>,
+    /// The header and footer menus from `[nav]`.
+    pub nav: NavSetting,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
     /// Whether `site.toml` changes a setting the running server reads only
@@ -95,8 +97,48 @@ pub struct SettingsChange {
     /// Every home section, top first, in place of the old ones. An empty
     /// list goes back to one list of the newest posts.
     pub home_sections: Option<Vec<HomeSectionSetting>>,
+    /// New menus. Each menu sent replaces the old one whole; a menu left
+    /// out stays as it is.
+    pub nav: Option<NavChange>,
     /// The `updated_at` of the copy this change was made on.
     pub updated_at: DateTime<Utc>,
+}
+
+/// The menus every page shows, from `[nav]` in `site.toml`. The footer's
+/// columns, `[[nav.footer_groups]]`, are changed only in the file.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, ToSchema)]
+pub struct NavSetting {
+    /// The main menu in the header, in the order shown.
+    pub primary: Vec<MenuLinkSetting>,
+    /// The menu in the footer, in the order shown.
+    pub footer: Vec<MenuLinkSetting>,
+}
+
+/// New menus for `[nav]`: only the menus sent change.
+#[derive(Debug, Clone, Default, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct NavChange {
+    /// Every link of the header menu, in order. An empty list removes the
+    /// menu.
+    pub primary: Option<Vec<MenuLinkSetting>>,
+    /// Every link of the footer menu, in order. An empty list removes the
+    /// menu.
+    pub footer: Option<Vec<MenuLinkSetting>>,
+}
+
+/// One link in a menu, such as `{"label": "Guides", "href": "/blog/guides/"}`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct MenuLinkSetting {
+    /// The words a reader sees, on one line of at most 160 characters.
+    pub label: String,
+    /// Where it goes: a path on this site, such as `/blog/about/`, or a
+    /// full `http` or `https` address.
+    pub href: String,
+    /// The one language whose pages show the link, such as `de`. Left out,
+    /// every page shows it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub language: Option<String>,
 }
 
 /// One section of the home page: `{"kind": "latest"}`, or a list named

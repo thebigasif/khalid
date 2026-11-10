@@ -14,7 +14,7 @@ use khalid_api::content_store::MemoryContentStore;
 use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
-use khalid_api::resources::{AdminSettings, TemplateSetting};
+use khalid_api::resources::{AdminSettings, NavSetting, TemplateSetting};
 use khalid_api::settings_store::MemorySettings;
 use khalid_core::FixedClock;
 use serde_json::{Value, json};
@@ -55,6 +55,7 @@ fn demo() -> Router {
         privacy: serde_json::Map::new(),
         code: vec![serde_json::from_value(script).unwrap()],
         home_sections: Vec::new(),
+        nav: NavSetting::default(),
         updated_at: Utc.with_ymd_and_hms(2026, 11, 2, 9, 0, 0).unwrap(),
         restart_needed: false,
     };

@@ -1,0 +1,2 @@
+Added
+- The Admin API reads and changes the header and footer menus. `GET /api/admin/v1/settings/` now sends `nav` with the `primary` and `footer` links from `site.toml`, and a `PUT` with `nav` saves them back as `[[nav.primary]]` and `[[nav.footer]]` tables, keeping the rest of the file as written. A link that is not a path on the site or a full address is refused and nothing is saved. `khalid serve` shows a saved menu on the next page, with no restart. See `docs/navigation.md`.

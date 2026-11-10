@@ -23,6 +23,7 @@ use crate::settings_events;
 use crate::site_config;
 
 mod home;
+mod nav;
 mod parts;
 mod privacy;
 
@@ -130,6 +131,7 @@ impl SiteSettings {
             privacy: privacy::privacy_table(text)?,
             code: privacy::code_entries(text)?,
             home_sections: home::sections(&config),
+            nav: nav::menus(&config),
             updated_at: changed,
             restart_needed,
         })
@@ -190,6 +192,9 @@ impl SiteSettings {
         }
         if let Some(sections) = change.home_sections {
             home::set_sections(&mut document, sections);
+        }
+        if let Some(menus) = change.nav {
+            nav::set_menus(&mut document, menus);
         }
         if let Some(entries) = change.code {
             privacy::set_code(&mut document, entries)?;

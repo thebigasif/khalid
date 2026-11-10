@@ -523,6 +523,8 @@ export type AdminSettings = {
   mount: string;
   /** The site's name. */
   name: string;
+  /** The header and footer menus from `[nav]`. */
+  nav: NavSetting;
   /** The `[privacy]` table as `site.toml` writes it, one key per part such as `lifetime_months`, `gpc`, `counts`, `external_tool`, `text` or `contact`. A setting left out keeps its default. */
   privacy: Record<string, unknown>;
   /** Whether `site.toml` changes a setting the running server reads only at start, such as `mount`, `mode`, `address`, `languages` or `[code]`, so a restart is needed to apply it. A change to `name`, `[template]`, `[seo]` or `[privacy]` alone is in use once saved. */
@@ -1374,6 +1376,16 @@ export type MenuLink = {
   url: string;
 };
 
+/** One link in a menu, such as `{"label": "Guides", "href": "/blog/guides/"}`. */
+export type MenuLinkSetting = {
+  /** Where it goes: a path on this site, such as `/blog/about/`, or a full `http` or `https` address. */
+  href: string;
+  /** The words a reader sees, on one line of at most 160 characters. */
+  label: string;
+  /** The one language whose pages show the link, such as `de`. Left out, every page shows it. */
+  language?: string | null;
+};
+
 /** The `meta` object beside every list (`docs/standards/api.md`). */
 export type Meta = {
   pagination: Pagination;
@@ -1393,6 +1405,22 @@ export type Mover = {
   title: string;
   /** The page's full address. */
   url: string;
+};
+
+/** New menus for `[nav]`: only the menus sent change. */
+export type NavChange = {
+  /** Every link of the footer menu, in order. An empty list removes the menu. */
+  footer?: MenuLinkSetting[] | null;
+  /** Every link of the header menu, in order. An empty list removes the menu. */
+  primary?: MenuLinkSetting[] | null;
+};
+
+/** The menus every page shows, from `[nav]` in `site.toml`. The footer's columns, `[[nav.footer_groups]]`, are changed only in the file. */
+export type NavSetting = {
+  /** The menu in the footer, in the order shown. */
+  footer: MenuLinkSetting[];
+  /** The main menu in the header, in the order shown. */
+  primary: MenuLinkSetting[];
 };
 
 export type Navigation = {
@@ -2267,6 +2295,7 @@ export type SettingsChange = {
   mount?: string | null;
   /** A new name. */
   name?: string | null;
+  nav?: NavChange | null;
   /** New parts of the `[privacy]` table, each replacing the part of that name whole, such as `{"lifetime_months": 12}`. `null` removes a part, so it goes back to its default. Parts left out stay as they are. */
   privacy?: Record<string, unknown> | null;
   /** New parts of the `[seo]` table, each replacing the part of that name whole, such as `{"titles": {"separator": "·"}}`. `null` removes a part, so its settings go back to their defaults. Parts left out stay as they are. */
