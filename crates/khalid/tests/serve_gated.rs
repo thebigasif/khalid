@@ -22,6 +22,19 @@ const POST: &str = "/blog/what-a-sitemap-does/";
 /// The gated part's body, which only a subscriber reads.
 const SECRET: &str = "The full sitemap checklist";
 
+/// The folder post that gets a gated part of its own.
+const FOLDER_POST: &str = "/blog/fixing-slow-pages/";
+
+/// The folder post's gated part: its third section, so the post gets a
+/// table of contents only when it is open.
+const FOLDER_GATED: &str = "
+:::gated{note=\"Subscribers read on.\" label=\"Your email address\" button=\"Read on\"}
+## Measure again
+
+Check the page weight once more after each fix.
+:::
+";
+
 /// A running `khalid serve`, stopped when dropped.
 struct Server {
     child: Child,
@@ -66,6 +79,10 @@ fn gated_site(stub: &StubSmtp) -> TempDir {
          button=\"Read the rest\"}}\n{SECRET}, step by step.\n:::\n"
     );
     fs::write(&post, format!("{text}{gated}")).unwrap();
+    let mut folder = temp.path().to_path_buf();
+    folder.push("content/en/posts/2026-10-05-fixing-slow-pages/index.md");
+    let text = fs::read_to_string(&folder).unwrap();
+    fs::write(&folder, format!("{text}{FOLDER_GATED}")).unwrap();
     let mut settings = temp.path().to_path_buf();
     settings.push("site.toml");
     let text = fs::read_to_string(&settings).unwrap();
@@ -161,6 +178,20 @@ fn after_the_full_render(server: &Server) -> (u16, String, String) {
     send(server, &format!("GET {POST} HTTP/1.1"), "")
 }
 
+/// With `cookie`, the folder post's open page lists the gated part's
+/// heading in its table of contents, which the public page has none of.
+#[cfg(test)]
+fn the_open_page_is_finished_as_the_public_one(server: &Server, cookie: &str) {
+    let contents = "<li><a href=\"#measure-again\">Measure again</a>";
+    let public = send(server, &format!("GET {FOLDER_POST} HTTP/1.1"), "").2;
+    assert!(!public.contains("Measure again"), "{public}");
+    let opened = format!("GET {FOLDER_POST} HTTP/1.1\r\nCookie: {cookie}");
+    let (status, _, page) = send(server, &opened, "");
+    assert_eq!(status, 200, "{page}");
+    assert!(page.contains("<h2 id=\"measure-again\">"), "{page}");
+    assert!(page.contains(contents), "the contents list it: {page}");
+}
+
 #[test]
 fn a_reader_who_confirms_reads_the_gated_part_with_scripts_off() {
     let stub = StubSmtp::start().unwrap();
@@ -204,6 +235,7 @@ fn a_reader_who_confirms_reads_the_gated_part_with_scripts_off() {
     assert_eq!(header(&head, "cache-control"), Some("private, no-store"));
     let forged = format!("GET {POST} HTTP/1.1\r\nCookie: khalid_reader=1.00");
     assert!(!send(&server, &forged, "").2.contains(SECRET));
+    the_open_page_is_finished_as_the_public_one(&server, &cookie);
 
     let (status, _, _) = send(&server, "POST /subscribe HTTP/1.1", form);
     assert_eq!(status, 200);

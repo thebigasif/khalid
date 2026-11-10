@@ -3,7 +3,7 @@
 
 use khalid_core::Slug;
 
-use super::{Renderer, attribute, inside};
+use super::{Noted, Renderer, attribute, inside};
 use crate::directive::TRAP;
 use crate::{Block, FormField};
 
@@ -127,6 +127,11 @@ impl Renderer<'_> {
             }
             Gated::Locked { back } => back,
         };
+        // The part's headings take their ids unseen and unlisted, so each
+        // heading has the same id on the public page as on the open one.
+        self.ids.stop_listing();
+        self.markdown_html(&inside(&block.source), Noted::No);
+        self.ids.list_again();
         self.push(&[
             "<section class=\"gated\">\n<p class=\"gated-note\">",
             &attribute(note),
