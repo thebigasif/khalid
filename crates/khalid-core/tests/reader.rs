@@ -80,6 +80,25 @@ fn home_sections_keep_their_order() {
 }
 
 #[test]
+fn a_list_mixes_word_sections_and_named_ones_in_its_order() {
+    let config = read(
+        "[reader]\nhome_sections = [\"featured\", { category = \"technical-seo\" }, \
+         \"newsletter\", { series = \"link-building-101\" }, \"latest\"]\n",
+    )
+    .unwrap();
+    assert_eq!(
+        config.reader().home_sections,
+        [
+            HomeSection::Featured,
+            HomeSection::Category(slug("technical-seo")),
+            HomeSection::Newsletter,
+            HomeSection::Series(slug("link-building-101")),
+            HomeSection::Latest,
+        ]
+    );
+}
+
+#[test]
 fn refuses_an_unknown_reader_feature() {
     let message = read("[reader]\ndark_mode = true\n").unwrap_err();
     assert!(
@@ -95,7 +114,7 @@ fn refuses_a_home_section_of_an_unknown_kind() {
     let message = read("[[reader.home_sections]]\nauthor = \"lena-vogt\"\n").unwrap_err();
     assert!(
         message.contains(
-            "unknown variant `author`, expected one of `category`, `collection`, `channel`"
+            "unknown variant `author`, expected one of `latest`, `featured`, `newsletter`, `category`, `collection`, `channel`, `series`"
         ),
         "{message}"
     );
