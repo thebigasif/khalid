@@ -45,6 +45,7 @@ pub struct Config {
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     preview_link_lifetime: Duration,
+    trash_days: Option<u16>,
     ai: AiSettings,
     ghost_content_api: bool,
 }
@@ -126,6 +127,8 @@ struct SiteFile {
     ghost_content_api: bool,
     preview_link_days: Option<u64>,
     preview_link_hours: Option<u64>,
+    #[serde(default = "default_trash_days")]
+    trash_days: u16,
 }
 
 /// The value of the process's environment variable `name`, or `None` when
@@ -153,6 +156,17 @@ const MOST_HOURS: u64 = 30 * 24;
 
 /// How long a preview link works when `site.toml` does not say, 7 days.
 const DEFAULT_HOURS: u64 = 7 * 24;
+
+/// How many days a deleted post waits in the trash when `site.toml` does
+/// not say.
+const DEFAULT_TRASH_DAYS: u16 = 30;
+
+/// The most days `trash_days` may set, ten years.
+const MOST_TRASH_DAYS: u16 = 3650;
+
+fn default_trash_days() -> u16 {
+    DEFAULT_TRASH_DAYS
+}
 
 /// The preview link lifetime `file` sets, or the key it is set under and
 /// what is wrong with it.
@@ -291,6 +305,10 @@ impl Config {
                 return Err(field("bucket", missing));
             }
         }
+        if file.trash_days > MOST_TRASH_DAYS {
+            let most = "the trash keeps a deleted post for up to 3650 days, so use 1 to 3650, or 0 to never empty it";
+            return Err(field("trash_days", most));
+        }
         let mail = file.mail.take().map(|table| table.check(env)).transpose();
         let mail = mail.map_err(|(key, problem)| in_table(path, text, "[mail", key, problem))?;
         tables_mistake(&file, mail.as_ref(), path, text)?;
@@ -329,6 +347,7 @@ impl Config {
             search_console,
             visitor_log: file.visitor_log,
             preview_link_lifetime,
+            trash_days: (file.trash_days > 0).then_some(file.trash_days),
             ai: file.ai,
             ghost_content_api: file.ghost_content_api,
         })
@@ -377,6 +396,13 @@ impl Config {
     /// `preview_link_days` or `preview_link_hours`, from 1 hour to 30 days.
     pub fn preview_link_lifetime(&self) -> Duration {
         self.preview_link_lifetime
+    }
+
+    /// How many days a deleted post waits in the trash before `khalid
+    /// serve` empties it: 30 unless `site.toml` sets `trash_days`, up to
+    /// 3650, or `None` when it sets 0 and the trash is never emptied.
+    pub fn trash_days(&self) -> Option<u16> {
+        self.trash_days
     }
 
     /// Whether each visit is logged and for how long, from `[visitor_log]`;
