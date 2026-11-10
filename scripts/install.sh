@@ -111,8 +111,21 @@ if [ "$systemd" = "yes" ]; then
     exit 1
   fi
   sed "s#/usr/local/bin/khalid#$dir/khalid#" "$work/khalid.service" >/etc/systemd/system/khalid.service
+  # Ubuntu has systemd-sysusers but no /etc/sysusers.d until something
+  # puts a file there. Older systems have no systemd-sysusers at all.
+  mkdir -p /etc/sysusers.d
   cp "$work/khalid.sysusers" /etc/sysusers.d/khalid.conf
-  systemd-sysusers
+  if command -v systemd-sysusers >/dev/null 2>&1; then
+    systemd-sysusers /etc/sysusers.d/khalid.conf
+  elif ! id khalid >/dev/null 2>&1; then
+    if ! command -v useradd >/dev/null 2>&1; then
+      printf 'The khalid service was not set up. It runs as a khalid user, and this system has no systemd-sysusers or useradd to make one.\n' >&2
+      printf 'The binary is installed. Make a system user named khalid with the home folder /var/lib/khalid, then run the script again.\n' >&2
+      exit 1
+    fi
+    useradd --system --user-group --home-dir /var/lib/khalid --no-create-home \
+      --shell "$(command -v nologin || echo /bin/false)" --comment "Khalid blog engine" khalid
+  fi
   install -d -o khalid -g khalid -m 0750 /var/lib/khalid
   systemctl daemon-reload
   printf 'Installed the khalid service. Make a site, then start it:\n'
