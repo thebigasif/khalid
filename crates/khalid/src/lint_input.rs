@@ -14,10 +14,10 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_content::{
-    BlockKind, Document, Link, PostFront, SiteContent, StructuredBlock, TopicCluster, TopicRole,
-    Wikilinks, parse_blocks, render_linked,
+    BlockKind, Document, Link, PostFront, Rendered, SiteContent, StructuredBlock, TopicCluster,
+    TopicRole, Wikilinks, parse_blocks, render_linked,
 };
-use khalid_core::{Config, Locale, Slug};
+use khalid_core::{Config, Locale, Slug, UserMessage};
 use khalid_lint::{
     Cluster, ClusterRole, GlossaryTerm, Heading, HeadingLevel, Image, LinkKind, LintCollection,
     LintFact, LintForm, LintLink, LintPost, LintSite, PageRef, StructuredDataGap,
@@ -198,7 +198,7 @@ pub(crate) fn lint_parts(
     let address = PostAddress::new(parts.collection, parts.locale, &slug, front.date);
     let path = input.routes.address(config, &address).ok();
     let rest = routed(config, &input.routes, parts.locale, &address, parts.path).ok();
-    let gaps = rest.map(|rest| gaps(parts, input, &rest, &slug));
+    let gaps = rest.map(|rest| gaps((parts, config, input), &rest, &slug, &rendered));
     let brief = input.briefs.get(&(parts.locale.clone(), slug.clone()));
     let mut post = LintPost::new(parts.locale.clone(), slug);
     post.brief = brief.cloned();
@@ -262,14 +262,16 @@ pub(crate) fn lint_parts(
 }
 
 /// The properties Google needs that the schema graph of the page `parts`
-/// becomes lacks, its address ending in `rest` and its slug `slug`, as
-/// `khalid-seo` checks the graph. A post with no date has no page yet, and
-/// so no gaps.
+/// becomes lacks, its address ending in `rest`, its slug `slug` and its
+/// body `rendered`, as `khalid-seo` checks the graph the build writes: its
+/// base graph, the schema of its blocks, its collection's schema templates
+/// and its hand-written JSON-LD (plan D-9). A post with no date has no page
+/// yet, and so no gaps.
 fn gaps(
-    parts: &PostParts<'_>,
-    input: &LintInput,
+    (parts, config, input): (&PostParts<'_>, &Config, &LintInput),
     rest: &str,
     slug: &Slug,
+    rendered: &Rendered,
 ) -> Vec<StructuredDataGap> {
     let (Some(site), Some(date)) = (&input.seo, parts.front.date) else {
         return Vec::new();
@@ -279,8 +281,36 @@ fn gaps(
     let Ok(mut page) = build_seo::post(parts.locale, (rest, &title), front, date) else {
         return Vec::new();
     };
-    page.author = front.author.as_ref().map(Slug::to_string);
+    // A block or schema field the build cannot write stops `khalid build`
+    // with its own message, so the check reads what could be written.
+    let _ = with_schema(&mut page, (parts, config), rest, rendered);
     build_seo::structured_data_gaps(site, &page)
+}
+
+/// Fills `page`, the SEO page of the post made of `parts` at the address
+/// ending in `rest`, with what its schema graph carries besides the base
+/// graph, as `khalid build` fills it: its collection, which picks the
+/// schema templates, its author by slug, the schema of the blocks of its
+/// body `rendered` and its hand-written JSON-LD.
+///
+/// # Errors
+///
+/// A [`UserMessage`] when a block cannot be written as schema, or the
+/// schema field is not JSON-LD.
+fn with_schema(
+    page: &mut SeoPage,
+    (parts, config): (&PostParts<'_>, &Config),
+    rest: &str,
+    rendered: &Rendered,
+) -> Result<(), UserMessage> {
+    page.collection = Some(parts.collection.to_owned());
+    page.author = parts.front.author.as_ref().map(Slug::to_string);
+    let path = path_of(config, parts.locale, rest);
+    let author = page.author.clone().unwrap_or_default();
+    let body = (&rendered.structured[..], &rendered.links[..]);
+    build_schema::fill(page, config, (path.as_str(), &author), body)?;
+    page.custom_schema = build_schema::custom(parts.path, parts.front.schema.as_deref())?;
+    Ok(())
 }
 
 /// The site, and the SEO page the post made of `parts` becomes on it, as
@@ -305,14 +335,8 @@ pub(crate) fn seo_page<'i>(
     let rest = routed(config, &input.routes, parts.locale, &address, parts.path).ok()?;
     let title = front.title.clone().unwrap_or_else(|| slug.to_string());
     let mut page = build_seo::post(parts.locale, (&rest, &title), front, front.date?).ok()?;
-    page.collection = Some(parts.collection.to_owned());
     page.content_html = build_seo::full_addresses(config, &rendered.html);
-    page.author = front.author.as_ref().map(Slug::to_string);
-    let by = (path_of(config, parts.locale, &rest), page.author.clone());
-    let body = (&rendered.structured[..], &rendered.links[..]);
-    let by = (by.0.as_str(), by.1.as_deref().unwrap_or_default());
-    build_schema::fill(&mut page, config, by, body).ok()?;
-    page.custom_schema = build_schema::custom(parts.path, front.schema.as_deref()).ok()?;
+    with_schema(&mut page, (parts, config), &rest, &rendered).ok()?;
     Some((site, page))
 }
 
