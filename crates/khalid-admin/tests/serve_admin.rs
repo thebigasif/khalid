@@ -35,8 +35,19 @@ async fn get_under(
     files: &'static [Asset],
     path: &str,
 ) -> (StatusCode, HeaderMap, String) {
+    get_in(mount, "admin", files, path).await
+}
+
+#[cfg(test)]
+async fn get_in(
+    mount: &str,
+    folder: &str,
+    files: &'static [Asset],
+    path: &str,
+) -> (StatusCode, HeaderMap, String) {
     let blog = Blog {
         mount,
+        folder,
         name: "Field notes",
         logo: None,
         accent: None,
@@ -77,6 +88,7 @@ async fn the_page_names_the_blog_and_its_logo_for_the_sign_in_screen() {
     assert!(!body.contains("khalid-logo"), "no logo, no meta: {body}");
     let blog = Blog {
         mount: "/",
+        folder: "admin",
         name: "Lena's \"Bakes\" & <Cakes>",
         logo: Some("https://example.com/logo.svg"),
         accent: None,
@@ -99,6 +111,7 @@ async fn the_page_names_the_themes_accent_so_the_admin_wears_it() {
     );
     let blog = Blog {
         mount: "/",
+        folder: "admin",
         name: "Field notes",
         logo: None,
         accent: Some("#7c3aed"),
@@ -140,6 +153,31 @@ async fn under_a_mount_an_old_admin_address_moves_into_it() {
         assert_eq!(status, StatusCode::PERMANENT_REDIRECT, "{old}");
         assert_eq!(headers[header::LOCATION], new, "{old}");
     }
+}
+
+#[tokio::test]
+async fn a_folder_set_in_site_toml_takes_the_admins_place() {
+    let (status, _, body) = get_in("/blog/", "studio", BUILT, "/blog/studio/posts/01JB").await;
+    assert_eq!(status, StatusCode::OK);
+    assert!(
+        body.contains("src=\"/blog/studio/assets/index-4f2a.js\""),
+        "{body}"
+    );
+    assert!(
+        body.contains("<meta name=\"khalid-admin-folder\" content=\"studio\">"),
+        "{body}"
+    );
+    let (status, headers, _) = get_in("/blog/", "studio", BUILT, "/blog/studio").await;
+    assert_eq!(status, StatusCode::PERMANENT_REDIRECT);
+    assert_eq!(headers[header::LOCATION], "/blog/studio/");
+    for old in ["/admin/", "/blog/admin/", "/blog/admin/posts"] {
+        let (status, _, _) = get_in("/blog/", "studio", BUILT, old).await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "{old}");
+    }
+    let (status, _, _) = get_in("/", "studio", BUILT, "/studio/").await;
+    assert_eq!(status, StatusCode::OK);
+    let (status, _, _) = get_in("/", "studio", BUILT, "/admin/").await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
 }
 
 #[tokio::test]

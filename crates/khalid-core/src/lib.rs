@@ -13,6 +13,7 @@
 //! I/O is reading the system clock and resolving a [`SitePath`] on disk.
 
 mod absolute_url;
+mod admin_folder;
 mod ai_page_settings;
 mod ai_settings;
 mod alert_settings;
@@ -52,6 +53,7 @@ mod user_message;
 mod visitor_log_settings;
 
 pub use absolute_url::{AbsoluteUrl, ParseUrlError};
+pub use admin_folder::{AdminFolder, ParseAdminFolderError};
 pub use ai_page_settings::{AiPageSettings, AiPageText, LlmsTxtSettings};
 pub use ai_settings::{AiProvider, AiSettings};
 pub use alert_settings::AlertSettings;

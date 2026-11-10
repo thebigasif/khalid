@@ -60,6 +60,8 @@ struct Toolbar {
     mount: String,
     /// The last lint result of each post.
     lints: LintMemo,
+    /// The admin's path, such as `/blog/admin`.
+    admin: String,
 }
 
 /// `router`, the site's pages, with the bar on each page staff of site
@@ -77,6 +79,7 @@ pub(crate) fn start(
         clock: Arc::new(SystemClock),
         mount: config.mount().to_owned(),
         lints: LintMemo::default(),
+        admin: staff::admin_path(config),
     };
     router.layer(middleware::from_fn_with_state(Arc::new(toolbar), show))
 }
@@ -158,7 +161,7 @@ impl Toolbar {
 
     /// The bar for the page at `path`.
     async fn bar(&self, path: &str) -> String {
-        let admin = format!("{}admin", self.mount);
+        let admin = &self.admin;
         let opening = format!(
             "<link rel=\"stylesheet\" href=\"{}\"><aside class=\"khalid-toolbar\" \
              aria-label=\"Staff toolbar\"><p>You are signed in. Readers do not see this bar.</p>",
