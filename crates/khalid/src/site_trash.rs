@@ -8,7 +8,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::PoisonError;
 
-use chrono::NaiveDateTime;
+use chrono::{NaiveDateTime, TimeDelta};
 use khalid_api::content_store::BoxFuture;
 use khalid_api::post_store::PostStoreError;
 use khalid_api::post_trash::{self, PostTrash, TrashError, Trashed};
@@ -17,6 +17,7 @@ use khalid_content::parse_post;
 use khalid_core::SitePath;
 
 use super::{Site, SitePosts, blocking, failure};
+use crate::site_pages::reload::LiveConfig;
 
 /// The trash folder at the top of a site.
 const TRASH: &str = "trash";
@@ -133,6 +134,44 @@ impl Site {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         self.listed(key).ok_or(TrashError::NotFound)?;
         fs::remove_dir_all(self.trashed_at(key)).map_err(|e| PostStoreError::new(e).into())
+    }
+
+    /// Deletes for good each copy deleted more than the site's
+    /// `trash_days` ago and answers their keys; none when it is 0. A
+    /// folder in `trash/` that is not a readable copy is left alone.
+    fn empty_old_now(&self) -> Result<Vec<String>, PostStoreError> {
+        let config = (self.live.get()).map_or_else(|| self.config.clone(), LiveConfig::now);
+        let Some(days) = config.trash_days() else {
+            return Ok(Vec::new());
+        };
+        let before = self.clock.now() - TimeDelta::days(i64::from(days));
+        let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
+        let mut emptied = Vec::new();
+        for old in self.trashed_now()? {
+            if old.trashed_at < before {
+                fs::remove_dir_all(self.trashed_at(&old.key)).map_err(PostStoreError::new)?;
+                emptied.push(old.key);
+            }
+        }
+        Ok(emptied)
+    }
+}
+
+impl SitePosts {
+    /// The site folder these posts are in.
+    pub(crate) fn folder(&self) -> &Path {
+        &self.0.folder
+    }
+
+    /// Deletes for good each post that has waited in the trash longer
+    /// than the site's `trash_days`, and answers their keys.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when the trash cannot be read or a copy
+    /// cannot be removed.
+    pub(crate) async fn empty_old_trash(&self) -> Result<Vec<String>, PostStoreError> {
+        blocking(&self.0, Site::empty_old_now).await
     }
 }
 

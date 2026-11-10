@@ -40,6 +40,16 @@ The answer is stored as a redirect under Redirects once the post is in the
 trash. Putting the post back from the trash keeps the redirect; remove it
 under Redirects.
 
+A post waits in the trash for 30 days, then `khalid serve` deletes it for
+good. It looks at start and then once an hour. To keep posts longer or
+shorter, set the number of days in `site.toml`, up to 3650:
+
+```toml
+trash_days = 90
+```
+
+`trash_days = 0` keeps every deleted post until you delete it yourself.
+
 ## Bulk SEO
 
 One table edits the SEO title, the description and the focus keyword of

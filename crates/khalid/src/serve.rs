@@ -222,7 +222,7 @@ fn serve_with(
             unlocking((site, config), (database, id), &source, shown_pages),
         )?;
         posts.follow(source.live_config());
-        let scheduling = scheduler::start((Arc::clone(&door), site.to_path_buf()), alerting);
+        let scheduling = scheduler::start((Arc::clone(&door), posts.clone()), alerting);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =

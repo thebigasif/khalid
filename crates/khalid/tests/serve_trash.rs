@@ -94,6 +94,42 @@ fn a_post_deleted_for_good_leaves_nothing_behind() {
     assert!(under(site.path(), &["content", "en", "posts"]).is_dir());
 }
 
+/// Puts draft `slug` in the trash of `site`, deleted at `stamp`, and
+/// answers its folder.
+#[cfg(test)]
+fn trashed_draft(site: &Path, stamp: &str, slug: &str) -> PathBuf {
+    let key = format!("{stamp}-en.{slug}");
+    let folder = under(site, &["trash", &key]);
+    let file = under(&folder, &["drafts", "en", &format!("{slug}.md")]);
+    fs::create_dir_all(file.parent().unwrap()).unwrap();
+    let text = format!("---\ntitle: A deleted draft\nslug: {slug}\n---\n\nWords.\n");
+    fs::write(&file, text).unwrap();
+    folder
+}
+
+#[test]
+fn the_trash_empties_copies_older_than_trash_days_on_its_own() {
+    use khalid_core::{Clock, SystemClock};
+
+    let site = demo_copy();
+    let now = SystemClock.now();
+    let stamp = |days| (now - chrono::TimeDelta::days(days)).format("%Y%m%dT%H%M%SZ");
+    let old = trashed_draft(site.path(), &stamp(31).to_string(), "old-draft");
+    let recent = trashed_draft(site.path(), &stamp(29).to_string(), "recent-draft");
+    let key = new_key(site.path(), &["--name", "Owner", "--scope", "admin:all"]);
+    let server = start(site.path(), &key);
+    let mut waited = 0;
+    while old.exists() && waited < 100 {
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        waited += 1;
+    }
+    assert!(!old.exists(), "a copy 31 days old is still in the trash");
+    assert!(recent.is_dir(), "a copy 29 days old was emptied");
+    let (_, trash) = server.admin("GET", "/api/admin/v1/trash/", None);
+    assert_eq!(trash["trash"][0]["id"], "en.recent-draft", "{trash}");
+    assert_eq!(trash["trash"].as_array().map(Vec::len), Some(1), "{trash}");
+}
+
 #[test]
 fn a_draft_comes_back_to_drafts_unless_its_address_was_taken() {
     let site = demo_copy();
