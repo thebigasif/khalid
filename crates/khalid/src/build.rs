@@ -109,10 +109,25 @@ pub(crate) fn into_folder(
     clock: &dyn Clock,
     output: Output,
 ) -> Result<Built, Exit> {
-    let fail = |message| report::failure(output, &message, Exit::Failure);
-    let refused = build_gate::screen(site, (config, routes, content), clock).map_err(fail)?;
+    quietly(site, (config, routes, content), out, clock)
+        .map_err(|message| report::failure(output, &message, Exit::Failure))
+}
+
+/// Builds the checked site into `out` as [`into_folder`] does, printing
+/// nothing, for the nightly audit in `khalid serve`.
+///
+/// # Errors
+///
+/// Returns the message of the first check or write that fails.
+pub(crate) fn quietly(
+    site: &Path,
+    (config, routes, content): (&Config, &Routes, &SiteContent),
+    out: &Path,
+    clock: &dyn Clock,
+) -> Result<Built, UserMessage> {
+    let refused = build_gate::screen(site, (config, routes, content), clock)?;
     let published = build_gate::published(content, &refused);
-    let pages = build(site, config, routes, &published, out, clock).map_err(fail)?;
+    let pages = build(site, config, routes, &published, out, clock)?;
     let (left_files, left_out) = refused
         .into_iter()
         .map(|post| (post.path, post.report))
