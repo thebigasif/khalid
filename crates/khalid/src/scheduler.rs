@@ -4,7 +4,8 @@
 //! announced like any other (CTO answers 2026-10-27, section 4). In the
 //! same round it moves each page, glossary term, case study and changelog
 //! entry whose `publish_at` has come from `drafts/` to `content/`, which
-//! the next render announces. Once an hour it sends the weekly Search
+//! the next render announces, and tries again each form answer email
+//! whose next try has come (G40). Once an hour it sends the weekly Search
 //! Console email when a week has passed since the last one.
 
 mod entries;
@@ -23,6 +24,7 @@ use tokio::task::JoinHandle;
 use tokio::time::MissedTickBehavior;
 
 use crate::alerts::Alerting;
+use crate::form_delivery::FormRetry;
 
 /// How often the schedules are looked at, so a post goes live at most this
 /// long after its time.
@@ -48,12 +50,13 @@ impl Scheduling {
 }
 
 /// Starts the scheduler on `door` and the drafts of the site `folder`,
-/// raising each post the linter refuses through `alerting`, and sending
-/// the `weekly` email when the site gets one. Must be called inside the
-/// tokio runtime. The first round runs at once, so a time that passed
-/// while the server was stopped is acted on at start.
+/// raising each post the linter refuses through `alerting`, trying again
+/// each form email `forms` holds whose time has come, and sending the
+/// `weekly` email when the site gets one. Must be called inside the tokio
+/// runtime. The first round runs at once, so a time that passed while the
+/// server was stopped is acted on at start.
 pub(crate) fn start(
-    (door, folder): (Arc<PublishDoor>, &Path),
+    (door, folder, forms): (Arc<PublishDoor>, &Path, Option<Arc<FormRetry>>),
     (alerting, weekly): (Arc<Alerting>, Option<Arc<WeeklyEmail>>),
 ) -> Scheduling {
     let (stop, mut stopped) = oneshot::channel();
@@ -86,6 +89,9 @@ pub(crate) fn start(
                 tokio::task::spawn_blocking(move || entries::publish_due(&site, SystemClock.now()));
             for file in moved.await.unwrap_or_default() {
                 tracing::info!(file, "a scheduled entry went live");
+            }
+            if let Some(forms) = &forms {
+                forms.round().await;
             }
             // After the posts, so asking Google never holds a post back.
             if let Some(weekly) = weekly.as_ref().filter(|_| rounds.is_multiple_of(HOURLY)) {
