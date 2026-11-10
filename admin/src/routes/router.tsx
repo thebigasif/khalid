@@ -30,6 +30,7 @@ import { Look } from "./Look";
 import { Media } from "./Media";
 import { MediaDetails } from "./MediaDetails";
 import { NewPost } from "./NewPost";
+import { Pages } from "./Pages";
 import { Passkeys } from "./Passkeys";
 import { Posts } from "./Posts";
 import { Privacy } from "./Privacy";
@@ -40,6 +41,7 @@ import { SeoSettings } from "./SeoSettings";
 import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
+import { SitePage } from "./SitePage";
 import { Sites } from "./Sites";
 import { Subscribers } from "./Subscribers";
 import { Team } from "./Team";
@@ -196,6 +198,15 @@ const tags = createRoute({
   component: lazyRouteComponent(() => import("./Tags"), "Tags"),
 });
 
+// The site's pages, such as About: files beside the posts, live once saved.
+const pages = createRoute({ getParentRoute: () => signedIn, path: "/pages", component: Pages });
+
+const sitePage = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/pages/$id",
+  component: SitePage,
+});
+
 const keys = createRoute({ getParentRoute: () => signedIn, path: "/keys", component: Keys });
 
 const webhooks = createRoute({
@@ -284,6 +295,8 @@ const routeTree = root.addChildren([
     authors,
     authorPage,
     tags,
+    pages,
+    sitePage,
     trash,
     audit,
     redirects,

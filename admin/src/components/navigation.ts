@@ -1,6 +1,7 @@
 import { calendarWords } from "../strings/calendarWords";
 import { en } from "../strings/en";
 import { navWords } from "../strings/navWords";
+import { pagesWords } from "../strings/pagesWords";
 import { privacyWords } from "../strings/privacyWords";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { seoToolWords } from "../strings/seoToolWords";
@@ -27,6 +28,7 @@ export type NavPath =
   | "/navigation"
   | "/authors"
   | "/tags"
+  | "/pages"
   | "/redirects"
   | "/schema-templates"
   | "/settings"
@@ -80,6 +82,7 @@ export const NAV: NavGroup[] = [
       { to: "/navigation", label: navWords.nav, icon: "menu" },
       { to: "/authors", label: en.nav.authors, icon: "person" },
       { to: "/tags", label: shellWords.tags, icon: "tag" },
+      { to: "/pages", label: pagesWords.nav, icon: "posts" },
       { to: "/redirects", label: en.nav.redirects, icon: "redirect" },
       { to: "/schema-templates", label: en.nav.templates, icon: "braces" },
       { to: "/seo", label: seoWords.title, icon: "target" },
