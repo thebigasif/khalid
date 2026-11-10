@@ -17139,6 +17139,7 @@
           "id",
           "slug",
           "title",
+          "tags",
           "status",
           "review_state",
           "review_due",
@@ -17159,6 +17160,14 @@
             ],
             "description": "The author's slug, if any.",
             "example": "asif"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The category's slug, if any. A list filters by this, such as\n`category:on-page-seo`.",
+            "example": "on-page-seo"
           },
           "cluster": {
             "oneOf": [
@@ -17252,6 +17261,16 @@
             "$ref": "#/components/schemas/PostStatus",
             "description": "Draft, published or scheduled."
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags' names, in the order written. A list filters by one, such\nas `tag:'internal links'`.",
+            "example": [
+              "internal links"
+            ]
+          },
           "title": {
             "type": "string",
             "description": "The title."
@@ -17331,6 +17350,7 @@
         "description": "A post's settings beside its title and body. Every setting has a\nvalue: empty lists, `false`, `draft` and `null` when never set.",
         "required": [
           "co_authors",
+          "tags",
           "featured",
           "review_state",
           "share_cards",
@@ -17361,6 +17381,14 @@
             ],
             "description": "The address search engines should credit instead of this post.",
             "example": "https://example.com/original/"
+          },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The slug of the category the post belongs to, one of the site's\ncategories, or `null` for none.",
+            "example": "on-page-seo"
           },
           "co_authors": {
             "type": "array",
@@ -17483,6 +17511,16 @@
           "share_cards": {
             "$ref": "#/components/schemas/ShareCards",
             "description": "How the post looks when shared on X and Facebook."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tags' names, such as `internal links`, in the order written.",
+            "example": [
+              "internal links"
+            ]
           },
           "template": {
             "type": [
@@ -18315,6 +18353,14 @@
             "description": "A new canonical address, or `null` for the post's own.",
             "example": "https://example.com/original/"
           },
+          "category": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new category's slug, one of the site's categories, or `null` for\nnone.",
+            "example": "on-page-seo"
+          },
           "co_authors": {
             "type": [
               "array",
@@ -18452,6 +18498,19 @@
               {
                 "type": "null"
               }
+            ]
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every tag's name, all of them; an empty list for none. No name may\nbe listed twice, whatever its capitals.",
+            "example": [
+              "internal links"
             ]
           },
           "template": {

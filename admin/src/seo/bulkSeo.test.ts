@@ -15,6 +15,7 @@ const POST: AdminPost = {
     review_state: "ready",
     access: "public",
     password_protected: false,
+    tags: [],
     share_cards: {},
     aliases: [],
     excerpt: "How to pick the words of a link.",

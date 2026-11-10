@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { redirectsBlog } from "../../test/redirects";
@@ -125,6 +125,81 @@ describe("changing many posts at once", () => {
           status: 301,
         },
       ],
+    });
+  });
+});
+
+describe("tagging and filing many posts at once", () => {
+  const TAGGED = row({ ...CLUSTER, tags: ["Internal links", "clusters"] });
+
+  it("adds a tag only to the posts that lack it, after the tags they have", async () => {
+    signedIn();
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([LINKS, TAGGED]),
+      "PUT /posts/01JA/": () => json(200, { posts: [{ id: LINKS.id }] }),
+    });
+    renderAt("/posts");
+    await tickBoth();
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    await userEvent.selectOptions(within(form).getByLabelText(en.bulk.action), "addTag");
+    await userEvent.type(within(form).getByLabelText(en.bulk.newTag), " internal links ");
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(2) }));
+    expect(await screen.findByText(en.bulk.done(1))).toBeVisible();
+    const puts = sent.filter((request) => request.method === "PUT");
+    expect(puts).toHaveLength(1);
+    expect(await puts[0]?.json()).toEqual({
+      posts: [{ updated_at: LINKS.updated_at, settings: { tags: ["internal links"] } }],
+    });
+  });
+
+  it("removes a tag the ticked posts have, whatever its capitals", async () => {
+    signedIn();
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([LINKS, TAGGED]),
+      "PUT /posts/01JB/": () => json(200, { posts: [{ id: TAGGED.id }] }),
+    });
+    renderAt("/posts");
+    await tickBoth();
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    await userEvent.selectOptions(within(form).getByLabelText(en.bulk.action), "removeTag");
+    expect(within(form).getByLabelText(en.bulk.oldTag)).toHaveValue("Internal links");
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(2) }));
+    expect(await screen.findByText(en.bulk.done(1))).toBeVisible();
+    const put = sent.find((request) => request.method === "PUT");
+    expect(await put?.json()).toEqual({
+      posts: [{ updated_at: TAGGED.updated_at, settings: { tags: ["clusters"] } }],
+    });
+  });
+
+  it("files the ticked posts under a category the site has, or under none", async () => {
+    signedIn();
+    const category = {
+      id: "on-page-seo",
+      slug: "on-page-seo",
+      names: { en: "On-page SEO" },
+      posts: 4,
+      updated_at: "2026-10-12T11:00:00Z",
+    };
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([LINKS, { ...TAGGED, category: "on-page-seo" }]),
+      "GET /categories/": () => json(200, { categories: [category] }),
+      "PUT /posts/01JA/": () => json(200, { posts: [{ id: LINKS.id }] }),
+    });
+    renderAt("/posts");
+    await tickBoth();
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    const action = within(form).getByLabelText(en.bulk.action);
+    await waitFor(() => expect(within(action).getByText(en.bulk.category)).toBeVisible());
+    await userEvent.selectOptions(action, "category");
+    const picked = within(form).getByLabelText(en.bulk.newCategory);
+    expect(within(picked).getByText(en.bulk.noCategory)).toBeVisible();
+    expect(picked).toHaveValue("on-page-seo");
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(2) }));
+    expect(await screen.findByText(en.bulk.done(1))).toBeVisible();
+    const put = sent.find((request) => request.method === "PUT");
+    expect(await put?.json()).toEqual({
+      posts: [{ updated_at: LINKS.updated_at, settings: { category: "on-page-seo" } }],
     });
   });
 });

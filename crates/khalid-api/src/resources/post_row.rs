@@ -7,7 +7,9 @@ use khalid_lint::{ClusterRole, Report, Severity};
 use serde::Serialize;
 use utoipa::ToSchema;
 
-use super::{AdminPost, Listable, PostStatus, ReviewState, SeoScores, display, display_option};
+use super::{
+    AdminPost, Listable, NonBlank, PostStatus, ReviewState, SeoScores, display, display_option,
+};
 use crate::query::{FieldValues, Literal};
 
 /// The lint publish gate's answer for a post as it stands.
@@ -141,6 +143,15 @@ pub struct PostRow {
     #[serde(serialize_with = "display_option")]
     #[schema(value_type = Option<String>, example = "asif")]
     author: Option<Slug>,
+    /// The category's slug, if any. A list filters by this, such as
+    /// `category:on-page-seo`.
+    #[serde(serialize_with = "display_option")]
+    #[schema(value_type = Option<String>, example = "on-page-seo")]
+    category: Option<Slug>,
+    /// The tags' names, in the order written. A list filters by one, such
+    /// as `tag:'internal links'`.
+    #[schema(value_type = Vec<String>, example = json!(["internal links"]))]
+    tags: Vec<NonBlank>,
     /// Draft, published or scheduled.
     status: PostStatus,
     /// Draft, in review or ready.
@@ -229,6 +240,8 @@ impl PostRow {
             title: post.title().to_owned(),
             path: None,
             author: post.author().cloned(),
+            category: post.settings().category.clone(),
+            tags: post.settings().tags.clone(),
             status: post.status(),
             review_state: post.settings().review_state,
             reviewed: post.settings().reviewed,
@@ -349,6 +362,12 @@ impl FieldValues for PostRow {
             "slug" => text(self.slug.as_str()),
             "title" => text(&self.title),
             "author" => self.author.iter().flat_map(|a| text(a.as_str())).collect(),
+            "category" => self
+                .category
+                .iter()
+                .flat_map(|c| text(c.as_str()))
+                .collect(),
+            "tag" => self.tags.iter().flat_map(|t| text(t.as_str())).collect(),
             "status" => status_text(self.status),
             "review_state" => text(self.review_state.as_str()),
             "reviewed" => self
@@ -383,6 +402,8 @@ impl Listable for PostRow {
         "slug",
         "title",
         "author",
+        "category",
+        "tag",
         "status",
         "review_state",
         "reviewed",

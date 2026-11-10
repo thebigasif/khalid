@@ -42,6 +42,7 @@ function post(id: string, title: string): AdminPost {
       review_state: "ready",
       access: "public",
       password_protected: false,
+      tags: [],
       share_cards: {},
       aliases: [],
     },

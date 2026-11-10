@@ -17,6 +17,7 @@ const POST: AdminPost = {
     review_state: "draft",
     access: "public",
     password_protected: false,
+    tags: [],
     share_cards: {},
     aliases: [],
     date: "2026-10-12",

@@ -18,7 +18,7 @@ use khalid_api::post_store::{
     CreatePostError, DeletePostError, PostStore, PostStoreError, UpdatePostError,
 };
 use khalid_api::query::ListQuery;
-use khalid_api::resources::{AdminPost, PostDraft, PostEdit, PostRow, PostStatus};
+use khalid_api::resources::{AdminPost, PostDraft, PostEdit, PostRow, PostSettings, PostStatus};
 use khalid_content::{ContentTree, SiteContent, parse_post, read_content};
 use khalid_core::{Clock, Config, Locale, Slug, TemplateName};
 use khalid_lint::{LintPost, LintSite, Linter, Report, Verdict};
@@ -28,7 +28,7 @@ use crate::lint_input::{LintInput, PostParts, lint_parts, lint_site};
 use crate::post_text::{PostText, quoted};
 use crate::settings_text::{put, settings_of, write_real_update, write_settings};
 use crate::site_pages::reload::LiveConfig;
-use crate::{atomic, lint, site_briefs};
+use crate::{atomic, categories, lint, site_briefs};
 
 /// The folder of drafts at the top of a site.
 const DRAFTS: &str = "drafts";
@@ -179,6 +179,37 @@ impl Site {
         !file.is_file()
     }
 
+    /// Refuses an edit that newly names a template the theme lacks or a
+    /// category `categories.toml` lacks, since the post would point at
+    /// nothing.
+    fn refuse_unknown(
+        &self,
+        before: &PostSettings,
+        after: &PostSettings,
+    ) -> Result<(), UpdatePostError> {
+        let template = after.template.as_ref();
+        if template != before.template.as_ref() && template.is_some_and(|name| self.lacks(name)) {
+            let why =
+                "The theme has no such file in theme/templates/, so the post could not be shown.";
+            let setting = "template";
+            return Err(UpdatePostError::Unsupported { setting, why });
+        }
+        let Some(slug) = after
+            .category
+            .as_ref()
+            .filter(|_| after.category != before.category)
+        else {
+            return Ok(());
+        };
+        let known = categories::of(&self.folder).map_err(|m| failure(&m.to_string()))?;
+        if known.iter().any(|term| &term.slug == slug) {
+            return Ok(());
+        }
+        let why = "The site's categories.toml has no category with this slug, so the post would belong to nothing. Add the category first.";
+        let setting = "category";
+        Err(UpdatePostError::Unsupported { setting, why })
+    }
+
     fn get_now(&self, id: &str) -> Result<Option<AdminPost>, PostStoreError> {
         self.find(id)?
             .map(|found| Self::admin_post(&found))
@@ -214,17 +245,7 @@ impl Site {
                 edited.author().map(ToString::to_string),
             );
         }
-        let template = edited.settings().template.as_ref();
-        if template != current.settings().template.as_ref()
-            && template.is_some_and(|name| self.lacks(name))
-        {
-            let why =
-                "The theme has no such file in theme/templates/, so the post could not be shown.";
-            return Err(UpdatePostError::Unsupported {
-                setting: "template",
-                why,
-            });
-        }
+        self.refuse_unknown(current.settings(), edited.settings())?;
         write_settings(
             &mut text,
             current.settings(),
