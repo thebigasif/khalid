@@ -10,7 +10,7 @@ The idea comes from Koray Tugberk Gubur's query templates and document templates
 
 ## Decision
 
-- **The title says the kind.** `PageKind::of_title` in `khalid-lint` reads four kinds: a comparison (`vs`, `vs.` or `versus` with a name on each side, in any language), alternatives, a review, and a best-of list (English and German words). When a title holds words of two kinds, alternatives win over a review and a review over a best-of list. A number from 2 to 100 in an alternatives or best-of title is the count of picks it promises; a year is not.
+- **The title says the kind.** `PageKind::of_title` in `khalid-lint` reads four kinds: a comparison (`vs`, `vs.` or `versus` with a name on each side, in any language), alternatives, a review, and a best-of list (English, German, French, Spanish, Italian, Portuguese and Dutch words; backlog row 25 added the last five). Where the singular of "best" also means "better", as "mejor" does, only the plural counts. When a title holds words of two kinds, alternatives win over a review and a review over a best-of list. A number from 2 to 100 in an alternatives or best-of title is the count of picks it promises; a year is not.
 - **No new front matter field.** Front matter belongs to the content track, and the title already states the search the page answers. A post whose title names no kind is left alone.
 - **Four warnings, never blocks.**
   - `comparison-without-table`: a comparison, alternatives or best-of post with no table.

@@ -28,6 +28,9 @@ adresse = "adresse"
 methoden = "methoden"
 sensibel = "sensibel"
 instituto = "instituto"
+# Spanish and French title words for page kinds (khalid-lint page_kind.rs).
+opiniones = "opiniones"
+complet = "complet"
 # Words the demo publications use on purpose: an author's first name, the
 # gardener's "first earlies" (early potatoes), audio's equivalent input
 # noise (EIN), the No Derivatives licence (ND), and the misspelt variable a
