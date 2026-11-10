@@ -1,7 +1,7 @@
 //! The Model Context Protocol as an agent speaks it: one JSON-RPC message
 //! per line on stdin, one answer per line on stdout (KH-API-5).
 
-use khalid_mcp::{BoxFuture, ServeError, Server, Tool, ToolResult, Tools};
+use khalid_mcp::{BoxFuture, Effect, ServeError, Server, Tool, ToolResult, Tools};
 use serde_json::{Map, Value, json};
 
 /// One tool, `echo`, that answers with its `text` argument, or fails when
@@ -16,7 +16,8 @@ impl Echo {
             "properties": { "text": { "type": "string" } },
             "required": ["text"]
         });
-        Self(vec![Tool::new("echo", "Answers with the text.", schema)])
+        let echo = Tool::new("echo", "Answers with the text.", Effect::Reads, schema);
+        Self(vec![echo])
     }
 }
 
@@ -123,6 +124,10 @@ async fn tools_list_names_each_tool_with_its_input_schema() {
     assert_eq!(tools[0]["name"], "echo");
     assert_eq!(tools[0]["description"], "Answers with the text.");
     assert_eq!(tools[0]["inputSchema"]["required"], json!(["text"]));
+    assert_eq!(
+        tools[0]["annotations"],
+        json!({ "readOnlyHint": true, "destructiveHint": false, "idempotentHint": true })
+    );
     assert_eq!(tools.as_array().map(Vec::len), Some(1));
 }
 

@@ -26,23 +26,69 @@ pub trait Tools: Debug + Send + Sync {
     ) -> BoxFuture<'a, Option<ToolResult>>;
 }
 
-/// One tool: its name, what it does, and the JSON Schema of its arguments.
+/// One tool: its name, what it does, the JSON Schema of its arguments,
+/// and the hints that tell an agent's client whether to ask before a call.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Tool {
     name: String,
     description: String,
     input_schema: Value,
+    annotations: Hints,
+}
+
+/// What a call does to the site, as the HTTP method of its route says.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Effect {
+    /// Only reads, like a `GET`.
+    Reads,
+    /// Adds something new, like a `POST`. Calling it twice adds two.
+    Adds,
+    /// Overwrites what is there with what it is given, like a `PUT`.
+    /// Calling it twice leaves what once does.
+    Overwrites,
+    /// Changes part of what is there, like a `PATCH`.
+    Changes,
+    /// Removes something, like a `DELETE`.
+    Removes,
+}
+
+/// The tool annotations of the Model Context Protocol, made from an
+/// [`Effect`] so a tool cannot claim to read and remove at once.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Hints {
+    read_only_hint: bool,
+    destructive_hint: bool,
+    idempotent_hint: bool,
+}
+
+impl From<Effect> for Hints {
+    fn from(effect: Effect) -> Self {
+        let (read_only_hint, destructive_hint, idempotent_hint) = match effect {
+            Effect::Reads => (true, false, true),
+            Effect::Adds => (false, false, false),
+            Effect::Overwrites | Effect::Removes => (false, true, true),
+            Effect::Changes => (false, true, false),
+        };
+        Self {
+            read_only_hint,
+            destructive_hint,
+            idempotent_hint,
+        }
+    }
 }
 
 impl Tool {
     /// A tool called `name`, described for an agent by `description`,
-    /// taking arguments that match the JSON Schema `input_schema`.
-    pub fn new(name: &str, description: &str, input_schema: Value) -> Self {
+    /// whose calls have `effect`, taking arguments that match the JSON
+    /// Schema `input_schema`.
+    pub fn new(name: &str, description: &str, effect: Effect, input_schema: Value) -> Self {
         Self {
             name: name.to_owned(),
             description: description.to_owned(),
             input_schema,
+            annotations: Hints::from(effect),
         }
     }
 

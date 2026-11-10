@@ -6,7 +6,7 @@
 
 use khalid_api::keys::{Principal, Scope};
 use khalid_api::post_store::PostStore;
-use khalid_mcp::{ApiTools, BoxFuture, Tool, ToolResult, Tools};
+use khalid_mcp::{ApiTools, BoxFuture, Effect, Tool, ToolResult, Tools};
 use serde_json::{Map, Value, json};
 
 use crate::site_posts::SitePosts;
@@ -28,6 +28,7 @@ impl SiteTools {
         tools.push(Tool::new(
             "lint_post",
             "Runs the checks publish_post runs, without publishing. A draft is checked as it would go live today.",
+            Effect::Reads,
             json!({
                 "type": "object",
                 "properties": {

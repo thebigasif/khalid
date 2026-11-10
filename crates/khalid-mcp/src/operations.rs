@@ -10,7 +10,7 @@ use serde::Deserialize;
 use serde_json::{Map, Value, json};
 
 use crate::call::{Call, Key, Payload};
-use crate::tool::{Tool, ToolResult};
+use crate::tool::{Effect, Tool, ToolResult};
 
 /// Where the schemas an operation names live in the document.
 const COMPONENTS: &str = "#/components/schemas/";
@@ -103,12 +103,12 @@ impl Operation {
         operation: &Value,
         schemas: &Map<String, Value>,
     ) -> Option<Self> {
-        let method = match method {
-            "get" => Method::GET,
-            "post" => Method::POST,
-            "put" => Method::PUT,
-            "patch" => Method::PATCH,
-            "delete" => Method::DELETE,
+        let (method, effect) = match method {
+            "get" => (Method::GET, Effect::Reads),
+            "post" => (Method::POST, Effect::Adds),
+            "put" => (Method::PUT, Effect::Overwrites),
+            "patch" => (Method::PATCH, Effect::Changes),
+            "delete" => (Method::DELETE, Effect::Removes),
             _ => return None,
         };
         let name = operation.get("operationId")?.as_str()?;
@@ -150,7 +150,7 @@ impl Operation {
             input.insert("$defs".to_owned(), Value::Object(defs));
         }
         let input = Value::Object(input);
-        let tool = Tool::new(name, &describe(operation, &method, path), input);
+        let tool = Tool::new(name, &describe(operation, &method, path), effect, input);
         Some(Self {
             tool,
             method,
