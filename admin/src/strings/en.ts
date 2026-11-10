@@ -196,6 +196,15 @@ export const en = {
       noPage: "None in these days",
       none: "No AI assistant sent a reader in these days or the days before.",
     },
+    bots: {
+      title: "What each assistant's bots read",
+      lede: "Each AI company sends bots to read your pages, to train its models, to fill its search or to answer a person right now. Many reads and few readers sent means the assistant knows your blog but rarely points people to it.",
+      reads: "Reads by its bots",
+      pages: "Pages read",
+      sent: "Page views it sent",
+      bots: "Bots",
+      none: "No AI bot read a page in these days.",
+    },
     uncited: {
       title: "Read by AI, but never cited",
       lede: "AI bots, the programs AI companies send to read the web, read these pages. Yet no AI assistant sent a single reader to them. The assistants know the page but do not point people to it. To be cited, start each section with a short, direct answer to the question its heading asks.",

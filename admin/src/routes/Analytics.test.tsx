@@ -1,7 +1,7 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { aiVisitors, analyticsBlog, uncited, visitors } from "../../test/analytics";
+import { aiBots, aiVisitors, analyticsBlog, uncited, visitors } from "../../test/analytics";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import { en } from "../strings/en";
 
@@ -30,6 +30,11 @@ describe("the Analytics screen", () => {
     expect(within(tools).getByRole("row", { name: /Claude/ })).toHaveTextContent(
       words.tools.noPage,
     );
+    const bots = screen.getByRole("table", { name: words.bots.title });
+    const openai = within(bots).getByRole("row", { name: /ChatGPT/ });
+    expect(openai).toHaveTextContent("412");
+    expect(openai).toHaveTextContent("GPTBot 301, OAI-SearchBot 111");
+    expect(within(bots).getAllByRole("row").at(-1)).toHaveTextContent("CCBot 92");
     const quiet = screen.getByRole("table", { name: words.uncited.title });
     expect(quiet).toHaveTextContent("/blog/what-a-sitemap-does/");
     expect(quiet).toHaveTextContent("ClaudeBot, GPTBot");
@@ -49,7 +54,7 @@ describe("the Analytics screen", () => {
     await userEvent.click(screen.getByRole("button", { name: words.show }));
     await waitFor(() => {
       const asked = sent.map((request) => new URL(request.url).searchParams.get("days"));
-      expect(asked.filter((days) => days === "90")).toHaveLength(3);
+      expect(asked.filter((days) => days === "90")).toHaveLength(4);
     });
   });
 
@@ -61,12 +66,14 @@ describe("the Analytics screen", () => {
       "GET /analytics/visitors/": () => json(200, quiet),
       "GET /analytics/ai-visitors/": () => json(200, aiVisitors({ ai_views: 0, tools: [] })),
       "GET /analytics/uncited/": () => json(200, uncited({ pages: [] })),
+      "GET /analytics/ai-bots/": () => json(200, aiBots({ tools: [] })),
     });
     renderAt("/analytics");
     expect(await screen.findByText(words.level(7))).toBeVisible();
     expect(screen.getByText(words.chart.none)).toBeVisible();
     expect(screen.getByText(words.pages.none)).toBeVisible();
     expect(screen.getByText(words.tools.none)).toBeVisible();
+    expect(screen.getByText(words.bots.none)).toBeVisible();
     expect(screen.getByText(words.uncited.none)).toBeVisible();
     expect(screen.queryByText(words.chart.table)).toBeNull();
   });
@@ -84,6 +91,7 @@ describe("the Analytics screen", () => {
       "GET /analytics/visitors/": () => json(403, lacks),
       "GET /analytics/ai-visitors/": () => json(403, lacks),
       "GET /analytics/uncited/": () => json(403, lacks),
+      "GET /analytics/ai-bots/": () => json(403, lacks),
     });
     renderAt("/analytics");
     expect(await screen.findByRole("alert")).toHaveTextContent(lacks.title);

@@ -1,12 +1,13 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { AiBots } from "../analytics/AiBots";
 import { AiTools } from "../analytics/AiTools";
 import { DayChart } from "../analytics/DayChart";
 import { PeriodTotal } from "../analytics/PeriodTotal";
 import { SourceTable } from "../analytics/SourceTable";
 import { TopPages } from "../analytics/TopPages";
 import { UncitedPages } from "../analytics/UncitedPages";
-import { type Days, readAiVisitors, readUncited, readVisitors } from "../api/analytics";
+import { type Days, readAiBots, readAiVisitors, readUncited, readVisitors } from "../api/analytics";
 import { problemMessage } from "../api/posts";
 import { type Failure, isData } from "../api/redirects";
 import { PageHeader } from "../components/PageHeader";
@@ -39,11 +40,17 @@ export function Analytics() {
     ...kept,
   }).data;
 
-  const failed = failure(visitors) ?? failure(tools) ?? failure(uncited);
+  const bots = useQuery({
+    queryKey: ["ai-bots", days],
+    queryFn: () => readAiBots(days),
+    ...kept,
+  }).data;
+
+  const failed = failure(visitors) ?? failure(tools) ?? failure(bots) ?? failure(uncited);
   let body = <p role="status">{en.analytics.loading}</p>;
   if (failed !== undefined) {
     body = <Problem message={problemMessage(failed.problem, en.problems.unreachable)} />;
-  } else if (isData(visitors) && isData(tools) && isData(uncited)) {
+  } else if (isData(visitors) && isData(tools) && isData(bots) && isData(uncited)) {
     body = (
       <>
         <PeriodTotal counts={visitors.data} days={days} onDays={setDays} />
@@ -51,6 +58,7 @@ export function Analytics() {
         <SourceTable counts={visitors.data} />
         <TopPages pages={visitors.data.pages} />
         <AiTools report={tools.data} />
+        <AiBots report={bots.data} />
         <UncitedPages report={uncited.data} />
       </>
     );
