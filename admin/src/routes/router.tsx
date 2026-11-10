@@ -204,6 +204,14 @@ const look = createRoute({ getParentRoute: () => signedIn, path: "/look", compon
 // The colours, fonts and logo in theme/tokens.toml.
 const design = createRoute({ getParentRoute: () => signedIn, path: "/design", component: Design });
 
+// The header and footer menus of [nav], saved through the settings API.
+// It loads on first visit, so the first screen stays small.
+const navigation = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/navigation",
+  component: lazyRouteComponent(() => import("./Navigation"), "Navigation"),
+});
+
 // The whole blog's settings; post settings live in the editor.
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
 
@@ -266,6 +274,7 @@ const routeTree = root.addChildren([
     handOver,
     look,
     design,
+    navigation,
     site,
     seo,
     privacy,
