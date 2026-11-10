@@ -62,7 +62,7 @@ export const records = {
     lede: "Every change made to the blog through the admin, the API or an agent: who made it, what it touched and when. Only owners and admins see this page.",
     who: "Who",
     whoMeans:
-      "The key or the staff account that made the change. Each key and account has a short code; the API keys page shows which is which.",
+      "The person or the key that made the change, by the name their account or key was given. A key that was revoked since shows its short code instead.",
     loading: "Reading the audit log",
     none: "Nothing has been changed through the admin or the API yet.",
     when: "When",
