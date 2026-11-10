@@ -118,6 +118,8 @@ Beside each colour is its contrast, how far it stands out from what is behind it
 
 **Save changes** writes only what you changed, each value in its place, so your comments and every other table stay as you wrote them. A site with no `theme/tokens.toml` gets one holding only your change, so the template keeps the rest. Tick **Keep when syncing** beside a colour to add it to `locked`, so the next `khalid theme sync` keeps it. Your blog shows the change on the next page it renders, with no restart.
 
+`khalid theme sync` and `khalid theme check` read a short file like this one the way your pages do: each value the file sets, then the template's, then the light default. A sync writes only the values the main site changes, each in its place, so the file stays short, your comments stay, and a colour the template already shares with your main site stays the template's.
+
 The screen reads one Admin API route, which needs `settings:write`, so among staff only the owner and admins see it:
 
 - `GET /api/admin/v1/design/` answers every token by name, such as `colors.link`, the `locked` list, the font choices, the contrast of each colour on the background and the surface, and `updated_at`, which is `null` before the file exists.
