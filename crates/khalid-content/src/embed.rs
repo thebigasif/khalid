@@ -2,6 +2,8 @@
 
 use khalid_core::AbsoluteUrl;
 
+use crate::EmbeddedVideo;
+
 /// Every site an `::embed` may show in a frame, in one place, so the Content
 /// Security Policy's `frame-src` (task 1.15) allows exactly these origins.
 /// Any other address renders as a plain link.
@@ -65,6 +67,11 @@ impl EmbedProvider {
         matches!(self, Self::Spotify | Self::SoundCloud)
     }
 
+    /// Whether the player shows a video, which the video sitemap lists.
+    pub(crate) const fn is_video(self) -> bool {
+        matches!(self, Self::YouTube | Self::Vimeo | Self::Loom)
+    }
+
     /// The provider of a link a writer pasted, by its host.
     fn of(host: &str) -> Option<Self> {
         let host = host.strip_prefix("www.").unwrap_or(host);
@@ -121,6 +128,26 @@ pub(crate) fn player(src: &AbsoluteUrl) -> Option<(EmbedProvider, String)> {
         _ => return None,
     };
     Some((provider, format!("{origin}{path}")))
+}
+
+/// The video an embed of `src` titled `title` shows, or `None` when the
+/// link is not a video host's video.
+pub(crate) fn video(src: &AbsoluteUrl, title: &str) -> Option<EmbeddedVideo> {
+    let (provider, player) = player(src).filter(|(provider, _)| provider.is_video())?;
+    // YouTube publishes every video's still at an address made of its id.
+    let thumbnail = match provider {
+        EmbedProvider::YouTube => player
+            .rsplit_once("/embed/")
+            .map(|(_, id)| format!("https://i.ytimg.com/vi/{id}/hqdefault.jpg"))
+            .and_then(|still| AbsoluteUrl::parse(&still).ok()),
+        _ => None,
+    };
+    Some(EmbeddedVideo {
+        provider,
+        title: title.to_owned(),
+        player: AbsoluteUrl::parse(&player).ok()?,
+        thumbnail,
+    })
 }
 
 /// Whether `part` holds only letters, digits, `-` and `_`.

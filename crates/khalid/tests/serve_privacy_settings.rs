@@ -29,10 +29,15 @@ fn privacy_and_tagged_code_are_saved_into_site_toml_and_a_bad_lifetime_saves_not
     let seen = read["settings"]["updated_at"].as_str().unwrap();
     let script = json!({"head": "<script src=\"https://stats.example.net/a.js\"></script>",
         "category": "no-tracking", "vendor": "Example Stats"});
-    let change = json!({"settings": {"updated_at": seen, "code": [script], "privacy": {
+    let privacy = json!({"settings": {"updated_at": seen, "privacy": {
         "lifetime_months": 12,
         "contact": {"name": "Field Notes Ltd", "email": "privacy@example.com"},
     }}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&privacy));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["restart_needed"], false, "{saved}");
+    let seen = saved["settings"]["updated_at"].as_str().unwrap();
+    let change = json!({"settings": {"updated_at": seen, "code": [script]}});
     let (status, saved) = server.admin("PUT", SETTINGS, Some(&change));
     assert_eq!(status, 200, "{saved}");
     assert_eq!(
@@ -43,6 +48,7 @@ fn privacy_and_tagged_code_are_saved_into_site_toml_and_a_bad_lifetime_saves_not
         saved["settings"]["code"][0]["category"], "no-tracking",
         "{saved}"
     );
+    // The consent route reads the tagged code when khalid serve starts.
     assert_eq!(saved["settings"]["restart_needed"], true, "{saved}");
     let mut file = PathBuf::from(site.path());
     file.push("site.toml");

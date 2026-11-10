@@ -160,11 +160,44 @@ fn check_image(node: Node<'_, '_>) -> Result<(), String> {
     }
 }
 
+/// The elements of `video:video` that Khalid writes, in the order the
+/// `sitemap-video` 1.1 schema's sequence demands.
+const VIDEO_ORDER: [&str; 7] = [
+    "thumbnail_loc",
+    "title",
+    "description",
+    "content_loc",
+    "player_loc",
+    "duration",
+    "publication_date",
+];
+
 /// `sitemap-video` 1.1: thumbnail, title, description of at most 2048
-/// characters, a content or player address, a duration of 1 to 28,800
-/// seconds, and a W3C publication date.
+/// characters, a content or player address that is not the page itself,
+/// a duration of 1 to 28,800 seconds, and a W3C publication date, in the
+/// schema's order.
 fn check_video(node: Node<'_, '_>) -> Result<(), String> {
     let found = children(node, VIDEO_NS);
+    let mut last = 0;
+    for (name, _) in &found {
+        let place = VIDEO_ORDER
+            .iter()
+            .position(|known| known == name)
+            .ok_or_else(|| format!("video:{name} is not an element Khalid writes"))?;
+        if place < last {
+            return Err(format!("video:{name} is out of the schema's order"));
+        }
+        last = place;
+    }
+    let page = node
+        .parent()
+        .and_then(|url| url.children().find(|c| c.has_tag_name((SITEMAP_NS, "loc"))))
+        .and_then(|loc| loc.text());
+    for address in ["content_loc", "player_loc"] {
+        if text_of(&found, address).is_some_and(|a| Some(a) == page) {
+            return Err(format!("video:{address} is the page's own address"));
+        }
+    }
     for required in ["thumbnail_loc", "title", "description"] {
         if text_of(&found, required).is_none_or(str::is_empty) {
             return Err(format!("video:video has no {required}"));

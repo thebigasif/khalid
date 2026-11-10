@@ -1,12 +1,19 @@
 //! The scheduler in `khalid serve`: every few seconds it asks the publish
 //! door to act on each post whose publish or unpublish time has come. It
 //! never publishes on its own, so every post it takes live or down is
-//! announced like any other (CTO answers 2026-10-27, section 4).
+//! announced like any other (CTO answers 2026-10-27, section 4). In the
+//! same round it moves each page, glossary term, case study and changelog
+//! entry whose `publish_at` has come from `drafts/` to `content/`, which
+//! the next render announces.
 
+mod entries;
+
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
 
 use khalid_api::publish_door::{PublishDoor, Ran};
+use khalid_core::{Clock, SystemClock};
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 use tokio::time::MissedTickBehavior;
@@ -33,11 +40,14 @@ impl Scheduling {
     }
 }
 
-/// Starts the scheduler on `door`, raising each post the linter refuses
-/// through `alerting`. Must be called inside the tokio
-/// runtime. The first round runs at once, so a time that passed while the
-/// server was stopped is acted on at start.
-pub(crate) fn start(door: Arc<PublishDoor>, alerting: Arc<Alerting>) -> Scheduling {
+/// Starts the scheduler on `door` and the drafts of the site `folder`,
+/// raising each post the linter refuses through `alerting`. Must be called
+/// inside the tokio runtime. The first round runs at once, so a time that
+/// passed while the server was stopped is acted on at start.
+pub(crate) fn start(
+    (door, folder): (Arc<PublishDoor>, PathBuf),
+    alerting: Arc<Alerting>,
+) -> Scheduling {
     let (stop, mut stopped) = oneshot::channel();
     let task = tokio::spawn(async move {
         let mut ticks = tokio::time::interval(EVERY);
@@ -60,6 +70,12 @@ pub(crate) fn start(door: Arc<PublishDoor>, alerting: Arc<Alerting>) -> Scheduli
                     ?error,
                     "the schedules could not be read, so they are looked at again next round"
                 ),
+            }
+            let site = folder.clone();
+            let moved =
+                tokio::task::spawn_blocking(move || entries::publish_due(&site, SystemClock.now()));
+            for file in moved.await.unwrap_or_default() {
+                tracing::info!(file, "a scheduled entry went live");
             }
         }
     });

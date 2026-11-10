@@ -10,21 +10,21 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Cold start to first byte | under 100 ms | 10% | `hyperfine` on `khalid serve` with a 1,000-post fixture, first request |
 | Idle memory, one site, 1,000 posts | under 50 MB RSS | 10% | resident set size of `khalid serve`, read after it settles, then five readings one second apart of which CI takes the lowest (CTO answers 2026-10-27, section 2) |
 | Post page render, in process | p50 under 1 ms, p99 under 5 ms | 10% | `divan` benchmark over the fixture |
-| Cached post page, 2 vCPU | at least 10,000 requests per second | 10% | `oha` for 30 seconds |
+| Cached post page, 2 vCPU | at least 10,000 requests per second | 10% | `khalid-perf requests`: one cached post page of the 1,000-post site over 50 keep-alive connections for 30 seconds, as `oha` asks by default |
 | Full rebuild, 10,000 posts | under 30 s | 10% | timed `khalid build` |
 | Incremental rebuild, one post | under 50 ms | 10% | timed file change to updated page |
-| Lint one post | under 20 ms | 10% | `divan` |
+| Lint one post | under 20 ms | 10% | `khalid-perf lint`: the median over 100 posts of the 1,000-post site, each linted against the whole site |
 | Full site audit, 1,000 posts | under 60 s | 10% | timed `khalid audit` |
 | Lighthouse, default post page | 100 in all four categories | none | Lighthouse CI against the demo site |
 | Largest Contentful Paint, demo site on a 5 dollar VPS class runner | under 1 s | none | Lighthouse CI |
 | Cumulative Layout Shift | 0 | none | Lighthouse CI |
-| Public CSS, compressed | under 20 KB | 5% | size of the built stylesheet |
+| Public CSS, compressed | under 20 KB | 5% | `khalid-perf sizes`: the Brotli copy of each stylesheet the built home page links |
 | Pictures on a template's demo home page, 390 px at 3x, without the hero | under 620 KB (Aperture 810 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 390 px at 1x, without the hero | under 140 KB | none | `scripts/page-weight.sh`, see "Page weight" |
 | Pictures on a template's demo home page, 1440 px | under 1,250 KB (Aperture 2,100 KB) | none | `scripts/page-weight.sh`, see "Page weight" |
 | Web fonts on a template's demo home page and one post, 390 and 1440 px | under 60 KB | none | `scripts/page-weight.sh`, see "Fonts" |
 | JavaScript required to read a post | 0 bytes | none | scripts-off test |
-| Admin initial JavaScript, compressed | under 350 KB | 5% | Vite build report |
+| Admin initial JavaScript, compressed | under 350 KB | 5% | `khalid-perf sizes` on the build CI's Admin job hands over: each script `admin/dist/index.html` loads at once, gzipped at level 9. With `PERF_REQUIRE_ADMIN=1`, as CI sets it, `scripts/perf.sh` fails when no admin build is there |
 | Test suite, CI | under 4 min | none | job time |
 | Release build, CI | under 10 min with cache | none | job time |
 
@@ -262,6 +262,42 @@ Moving the bundled SQLite to 3.54.1 (PR #1120) built 31,481,816 bytes, 24,536 ov
 The last two rows set the same levels, once through `--config` and once in `Cargo.toml`; they differ by 2,816 bytes between builds. All kept: 31,403,736 bytes, 78,080 less than before and 53,544 under the budget.
 
 None of the four runs on a reader's request. `ammonia` cleans a writer's own HTML once per `:::html` block at build, `annotate-snippets` prints a YAML file's error only when there is one, `roxmltree` reads XML for an import or the audit, and `tar` writes a backup. Nothing else changed: no dependency, feature or SQLite option. Embedded text was looked at too, and all that is still stored plain outside tests is about 9 KB of comment, newsletter and lock-page strings, too little to be worth packing. `scripts/perf.sh` was not run for this change on this shared server; CI's performance budgets job measures it.
+
+### Room for scheduled webhook events (2026-11-10)
+
+Main (8ece0e5e) built 31,423,704 bytes on this server, 33,576 under the budget. PR 1144 (scheduled webhook events) built 31,496,536 bytes in CI, and PRs 1139, 1141 and 1145 add code too, so this makes at least 300,000 bytes of room first. Each step below is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (main, 8ece0e5e) | 31,423,704 | |
+| The `khalid` crate at `"z"` | 38,131,576 | none, 6,707,872 more |
+| 45 small cold crates at `"z"` (`h2`, `notify`, `libwebp-sys`, the certificate and ASN.1 readers, `idna` and ICU, mail encoders, `rayon`, sqlx helpers and others) | 31,421,784 | 1,920, not worth it |
+| `png`, `zune-jpeg`, `moxcms`, `pxfm`, `fdeflate`, `read-fonts`, `avif-serialize` and `bitstream-io` at `"z"` | 31,436,760 | none, 13,056 more |
+| SQLite without FTS3, FTS5, R-tree, `dbstat` and `soundex` | 31,139,704 | 284,000 |
+| The same, plus SQLite at `"z"` | 31,139,448 | 256 more, gcc builds `"z"` as `"s"` |
+| The same, plus `khalid-server` at `"z"` | 31,121,144 | 18,560 more, not kept: it answers readers |
+| The same, plus `SQLITE_OMIT_DEPRECATED` and `SQLITE_DEFAULT_MEMSTATUS=0` | 31,138,424 | 1,280 more, not worth it |
+| SQLite without those five and without STAT4 | 31,128,696 | 295,008 |
+| `reqwest` without its `http2` feature (kept) | 31,094,872 | 328,832 |
+| Both: no `http2`, and SQLite without the six | 30,803,832 | 619,872 |
+
+Kept: 31,094,872 bytes, 328,832 less than before and 362,408 under the budget.
+
+`reqwest`'s `http2` feature, set in `khalid-outbound`, was the only thing in a release build that turned on HTTP/2 in `hyper`, `hyper-util` and `hyper-rustls` and pulled in `h2` (`wiremock` turns on `hyper`'s `full` for tests only). Every service Khalid calls (Search Console, Bing, IndexNow, SerpDad, the AI providers, mail APIs, ACME, webhook receivers, the main site for theme sync, pages for the audit) answers over HTTP/1.1, and a client without HTTP/2 offers only `http/1.1` when it connects, so nothing changes for them. On the server side, `khalid serve` over HTTPS already offered only `http/1.1`. Over plain HTTP, `axum::serve` had also accepted HTTP/2 without TLS (h2c with prior knowledge), only because the client's feature turned it on in the shared `hyper-util`; no browser speaks it, and none of the proxy setups in `deploy/` and the docs asks for it, so the server now speaks HTTP/1.1 only, as its TLS listener always did.
+
+The SQLite rows are not in this change. `libsqlite3-sys` builds SQLite with FTS3, FTS5, R-tree, the `dbstat` table, `soundex()` and STAT4, and Khalid's SQL uses none of them: site search is `khalid-search`, and STAT4 only matters once `ANALYZE` has run, which Khalid never does (sqlx's `optimize_on_close` is off). They can be left out with `LIBSQLITE3_FLAGS` set to `-USQLITE_ENABLE_FTS3 -USQLITE_ENABLE_FTS3_PARENTHESIS -USQLITE_ENABLE_FTS5 -USQLITE_ENABLE_RTREE -USQLITE_ENABLE_DBSTAT_VTAB -USQLITE_SOUNDEX -USQLITE_ENABLE_STAT4` in the `[env]` table of a `.cargo/config.toml`, for about 295 KB more the next time room is needed. Column metadata, extension loading, shared cache and the progress handler stay: sqlx calls each of them.
+
+Speed, `khalid-perf` on the 1,000-post site, main and this change alternating, load average 3 to 6:
+
+| Measure | Main | This change |
+|---|---|---|
+| Cold start to first byte | 67.15 ms, 62.44 ms | 63.12 ms, 63.60 ms |
+| Idle memory | 54.97 MB, 55.97 MB | 54.53 MB, 53.68 MB |
+| Incremental rebuild | 15.73 ms, 15.94 ms | 15.78 ms, 7.78 ms |
+| Post page render p50 | | 0.0989 ms |
+| Lint one post | | 8.92 ms |
+
+Render and lint run inside `khalid-perf`, which does not link `reqwest`, so they cannot change with it; they were run once to show they are where the earlier entries left them. The first byte and idle memory are within the noise between runs.
 
 ## Page weight
 

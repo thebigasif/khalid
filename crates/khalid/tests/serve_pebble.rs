@@ -1,23 +1,33 @@
 //! `khalid serve --domain` gets its first certificate from pebble, Let's
-//! Encrypt's own test server, and renews one that is due (task 5.13, gap
-//! audit 2 G35). Ignored unless pebble runs on this machine, started as
+//! Encrypt's own test server, renews one that is due at start, and renews
+//! while it runs, serving the new certificate without a restart (task
+//! 5.13, gap audit 2 G35). Ignored unless pebble runs on this machine, started as
 //! the first lines of `crates/khalid-https/tests/pebble.rs` say, with its
 //! management address on `localhost:15000`. To run them:
 //!
 //! `cargo test -p khalid --features test-util --test serve_pebble -- --ignored --test-threads 1`
 //!
-//! Both tests answer pebble's checks on ports 5001 and 5002, so they run
+//! The tests answer pebble's checks on ports 5001 and 5002, so they run
 //! one at a time.
 
 use std::fs;
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::Arc;
+use std::time::Duration;
 
-use khalid_core::AbsoluteUrl;
+use chrono::TimeDelta;
+use khalid_core::{AbsoluteUrl, Clock, SystemClock};
 use khalid_outbound::{Limits, Outbound, Reach, Resolver};
+use rustls::crypto::ring::default_provider;
+use rustls::pki_types::pem::PemObject;
+use rustls::pki_types::{CertificateDer, ServerName};
+use rustls::{ClientConfig, RootCertStore};
 use serde_json::Value;
 use tempfile::TempDir;
+use tokio::net::TcpStream;
+use tokio_rustls::TlsConnector;
 
 /// The domain to serve. Pebble's test DNS server answers it with this
 /// machine.
@@ -82,10 +92,12 @@ fn saved(site: &Path, name: &str) -> PathBuf {
 }
 
 /// Starts `khalid serve --domain NAME` on `site` against pebble, answering
-/// its checks on ports 5001 and 5002, and returns it once it says where it
-/// answers, with that address. What it printed is in `site/serve.log`.
+/// its checks on ports 5001 and 5002, with `more` flags, and returns it
+/// once it says where it answers, with that address. What it printed is in
+/// `site/serve.log`.
 #[cfg(test)]
-fn serve(site: &Path) -> (Server, String) {
+fn serve(site: &Path, more: &[&str]) -> (Server, String) {
+    ports_free();
     let mut log = site.to_path_buf();
     log.push("serve.log");
     let mut child = Command::new(env!("CARGO_BIN_EXE_khalid"))
@@ -96,6 +108,7 @@ fn serve(site: &Path) -> (Server, String) {
         .args(["--acme-directory", DIRECTORY])
         .args(["--test-hosts", "localhost=127.0.0.1"])
         .args(["--test-root", MINICA])
+        .args(more)
         .stdout(Stdio::piped())
         .stderr(fs::File::create(&log).unwrap())
         .spawn()
@@ -111,22 +124,51 @@ fn serve(site: &Path) -> (Server, String) {
     (server, address)
 }
 
+/// Waits until ports 5001 and 5002 can be opened again, so a server the
+/// test before stopped has let them go before the next one starts.
+#[cfg(test)]
+fn ports_free() {
+    let deadline = SystemClock.now() + TimeDelta::seconds(30);
+    while ["127.0.0.1:5001", "127.0.0.1:5002"]
+        .iter()
+        .any(|port| std::net::TcpListener::bind(port).is_err())
+    {
+        assert!(
+            SystemClock.now() < deadline,
+            "ports 5001 and 5002 are still taken 30 seconds on"
+        );
+        std::thread::sleep(Duration::from_millis(100));
+    }
+}
+
+/// Answers `localhost` and `NAME` with this machine.
+#[cfg(test)]
+fn resolver() -> Resolver {
+    let hosts = vec![
+        ("localhost".to_owned(), vec!["127.0.0.1".parse().unwrap()]),
+        (NAME.to_owned(), vec!["127.0.0.1".parse().unwrap()]),
+    ];
+    Resolver::for_tests(hosts, Reach::PublicAndLoopback)
+}
+
+/// The root pebble's certificates chain up to, as PEM.
+#[cfg(test)]
+fn pebble_root(runtime: &tokio::runtime::Runtime) -> Vec<u8> {
+    let minica = fs::read(MINICA).expect("pebble's minica certificate is saved");
+    let pebble = Outbound::trusting(Limits::default(), resolver(), &minica).unwrap();
+    let root = runtime
+        .block_on(pebble.get(&AbsoluteUrl::parse(ROOTS).unwrap()))
+        .unwrap();
+    root.body().to_vec()
+}
+
 /// The home page at `address`, fetched trusting only pebble's root, so a
 /// certificate pebble did not issue fails the handshake.
 #[cfg(test)]
 fn home_through_pebble(address: &str) -> (u16, String) {
     let runtime = tokio::runtime::Runtime::new().unwrap();
-    let minica = fs::read(MINICA).expect("pebble's minica certificate is saved");
-    let hosts = vec![
-        ("localhost".to_owned(), vec!["127.0.0.1".parse().unwrap()]),
-        (NAME.to_owned(), vec!["127.0.0.1".parse().unwrap()]),
-    ];
-    let resolver = Resolver::for_tests(hosts, Reach::PublicAndLoopback);
-    let pebble = Outbound::trusting(Limits::default(), resolver.clone(), &minica).unwrap();
-    let root = runtime
-        .block_on(pebble.get(&AbsoluteUrl::parse(ROOTS).unwrap()))
-        .unwrap();
-    let blog = Outbound::trusting(Limits::default(), resolver, root.body()).unwrap();
+    let root = pebble_root(&runtime);
+    let blog = Outbound::trusting(Limits::default(), resolver(), &root).unwrap();
     let home = runtime
         .block_on(blog.get(&AbsoluteUrl::parse(address).unwrap()))
         .unwrap();
@@ -136,12 +178,129 @@ fn home_through_pebble(address: &str) -> (u16, String) {
     )
 }
 
+/// The certificate `khalid serve` answers with on port 5001, read by a
+/// TLS client that trusts pebble's `root` alone, so a certificate pebble
+/// did not issue fails the handshake.
+#[cfg(test)]
+async fn served(root: &[u8]) -> Vec<u8> {
+    let mut roots = RootCertStore::empty();
+    for certificate in CertificateDer::pem_slice_iter(root) {
+        roots.add(certificate.unwrap()).unwrap();
+    }
+    let config = ClientConfig::builder_with_provider(Arc::new(default_provider()))
+        .with_safe_default_protocol_versions()
+        .unwrap()
+        .with_root_certificates(roots)
+        .with_no_client_auth();
+    let tcp = TcpStream::connect("127.0.0.1:5001").await.unwrap();
+    let name = ServerName::try_from(NAME).unwrap();
+    let tls = TlsConnector::from(Arc::new(config))
+        .connect(name, tcp)
+        .await
+        .expect("the served certificate chains up to pebble's root");
+    tls.get_ref().1.peer_certificates().unwrap()[0].to_vec()
+}
+
+/// The first certificate in `data/https/certificate.pem`, the site's own.
+#[cfg(test)]
+fn saved_leaf(site: &Path) -> Vec<u8> {
+    let pem = fs::read(saved(site, "certificate.pem")).unwrap();
+    let first = CertificateDer::pem_slice_iter(&pem).next().unwrap();
+    first.unwrap().to_vec()
+}
+
+/// When Khalid renews the certificate `der`, in seconds since 1970: once
+/// two thirds of its life have passed.
+#[cfg(test)]
+fn renew_at(der: &[u8]) -> i64 {
+    let (_, parsed) = x509_parser::parse_x509_certificate(der).unwrap();
+    let from = parsed.validity().not_before.timestamp();
+    let to = parsed.validity().not_after.timestamp();
+    from + (to - from) * 2 / 3
+}
+
+/// When the certificate `der` was issued, in seconds since 1970. Pebble
+/// picks a 90-day or a 6-day life at random for each order, so the issue
+/// time, not the renewal time, tells which certificate is newer.
+#[cfg(test)]
+fn issued_at(der: &[u8]) -> i64 {
+    let (_, parsed) = x509_parser::parse_x509_certificate(der).unwrap();
+    parsed.validity().not_before.timestamp()
+}
+
+/// Reads the served and the saved certificate once a second until the
+/// server serves a saved certificate other than `first`, or two minutes
+/// pass, and returns the last ones read, served first.
+#[cfg(test)]
+fn until_renewed(
+    runtime: &tokio::runtime::Runtime,
+    site: &Path,
+    root: &[u8],
+    first: &[u8],
+) -> (Vec<u8>, Vec<u8>) {
+    let deadline = SystemClock.now() + TimeDelta::seconds(120);
+    loop {
+        std::thread::sleep(Duration::from_secs(1));
+        let served = runtime.block_on(served(root));
+        let kept = saved_leaf(site);
+        if (served != first && served == kept) || SystemClock.now() > deadline {
+            return (served, kept);
+        }
+    }
+}
+
+#[test]
+#[ignore = "needs pebble on this machine; see this file's first lines"]
+fn khalid_serve_renews_while_it_runs_and_serves_the_new_certificate() {
+    let site = demo();
+    drop(serve(site.path(), &[]));
+    let first = saved_leaf(site.path());
+    let account = fs::read(saved(site.path(), "account.json")).unwrap();
+    // Renewal reads a clock set so the first certificate falls due 30
+    // seconds from now, while the server runs, leaving time to start it.
+    let ahead = renew_at(&first) - SystemClock.now().timestamp() - 30;
+    let ahead = ahead.to_string();
+
+    let (_server, address) = serve(site.path(), &["--test-clock-ahead", &ahead]);
+    let runtime = tokio::runtime::Runtime::new().unwrap();
+    let root = pebble_root(&runtime);
+    let before = runtime.block_on(served(&root));
+    let (after, kept) = until_renewed(&runtime, site.path(), &root, &first);
+    let (status, _) = home_through_pebble(&address);
+
+    assert_eq!(before, first, "the saved certificate is served first");
+    assert_ne!(
+        after,
+        first,
+        "a new certificate is served: {}",
+        log(site.path())
+    );
+    assert_eq!(after, kept, "the new certificate is saved");
+    assert!(
+        issued_at(&after) > issued_at(&first),
+        "the new certificate was issued after the first"
+    );
+    assert_eq!(status, 200);
+    assert_eq!(
+        fs::read(saved(site.path(), "account.json")).unwrap(),
+        account
+    );
+}
+
+/// What `khalid serve` printed on `site`.
+#[cfg(test)]
+fn log(site: &Path) -> String {
+    let mut path = site.to_path_buf();
+    path.push("serve.log");
+    fs::read_to_string(path).unwrap_or_default()
+}
+
 #[test]
 #[ignore = "needs pebble on this machine; see this file's first lines"]
 fn khalid_serve_gets_its_first_certificate_from_pebble_and_saves_it() {
     let site = demo();
 
-    let (_server, address) = serve(site.path());
+    let (_server, address) = serve(site.path(), &[]);
     let (status, body) = home_through_pebble(&address);
 
     assert_eq!(address, format!("https://{NAME}:5001/blog/"));
@@ -155,7 +314,7 @@ fn khalid_serve_gets_its_first_certificate_from_pebble_and_saves_it() {
 #[ignore = "needs pebble on this machine; see this file's first lines"]
 fn khalid_serve_renews_a_due_certificate_with_the_saved_account() {
     let site = demo();
-    drop(serve(site.path()));
+    drop(serve(site.path(), &[]));
     let account = fs::read(saved(site.path(), "account.json")).unwrap();
     let mut params = rcgen::CertificateParams::new(vec![NAME.to_owned()]).unwrap();
     params.not_before = rcgen::date_time_ymd(2026, 1, 1);
@@ -165,7 +324,7 @@ fn khalid_serve_renews_a_due_certificate_with_the_saved_account() {
     fs::write(saved(site.path(), "certificate.pem"), &due).unwrap();
     fs::write(saved(site.path(), "key.pem"), key.serialize_pem()).unwrap();
 
-    let (_server, address) = serve(site.path());
+    let (_server, address) = serve(site.path(), &[]);
     let (status, _) = home_through_pebble(&address);
 
     assert_eq!(status, 200);

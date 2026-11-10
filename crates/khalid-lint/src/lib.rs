@@ -38,6 +38,7 @@ mod lint_error;
 mod lint_post;
 mod lint_site;
 mod linter;
+mod own_hosts;
 mod page_checks;
 mod page_kind;
 mod page_or_section;
