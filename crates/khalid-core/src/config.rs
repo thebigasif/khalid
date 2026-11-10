@@ -11,9 +11,9 @@ use crate::mail_settings::MailTable;
 use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
-    AbsoluteUrl, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment, Locale,
-    MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch,
-    SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
+    AbsoluteUrl, AdminFolder, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment,
+    Locale, MailSettings, MediaSettings, NavSettings, ParseUrlError, PrivacySettings, Reader,
+    ReaderSwitch, SearchConsoleSettings, SeoSettings, SiteCode, TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -27,6 +27,7 @@ pub struct Config {
     name: String,
     address: AbsoluteUrl,
     mount: String,
+    admin_folder: AdminFolder,
     mode: Mode,
     slugs: SlugMode,
     default_language: Locale,
@@ -93,6 +94,8 @@ struct SiteFile {
     address: AbsoluteUrl,
     #[serde(default = "root_mount")]
     mount: String,
+    #[serde(default)]
+    admin_folder: AdminFolder,
     #[serde(default)]
     mode: Mode,
     #[serde(default)]
@@ -183,6 +186,15 @@ fn layout_mistake(file: &SiteFile) -> Option<(&'static str, &'static str)> {
             "mount",
             "the mount path must start and end with /, like /blog/",
         ));
+    }
+    let folder = file.admin_folder.as_str();
+    if file
+        .languages
+        .iter()
+        .any(|language| language.as_str() == folder)
+    {
+        let problem = "the admin folder cannot be a language code, since that language's pages answer there; pick another name, like studio";
+        return Some(("admin_folder", problem));
     }
     if file.languages.is_empty() {
         return Some(("languages", "the site needs at least one language"));
@@ -311,6 +323,7 @@ impl Config {
             name: file.name,
             address,
             mount: file.mount,
+            admin_folder: file.admin_folder,
             mode: file.mode,
             slugs: file.slugs,
             default_language: file.default_language,
@@ -406,6 +419,12 @@ impl Config {
     /// The folder the blog sits under on that site, such as `/blog/`.
     pub fn mount(&self) -> &str {
         &self.mount
+    }
+
+    /// The folder under the mount where the admin answers, from
+    /// `admin_folder`; `admin` unless the file says otherwise.
+    pub fn admin_folder(&self) -> &AdminFolder {
+        &self.admin_folder
     }
 
     /// Server, static or headless.
