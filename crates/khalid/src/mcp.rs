@@ -28,6 +28,7 @@ use crate::mcp_content::FreshContent;
 use crate::mcp_tools::SiteTools;
 use crate::media_library::{self, PictureKeys};
 use crate::site_posts::SitePosts;
+use crate::watch_report::SiteUptime;
 use crate::{
     comment_pages, keys_message, mcp_message, outbound, redirects, report, serve, serve_message,
     staff,
@@ -116,8 +117,8 @@ async fn session(
 
 /// The API as `khalid mcp` calls it: every route `khalid serve` mounts,
 /// so every operation in its document is a tool, with the staff accounts,
-/// webhooks, readers' comments, stored redirects and media library of
-/// site `id`. A running `khalid serve` reads the last three again once a
+/// webhooks, readers' comments, stored redirects, media library and watch
+/// looks of site `id`. A running `khalid serve` reads the last three again once a
 /// tool notes its change (ADR "khalid serve reads again what khalid mcp
 /// writes").
 fn api_router(
@@ -145,6 +146,11 @@ fn api_router(
         redirects: redirects::desk(database, id),
         webhooks: Some(Arc::new(webhooks)),
         limits: *config.limits(),
+        uptime: Some(Arc::new(SiteUptime::new(
+            database,
+            id,
+            Arc::new(SystemClock),
+        ))),
         ..AdminDesks::none()
     };
     let (router, document) =

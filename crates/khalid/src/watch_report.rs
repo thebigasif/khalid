@@ -1,16 +1,21 @@
 //! `khalid watch`: how fast and how reliably the blog answered at its
 //! public address over the last day and the last 30 days, from the looks
 //! `khalid serve` keeps (C6). A long gap between looks is time nobody
-//! watched, as when the server itself was down.
+//! watched, as when the server itself was down. [`SiteUptime`] answers the
+//! same report under `/api/admin/v1/watch/` (KH-API-5).
 
 use std::fmt::Write as _;
 use std::path::Path;
+use std::sync::Arc;
 
 use chrono::{DateTime, Duration, SecondsFormat, Utc};
 use khalid_alerts::{Answer, Probe};
+use khalid_api::content_store::BoxFuture;
+use khalid_api::uptime::{
+    UptimeError, UptimeReader, UptimeReport, WatchLook, WatchSpan, WatchedPage,
+};
 use khalid_core::{Clock, Slug};
-use khalid_db::{Database, DbError, WatchTable};
-use serde::Serialize;
+use khalid_db::{Database, DbError, SiteId, WatchTable};
 
 use crate::cli::Output;
 use crate::db::MAIN;
@@ -21,37 +26,32 @@ use crate::{db, db_message, report};
 /// Said when the watch has no looks yet.
 const NO_LOOKS: &str = "The watch has not looked at the blog yet.\nkhalid serve looks at the public address every few minutes once it answers more than this computer.\nSet how often with watch_minutes in [alerts] of site.toml.\n";
 
-/// The JSON shape of `khalid watch --json`.
-#[derive(Serialize)]
-struct WatchBody {
-    pages: Vec<PageReport>,
+/// The watch's looks of one site in the database, for the Admin API.
+pub(crate) struct SiteUptime {
+    table: WatchTable,
+    clock: Arc<dyn Clock>,
 }
 
-/// One page's looks, over two spans.
-#[derive(Serialize)]
-struct PageReport {
-    page: String,
-    last_day: Span,
-    last_30_days: Span,
-    last_look: Option<Look>,
+impl SiteUptime {
+    /// The looks of site `id` in `database`, reported at the time `clock`
+    /// gives.
+    pub(crate) fn new(database: &Database, id: SiteId, clock: Arc<dyn Clock>) -> Self {
+        Self {
+            table: WatchTable::new(database.clone(), id),
+            clock,
+        }
+    }
 }
 
-/// The looks of one span of time.
-#[derive(Serialize)]
-struct Span {
-    looks: usize,
-    answered: usize,
-    middle_ms: Option<u32>,
-    slowest_ms: Option<u32>,
-    longest_gap_minutes: i64,
-}
-
-/// The newest look. `status` is `null` when nothing answered.
-#[derive(Serialize)]
-struct Look {
-    at: String,
-    status: Option<u16>,
-    millis: u32,
+impl UptimeReader for SiteUptime {
+    fn report(&self) -> BoxFuture<'_, Result<UptimeReport, UptimeError>> {
+        Box::pin(async move {
+            let now = self.clock.now();
+            let pages = pages(&self.table, now).await;
+            let pages = pages.map_err(|error| UptimeError::Internal(Box::new(error)))?;
+            Ok(UptimeReport { pages })
+        })
+    }
 }
 
 /// Prints the report for the `site` folder's database at the time `clock`
@@ -70,8 +70,8 @@ pub(crate) fn run(site: &Path, clock: &dyn Clock, output: Output) -> Exit {
         return report::failure(output, &db_message::internal(), Exit::Internal);
     };
     let now = clock.now();
-    match runtime.block_on(pages(&path, &main, now)) {
-        Ok(pages) if output == Output::Json => report::json(&WatchBody { pages }, Exit::Success),
+    match runtime.block_on(read(&path, &main, now)) {
+        Ok(pages) if output == Output::Json => report::json(&UptimeReport { pages }, Exit::Success),
         Ok(pages) if pages.is_empty() => report::text(NO_LOOKS, Exit::Success),
         Ok(pages) => report::text(&human(&pages), Exit::Success),
         Err(error) => report::failure(output, &db_message::of(&path, &error), Exit::Failure),
@@ -79,35 +79,40 @@ pub(crate) fn run(site: &Path, clock: &dyn Clock, output: Output) -> Exit {
 }
 
 /// Every watched page's report at `now`, from the database at `path`.
-async fn pages(path: &Path, handle: &Slug, now: DateTime<Utc>) -> Result<Vec<PageReport>, DbError> {
+async fn read(path: &Path, handle: &Slug, now: DateTime<Utc>) -> Result<Vec<WatchedPage>, DbError> {
     let db = Database::open(path).await?;
     let read = async {
         db.migrate().await?;
         let table = WatchTable::new(db.clone(), db.site(handle).await?);
-        let mut reports = Vec::new();
-        for page in table.pages().await? {
-            let looks = table.since(&page, now - Duration::days(KEPT_DAYS)).await?;
-            let day: Vec<Probe> = looks
-                .iter()
-                .filter(|look| look.at > now - Duration::days(1))
-                .copied()
-                .collect();
-            reports.push(PageReport {
-                last_day: span(&day, now),
-                last_30_days: span(&looks, now),
-                last_look: looks.last().map(look),
-                page,
-            });
-        }
-        Ok(reports)
+        pages(&table, now).await
     };
     let reports = read.await;
     db.close().await;
     reports
 }
 
+/// Every page `table` holds looks at, reported at `now`.
+async fn pages(table: &WatchTable, now: DateTime<Utc>) -> Result<Vec<WatchedPage>, DbError> {
+    let mut reports = Vec::new();
+    for page in table.pages().await? {
+        let looks = table.since(&page, now - Duration::days(KEPT_DAYS)).await?;
+        let day: Vec<Probe> = looks
+            .iter()
+            .filter(|look| look.at > now - Duration::days(1))
+            .copied()
+            .collect();
+        reports.push(WatchedPage {
+            last_day: span(&day, now),
+            last_30_days: span(&looks, now),
+            last_look: looks.last().map(look),
+            page,
+        });
+    }
+    Ok(reports)
+}
+
 /// What `looks`, oldest first, show up to `now`.
-fn span(looks: &[Probe], now: DateTime<Utc>) -> Span {
+fn span(looks: &[Probe], now: DateTime<Utc>) -> WatchSpan {
     let mut times: Vec<u32> = looks
         .iter()
         .filter(|look| look.is_up())
@@ -116,7 +121,7 @@ fn span(looks: &[Probe], now: DateTime<Utc>) -> Span {
     times.sort_unstable();
     let ends = looks.iter().map(|look| look.at).chain([now]);
     let gaps = ends.clone().zip(ends.skip(1)).map(|(a, b)| b - a);
-    Span {
+    WatchSpan {
         looks: looks.len(),
         answered: times.len(),
         middle_ms: times.get(times.len() / 2).copied(),
@@ -126,12 +131,12 @@ fn span(looks: &[Probe], now: DateTime<Utc>) -> Span {
 }
 
 /// The newest look as the report shows it.
-fn look(probe: &Probe) -> Look {
+fn look(probe: &Probe) -> WatchLook {
     let status = match probe.answer {
         Answer::Status(status) => Some(status),
         Answer::Unreached => None,
     };
-    Look {
+    WatchLook {
         at: probe.at.to_rfc3339_opts(SecondsFormat::Secs, true),
         status,
         millis: probe.millis,
@@ -139,7 +144,7 @@ fn look(probe: &Probe) -> Look {
 }
 
 /// The report in sentences, one block per page.
-fn human(pages: &[PageReport]) -> String {
+fn human(pages: &[WatchedPage]) -> String {
     let mut text = String::new();
     for page in pages {
         let _ = writeln!(text, "{}", page.page);
@@ -162,7 +167,7 @@ fn human(pages: &[PageReport]) -> String {
 
 /// One span in a sentence, such as `12 looks, 100.0% answered, middle
 /// 120 ms, slowest 300 ms, longest gap 5 minutes.`
-fn said(span: &Span) -> String {
+fn said(span: &WatchSpan) -> String {
     let Some(per_mille) = span.answered.saturating_mul(1000).checked_div(span.looks) else {
         return "no looks.".to_owned();
     };

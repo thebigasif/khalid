@@ -358,6 +358,8 @@ khalid --site /srv/blog watch
 
 It shows, for the last day and the last 30 days, how many looks answered, how fast, and the longest gap between looks. A long gap means the server itself was off, since a stopped server cannot look. To be told about that too, have a second machine or an outside monitor watch the address.
 
+The running `khalid serve` answers the same report, in the shape `khalid watch --json` prints, at `GET /api/admin/v1/watch/` for a key with `settings:write`. Agents reach it through `khalid mcp` as the `uptime_report` tool.
+
 ## The visitor log
 
 The visitor log keeps one row per visit for 7 to 14 days, so Khalid can check that a bot is who it says it is and see when a new post was first crawled. It sets no cookie and keeps only shortened addresses, but it is still personal data, so it is off until you switch it on. Ask your lawyer to read `docs/design/visitor-log.md` first.
