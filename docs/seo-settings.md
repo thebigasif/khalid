@@ -299,6 +299,19 @@ A site whose posts hold a video gets a video sitemap for each language, such as 
 
 The other sitemap files list the same pages without their videos, so no video is listed twice. There is nothing to turn on.
 
+### Video structured data
+
+A video also goes in the page's structured data as a `VideoObject`, the description of a video that Google reads to show it in video results. Google requires the day the video was first published, its upload date, so Khalid writes a `VideoObject` only when it knows that day and never guesses it:
+
+- A `::video` block uses its own `uploaded` date when it has one, such as for a video first shown on another site. Otherwise it uses the post's date. A page with no date and no `uploaded` writes none.
+- An `::embed` of a YouTube, Vimeo or Loom video writes one only when you give the day the host published it. Copy it from the video's page on the host:
+
+```markdown
+::embed{src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" title="How search works" uploaded="2009-10-25"}
+```
+
+Write the day as `2009-10-25`, or with its time, such as `2009-10-25T09:30+02:00`. A video without an upload date still goes in the video sitemap.
+
 ## Front matter for search
 
 These fields go in a post's front matter, between the `---` lines. `page_type` also works on a page in `pages/`.

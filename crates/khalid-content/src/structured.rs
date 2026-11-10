@@ -2,6 +2,7 @@
 
 use std::time::Duration;
 
+use chrono::{DateTime, FixedOffset};
 use khalid_core::AbsoluteUrl;
 
 use crate::{EmbedProvider, SchemaCard};
@@ -80,6 +81,8 @@ pub struct VideoBlock {
     /// The picture search results show for the video, when it is not the
     /// poster: a path or a full address.
     pub thumbnail: Option<String>,
+    /// When the video was first published, when the block says so.
+    pub uploaded: Option<DateTime<FixedOffset>>,
 }
 
 /// A video from a video host shown in a frame, from `::embed{...}`.
@@ -95,6 +98,9 @@ pub struct EmbeddedVideo {
     /// The still the host publishes for the video, when its address follows
     /// from the video's id without asking the host, as on `YouTube`.
     pub thumbnail: Option<AbsoluteUrl>,
+    /// When the host published the video, when the embed says so. Only
+    /// the host knows it, so it is never guessed.
+    pub uploaded: Option<DateTime<FixedOffset>>,
 }
 
 /// A rating of one thing, from `:::review{...}`.
