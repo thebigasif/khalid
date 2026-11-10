@@ -3043,6 +3043,22 @@ export interface Operations {
     };
     output: AdminAnswers;
   };
+  /** Deletes one answer for good, such as when the visitor who sent it asks under the GDPR. Needs `subscribers:write`. */
+  delete_answer: {
+    input: {
+      path: {
+        /** The form's id, as its block names it */
+        id: string;
+        /** The answer's identity */
+        answer: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: null;
+  };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {
     input: {

@@ -1,7 +1,7 @@
 //! The form block on a running `khalid serve`, with scripts off: the form
 //! posts under the mount path, the route answers it, a reader is thanked
-//! and the message is kept, for the Admin API to read back (G4, KH-GRO-1,
-//! backlog row 21).
+//! and the message is kept, for the Admin API to read back and delete on
+//! request (G4, KH-GRO-1, backlog row 21 and gap audit 4 row 11).
 
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
@@ -170,6 +170,15 @@ fn the_demo_form_posts_under_the_mount_and_is_kept() {
         ]),
         "{answers}"
     );
+
+    // Grace asks for her answer to be erased.
+    let erase = format!("/api/admin/v1/forms/contact/answers/{}/", answer["id"]);
+    let (head, body) = admin(&server, ("DELETE", &erase), &key);
+    assert!(head.starts_with("HTTP/1.1 204"), "{head}\n{body}");
+    let answers = admin_get(&server, "/api/admin/v1/forms/contact/answers/", &key);
+    assert_eq!(answers["answers"], serde_json::json!([]), "{answers}");
+    let (head, _) = admin(&server, ("DELETE", &erase), &key);
+    assert!(head.starts_with("HTTP/1.1 404"), "{head}");
 }
 
 /// A new key on `site` that may read what visitors send.
@@ -187,16 +196,24 @@ fn key_for(site: &Path) -> String {
 /// GETs the Admin API's `path` with `key`, and returns the JSON it sent.
 #[cfg(test)]
 fn admin_get(server: &Server, path: &str, key: &str) -> Value {
+    let (head, body) = admin(server, ("GET", path), key);
+    assert!(head.starts_with("HTTP/1.1 200"), "{head}\n{body}");
+    serde_json::from_str(&body).unwrap_or_else(|_| panic!("{body}"))
+}
+
+/// Sends `method` to the Admin API's `path` with `key`, and returns the
+/// head and the body.
+#[cfg(test)]
+fn admin(server: &Server, (method, path): (&str, &str), key: &str) -> (String, String) {
     let host = &server.host;
     let mut stream = TcpStream::connect(host).unwrap();
     let request = format!(
-        "GET {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\
+        "{method} {path} HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\
          Authorization: Khalid {key}\r\n\r\n"
     );
     stream.write_all(request.as_bytes()).unwrap();
     let mut raw = String::new();
     stream.read_to_string(&mut raw).unwrap();
     let (head, body) = raw.split_once("\r\n\r\n").unwrap();
-    assert!(head.starts_with("HTTP/1.1 200"), "{head}\n{body}");
-    serde_json::from_str(body).unwrap_or_else(|_| panic!("{body}"))
+    (head.to_owned(), body.to_owned())
 }

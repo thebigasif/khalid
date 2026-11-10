@@ -2517,6 +2517,85 @@
         ]
       }
     },
+    "/api/admin/v1/forms/{id}/answers/{answer}/": {
+      "delete": {
+        "tags": [
+          "admin forms"
+        ],
+        "summary": "Deletes one answer for good, such as when the visitor who sent it asks\nunder the GDPR. Needs `subscribers:write`.",
+        "operationId": "delete_answer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The form's id, as its block names it",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "answer",
+            "in": "path",
+            "description": "The answer's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The answer is gone"
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The form has no such answer, or this server keeps none",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/keys/": {
       "get": {
         "tags": [

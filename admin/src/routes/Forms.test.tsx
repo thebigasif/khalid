@@ -1,6 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { noContent } from "../../test/blog";
 import { redirectsBlog } from "../../test/redirects";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import type { FormAnswer, FormSummary } from "../api/forms";
@@ -84,6 +85,42 @@ describe("the forms screen", () => {
     await userEvent.selectOptions(which, "workshop-waitlist");
     expect(await screen.findByText("Count me in")).toBeVisible();
     expect(screen.queryByText("The oldest note")).toBeNull();
+  });
+
+  it("deletes one answer for good after asking once more", async () => {
+    signedIn();
+    let kept = [answer(7, "Please erase what I sent"), answer(5, "Thanks")];
+    const sent = redirectsBlog({
+      "GET /forms/": () => json(200, { forms: [CONTACT] }),
+      "GET /forms/contact/answers/": () => json(200, page(kept, 1, 1)),
+      "DELETE /forms/contact/answers/7/": () => {
+        kept = kept.filter((each) => each.id !== 7);
+        return noContent();
+      },
+    });
+    renderAt("/forms");
+    const card = (await screen.findByText("Please erase what I sent")).closest("li");
+    await userEvent.click(within(card ?? document.body).getByRole("button", { name: /^Delete/ }));
+    expect(screen.getByText(formWords.asking)).toBeVisible();
+    expect(sent.some((request) => request.method === "DELETE")).toBe(false);
+    await userEvent.click(screen.getByRole("button", { name: formWords.sure }));
+    expect(await screen.findByText(formWords.removed)).toBeVisible();
+    expect(screen.queryByText("Please erase what I sent")).toBeNull();
+    expect(screen.getByText("Thanks")).toBeVisible();
+  });
+
+  it("keeps the answer when the owner changes their mind", async () => {
+    signedIn();
+    const sent = redirectsBlog({
+      "GET /forms/": () => json(200, { forms: [CONTACT] }),
+      "GET /forms/contact/answers/": () => json(200, page([answer(7, "Hello")], 1, 1)),
+    });
+    renderAt("/forms");
+    await screen.findByText("Hello");
+    await userEvent.click(screen.getByRole("button", { name: /^Delete/ }));
+    await userEvent.click(screen.getByRole("button", { name: formWords.keep }));
+    expect(screen.queryByText(formWords.asking)).toBeNull();
+    expect(sent.some((request) => request.method === "DELETE")).toBe(false);
   });
 
   it("says plainly when no one has sent a form yet", async () => {

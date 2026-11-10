@@ -7,7 +7,7 @@ mod common;
 use std::sync::Arc;
 
 use axum::body::{Body, to_bytes};
-use axum::http::{Request, StatusCode};
+use axum::http::{Method, Request, StatusCode};
 use chrono::{DateTime, TimeZone, Utc};
 use khalid_api::api;
 use khalid_api::content_store::BoxFuture;
@@ -63,6 +63,15 @@ impl FormAnswers for Answers {
         };
         Box::pin(async move { Ok(page) })
     }
+
+    fn delete<'a>(
+        &'a self,
+        form: &'a str,
+        answer: i64,
+    ) -> BoxFuture<'a, Result<bool, FormAnswersError>> {
+        let deleted = form == "contact" && (1..=7).contains(&answer);
+        Box::pin(async move { Ok(deleted) })
+    }
 }
 
 #[cfg(test)]
@@ -110,7 +119,21 @@ async fn get(route: &str, key: &str) -> (StatusCode, Value) {
 
 #[cfg(test)]
 async fn get_from(router: axum::Router, route: &str, key: &str) -> (StatusCode, Value) {
-    let request = Request::get(route)
+    send(router, Method::GET, route, key).await
+}
+
+/// DELETEs `route` with `key` from a server keeping [`Answers`].
+#[cfg(test)]
+async fn delete(route: &str, key: &str) -> (StatusCode, Value) {
+    let router = router(Some(Arc::new(Answers)));
+    send(router, Method::DELETE, route, key).await
+}
+
+#[cfg(test)]
+async fn send(router: axum::Router, method: Method, route: &str, key: &str) -> (StatusCode, Value) {
+    let request = Request::builder()
+        .method(method)
+        .uri(route)
         .header("authorization", format!("Khalid {key}"))
         .body(Body::empty())
         .unwrap();
@@ -194,6 +217,28 @@ async fn answers_hold_visitors_words_so_posts_write_is_not_enough() {
     ] {
         let (status, _) = get(route, POSTS_ONLY).await;
         assert_eq!(status, StatusCode::FORBIDDEN, "{route}");
+    }
+    let (status, _) = delete("/api/admin/v1/forms/contact/answers/3/", POSTS_ONLY).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
+}
+
+#[tokio::test]
+async fn an_owner_deletes_one_answer_on_a_visitor_s_request() {
+    let (status, json) = delete("/api/admin/v1/forms/contact/answers/3/", VISITORS).await;
+    assert_eq!((status, json), (StatusCode::NO_CONTENT, Value::Null));
+}
+
+#[tokio::test]
+async fn deleting_an_answer_that_is_not_there_answers_404_with_the_fix() {
+    for route in [
+        "/api/admin/v1/forms/contact/answers/99/",
+        "/api/admin/v1/forms/survey/answers/3/",
+        "/api/admin/v1/forms/contact/answers/three/",
+    ] {
+        let (status, json) = delete(route, VISITORS).await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "{route}: {json}");
+        assert_eq!(json["instance"], route);
+        assert_eq!(json["fix"], "List the form's answers to find it.");
     }
 }
 
