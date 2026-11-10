@@ -30,6 +30,7 @@ import { Look } from "./Look";
 import { Media } from "./Media";
 import { MediaDetails } from "./MediaDetails";
 import { NewPost } from "./NewPost";
+import { Pages } from "./Pages";
 import { Passkeys } from "./Passkeys";
 import { Posts } from "./Posts";
 import { Privacy } from "./Privacy";
@@ -175,6 +176,9 @@ const authorPage = createRoute({
   component: AuthorPage,
 });
 
+// The site's pages, such as About: files beside the posts, live once saved.
+const pages = createRoute({ getParentRoute: () => signedIn, path: "/pages", component: Pages });
+
 const keys = createRoute({ getParentRoute: () => signedIn, path: "/keys", component: Keys });
 
 const webhooks = createRoute({
@@ -252,6 +256,7 @@ const routeTree = root.addChildren([
     comments,
     authors,
     authorPage,
+    pages,
     trash,
     audit,
     redirects,
