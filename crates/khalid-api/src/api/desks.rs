@@ -19,6 +19,7 @@ use crate::resources::{AdminAuthor, AdminCategory, AdminPage, AdminSnippet, Admi
 use crate::schema_template_store::SchemaTemplateStore;
 use crate::serpdad_store::SerpdadStore;
 use crate::settings_store::SettingsStore;
+use crate::subscriber_desk::SubscriberDesk;
 use crate::tag_store::TagStore;
 use crate::webhook_store::WebhookStore;
 
@@ -83,6 +84,10 @@ pub struct AdminDesks {
     /// Who writes the editor's suggestions, under `/api/admin/v1/ai/`;
     /// [`AiDesk::off`] sends nothing anywhere.
     pub ai: AiDesk,
+    /// Newsletter subscribers and sends, or `None` when the subscriber
+    /// routes list none and the newsletter routes answer that the site
+    /// cannot send.
+    pub subscribers: Option<Arc<dyn SubscriberDesk>>,
 }
 
 impl std::fmt::Debug for AdminDesks {
@@ -99,7 +104,7 @@ impl AdminDesks {
     /// audit log, no trash, no post checks, no schema templates, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection
-    /// no `SerpDad` connection and no writing suggestions.
+    /// no `SerpDad` connection, no writing suggestions and no subscribers.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
@@ -123,6 +128,7 @@ impl AdminDesks {
             follow_ups: Arc::new(NoSearchConsole),
             serpdad: None,
             ai: AiDesk::off(),
+            subscribers: None,
         }
     }
 }
