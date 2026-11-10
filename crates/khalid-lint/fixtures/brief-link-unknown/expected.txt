@@ -1,0 +1,2 @@
+warn brief-link-unknown: /blog/link-text-tips/ (suggest: /blog/choosing-link-text/)
+warn brief-link-unknown: /blog/orphan-pages/

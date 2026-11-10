@@ -1,0 +1,19 @@
+---
+source: crates/khalid/src/build_schema_tests.rs
+expression: "SchemaGraph::new(videos).to_json()"
+---
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "VideoObject",
+      "@id": "https://www.example.com/blog/first-bowl-centring-clay/#video-1",
+      "name": "Wedging and centring clay for your first bowl",
+      "description": "Noor wedges a ball of buff stoneware, then centres it on the wheel in three slow passes.",
+      "thumbnailUrl": "https://www.example.com/blog/first-bowl-centring-clay/lead.jpg",
+      "uploadDate": "2026-07-08T00:00:00Z",
+      "duration": "PT16M42S",
+      "contentUrl": "https://www.example.com/blog/first-bowl-centring-clay/clip.mp4"
+    }
+  ]
+}

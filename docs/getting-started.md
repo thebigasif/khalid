@@ -91,6 +91,18 @@ A post is plain markdown: `##` makes a heading, `[words](/address/)` makes a lin
 
 `[[slug]]` links another post, page or glossary term by its slug, the last part of its address, and follows it if the address changes. `[[slug|your words]]` sets the link's words. When a post and a glossary term share a slug, `[[slug]]` links the post, so write `[[glossary:slug]]` to link the term. The linter's `ambiguous-wikilink` warning points out each `[[slug]]` that could mean either.
 
+A price, a founding year or any value your posts repeat can live once in `facts.toml`, in the site folder:
+
+```toml
+[pro-plan-price]
+value = "29 USD a month"
+old = ["19 USD a month"]
+checked = 2026-09-01
+source = "https://example.com/pricing/"
+```
+
+Write `[[fact:pro-plan-price]]` in a post and the page shows "29 USD a month". Change the value in `facts.toml` and every post that names the fact shows the new one at the next build. A key the file does not have stops the build and names the line. `old` lists values the fact held before, so `khalid lint` warns about a post that still types one. `checked` is the day you last made sure the value holds: the linter asks for a new check after six months, and warns when the date has not come yet. `source`, the page where you check the value, is optional, and the warning links it.
+
 `khalid --site blog new --draft "Your title" --author "Sam Rivera"` makes the same kind of draft for you, with the `author:` line, and makes the author's profile when there is none. Without `--draft`, `new` writes a dated post straight into `content/en/posts/`, so it is live at the next build.
 
 ## 5. Publish it
@@ -176,5 +188,5 @@ khalid restore blog.tar.gz blog-restored
 - `docs/deploy.md`: run Khalid as a service, in Docker, or on Fly.io, Railway, Coolify or a Hetzner server.
 - `docs/newsletters.md`: send posts to subscribers by email, and give the newsletter a page with its past issues.
 - `docs/charts-embeds-tracking.md`: charts in posts, interactive tools from sites you allow, and tracking tags on links to your product.
-- `khalid --help` lists every command, and `khalid <command> --help` explains one.
+- `khalid --help` lists every command, and `khalid <command> --help` explains one. [The khalid command](cli.md) shows how to make your shell finish commands on Tab.
 - `khalid agents` prints the guide for AI agents that write and publish through Khalid.

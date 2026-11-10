@@ -56,11 +56,12 @@ pub(crate) fn run(
         }
     };
     // A failed build drops `fresh`, so the earlier export stays.
-    let Built { pages, left_out } =
-        match build::into_folder(site, checked, fresh.path(), clock, output) {
-            Ok(built) => built,
-            Err(exit) => return exit,
-        };
+    let Built {
+        pages, left_out, ..
+    } = match build::into_folder(site, checked, fresh.path(), clock, output) {
+        Ok(built) => built,
+        Err(exit) => return exit,
+    };
     if let Err(error) = swap(site, &public, fresh) {
         return report::failure(
             output,

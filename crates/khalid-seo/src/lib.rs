@@ -28,6 +28,7 @@ mod hreflang;
 mod html_sitemap;
 mod indexnow;
 mod indexnow_send;
+mod known_crawlers;
 mod link_policy;
 mod link_tracking;
 mod llms_txt;
@@ -70,6 +71,7 @@ pub use hreflang::{Alternate, Hreflang, TranslationKey, link_translations};
 pub use html_sitemap::{HtmlSitemap, HtmlSitemapGroup, HtmlSitemapLink};
 pub use indexnow::{IndexNow, KeyFile, Submission};
 pub use indexnow_send::{Retries, SendIndexNowError, Sent};
+pub use known_crawlers::{AI_ANSWER_CRAWLERS, AI_TRAINING_CRAWLERS, KnownCrawler};
 pub use link_policy::{Domain, LinkAttributes, LinkPolicy, LinkRel, LinkTarget};
 pub use link_tracking::Tracking;
 pub use llms_txt::{LlmsTxt, LlmsTxtOptions, llms_txt_url};
@@ -90,9 +92,7 @@ pub use redirects::{
     Destination, Move, Redirect, RedirectEntry, RedirectRule, RedirectTable, Resolution,
 };
 pub use robots_meta::IndexPolicy;
-pub use robots_txt::{
-    BotAccess, CrawlerPolicy, KNOWN_AI_CRAWLERS, RobotsLine, RobotsPath, RobotsTxt, UserAgent,
-};
+pub use robots_txt::{BotAccess, CrawlerPolicy, RobotsLine, RobotsPath, RobotsTxt, UserAgent};
 pub use schema::{
     AggregateRating, AppKind, AuthorProfile, Availability, Book, ClaimReview, Course, CustomSchema,
     Dataset, Entity, EntityRole, Event, EventLocation, EventStatus, FaqItem, HowTo, HowToStep,

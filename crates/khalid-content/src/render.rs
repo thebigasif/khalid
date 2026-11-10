@@ -238,21 +238,7 @@ impl Renderer<'_> {
                 self.markdown(&inside(&block.source));
                 self.html.push_str("</aside>\n");
             }
-            BlockKind::Figure { src, alt } => {
-                self.facts.images.push(Image {
-                    src: src.clone(),
-                    alt: Some(alt.clone()),
-                });
-                self.push(&[
-                    "<figure>\n<img src=\"",
-                    &attribute(src),
-                    "\" alt=\"",
-                    &attribute(alt),
-                    "\" loading=\"lazy\" decoding=\"async\" />\n<figcaption>\n",
-                ]);
-                self.markdown(&inside(&block.source));
-                self.html.push_str("</figcaption>\n</figure>\n");
-            }
+            BlockKind::Figure { src, alt } => self.figure(block, src, alt),
             BlockKind::Toggle { summary } => self.toggle(block, summary),
             BlockKind::Toc => self.html.push_str(TOC_MARK),
             BlockKind::Cta => self.html.push_str(CTA_MARK),
@@ -271,7 +257,14 @@ impl Renderer<'_> {
                 description.as_deref(),
                 image.as_ref(),
             ),
-            BlockKind::Embed { src, title, height } => self.embed(src, title, *height),
+            BlockKind::Embed {
+                src,
+                title,
+                height,
+                uploaded,
+            } => {
+                self.embed(src, title, *height, *uploaded);
+            }
             BlockKind::Video(video) => self.video(video),
             BlockKind::Audio { src, title } => self.audio(src, title),
             BlockKind::File { src, title } => self.file(src, title),

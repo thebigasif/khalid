@@ -126,6 +126,19 @@ fn the_crawler_table_shapes_robots_txt() {
 }
 
 #[test]
+fn the_ai_training_switch_reaches_robots_txt() {
+    let (_site, out) = built_with("\n[seo.crawlers]\nai_training = \"block\"\n");
+    let robots = fs::read_to_string(at(out.path(), "robots.txt")).unwrap();
+    let blocked = robots
+        .split("\n\n")
+        .find(|group| group.contains("User-agent: GPTBot"))
+        .unwrap_or_default();
+    assert!(blocked.contains("User-agent: Google-Extended"), "{robots}");
+    assert!(blocked.contains("Disallow: /"), "{robots}");
+    assert!(!robots.contains("OAI-SearchBot"), "{robots}");
+}
+
+#[test]
 fn the_feed_table_shapes_every_feed() {
     let (_site, out) = built_with(FILE_TABLES);
     let rss = fs::read_to_string(at(out.path(), "feed.xml")).unwrap();

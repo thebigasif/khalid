@@ -271,6 +271,8 @@ fn a_server_build_keeps_its_forms_and_lists_nothing_off() {
     let said = String::from_utf8_lossy(&build(site.path(), out.path(), &[]).stdout).into_owned();
     assert!(!said.contains("features that need a server"), "{said}");
     let post = fs::read_to_string(at(out.path(), "what-a-sitemap-does/index.html")).unwrap();
-    assert!(post.contains("action=\"/subscribe\""));
+    // Under the mount, as `khalid serve` points them (G4).
+    assert!(post.contains("action=\"/blog/subscribe\""), "{post}");
+    assert!(post.contains("action=\"/blog/forms/contact\""), "{post}");
     assert!(!post.contains("class=\"lock locked\""));
 }

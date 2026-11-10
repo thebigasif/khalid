@@ -83,6 +83,37 @@ describe("the parts of the SEO settings", () => {
     expect(changes[0]?.seo).toEqual({ crawlers: { block: ["GPTBot", "AhrefsBot"] } });
   });
 
+  it("blocks AI training with one choice and keeps an answer crawler's own box", async () => {
+    signedIn();
+    const changes = seoBlog();
+    await openTab(seoWords.tabs.crawlers);
+    const words = seoWords.crawlers;
+    expect(screen.getByLabelText(words.trainingAllow)).toBeChecked();
+    expect(screen.getByLabelText(words.block("GPTBot"))).toBeEnabled();
+    await userEvent.click(screen.getByLabelText(words.trainingBlock));
+    expect(screen.getByLabelText(words.block("GPTBot"))).toBeChecked();
+    expect(screen.getByLabelText(words.block("GPTBot"))).toBeDisabled();
+    expect(screen.getByLabelText(words.block("OAI-SearchBot"))).not.toBeChecked();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(screen.getByLabelText(words.block("PerplexityBot")));
+    await save();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({
+      crawlers: { ai_training: "block", block: ["PerplexityBot"] },
+    });
+  });
+
+  it("reads the training choice from site.toml and turns it back off", async () => {
+    signedIn();
+    const changes = seoBlog({ ...SEO_DEMO, seo: { crawlers: { ai_training: "block" } } });
+    await openTab(seoWords.tabs.crawlers);
+    expect(screen.getByLabelText(seoWords.crawlers.trainingBlock)).toBeChecked();
+    await userEvent.click(screen.getByLabelText(seoWords.crawlers.trainingAllow));
+    await save();
+    expect(await screen.findByText(seoWords.live)).toBeVisible();
+    expect(changes[0]?.seo).toEqual({ crawlers: null });
+  });
+
   it("makes an IndexNow key when the switch turns on, and saves excerpts", async () => {
     signedIn();
     const changes = seoBlog();

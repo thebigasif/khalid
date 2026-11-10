@@ -1,5 +1,8 @@
 //! A post's brief: the questions, terms and links the writer planned, each
-//! checked against the post as written (GEO P6).
+//! checked against the post as written, and each planned link against the
+//! site (GEO P6).
+
+use std::collections::BTreeSet;
 
 use crate::focus::{holds, words};
 use crate::{Hit, LintPost, Rule, RuleId, Severity, SiteView};
@@ -119,9 +122,86 @@ impl Rule for LinkMissing {
     }
 }
 
+/// The folder a page sits in: `page` without its last part, so `/blog/a`
+/// sits in `/blog` and `/a` in the site root, `""`.
+fn folder(page: &str) -> &str {
+    page.rsplit_once('/').map_or("", |(folder, _)| folder)
+}
+
+/// A page in the brief at an address where the site's posts live, such as
+/// `/blog/a-post/`, that no post, page or glossary term has, one hit per
+/// page in the brief's order. When the address is an old one of a post,
+/// the hit suggests the post's current address.
+///
+/// Only addresses in a folder that holds posts are judged, so tag, list
+/// and home pages, which the linter does not know, never count as missing.
+#[derive(Debug)]
+pub(crate) struct LinkUnknown;
+
+impl LinkUnknown {
+    /// Whether the site has a page at `wanted`, a page key from [`page`].
+    fn known(wanted: &str, site: &dyn SiteView) -> bool {
+        let path_is = |path: &Option<String>| path.as_deref().is_some_and(|p| page(p) == wanted);
+        let last = wanted.rsplit('/').next().unwrap_or_default();
+        site.posts().iter().any(|post| path_is(&post.path))
+            || site.pages().iter().any(|p| p.slug.as_str() == last)
+            || site
+                .glossary()
+                .iter()
+                .any(|term| term.slug.as_str() == last)
+    }
+
+    /// The current address of the post that lived at `wanted` before.
+    fn moved(wanted: &str, site: &dyn SiteView) -> Vec<String> {
+        let had = |post: &&LintPost| post.aliases.iter().any(|alias| page(alias) == wanted);
+        let post = site.posts().iter().find(had);
+        post.and_then(|post| post.path.clone())
+            .into_iter()
+            .collect()
+    }
+}
+
+impl Rule for LinkUnknown {
+    fn id(&self) -> RuleId {
+        RuleId::new("brief-link-unknown")
+    }
+
+    fn default_severity(&self) -> Severity {
+        Severity::Warn
+    }
+
+    fn check(&self, post: &LintPost, site: &dyn SiteView) -> Vec<Hit> {
+        let Some(brief) = &post.brief else {
+            return Vec::new();
+        };
+        let paths = site.posts().iter().filter_map(|post| post.path.as_deref());
+        let folders: BTreeSet<&str> = paths.map(|path| folder(page(path))).collect();
+        brief
+            .links
+            .iter()
+            .map(|link| link.trim())
+            .filter(|link| {
+                let wanted = page(link);
+                wanted.starts_with('/')
+                    && wanted != "/"
+                    && folders.contains(folder(wanted))
+                    && !Self::known(wanted, site)
+            })
+            .map(|link| Hit::about(link).suggesting(Self::moved(page(link), site)))
+            .collect()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_page_sits_in_the_folder_before_its_last_part() {
+        assert_eq!(folder("/blog/a"), "/blog");
+        assert_eq!(folder("/news/2026/a"), "/news/2026");
+        assert_eq!(folder("/a"), "");
+    }
 
     #[test]
     fn a_page_is_the_same_with_or_without_its_slash_part_or_query() {
