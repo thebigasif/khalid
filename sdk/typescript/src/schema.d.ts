@@ -1564,6 +1564,69 @@ export type PictureWords = {
   name: string;
 };
 
+/** The plan as the Admin API wraps it. */
+export type PlanBody = {
+  /** The plan. */
+  plan: PlanView;
+};
+
+/** Whether a day is set or only suggested. */
+export type PlanKind = "scheduled" | "suggested";
+
+/** Something to act on: what, why and the fix. */
+export type PlanNote = {
+  /** What to do. */
+  fix: string;
+  /** What the planner found. */
+  what: string;
+  /** Why it matters. */
+  why: string;
+};
+
+/** Where a plan's pace came from. */
+export type PlanPace = "asked" | "history";
+
+/** One post on one day of the plan. */
+export type PlanSlot = {
+  /** The day, in UTC. */
+  day: string;
+  /** The post's identity, as in `/posts/{id}/`. */
+  id: string;
+  /** Set or suggested. */
+  kind: PlanKind;
+  /** The title. */
+  title: string;
+};
+
+/** The plan: the pace, the days from tomorrow, the drafts that wait, and the warnings. */
+export type PlanView = {
+  /** Scheduled and suggested posts, earliest first. */
+  calendar: PlanSlot[];
+  /** Where the pace came from. */
+  pace_from: PlanPace;
+  /** Posts a week. */
+  per_week: number;
+  /** Drafts the linter holds back. */
+  waiting: PlanWaiting[];
+  /** What to act on. */
+  warnings: PlanNote[];
+};
+
+/** A draft with no day, and why. */
+export type PlanWaiting = {
+  /** The post's identity. */
+  id: string;
+  /** The main post it waits for, with `pillar_blocked`. */
+  pillar?: string | null;
+  /** The title. */
+  title: string;
+  /** Why it waits. */
+  why: PlanWhy;
+};
+
+/** Why a ready draft has no day. */
+export type PlanWhy = "blocked" | "pillar_blocked";
+
 /** A published post in API shape. Bodies are present only when asked for with `formats`. */
 export type Post = Bodies & ({
   /** Author slugs, in the order the writer gave them. */
@@ -2512,6 +2575,20 @@ export interface Operations {
       };
     };
     output: CalendarBody;
+  };
+  /** Suggests a day for each ready draft from tomorrow, at `per_week` or the site's own pace, with each topic's main post before its members, and says what to act on. Scheduled posts keep their days. Nothing is changed: to take a suggestion, edit the post to `scheduled` with that day's `published_at`. Needs `posts:write`. */
+  read_plan: {
+    input: {
+      query?: {
+        /** Posts a week, from 1 to 14. Left out, the site's own pace over the last twelve weeks. */
+        per_week?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: PlanBody;
   };
   /** Lists every category with its names and how many posts are in it. A site has tens, so the list comes whole. Needs `posts:write`. */
   list_categories: {

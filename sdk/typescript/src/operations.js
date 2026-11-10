@@ -15,6 +15,7 @@ export const operations = {
   edit_author: { method: "PUT", path: "/api/admin/v1/authors/{id}/", key: "admin", body: "application/json" },
   delete_author: { method: "DELETE", path: "/api/admin/v1/authors/{id}/", key: "admin", body: null },
   read_calendar: { method: "GET", path: "/api/admin/v1/calendar/", key: "admin", body: null },
+  read_plan: { method: "GET", path: "/api/admin/v1/calendar/plan/", key: "admin", body: null },
   list_categories: { method: "GET", path: "/api/admin/v1/categories/", key: "admin", body: null },
   create_category: { method: "POST", path: "/api/admin/v1/categories/", key: "admin", body: "application/json" },
   read_admin_category: { method: "GET", path: "/api/admin/v1/categories/{id}/", key: "admin", body: null },

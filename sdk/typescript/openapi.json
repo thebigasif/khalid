@@ -1023,6 +1023,96 @@
         ]
       }
     },
+    "/api/admin/v1/calendar/plan/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Suggests a day for each ready draft from tomorrow, at `per_week` or the\nsite's own pace, with each topic's main post before its members, and\nsays what to act on. Scheduled posts keep their days. Nothing is\nchanged: to take a suggestion, edit the post to `scheduled` with that\nday's `published_at`. Needs `posts:write`.",
+        "operationId": "read_plan",
+        "parameters": [
+          {
+            "name": "per_week",
+            "in": "query",
+            "description": "Posts a week, from 1 to 14. Left out, the site's own pace over the\nlast twelve weeks.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "maximum": 14,
+              "minimum": 1
+            },
+            "example": 2
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanBody"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "per_week is not a number from 1 to 14",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server makes no plan",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/categories/": {
       "get": {
         "tags": [
@@ -16094,6 +16184,169 @@
           }
         },
         "additionalProperties": false
+      },
+      "PlanBody": {
+        "type": "object",
+        "description": "The plan as the Admin API wraps it.",
+        "required": [
+          "plan"
+        ],
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/PlanView",
+            "description": "The plan."
+          }
+        }
+      },
+      "PlanKind": {
+        "type": "string",
+        "description": "Whether a day is set or only suggested.",
+        "enum": [
+          "scheduled",
+          "suggested"
+        ]
+      },
+      "PlanNote": {
+        "type": "object",
+        "description": "Something to act on: what, why and the fix.",
+        "required": [
+          "what",
+          "why",
+          "fix"
+        ],
+        "properties": {
+          "fix": {
+            "type": "string",
+            "description": "What to do."
+          },
+          "what": {
+            "type": "string",
+            "description": "What the planner found."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters."
+          }
+        }
+      },
+      "PlanPace": {
+        "type": "string",
+        "description": "Where a plan's pace came from.",
+        "enum": [
+          "asked",
+          "history"
+        ]
+      },
+      "PlanSlot": {
+        "type": "object",
+        "description": "One post on one day of the plan.",
+        "required": [
+          "day",
+          "id",
+          "title",
+          "kind"
+        ],
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date",
+            "description": "The day, in UTC."
+          },
+          "id": {
+            "type": "string",
+            "description": "The post's identity, as in `/posts/{id}/`."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/PlanKind",
+            "description": "Set or suggested."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title."
+          }
+        }
+      },
+      "PlanView": {
+        "type": "object",
+        "description": "The plan: the pace, the days from tomorrow, the drafts that wait, and\nthe warnings.",
+        "required": [
+          "per_week",
+          "pace_from",
+          "calendar",
+          "waiting",
+          "warnings"
+        ],
+        "properties": {
+          "calendar": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanSlot"
+            },
+            "description": "Scheduled and suggested posts, earliest first."
+          },
+          "pace_from": {
+            "$ref": "#/components/schemas/PlanPace",
+            "description": "Where the pace came from."
+          },
+          "per_week": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Posts a week.",
+            "minimum": 0
+          },
+          "waiting": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanWaiting"
+            },
+            "description": "Drafts the linter holds back."
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanNote"
+            },
+            "description": "What to act on."
+          }
+        }
+      },
+      "PlanWaiting": {
+        "type": "object",
+        "description": "A draft with no day, and why.",
+        "required": [
+          "id",
+          "title",
+          "why"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The post's identity."
+          },
+          "pillar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The main post it waits for, with `pillar_blocked`."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title."
+          },
+          "why": {
+            "$ref": "#/components/schemas/PlanWhy",
+            "description": "Why it waits."
+          }
+        }
+      },
+      "PlanWhy": {
+        "type": "string",
+        "description": "Why a ready draft has no day.",
+        "enum": [
+          "blocked",
+          "pillar_blocked"
+        ]
       },
       "Post": {
         "allOf": [
