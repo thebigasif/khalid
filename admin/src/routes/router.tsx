@@ -189,6 +189,13 @@ const authorPage = createRoute({
   component: AuthorPage,
 });
 
+// Loads when opened, so the admin's first download stays inside its budget.
+const tags = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/tags",
+  component: lazyRouteComponent(() => import("./Tags"), "Tags"),
+});
+
 const keys = createRoute({ getParentRoute: () => signedIn, path: "/keys", component: Keys });
 
 const webhooks = createRoute({
@@ -276,6 +283,7 @@ const routeTree = root.addChildren([
     forms,
     authors,
     authorPage,
+    tags,
     trash,
     audit,
     redirects,

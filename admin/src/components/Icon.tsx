@@ -40,6 +40,7 @@ const PATHS = {
   table: "M4 5h16v14H4zM4 10h16M4 15h16M10 5v14",
   steps: "M4 20h5v-5h5v-5h5V5",
   calendar: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4",
+  tag: "M3 3h8l10 10-8 8L3 11zM7.5 7.5h.01",
 } as const;
 
 /** The name of one of the admin's icons. */
