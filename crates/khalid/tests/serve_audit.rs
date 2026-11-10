@@ -28,6 +28,7 @@ fn a_change_through_the_admin_api_is_logged_with_who_made_it_and_kept() {
     assert_eq!(status, 200, "{log}");
     let change = &log["changes"][0];
     assert_eq!(change["by"], by.as_str(), "{log}");
+    assert_eq!(change["by_name"], "Owner", "the key's name shows: {log}");
     assert_eq!(change["action"], "added", "{log}");
     assert_eq!(change["route"], "/api/admin/v1/posts/", "{log}");
     assert_eq!(log["changes"].as_array().map(Vec::len), Some(1), "{log}");

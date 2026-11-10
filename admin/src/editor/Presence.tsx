@@ -12,10 +12,10 @@ export function Presence({ presence, onTakeOver }: Props) {
     return null;
   }
   if (presence.yours) {
-    const names = presence.others.map((other) => other.who);
+    const names = presence.others.map((other) => other.name);
     return names.length === 0 ? null : <p className="hint">{words.others(names)}</p>;
   }
-  const { who } = presence.holder;
+  const who = presence.holder.name;
   return (
     <section className="focus" aria-labelledby="held-title">
       <h2 id="held-title">{words.held(who)}</h2>

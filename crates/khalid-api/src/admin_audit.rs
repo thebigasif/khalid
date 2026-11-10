@@ -17,6 +17,7 @@ use crate::audit_desk::AuditDesk;
 use crate::audit_log::Logged;
 use crate::keys::{Principal, Scope};
 use crate::problem::{Problem, ProblemType};
+use crate::staff_names::{NameBook, StaffNames};
 
 /// How many changes a page holds when none is asked for.
 const DEFAULT_LIMIT: u32 = 50;
@@ -55,6 +56,11 @@ pub(crate) struct AdminChange {
     at: DateTime<Utc>,
     /// The identity of the key or staff account that made it.
     by: String,
+    /// The name the admin shows for them: the account's name, or the name
+    /// the key was made with. `by` when neither is known, such as for a
+    /// revoked key.
+    #[schema(example = "Maria Lopez")]
+    by_name: String,
     /// `added`, `changed` or `removed`.
     action: String,
     /// The route it went through.
@@ -90,7 +96,7 @@ pub(crate) struct AdminChanges {
 )]
 async fn list_changes(
     State(desk): State<Option<AuditDesk>>,
-    Extension(principal): Extension<Principal>,
+    (Extension(principal), Extension(book)): (Extension<Principal>, Extension<NameBook>),
     query: Result<Query<ChangesQuery>, QueryRejection>,
 ) -> Result<Json<AdminChanges>, Problem> {
     require(&principal, Scope::AdminAll)?;
@@ -106,17 +112,19 @@ async fn list_changes(
     let changes = changes.map_err(|error| Problem::internal(&error))?;
     let full = changes.len() == usize::try_from(limit).unwrap_or(usize::MAX);
     let next = changes.last().filter(|_| full).map(|last| last.id);
+    let names = book.names().await;
     Ok(Json(AdminChanges {
-        changes: changes.into_iter().map(shown).collect(),
+        changes: changes.into_iter().map(|c| shown(c, &names)).collect(),
         next,
     }))
 }
 
-fn shown(logged: Logged) -> AdminChange {
+fn shown(logged: Logged, names: &StaffNames) -> AdminChange {
     let Logged { id, change } = logged;
     AdminChange {
         id,
         at: change.at,
+        by_name: names.of(&change.by).to_owned(),
         by: change.by,
         action: change.action.as_str().to_owned(),
         route: change.route,

@@ -10,7 +10,7 @@ use chrono::{TimeZone, Utc};
 use khalid_api::api::{self, AuditDesk};
 use khalid_api::audit_log::MemoryAuditLog;
 use khalid_api::content_store::MemoryContentStore;
-use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
+use khalid_api::keys::{KeyHashing, KeyStore, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
 use khalid_api::resources::AdminPost;
@@ -28,14 +28,13 @@ const OWNER: &str =
 const LAST_CHANGE: &str = "2026-10-20T08:30:00Z";
 
 #[cfg(test)]
-fn router() -> Router {
+async fn router() -> Router {
     let hashing = KeyHashing::fast_for_tests();
     let token = |text: &str| text.parse::<KeyToken>().unwrap();
     let key = |text, scopes| StoredKey::for_integration(&token(text), scopes, &hashing).unwrap();
-    let keys = MemoryKeyStore::new(vec![
-        key(WRITER, vec![Scope::PostsWrite]),
-        key(OWNER, vec![Scope::AdminAll]),
-    ]);
+    let keys = MemoryKeyStore::new(vec![key(OWNER, vec![Scope::AdminAll])]);
+    let writer = key(WRITER, vec![Scope::PostsWrite]);
+    keys.create(writer, "Maria").await.unwrap();
     let at = Utc.with_ymd_and_hms(2026, 10, 20, 8, 30, 0).unwrap();
     let post = |id, slug| AdminPost::new(id, Slug::try_new(slug).unwrap(), "A post", "Text.", at);
     let posts = MemoryPostStore::new(vec![post("en.first", "first"), post("en.second", "second")]);
@@ -64,16 +63,16 @@ async fn send(router: &Router, method: &str, path: &str, key: &str) -> (StatusCo
     )
 }
 
-/// The log entry for `WRITER` removing post `id`.
+/// The log entry for `WRITER`, Maria, removing post `id`.
 #[cfg(test)]
 fn removed(id: u32, post: &str) -> Value {
-    json!({"id": id, "at": LAST_CHANGE, "by": "1111222233334444", "action": "removed",
+    json!({"id": id, "at": LAST_CHANGE, "by": "1111222233334444", "by_name": "Maria", "action": "removed",
         "route": "/api/admin/v1/posts/{id}/", "path": format!("/api/admin/v1/posts/{post}/")})
 }
 
 #[tokio::test]
 async fn the_log_lists_changes_newest_first_a_page_at_a_time() {
-    let router = router();
+    let router = router().await;
     for id in ["en.first", "en.second"] {
         let delete = format!("/posts/{id}/?updated_at={LAST_CHANGE}");
         let gone = send(&router, "DELETE", &delete, WRITER).await;
@@ -101,7 +100,7 @@ async fn the_log_lists_changes_newest_first_a_page_at_a_time() {
 
 #[tokio::test]
 async fn only_a_key_with_admin_all_reads_the_log_and_a_bad_limit_is_refused() {
-    let router = router();
+    let router = router().await;
     let (status, json) = send(&router, "GET", "/audit/", WRITER).await;
     assert_eq!(status, StatusCode::FORBIDDEN, "{json}");
     for bad in ["limit=0", "limit=101", "before=soon"] {
