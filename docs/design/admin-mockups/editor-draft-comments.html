@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comments on a draft · Khalid admin mockup</title>
+<style>
+/* Each mockup carries its own copy of the styles so it opens offline. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#fff;--surface:#f6f7f9;--text:#1f2328;--muted:#57606a;--link:#0b57d0;--border:#d0d7de;--field:#6e7781;--tint:#eef4fe;--radius:.375rem}
+body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.6 system-ui,sans-serif}
+main{max-width:72ch;margin:2rem auto;padding:0 1rem}
+h1{font-size:1.5rem;margin:0 0 1rem}
+h2{font-size:1.125rem;margin:2.5rem 0 .5rem}
+h3{font-size:1.0625rem;margin:0 0 .25rem}
+.lede,.hint{color:var(--muted)}
+.hint{display:block;font-size:.9375rem;margin:0 0 .4rem}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--field);background:var(--bg);font:inherit;font-weight:600}
+.btn.primary{background:var(--link);border-color:var(--link);color:#fff}
+.title{font-size:1.375rem;font-weight:700;margin:.75rem 0 .25rem}
+.text{border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;color:var(--muted)}
+.threads{list-style:none;margin:0;padding:0}
+.thread{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);padding:.75rem 1rem;margin:.75rem 0}
+.thread ol{list-style:none;margin:.5rem 0 0;padding:0 0 0 1rem;border-left:3px solid var(--border)}
+.thread p{margin:.25rem 0}
+.who{font-weight:600}
+.about{font-size:.9375rem;color:var(--muted)}
+label{display:block;font-weight:600;margin:.75rem 0 .25rem}
+textarea,select{font:inherit;width:100%;min-height:44px;padding:.5rem .6rem;border:1px solid var(--field);border-radius:var(--radius);background:var(--bg)}
+.row{display:flex;flex-wrap:wrap;gap:.75rem;margin:.75rem 0 0}
+footer{margin:3rem 0 2rem;color:var(--muted);font-size:.9375rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Comments on a draft</h1>
+  <p class="lede">Staff can leave each other notes on a post before it goes live. A note can be about the whole post or about one part of the text, and others can answer it. Readers never see them.</p>
+
+  <h2>1. Under the text, closed</h2>
+  <p class="hint">One line says how many threads are still open, so the writer knows there is something to read without the notes taking the screen. A thread is a comment and the answers to it.</p>
+  <div class="title">Why internal links matter</div>
+  <div class="text">Internal links help readers and Google find the rest of your site.</div>
+  <h3>Comments from your team</h3>
+  <p class="hint">2 threads are open.</p>
+  <button class="btn" type="button">Show comments</button>
+
+  <h2>2. Open</h2>
+  <p class="hint">Open threads first, oldest at the top. Each says who wrote it, when, and which part of the text it is about, quoting its first words so you can find it. "Mark as done" closes a thread once it is dealt with; it moves under "Done" and can be opened again.</p>
+  <h3>Comments from your team</h3>
+  <p class="hint">Only signed-in staff see these. Readers never do.</p>
+  <ol class="threads" aria-label="Open threads">
+    <li class="thread">
+      <p class="about">About part 2: "Internal links help readers…"</p>
+      <p><span class="who">maria</span> · 10 November, 10:42</p>
+      <p>Can we name the tool here?</p>
+      <ol aria-label="Answers">
+        <li><p><span class="who">sam</span> · 10 November, 11:05</p><p>Yes, I will add it after lunch.</p></li>
+      </ol>
+      <label for="answer-1">Your answer</label>
+      <textarea id="answer-1" rows="2"></textarea>
+      <div class="row">
+        <button class="btn" type="button">Send the answer</button>
+        <button class="btn" type="button">Mark as done</button>
+      </div>
+    </li>
+    <li class="thread">
+      <p class="about">About the whole post</p>
+      <p><span class="who">maria</span> · 10 November, 10:50</p>
+      <p>The title is longer than Google shows.</p>
+      <label for="answer-2">Your answer</label>
+      <textarea id="answer-2" rows="2"></textarea>
+      <div class="row">
+        <button class="btn" type="button">Send the answer</button>
+        <button class="btn" type="button">Mark as done</button>
+      </div>
+    </li>
+  </ol>
+  <button class="btn" type="button">Show 1 done thread</button>
+
+  <h2>3. Starting a thread</h2>
+  <p class="hint">The writer picks what the comment is about. The list names each part of the text, a heading, a paragraph or a block, by its first words. Everyone in the thread and the site's editors get an email about it.</p>
+  <form aria-labelledby="new-title">
+    <h3 id="new-title">New comment</h3>
+    <label for="about">About</label>
+    <select id="about">
+      <option>The whole post</option>
+      <option>Part 1: "Why internal links matter"</option>
+      <option selected>Part 2: "Internal links help readers…"</option>
+    </select>
+    <label for="comment">Comment</label>
+    <textarea id="comment" rows="3"></textarea>
+    <p class="hint">Up to 5,000 characters.</p>
+    <button class="btn primary" type="submit">Add the comment</button>
+  </form>
+
+  <h2>4. A site with no server</h2>
+  <p class="hint">A site built to files keeps no comments. Adding one there says why, in the server's own words, and the text you typed stays in the box.</p>
+  <h3>Comments from your team</h3>
+  <p role="alert">This site keeps no comments on drafts. Comments on drafts are kept by the site's server, in its database. Send the request to the running khalid serve.</p>
+
+  <footer>Maria and Sam stand in for two writers on your site. The text is from the demo post about internal links.</footer>
+</main>
+</body>
+</html>

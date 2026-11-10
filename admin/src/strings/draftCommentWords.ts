@@ -1,0 +1,30 @@
+// The words for comments on a draft, beside en.ts, which is near its size limit.
+export const draftCommentWords = {
+  title: "Comments from your team",
+  hint: "Only signed-in staff see these. Readers never do. A thread is a comment and the answers to it.",
+  open: (count: number) => (count === 1 ? "1 thread is open." : `${count} threads are open.`),
+  noneOpen: "No threads are open.",
+  show: "Show comments",
+  openList: "Open threads",
+  doneList: "Done threads",
+  showDone: (count: number) => (count === 1 ? "Show 1 done thread" : `Show ${count} done threads`),
+  answers: "Answers",
+  wholePost: "About the whole post",
+  aboutPart: (part: number, name: string) =>
+    name === "" ? `About part ${part}` : `About part ${part}: "${name}"`,
+  gonePart: (part: number) => `About part ${part}, which the text no longer has`,
+  byline: (who: string, when: string) => `${who}, ${when}`,
+  answer: "Your answer",
+  sendAnswer: "Send the answer",
+  done: "Mark as done",
+  doneHint: "A done thread moves under Done. You can open it again there.",
+  reopen: "Open again",
+  newTitle: "New comment",
+  about: "About",
+  whole: "The whole post",
+  part: (part: number, name: string) => (name === "" ? `Part ${part}` : `Part ${part}: "${name}"`),
+  comment: "Comment",
+  commentHint:
+    "Up to 5,000 characters. Everyone in the thread and the site's editors get an email.",
+  add: "Add the comment",
+};
