@@ -1,6 +1,7 @@
 //! Form answer emails that could not be sent, kept for another try (G40).
 
 use chrono::{DateTime, SecondsFormat, Utc};
+use khalid_core::Slug;
 use khalid_forms::FormId;
 use khalid_newsletter::{EmailAddress, Mail};
 use sqlx::Row as _;
@@ -163,15 +164,34 @@ impl FormMailTable {
         .bind(stamp(since))
         .fetch_all(&self.db.readers)
         .await?;
-        rows.iter()
-            .map(|row| {
-                Ok(GivenUpMail {
-                    form: form(row)?,
-                    first_at: time(row, "first_at")?,
-                    last_error: row.try_get("last_error")?,
-                })
-            })
-            .collect()
+        rows.iter().map(given_up).collect()
+    }
+
+    /// The emails Khalid gave up on at or after `since` for the site
+    /// called `handle` in `db`, oldest first. It only reads, so `khalid
+    /// doctor` can ask without adding the site or changing the schema.
+    ///
+    /// # Errors
+    ///
+    /// [`DbError::Query`] when the table cannot be read, such as in a
+    /// database from before it was added, and [`DbError::Unreadable`] when
+    /// a row holds what this table never writes.
+    pub async fn given_up_of(
+        db: &Database,
+        handle: &Slug,
+        since: DateTime<Utc>,
+    ) -> Result<Vec<GivenUpMail>, DbError> {
+        let rows = sqlx::query(
+            "SELECT m.form, m.first_at, m.last_error FROM form_mail AS m \
+             JOIN sites AS s ON s.id = m.site_id \
+             WHERE s.handle = ?1 AND m.next_at IS NULL AND m.last_at >= ?2 \
+             ORDER BY m.first_at, m.id",
+        )
+        .bind(handle.as_str())
+        .bind(stamp(since))
+        .fetch_all(&db.readers)
+        .await?;
+        rows.iter().map(given_up).collect()
     }
 
     /// Forgets the emails Khalid gave up on before `before`, so the table
@@ -203,6 +223,15 @@ fn waiting(row: &SqliteRow) -> Result<WaitingMail, DbError> {
         mail: Mail::new(to, row.try_get("subject")?, row.try_get("body")?),
         failures: usize::try_from(failures)
             .map_err(|_| unreadable("failures", &failures.to_string()))?,
+    })
+}
+
+/// The given-up email in `row`.
+fn given_up(row: &SqliteRow) -> Result<GivenUpMail, DbError> {
+    Ok(GivenUpMail {
+        form: form(row)?,
+        first_at: time(row, "first_at")?,
+        last_error: row.try_get("last_error")?,
     })
 }
 

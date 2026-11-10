@@ -8,7 +8,7 @@ mod mail;
 use std::fmt::Write as _;
 use std::path::Path;
 
-use khalid_core::{Environment, UserMessage};
+use khalid_core::{Clock, Environment, SystemClock, UserMessage};
 use serde::Serialize;
 
 use crate::cli::{Cli, Network, Output};
@@ -87,6 +87,7 @@ pub(crate) fn run(site: &Path, (network, test_mail): (Network, bool), cli: &Cli)
         .as_ref()
         .and_then(privacy_page::missing_contact)
         .into_iter()
+        .chain(mail::given_up(site, SystemClock.now()))
         .collect();
     let problems = findings
         .iter()

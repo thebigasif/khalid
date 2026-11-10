@@ -266,6 +266,8 @@ Khalid connects on port 587 and turns encryption on before it sends anything. Ad
 
 Form answers are emailed to the `from` address unless you add `forms_to = "hello@example.com"` under `[mail]`.
 
+If a form answer's email cannot be sent, because the mail server is down or refuses it, Khalid keeps it and tries again 1 minute, 5 minutes, 30 minutes, 2 hours, 5 hours and 16 hours later, the same waits as a webhook. That is seven tries over about a day. Each failed try leaves a warning in the server log with the reason. If the last try fails too, Khalid stops, and `khalid doctor` shows how many answers never arrived, under "Worth a look", for 30 days. The answers themselves are always kept in the site's database, and `khalid db export` writes them to `form_submissions.csv`.
+
 Through Resend or Postmark, two services that send mail for websites, write an empty `[mail.resend]` or `[mail.postmark]` instead of `[mail.smtp]`. Postmark sends on its `outbound` stream unless you add `message_stream = "<name>"`.
 
 The password, API key or token never goes in `site.toml`. Set it in the server's environment, where only Khalid reads it:
