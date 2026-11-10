@@ -62,6 +62,8 @@ mod hub;
 #[cfg(test)]
 mod image;
 #[cfg(test)]
+mod imprint;
+#[cfg(test)]
 mod list_gaps;
 #[cfg(test)]
 mod listing;

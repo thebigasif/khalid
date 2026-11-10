@@ -29,6 +29,7 @@ mod heading_links;
 mod home;
 mod hub;
 mod image;
+mod imprint;
 mod listing;
 mod location;
 mod locations_page;
@@ -72,6 +73,7 @@ pub use glossary::{
 pub use home::{HomeSectionKind, HomeSectionPosts, MOST_PICKS, RenderHome, TopicGroup};
 pub use hub::RenderHub;
 pub use image::{ImageCandidate, ImageSet, Loading, RenderImage};
+pub use imprint::RenderImprint;
 pub use listing::{Fact, Pagination, PostCard, RenderListing};
 pub use location::{LocationWords, location_card, place_locations};
 pub use locations_page::LocationsPage;
