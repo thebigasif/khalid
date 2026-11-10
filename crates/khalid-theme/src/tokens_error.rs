@@ -5,6 +5,8 @@ use std::path::PathBuf;
 
 use khalid_core::SitePathError;
 
+use crate::TokenName;
+
 /// Why `theme/tokens.toml` could not be read or written.
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
@@ -44,6 +46,17 @@ pub enum TokensError {
         #[source]
         source: io::Error,
     },
+    /// A value sent for one token is not one the renderer takes. Nothing
+    /// was changed.
+    #[error("{token} cannot be {value:?}: {problem}")]
+    Value {
+        /// The token the value was for.
+        token: TokenName,
+        /// The value as it was sent.
+        value: String,
+        /// What a value for this token must be, in one plain sentence.
+        problem: &'static str,
+    },
 }
 
 impl TokensError {
@@ -51,7 +64,7 @@ impl TokensError {
     pub fn line(&self) -> Option<usize> {
         match self {
             Self::Parse { line, .. } => *line,
-            Self::Path { .. } | Self::Read { .. } | Self::Write { .. } => None,
+            Self::Path { .. } | Self::Read { .. } | Self::Write { .. } | Self::Value { .. } => None,
         }
     }
 }

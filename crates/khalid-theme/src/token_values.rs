@@ -182,12 +182,15 @@ pub(crate) mod hex {
 
     pub(crate) fn deserialize<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Rgb, D::Error> {
         let text = String::deserialize(deserializer)?;
+        parse(&text).ok_or_else(|| serde::de::Error::custom(PROBLEM))
+    }
+
+    /// What a colour must be, in one plain sentence.
+    pub(crate) const PROBLEM: &str = "a colour must be written #rrggbb or #rgb, such as #1f2328";
+
+    /// `text` as a colour, when it is written `#rrggbb` or `#rgb`.
+    pub(crate) fn parse(text: &str) -> Option<Rgb> {
         let digits = text.strip_prefix('#').map_or(0, str::len);
-        match Rgb::from_css(&text) {
-            Some(color) if matches!(digits, 3 | 6) => Ok(color),
-            _ => Err(serde::de::Error::custom(
-                "a colour must be written #rrggbb or #rgb, such as #1f2328",
-            )),
-        }
+        Rgb::from_css(text).filter(|_| matches!(digits, 3 | 6))
     }
 }
