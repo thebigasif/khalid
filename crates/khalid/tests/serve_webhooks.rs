@@ -433,3 +433,36 @@ async fn a_draft_given_a_publish_time_fires_post_scheduled() {
     assert_eq!(body["post"]["status"], "scheduled", "{body}");
     assert_eq!(body["post"]["published_at"], later, "{body}");
 }
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_draft_taken_off_its_schedule_fires_post_scheduled_with_no_time() {
+    let receiver = receiver().await;
+    let (site, _secret) = demo_site(&receiver, Event::PostScheduled).await;
+    let key = writer_key(site.path());
+    let server = start(site.path());
+    let (route, draft) = unpublish_sitemap_post(&server, &key);
+    let schedule = json!({"posts": [{"status": "scheduled", "published_at": "2099-01-05T09:00:00Z",
+        "updated_at": draft["posts"][0]["updated_at"]}]});
+    let (_, scheduled) = api(&server, &key, ("PUT", route), &schedule);
+    let cancel = json!({"posts": [{"status": "draft",
+        "updated_at": scheduled["posts"][0]["updated_at"]}]});
+    let (status, cancelled) = api(&server, &key, ("PUT", route), &cancel);
+    assert_eq!(status, 200, "{cancelled}");
+
+    let mut hooks = delivered(&receiver, Event::PostScheduled).await;
+    for _ in 0..100 {
+        if hooks.len() > 1 {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+        hooks = delivered(&receiver, Event::PostScheduled).await;
+    }
+    let bodies: Vec<Value> = hooks
+        .iter()
+        .map(|hook| serde_json::from_slice(&hook.body).unwrap())
+        .collect();
+    let times: Vec<&Value> = bodies.iter().map(|b| &b["post"]["published_at"]).collect();
+    let later = json!("2099-01-05T09:00:00Z");
+    assert_eq!(times, [&later, &Value::Null], "{bodies:?}");
+    assert_eq!(bodies[1]["post"]["status"], "draft", "{bodies:?}");
+}

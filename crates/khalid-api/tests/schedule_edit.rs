@@ -127,6 +127,31 @@ async fn status_draft_takes_a_post_off_its_schedule() {
     assert_eq!(status, StatusCode::OK, "{json}");
     assert_eq!(json["posts"][0]["status"], "draft", "{json}");
     assert_eq!(json["posts"][0]["published_at"], Value::Null, "{json}");
+    let told = recorder.0.lock().unwrap().clone();
+    let scheduled = ("scheduled", "en.choosing-anchor-text".to_owned());
+    assert_eq!(told, [scheduled.clone(), scheduled], "taken off is told");
+}
+
+#[tokio::test]
+async fn a_new_publish_time_is_told_and_the_same_one_again_is_not() {
+    let recorder = Arc::new(Recorder::default());
+    let router = router(&recorder, Some(MemoryScheduleStore::default()));
+    let mut updated_at = Value::from(SAVED);
+    for at in [
+        "2026-11-03T08:00:00Z",
+        "2026-11-04T08:00:00Z",
+        "2026-11-04T08:00:00Z",
+    ] {
+        let edit = json!({"status": "scheduled", "published_at": at, "updated_at": updated_at});
+        let (status, json) = send(&router, "PUT", Some(edit)).await;
+        assert_eq!(status, StatusCode::OK, "{json}");
+        updated_at = json["posts"][0]["updated_at"].clone();
+    }
+    let told = recorder.0.lock().unwrap().len();
+    assert_eq!(
+        told, 2,
+        "scheduled, then rescheduled; the same time is no news"
+    );
 }
 
 #[tokio::test]

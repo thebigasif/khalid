@@ -222,7 +222,7 @@ fn serve_with(
             unlocking((site, config), (database, id), &source, shown_pages),
         )?;
         posts.follow(source.live_config());
-        let scheduling = scheduler::start(Arc::clone(&door), alerting);
+        let scheduling = scheduler::start((Arc::clone(&door), site.to_path_buf()), alerting);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -390,7 +390,10 @@ fn destination(
         addresses: addresses.clone(),
         redirects: redirects.clone(),
         announce: Some(telling.clone()),
-        started: (Entries::of(checked), Tags::of(config, checked)),
+        started: (
+            Entries::of(checked).with_drafts(site),
+            Tags::of(config, checked),
+        ),
         pings: content_feed::UpdatePings::default(),
     };
     to.pings.set(telling.clone());
