@@ -5,6 +5,7 @@ import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { seoToolWords } from "../strings/seoToolWords";
 import { seoWords } from "../strings/seoWords";
 import { shellWords } from "../strings/shellWords";
+import { subscriberWords } from "../strings/subscriberWords";
 import type { IconName } from "./Icon";
 
 /** The address of every screen the side menu opens. */
@@ -14,6 +15,7 @@ export type NavPath =
   | "/calendar"
   | "/media"
   | "/comments"
+  | "/subscribers"
   | "/trash"
   | "/analytics"
   | "/search-console"
@@ -59,6 +61,7 @@ export const NAV: NavGroup[] = [
     items: [
       { to: "/analytics", label: en.nav.analytics, icon: "analytics" },
       { to: "/search-console", label: searchConsoleWords.title, icon: "search" },
+      { to: "/subscribers", label: subscriberWords.nav, icon: "mail" },
       { to: "/serpdad", label: en.nav.serpdad, icon: "link" },
       { to: "/bulk-seo", label: seoToolWords.bulk.nav, icon: "table" },
       { to: "/workouts", label: seoToolWords.workouts.nav, icon: "steps" },
