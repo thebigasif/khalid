@@ -31,9 +31,10 @@ fn wrong(key: &str) -> String {
 }
 
 /// Sends `GET path` to `host` for the reader at `reader`, as a proxy on
-/// this machine names it, and returns the status and the whole head.
+/// this machine names it, and returns the status, the whole head in lower
+/// case, and the body.
 #[cfg(test)]
-fn get_for(host: &str, path: &str, reader: &str) -> (u16, String) {
+fn get_for(host: &str, path: &str, reader: &str) -> (u16, String, String) {
     let mut stream = TcpStream::connect(host).unwrap();
     let head = format!(
         "GET {path} HTTP/1.1\r\nHost: {host}\r\nX-Forwarded-For: {reader}\r\nConnection: close\r\n\r\n"
@@ -42,9 +43,9 @@ fn get_for(host: &str, path: &str, reader: &str) -> (u16, String) {
     let mut answer = Vec::new();
     stream.read_to_end(&mut answer).unwrap();
     let raw = String::from_utf8_lossy(&answer);
-    let (head, _) = raw.split_once("\r\n\r\n").unwrap();
+    let (head, body) = raw.split_once("\r\n\r\n").unwrap();
     let status = head.split(' ').nth(1).unwrap().parse().unwrap();
-    (status, head.to_ascii_lowercase())
+    (status, head.to_ascii_lowercase(), body.to_owned())
 }
 
 #[test]
@@ -81,18 +82,23 @@ fn a_reader_past_the_sites_own_limits_gets_a_429_with_retry_after() {
     let (host, reader) = (server.host(), "198.51.100.7");
     let asks = "/blog/search/?q=links";
     for _ in 0..3 {
-        let (status, head) = get_for(host, asks, reader);
+        let (status, head, _) = get_for(host, asks, reader);
         assert_ne!(status, 429, "{head}");
     }
-    let (status, head) = get_for(host, asks, reader);
+    let (status, head, page) = get_for(host, asks, reader);
     assert_eq!(status, 429, "{head}");
     assert!(head.contains("retry-after: 20"), "{head}");
     assert!(
         head.contains("text/html"),
         "the search page answers: {head}"
     );
+    assert!(
+        page.contains("Wait a minute, then search again."),
+        "the reader is told why and what to do: {page}"
+    );
+    assert!(page.contains("<form"), "{page}");
     assert_eq!(get_for(host, "/blog/search/?q=lin&typing=1", reader).0, 429);
-    let (status, _) = get_for(host, "/blog/search/", reader);
+    let (status, _, _) = get_for(host, "/blog/search/", reader);
     assert_eq!(status, 200, "the empty form costs nothing");
     assert_ne!(get_for(host, asks, "198.51.100.8").0, 429);
 

@@ -79,6 +79,10 @@ pub enum SearchMode {
     /// build puts in place of any search form (KH-OPS-1). The owner reads
     /// how to turn search on in `khalid build` and `khalid doctor`.
     Locked,
+    /// A running server that turned this reader away for searching too
+    /// often (KH-OPS-5): the form stays, under one sentence that says to
+    /// wait a minute, and no results are shown.
+    Busy,
 }
 
 /// One page that matched a search.

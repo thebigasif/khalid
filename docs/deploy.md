@@ -327,7 +327,7 @@ wrong_keys_per_minute = 10    # wrong keys one address may send before it is pau
 search_per_minute = 120       # searches one reader's address may make
 ```
 
-Each number may be 1 to 100000. Searches count only when the reader typed words, so opening the empty search page never counts. A reader past the limit sees the empty search page until the wait is over. A blog behind a proxy on the same machine or network, such as Caddy or nginx, is counted by the address the proxy passes on in `X-Forwarded-For`.
+Each number may be 1 to 100000. Searches count only when the reader typed words, so opening the empty search page never counts. A reader past the limit sees the search form under one sentence that says to wait a minute, then search again. A blog behind a proxy on the same machine or network, such as Caddy or nginx, is counted by the address the proxy passes on in `X-Forwarded-For`.
 
 ## Many sites on one server
 

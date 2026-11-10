@@ -14,11 +14,14 @@ use crate::site_page::HeadNonce;
 
 impl SitePages {
     /// The page of a search for `query` that found `results`, rendered into
-    /// the search page at `path` as the last full render made it. `None`
-    /// before the first full render, or when `path` has no search page.
+    /// the search page at `path` as the last full render made it, in
+    /// `mode`: `Live`, or `Busy` for a reader turned away for searching too
+    /// often. `None` before the first full render, or when `path` has no
+    /// search page.
     pub(crate) fn render_search(
         &self,
         path: &str,
+        mode: SearchMode,
         query: Option<String>,
         results: Vec<SearchResult>,
     ) -> Result<Option<String>, UserMessage> {
@@ -39,7 +42,7 @@ impl SitePages {
         };
         let body = PageBody::Search(RenderSearch {
             title: meta.title.clone(),
-            mode: SearchMode::Live,
+            mode,
             action: meta.path.clone(),
             query,
             results,

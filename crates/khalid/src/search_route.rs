@@ -17,7 +17,7 @@ use axum::routing::get;
 use khalid_api::api_limits::{self, ApiLimits};
 use khalid_core::{Config, Locale, SystemClock};
 use khalid_db::{Database, SearchResults, SiteId};
-use khalid_render::{Highlight, SearchResult};
+use khalid_render::{Highlight, SearchMode, SearchResult};
 use khalid_search::{Analyzer, Completion, Language, Query, QueryFilter, Snippet, SnippetPart};
 use khalid_server::{ConsentSite, MediaType, SecurityHeaders, drawn_for};
 use serde::{Deserialize, Serialize};
@@ -71,7 +71,7 @@ struct Live {
 /// the last render answers in static mode.
 pub(crate) fn router(config: &Config, search: Search) -> Router {
     let mut router = Router::new();
-    if search_page::mode(config) != khalid_render::SearchMode::Live {
+    if search_page::mode(config) != SearchMode::Live {
         return router;
     }
     let limits = ApiLimits::new(SystemClock, *config.limits());
@@ -143,7 +143,8 @@ async fn answer(
     if completion == Completion::LastWordStarts {
         return live(search, locale, typed.as_deref(), results);
     }
-    match search.pages.render_search(path, typed, results) {
+    let mode = SearchMode::Live;
+    match search.pages.render_search(path, mode, typed, results) {
         Ok(Some(html)) => results_page(search, reading, html),
         Ok(None) => unavailable(&search.security),
         Err(message) => {
@@ -233,9 +234,9 @@ fn too_many(
 
 /// `status` for a search that is not run: 400 when the site's filters
 /// refuse it, such as spam or emoji, or 429 when the reader searched too
-/// often. The answer is the empty search page at `path`, or while typing,
-/// no results. The query is never shown back, so a bot's words never
-/// reach the page.
+/// often. The answer is the empty search page at `path`, with a sentence
+/// that says to wait after a 429, or while typing, no results. The query
+/// is never shown back, so a bot's words never reach the page.
 fn refused(
     search: &Search,
     (locale, path): (&Locale, &str),
@@ -246,7 +247,12 @@ fn refused(
     let mut response = if typing.is_some() {
         live(search, locale, None, Vec::new())
     } else {
-        match search.pages.render_search(path, None, Vec::new()) {
+        let mode = if status == StatusCode::TOO_MANY_REQUESTS {
+            SearchMode::Busy
+        } else {
+            SearchMode::Live
+        };
+        match search.pages.render_search(path, mode, None, Vec::new()) {
             Ok(Some(html)) => results_page(search, reading, html),
             Ok(None) | Err(_) => return unavailable(&search.security),
         }
