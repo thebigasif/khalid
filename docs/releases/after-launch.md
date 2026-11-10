@@ -32,11 +32,11 @@ Status: open. Not yet run against a live blog, as of 2026-11-10.
 
 ## SerpDad's own blog on Khalid
 
-Status: open. serpdad.com/blog has not moved yet, as of 2026-11-10.
+Status: done, 2026-11-10.
 
-- **Proved meanwhile.** The template demos already run at `serpdad.com/khalid/demos/`, built by `khalid build`.
-- **If it matters to you.** Nothing changes for your blog. This is SerpDad's own move.
-- **How it gets run.** SerpDad moves its blog over with `khalid import`, keeps every old address with redirects, and checks it with `khalid audit` and Search Console. The result goes on this page.
+- **What it found.** serpdad.com/blog runs on Khalid. Since 2026-11-10 it runs the published Khalid 1.8.0 Docker image. The server's Docker Compose file pins that image by its digest, a fingerprint of the exact image, so the blog cannot pick up a different build by accident. The pull request in SerpDad's website repository that made the move records it.
+- **If it matters to you.** Nothing changes for your blog. This was SerpDad's own move.
+- **Reported in.** The 1.9.0 release notes.
 
 ## When a check is done
 
