@@ -362,17 +362,60 @@ fn a_publication_without_photos_lock_fetches_nothing() {
     assert_eq!(fs::read_dir(cache.path()).unwrap().count(), 0);
 }
 
+/// Every demo's announcement line sends the reader to the template's own
+/// page on serpdad.com, in place of the showcase's or the publication's.
+#[test]
+fn the_demos_announcement_links_back_to_its_template_page() {
+    let site = showcase_copy();
+    let applied = overlay(site.path(), TEMPLATE, &repo_file(SAMPLE), &[]);
+    assert!(applied.status.success(), "{applied:?}");
+    let output = Command::new("bash")
+        .arg(repo_file("scripts/demo-backlink.sh"))
+        .arg(site.path())
+        .arg(TEMPLATE)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let toml = fs::read_to_string(within(site.path(), "site.toml")).unwrap();
+    assert_eq!(toml.matches("[announcement]").count(), 1, "{toml}");
+    let out = tempfile::tempdir().unwrap();
+    let build = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.path().to_str().unwrap()])
+        .args(["build", "--out", out.path().to_str().unwrap()])
+        .output()
+        .unwrap();
+    assert!(build.status.success(), "{build:?}");
+    for rest in ["", "plan-a-week-of-dinners/"] {
+        let html = page(out.path(), rest);
+        assert!(
+            html.contains(
+                "<a href=\"https://serpdad.com/khalid/templates/harbor/\">You are viewing \
+                 Harbor, a free Khalid template. See how to use it.</a>"
+            ),
+            "/{rest} has no link back"
+        );
+        assert!(!html.contains("our guide to planning a week"), "/{rest}");
+    }
+}
+
 /// The Pages build and the picture review put the publication on before
 /// the sample brand, so the brand's logo lands on the publication's about
-/// page, and the review shows publications that are not ready yet.
+/// page, and the review shows publications that are not ready yet. The
+/// link back to the template page goes on after the publication, so it
+/// replaces the publication's own announcement.
 #[test]
 fn the_pages_build_and_the_checks_apply_the_publication_before_the_brand() {
     for script in ["scripts/pages.sh", "scripts/demo-check/showcase.sh"] {
         let text = fs::read_to_string(repo_file(script)).unwrap();
         let publication = text.find("scripts/demo-publication.sh\"");
         let brand = text.find("scripts/demo-brand.sh\"");
+        let backlink = text.find("scripts/demo-backlink.sh\"");
         assert!(
             matches!((publication, brand), (Some(p), Some(b)) if p < b),
+            "{script}"
+        );
+        assert!(
+            matches!((publication, backlink), (Some(p), Some(l)) if p < l),
             "{script}"
         );
     }

@@ -119,9 +119,11 @@ build() {
   # A template demo shows the template's own publication, where it has a
   # ready one (scripts/demo-publication.sh), then wears its sample brand,
   # both before the address moves, so their own addresses move with it.
+  # Its announcement then links back to the template's page.
   if [ -n "$template" ]; then
     bash "$root/scripts/demo-publication.sh" "$site" "$template"
     bash "$root/scripts/demo-brand.sh" "$site" "$template"
+    bash "$root/scripts/demo-backlink.sh" "$site" "$template"
   fi
   # Pages serves files only, so every copy is a static site: forms show a
   # note and the build lists the features that need a server.

@@ -369,6 +369,59 @@ fn the_previews_answer_the_banner_the_way_the_consent_script_reads_it() {
     );
 }
 
+/// The gallery shows each demo as a wide screen draws it: the home page
+/// and the post laid out 1440 pixels wide, where the templates fill their
+/// wide frames, not 1280. A stand-in browser records the window it was
+/// asked for and writes a picture, so this runs where no Chromium does.
+#[cfg(unix)]
+#[test]
+fn the_previews_draw_each_demo_1440_pixels_wide() {
+    use std::os::unix::fs::PermissionsExt;
+    let pages = tempfile::tempdir().unwrap();
+    fs::create_dir_all(within(pages.path(), "templates/almanac")).unwrap();
+    fs::write(within(pages.path(), "templates/almanac/index.html"), "<p>").unwrap();
+    let tools = tempfile::tempdir().unwrap();
+    let asked = within(tools.path(), "asked.txt");
+    let browser = within(tools.path(), "chrome");
+    fs::write(
+        &browser,
+        format!(
+            "#!/usr/bin/env bash\nfor arg; do case \"$arg\" in --window-size=*) echo \"$arg\" \
+             >>'{}';; --screenshot=*) printf 'png' >\"${{arg#--screenshot=}}\";; esac; done\n",
+            asked.display()
+        ),
+    )
+    .unwrap();
+    fs::set_permissions(&browser, fs::Permissions::from_mode(0o755)).unwrap();
+    let script = Command::new("bash")
+        .arg(repo_file("scripts/template-previews.sh"))
+        .arg(pages.path())
+        .env("CHROME", &browser)
+        .output()
+        .unwrap();
+    assert!(script.status.success(), "{script:?}");
+    let windows = fs::read_to_string(&asked).unwrap();
+    assert_eq!(
+        windows.lines().collect::<Vec<_>>(),
+        [
+            "--window-size=1440,900",
+            "--window-size=1440,900",
+            "--window-size=390,844"
+        ]
+    );
+    for kind in ["home", "post"] {
+        let file = format!("templates/almanac-{kind}.svg");
+        let picture = fs::read_to_string(within(pages.path(), &file)).unwrap();
+        assert!(
+            picture.starts_with(
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 1440 900\" \
+                 width=\"1440\" height=\"900\""
+            ),
+            "{file}"
+        );
+    }
+}
+
 /// The class names a stylesheet gives rules to, such as `gallery` for
 /// `.gallery img { ... }`.
 #[cfg(test)]

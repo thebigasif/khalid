@@ -68,8 +68,8 @@
 <ul class="looks" role="list">
 {% for name, line, suits in looks %}{% set title = name | capitalize %}{% set demo = site.home ~ "templates/" ~ name ~ "/" %}<li><article class="tile look">
 <div class="look-shots">
-<img src="{{ site.home }}templates/{{ name }}-home.svg" alt="The {{ title }} demo's home page" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
-<img class="look-post" src="{{ site.home }}templates/{{ name }}-post.svg" alt="A post in the {{ title }} demo" width="1280" height="800"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
+<img src="{{ site.home }}templates/{{ name }}-home.svg" alt="The {{ title }} demo's home page" width="1440" height="900"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
+<img class="look-post" src="{{ site.home }}templates/{{ name }}-post.svg" alt="A post in the {{ title }} demo" width="1440" height="900"{% if loop.index > 2 %} loading="lazy"{% endif %} decoding="async">
 </div>
 <h3><a href="{{ demo }}">{{ title }}</a></h3>
 <p>{{ line }}</p>

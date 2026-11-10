@@ -16,8 +16,9 @@
 # Python's, which GitHub's runners have, as they have Chrome.
 #
 # Each picture is an SVG that holds the screenshot, so the gallery's
-# addresses never change. The page is laid out 1280 pixels wide and drawn
-# at full size, and the phone at twice its 390 px, so both stay sharp on a
+# addresses never change. The page is laid out 1440 pixels wide, where
+# each template fills the wide frame its design brief sets, and drawn at
+# full size, and the phone at twice its 390 px, so both stay sharp on a
 # high-density screen. Where cwebp or ImageMagick is here it becomes a
 # WebP of a hundred or two kilobytes; otherwise it stays a PNG. Where no
 # Chromium runs, or a page cannot be opened, the picture is a plain card
@@ -46,8 +47,13 @@ set -euo pipefail
 # shellcheck source=template-packs.sh
 source "$(dirname "${BASH_SOURCE[0]}")/template-packs.sh"
 read -ra names <<<"$(template_packs | tr '\n' ' ')"
-width=1280
-height=800
+# The screenshot of a home page or a post: a 1440 px wide screen.
+width=1440
+height=900
+# The plain card is a drawing in a 1280 by 800 box of its own, so it
+# scales to any width at the same 16:10 shape.
+card_width=1280
+card_height=800
 # The phone picture: a 390 px wide screen, as the layout check's phone.
 phone_width=390
 phone_height=844
@@ -77,8 +83,8 @@ CARD
     shape='<rect x="300" y="400" width="680" height="18" rx="9"/><rect x="300" y="440" width="640" height="18" rx="9"/><rect x="300" y="480" width="660" height="18" rx="9"/><rect x="300" y="520" width="520" height="18" rx="9"/>'
   fi
   cat >"$file" <<EOF
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $width $height" width="$width" height="$height" role="img"><title>The $(title "$name") template: $label</title>
-<rect width="$width" height="$height" fill="#f7f5f0"/><rect x="40" y="40" width="1200" height="720" rx="24" fill="#fff" stroke="#e4dfd4" stroke-width="2"/><path d="M40 112h1200" stroke="#e4dfd4" stroke-width="2"/><circle cx="84" cy="76" r="9" fill="#c2410c"/><circle cx="114" cy="76" r="9" fill="#e4dfd4"/><circle cx="144" cy="76" r="9" fill="#e4dfd4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 $card_width $card_height" width="$card_width" height="$card_height" role="img"><title>The $(title "$name") template: $label</title>
+<rect width="$card_width" height="$card_height" fill="#f7f5f0"/><rect x="40" y="40" width="1200" height="720" rx="24" fill="#fff" stroke="#e4dfd4" stroke-width="2"/><path d="M40 112h1200" stroke="#e4dfd4" stroke-width="2"/><circle cx="84" cy="76" r="9" fill="#c2410c"/><circle cx="114" cy="76" r="9" fill="#e4dfd4"/><circle cx="144" cy="76" r="9" fill="#e4dfd4"/>
 <text x="640" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="88" font-weight="700" fill="#16181d">$(title "$name")</text><text x="640" y="316" text-anchor="middle" font-family="system-ui, sans-serif" font-size="34" fill="#4f5563">$label</text>
 <g fill="#efebe3">$shape</g>
 </svg>
