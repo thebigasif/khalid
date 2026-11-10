@@ -210,6 +210,15 @@ impl HttpsListen {
             .map_err(failed)
     }
 
+    /// The same settings for another `domain`, as each site of a sites
+    /// folder has its own.
+    pub(crate) fn for_domain(&self, domain: Domain) -> Self {
+        Self {
+            domain,
+            ..self.clone()
+        }
+    }
+
     /// Opens port 443, or the TLS address asked for, then port 80, or the
     /// plain one asked for.
     pub(crate) async fn bind(&self) -> Result<(TcpListener, TcpListener), (UserMessage, Exit)> {

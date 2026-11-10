@@ -191,6 +191,7 @@ mod site_settings;
 mod site_tags;
 mod site_watch;
 mod sites;
+mod sites_https;
 mod sites_message;
 mod slug_moves;
 mod slug_repair;
