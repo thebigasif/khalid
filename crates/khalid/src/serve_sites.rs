@@ -7,7 +7,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use khalid_auth::{Home, SiteDirectory};
-use khalid_core::{DomainName, Environment, UserMessage};
+use khalid_core::{DomainName, Environment, LogSettings, UserMessage};
 use khalid_outbound::Outbound;
 use khalid_server::FolderLook;
 use serde::Serialize;
@@ -22,7 +22,7 @@ use crate::serve_https::{self, Listen};
 use crate::site_folders::{NoPanel, SiteFolders};
 use crate::site_hosts::{Among, Hosts};
 use crate::site_list::{self, SiteList};
-use crate::{alert_watch, memory, outbound, report, serve_message, sites_message};
+use crate::{alert_watch, memory, outbound, report, serve_message, server_log, sites_message};
 
 /// The JSON shape of the line `khalid serve --json` prints once it listens.
 #[derive(Serialize)]
@@ -49,6 +49,8 @@ struct Shared<'a> {
 /// Ctrl+C or a stop signal stops them all.
 pub(crate) fn run(root: &Path, cli: &Cli, args: &ServeArgs) -> Exit {
     let output = cli.output;
+    // Each site's own `[log]` is read later, so the log starts plain at info.
+    server_log::install(LogSettings::default(), output);
     if args.domain.is_some() {
         return report::failure(output, &sites_message::no_https_yet(), Exit::Usage);
     }

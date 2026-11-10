@@ -107,6 +107,7 @@ impl Alerting {
         };
         let mail = Mail::new(owner.clone(), alert.subject(&self.site), alert.text());
         if let Err(error) = mailer.send(&mail).await {
+            let error = crate::server_log::causes(&error);
             tracing::warn!(%error, kind, "an alert could not be emailed");
         }
     }
