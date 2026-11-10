@@ -34,7 +34,7 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.crawlers]` | `ai_training` (`allow` or `block`), `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
 | `[seo.feeds]` | `content` (`full` or `excerpt`), `before_item`, `after_item`, `source_line`, `limit` | full posts, 20 items | Feeds |
 | `[seo.indexnow]` | `key` and `endpoint` | off | IndexNow |
-| `[seo.ai_page]` | `off`, `contact`, `covers`, `cite` | on | AI info page |
+| `[seo.ai_page]` | `off`, `contact`, `covers`, `cite`, and `[seo.ai_page.text.<language>]` with `covers` and `cite` for one language's copy | on, one copy per language | AI info page (the words per language are not on the screen yet) |
 | `[seo.links]` | `affiliate_domains` and the other outbound link rules | none | Not on the screen yet |
 | `[[seo.locations]]` | the site's shops or offices, for local search | none | Not on the screen yet |
 | `[seo.breadcrumbs]`, `[seo.llms_txt]`, `[seo.search_filter]`, `[seo.local]`, `[seo.schema_map]` | see their sections below | see below | Not on the screen yet |
