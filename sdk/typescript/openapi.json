@@ -11365,6 +11365,7 @@
           "id",
           "at",
           "by",
+          "by_name",
           "action",
           "route",
           "path"
@@ -11382,6 +11383,11 @@
           "by": {
             "type": "string",
             "description": "The identity of the key or staff account that made it."
+          },
+          "by_name": {
+            "type": "string",
+            "description": "The name the admin shows for them: the account's name, or the name\nthe key was made with. `by` when neither is known, such as for a\nrevoked key.",
+            "example": "Maria Lopez"
           },
           "id": {
             "type": "integer",
@@ -16079,6 +16085,14 @@
               "null"
             ],
             "description": "Who saved them, as the post named them; `null` when not known, such\nas for a file written by hand."
+          },
+          "saved_by_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The name the admin shows for whoever saved them: their account's\nname, the name their key was made with, or else `saved_by`; `null`\nwhen `saved_by` is.",
+            "example": "Maria Lopez"
           },
           "title": {
             "type": "string",

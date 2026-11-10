@@ -76,6 +76,12 @@ impl NameBook {
             .map(|(id, name)| (id.as_str().to_owned(), name));
         StaffNames::new(keys.chain(accounts))
     }
+
+    /// The name of `id`, or `None` when there is no `id`.
+    pub(crate) async fn name_of(&self, id: Option<&str>) -> Option<String> {
+        let id = id?;
+        Some(self.names().await.of(id).to_owned())
+    }
 }
 
 impl fmt::Debug for NameBook {

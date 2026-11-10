@@ -85,6 +85,8 @@ export type AdminChange = {
   at: string;
   /** The identity of the key or staff account that made it. */
   by: string;
+  /** The name the admin shows for them: the account's name, or the name the key was made with. `by` when neither is known, such as for a revoked key. */
+  by_name: string;
   /** Its place in the log: a later change has a larger number. */
   id: number;
   /** The address it was made at. */
@@ -1627,6 +1629,8 @@ export type PostVersion = {
   saved_at: string;
   /** Who saved them, as the post named them; `null` when not known, such as for a file written by hand. */
   saved_by?: string | null;
+  /** The name the admin shows for whoever saved them: their account's name, the name their key was made with, or else `saved_by`; `null` when `saved_by` is. */
+  saved_by_name?: string | null;
   /** The title. */
   title: string;
 };
