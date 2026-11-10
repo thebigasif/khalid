@@ -81,6 +81,18 @@ impl S3Storage {
         }
     }
 
+    /// Removes the object for `name` of `key`. An object the bucket does
+    /// not have is already gone.
+    pub(crate) async fn delete(&self, key: &ContentKey, name: &FileName) -> Result<(), MediaError> {
+        let empty = payload_hash(b"");
+        let headers = [("x-amz-content-sha256", empty.as_str())];
+        let answer = self.send("DELETE", key, name, &headers, Vec::new()).await?;
+        match answer.status().as_u16() {
+            200..=299 | 404 => Ok(()),
+            status => Err(MediaError::Bucket { status }),
+        }
+    }
+
     /// Where readers fetch the object for `name` of `key`.
     pub(crate) fn address(&self, key: &ContentKey, name: &FileName) -> String {
         format!("{}{}", self.public, stored_as("", key, name))

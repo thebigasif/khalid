@@ -47,6 +47,26 @@ impl Folder {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    /// The folder this one sits in, the top for a folder one level down,
+    /// or `None` for the top itself.
+    pub fn parent(&self) -> Option<Self> {
+        if self.0.is_empty() {
+            return None;
+        }
+        let parent = self.0.rsplit_once('/').map_or("", |(parent, _)| parent);
+        Some(Self(parent.to_owned()))
+    }
+}
+
+/// A folder of the media library and how many items are filed in it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct FolderCount {
+    /// The folder, never the top.
+    pub folder: Folder,
+    /// The items filed in it, not counting those in folders inside it.
+    pub items: usize,
 }
 
 impl TryFrom<String> for Folder {
