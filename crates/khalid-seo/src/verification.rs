@@ -57,6 +57,55 @@ pub struct SiteVerification {
     pub baidu: Option<VerificationCode>,
     /// Pinterest: `p:domain_verify`.
     pub pinterest: Option<VerificationCode>,
+    /// Bluesky: the account's DID, served as [`ATPROTO_DID_FILE`] rather
+    /// than as a tag.
+    pub bluesky: Option<AtprotoDid>,
+}
+
+/// Where Bluesky looks for the DID of the account whose handle is the
+/// site's domain, from the root of the host.
+pub const ATPROTO_DID_FILE: &str = ".well-known/atproto-did";
+
+/// The characters of a `did:plc` identifier: lowercase base32.
+const PLC_LENGTH: usize = 24;
+
+/// A Bluesky account's DID: `did:plc:` and 24 lowercase base32 characters,
+/// or `did:web:` and a host name, the two methods Bluesky accepts. The
+/// account uses the site's domain as its handle once the site serves it
+/// at [`ATPROTO_DID_FILE`].
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct AtprotoDid(String);
+
+impl AtprotoDid {
+    /// Checks a DID and wraps it.
+    ///
+    /// # Errors
+    ///
+    /// [`SeoError::BlueskyDid`] when the text is neither a `did:plc` nor a
+    /// `did:web` DID.
+    pub fn try_new(text: &str) -> Result<Self, SeoError> {
+        let plc = text.strip_prefix("did:plc:").is_some_and(|id| {
+            id.len() == PLC_LENGTH && id.bytes().all(|b| matches!(b, b'a'..=b'z' | b'2'..=b'7'))
+        });
+        let web = text.strip_prefix("did:web:").is_some_and(|host| {
+            !host.is_empty()
+                && host
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'-'))
+        });
+        if plc || web {
+            Ok(Self(text.to_owned()))
+        } else {
+            Err(SeoError::BlueskyDid {
+                did: text.to_owned(),
+            })
+        }
+    }
+
+    /// The DID as given, which is the whole of the file.
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 impl SiteVerification {

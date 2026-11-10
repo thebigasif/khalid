@@ -39,6 +39,7 @@ alt = "The Field Notes logo on a white card"
 [seo.verification]
 google = "aBc123-_"
 pinterest = "f00d"
+bluesky = "did:plc:z72i7hdynmk6r22z27h6tvur"
 
 [seo.verification.files]
 "google1a2b3c4d.html" = "google-site-verification: google1a2b3c4d.html"
@@ -135,6 +136,8 @@ fn reads_titles_social_and_verification() {
     assert_eq!((image.width, image.height), (1200, 630));
     assert_eq!(seo.verification.google.as_deref(), Some("aBc123-_"));
     assert_eq!(seo.verification.bing, None);
+    let did = seo.verification.bluesky.as_deref();
+    assert_eq!(did, Some("did:plc:z72i7hdynmk6r22z27h6tvur"));
     let files: Vec<&str> = seo.verification.files.keys().map(String::as_str).collect();
     assert_eq!(files, ["google1a2b3c4d.html"]);
 }
