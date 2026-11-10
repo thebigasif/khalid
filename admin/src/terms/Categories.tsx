@@ -6,6 +6,7 @@ import { createCategory, listCategories, type NewCategory } from "../api/terms";
 import { Problem } from "../components/Problem";
 import type { UserMessage } from "../strings/en";
 import { termWords } from "../strings/termWords";
+import type { CategoryPick } from "./CategoryChange";
 import { CategoryTable } from "./CategoryTable";
 import { NewCategoryForm } from "./NewCategoryForm";
 import { categoryName, nameLanguages } from "./names";
@@ -16,8 +17,10 @@ export const CATEGORIES = ["categories"];
 // The same key the Look screen reads the settings under.
 const SITE = ["site"];
 
-/** The site's categories, and adding one. */
-export function Categories() {
+type Props = { onPick: (pick: CategoryPick) => void };
+
+/** The site's categories, adding one, and picking one to rename or delete. */
+export function Categories({ onPick }: Props) {
   const words = termWords.categories;
   const queries = useQueryClient();
   const listed = useQuery({ queryKey: CATEGORIES, queryFn: listCategories }).data;
@@ -50,7 +53,16 @@ export function Categories() {
   } else if (isData(listed) && listed.data.length === 0) {
     list = <p role="status">{words.none}</p>;
   } else if (isData(listed)) {
-    list = <CategoryTable categories={listed.data} language={first} />;
+    list = (
+      <>
+        <CategoryTable
+          categories={listed.data}
+          language={first}
+          onPick={(category, action) => onPick({ category, action, languages: ordered })}
+        />
+        <p className="muted">{words.removeNote}</p>
+      </>
+    );
   }
   return (
     <>

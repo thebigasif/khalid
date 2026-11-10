@@ -47,3 +47,19 @@ export function listCategories(): Promise<Reply<AdminCategory[]>> {
 export function createCategory(category: NewCategory): Promise<Reply<AdminCategory[]>> {
   return call("/categories/", sending("POST", { categories: [category] }), categories);
 }
+
+/** Replaces every name of `category` with `names`; posts keep the category. */
+export function renameCategory(
+  category: AdminCategory,
+  names: Record<string, string>,
+): Promise<Reply<AdminCategory[]>> {
+  const body = { categories: [{ names, updated_at: category.updated_at }] };
+  return call(`/categories/${encodeURIComponent(category.id)}/`, sending("PUT", body), categories);
+}
+
+/** Deletes a category no post is in, unless the categories changed since the list was read. */
+export function deleteCategory(category: AdminCategory): Promise<Reply<null>> {
+  const query = new URLSearchParams({ updated_at: category.updated_at });
+  const path = `/categories/${encodeURIComponent(category.id)}/?${query}`;
+  return call(path, { method: "DELETE" }, nothing);
+}

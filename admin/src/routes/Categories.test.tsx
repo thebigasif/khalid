@@ -1,7 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
-import { type Answers, adminBlog } from "../../test/blog";
+import { type Answers, adminBlog, noContent } from "../../test/blog";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import type { AdminCategory, NewCategory } from "../api/terms";
 import { termWords } from "../strings/termWords";
@@ -98,6 +98,59 @@ describe("the categories on the Tags and categories screen", () => {
     await userEvent.click(screen.getByRole("button", { name: ADD.submit }));
     expect(await screen.findByRole("alert")).toHaveTextContent(taken.title);
     expect(screen.getByLabelText(ADD.slug)).toHaveValue("on-page-seo");
+  });
+
+  it("renames a category in every language on the copy it was read from", async () => {
+    signedIn();
+    const sent: unknown[] = [];
+    blog([category()], {
+      "PUT /categories/on-page-seo/": async (request) => {
+        sent.push(await request.json());
+        return json(200, { categories: [category({ names: { en: "On-page", de: "Onpage" } })] });
+      },
+    });
+    renderAt("/tags");
+    await userEvent.click(
+      await screen.findByRole("button", { name: WORDS.renameLabel("On-page SEO") }),
+    );
+    const title = screen.getByRole("heading", {
+      name: termWords.renameCategory.title("On-page SEO"),
+    });
+    expect(title).toHaveFocus();
+    expect(screen.getByText(termWords.renameCategory.lede(4, "on-page-seo"))).toBeVisible();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.clear(screen.getByLabelText(ADD.name("English")));
+    await userEvent.type(screen.getByLabelText(ADD.name("English")), "On-page");
+    await userEvent.clear(screen.getByLabelText(ADD.name("German")));
+    await userEvent.type(screen.getByLabelText(ADD.name("German")), "Onpage");
+    await userEvent.click(screen.getByRole("button", { name: termWords.renameCategory.submit }));
+    expect(await screen.findByText(termWords.renameCategory.done("On-page"))).toBeVisible();
+    expect(sent).toEqual([
+      { categories: [{ names: { en: "On-page", de: "Onpage" }, updated_at: SEEN }] },
+    ]);
+  });
+
+  it("offers Delete only for an empty category, and deletes it", async () => {
+    signedIn();
+    let deleted: string | null = null;
+    blog([category(), STRATEGY], {
+      "DELETE /categories/content-strategy/": (request) => {
+        deleted = new URL(request.url).searchParams.get("updated_at");
+        return noContent();
+      },
+    });
+    renderAt("/tags");
+    await screen.findByRole("table", { name: WORDS.title });
+    expect(screen.queryByRole("button", { name: WORDS.removeLabel("On-page SEO") })).toBeNull();
+    await userEvent.click(
+      screen.getByRole("button", { name: WORDS.removeLabel("Content strategy") }),
+    );
+    expect(screen.getByText(termWords.deleteCategory.lede)).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: termWords.deleteCategory.submit }));
+    expect(
+      await screen.findByText(termWords.deleteCategory.done("Content strategy")),
+    ).toBeVisible();
+    expect(deleted).toBe(SEEN);
   });
 
   it("asks names in the categories' languages when the settings cannot be read", async () => {

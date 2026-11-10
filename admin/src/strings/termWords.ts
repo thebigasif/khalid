@@ -19,6 +19,26 @@ export const termWords = {
     posts: "Posts",
     count: (count: number) => (count === 0 ? "No posts" : posts(count)),
     other: (language: string, name: string) => `${language}: ${name}`,
+    action: "Action",
+    rename: "Rename",
+    renameLabel: (name: string) => `Rename ${name}`,
+    remove: "Delete",
+    removeLabel: (name: string) => `Delete ${name}`,
+    removeNote: "Delete shows only for a category no post is in, so no post loses its category.",
+  },
+  renameCategory: {
+    title: (name: string) => `Rename "${name}"`,
+    lede: (count: number, slug: string) =>
+      `${count === 1 ? "1 post is" : `${count} posts are`} in this category. They keep it, and live posts show the new name at once. The short name ${slug} stays, so no address changes.`,
+    hint: "Leave a language empty to take its name away.",
+    submit: "Save names",
+    done: (name: string) => `Saved the names of "${name}".`,
+  },
+  deleteCategory: {
+    title: (name: string) => `Delete "${name}"`,
+    lede: "No post is in this category. It goes from categories.toml, and its page goes with it.",
+    submit: "Delete category",
+    done: (name: string) => `Deleted the category "${name}".`,
   },
   addCategory: {
     title: "Add a category",
