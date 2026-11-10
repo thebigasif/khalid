@@ -124,3 +124,25 @@ fn a_reviewer_category_that_is_not_a_slug_names_its_line() {
         "{error:?}"
     );
 }
+
+#[test]
+fn a_reviewer_category_the_site_lacks_names_its_line_and_the_real_ones() {
+    let text = "[reviewers]\nrequired-in = [\n  \"money\",\n  \"heath\",\n]\n";
+    let config = LintConfig::parse(text).unwrap();
+    let error = config
+        .check_categories(["money", "health", "money"])
+        .unwrap_err();
+    let LintError::UnknownCategory {
+        category,
+        line,
+        known,
+    } = error
+    else {
+        panic!("{error:?}");
+    };
+    assert_eq!((category.as_str(), line), ("heath", 4));
+    assert_eq!(known, ["health", "money"], "sorted, once each");
+    let fixed = LintConfig::parse("[reviewers]\nrequired-in = [\"health\"]\n").unwrap();
+    assert!(fixed.check_categories(["health"]).is_ok());
+    assert!(LintConfig::default().check_categories([]).is_ok());
+}

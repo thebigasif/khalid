@@ -40,10 +40,12 @@ pub(crate) fn screen(
     clock: &dyn Clock,
 ) -> Result<Vec<Refused>, UserMessage> {
     let settings = lint::lint_settings(site)?;
+    let named = categories::of(site)?;
+    lint::reviewed_categories(&settings, &named, content)?;
     let linter = Linter::new(&settings, clock).map_err(|error| lint_message::of(&error))?;
     let input = LintInput::new(content, config, routes.clone())
         .with_briefs(site_briefs::load(site)?)
-        .with_categories(categories::of(site)?);
+        .with_categories(named);
     Ok(refused(&linter, content, config, &input))
 }
 
