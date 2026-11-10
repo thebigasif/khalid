@@ -18,6 +18,17 @@ says what is wrong, why it matters and the fix, how many posts it names,
 and opens the first of them. A blog that cannot send the list leaves the
 panel out.
 
+## Dashboard: Site health
+
+The dashboard's row of numbers ends with the site health score: the share
+of the blog's pages with no error, out of 100, from the last site audit.
+`khalid serve` runs the audit once a day, and `khalid audit` adds a run
+when you start one. The card says how many errors and warnings the audit
+found on how many pages, and how the score moved since the oldest of the
+last 30 audits. It turns red when the audit found an error. The issues
+and their fixes are in `data/audit/issues.csv`. The card reads
+`GET /api/admin/v1/site/health/`; see [deploy.md](deploy.md#nightly-site-audit).
+
 ## Structured data that blocks a post
 
 Structured data is the JSON-LD a page carries so search engines can show

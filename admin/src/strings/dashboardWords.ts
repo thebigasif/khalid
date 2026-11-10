@@ -1,5 +1,9 @@
 import { en } from "./en";
 
+/** `count` of `thing`, with an s when there is not exactly one. */
+const plural = (count: number, thing: string) =>
+  count === 1 ? `1 ${thing}` : `${count} ${thing}s`;
+
 // The words of the dashboard, the first screen after signing in.
 export const dashboardWords = {
   greeting: (name: string | null) =>
@@ -17,6 +21,19 @@ export const dashboardWords = {
   searchClicks: "Search clicks",
   connectWhy: "Connect Search Console to see how people find your posts on Google.",
   connect: "Connect Search Console",
+  health: "Site health",
+  healthScore: (score: number) => `${score} / 100`,
+  healthWhat: "The share of your pages with no error, from the daily site check.",
+  healthNone:
+    "No site check has run yet. Your blog checks every page once a day, the first time an hour after it starts.",
+  healthFound: (errors: number, warnings: number, pages: number) =>
+    `${plural(errors, "error")} and ${plural(warnings, "warning")} on ${plural(pages, "page")}.`,
+  healthSince: (change: number, since: string) => {
+    if (change === 0) {
+      return `The same as on ${since}.`;
+    }
+    return change > 0 ? `Up ${change} since ${since}.` : `Down ${-change} since ${since}.`;
+  },
   attention: "Needs attention",
   failsChecks: "Fails checks",
   scheduled: (count: number) =>
