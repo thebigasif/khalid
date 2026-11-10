@@ -62,7 +62,7 @@ describe("the Analytics screen", () => {
     await userEvent.click(screen.getByRole("button", { name: words.show }));
     await waitFor(() => {
       const asked = sent.map((request) => new URL(request.url).searchParams.get("days"));
-      expect(asked.filter((days) => days === "90")).toHaveLength(4);
+      expect(asked.filter((days) => days === "90")).toHaveLength(5);
     });
   });
 

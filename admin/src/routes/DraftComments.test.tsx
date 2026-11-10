@@ -21,6 +21,7 @@ const DRAFT: AdminPost = {
     password_protected: false,
     share_cards: {},
     aliases: [],
+    tags: [],
   },
 };
 

@@ -89,7 +89,10 @@ export function aiBots(fields: Partial<AiBots> = {}): AiBots {
         reads: 412,
         pages: 58,
         sent: 21,
-        bots: [{ bot: "GPTBot", reads: 301 }, { bot: "OAI-SearchBot", reads: 111 }],
+        bots: [
+          { bot: "GPTBot", reads: 301 },
+          { bot: "OAI-SearchBot", reads: 111 },
+        ],
       },
       {
         tool: "other",

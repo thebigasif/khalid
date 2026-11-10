@@ -18,11 +18,12 @@ const LIVE: AdminPost = {
   settings: {
     co_authors: [],
     featured: false,
-    review_state: "approved",
+    review_state: "ready",
     access: "public",
     password_protected: false,
     share_cards: {},
     aliases: [],
+    tags: [],
   },
 };
 
@@ -66,7 +67,9 @@ describe("the honest update switch", () => {
     await waitFor(() => expect(edits).toHaveLength(1));
     expect(edits[0]?.real_update).toEqual({ note: "Added a sheet to plan the links on." });
     expect(
-      await screen.findByText(words.last("10 November 2026", "Added a sheet to plan the links on.")),
+      await screen.findByText(
+        words.last("10 November 2026", "Added a sheet to plan the links on."),
+      ),
     ).toBeVisible();
     expect(screen.getByRole("checkbox", { name: words.on })).not.toBeChecked();
   });

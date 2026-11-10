@@ -32,8 +32,16 @@ async function tickBoth() {
 describe("changing many posts at once", () => {
   it("sets the author of each ticked post and says which was left", async () => {
     signedIn();
+    // A post already by the new author is skipped, so the one left has another.
+    const byMaria = row({ ...CLUSTER, author: "maria" });
+    const byLena = row({
+      id: "01JC",
+      slug: "anchor-text",
+      title: "Anchor text",
+      author: "lena-vogt",
+    });
     const sent = redirectsBlog({
-      "GET /posts/": () => rowsPage([LINKS, CLUSTER]),
+      "GET /posts/": () => rowsPage([LINKS, byMaria, byLena]),
       "PUT /posts/01JA/": () => json(200, { posts: [{ id: LINKS.id }] }),
       "PUT /posts/01JB/": () => json(409, STALE),
     });

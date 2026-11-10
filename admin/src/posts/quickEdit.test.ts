@@ -36,7 +36,10 @@ describe("quick edit", () => {
   });
 
   it("reads tags between commas, each once whatever its capitals", () => {
-    expect(tagsOf(" seo, Internal links,, SEO ,internal LINKS ")).toEqual(["seo", "Internal links"]);
+    expect(tagsOf(" seo, Internal links,, SEO ,internal LINKS ")).toEqual([
+      "seo",
+      "Internal links",
+    ]);
     expect(tagsOf(" , ")).toEqual([]);
   });
 

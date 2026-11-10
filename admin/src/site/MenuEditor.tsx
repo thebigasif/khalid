@@ -51,7 +51,7 @@ export function MenuEditor({
       ) : (
         <ol className="home-sections">
           {links.map((link, at) => (
-            <li key={`${at}-${link.href}`}>
+            <li key={`${named(link)} ${link.href}`}>
               <span className="what">
                 <strong>{named(link)}</strong>
                 <span className="hint">{link.href}</span>
