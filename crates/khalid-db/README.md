@@ -42,6 +42,7 @@ A test reads the table below and checks it lists every table in the schema, once
 | `post_versions` | visitor | The title and text each post edit replaced, the 100 newest per post, so a writer can bring an old text back |
 | `site_keys` | visitor | Keys the site makes for itself, such as the one that signs preview links; 256 random bits each, never shown |
 | `form_submissions` | visitor | What people sent through forms on the site |
+| `form_mail` | visitor | Form answer emails that could not be sent: the email, how many tries failed and why, and when the next is due; removed once sent, and 30 days after Khalid gives up |
 | `subscribers` | visitor | Newsletter subscribers, whether they confirmed, and when they left |
 | `subscriber_lists` | visitor | Which newsletters each subscriber gets, by the newsletter's name |
 | `subscriber_labels` | visitor | The labels each subscriber carries, such as paid, which make segments |
