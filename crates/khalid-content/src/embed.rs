@@ -147,6 +147,7 @@ pub(crate) fn video(src: &AbsoluteUrl, title: &str) -> Option<EmbeddedVideo> {
         title: title.to_owned(),
         player: AbsoluteUrl::parse(&player).ok()?,
         thumbnail,
+        uploaded: None,
     })
 }
 

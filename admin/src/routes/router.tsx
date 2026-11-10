@@ -22,6 +22,7 @@ import { BulkSeo } from "./BulkSeo";
 import { Calendar } from "./Calendar";
 import { Comments } from "./Comments";
 import { Dashboard } from "./Dashboard";
+import { Design } from "./Design";
 import { HandOver } from "./HandOver";
 import { Keys } from "./Keys";
 import { LinkSignIn } from "./LinkSignIn";
@@ -200,6 +201,9 @@ const handOver = createRoute({
 // The blog's template, saved through the settings like the screen below.
 const look = createRoute({ getParentRoute: () => signedIn, path: "/look", component: Look });
 
+// The colours, fonts and logo in theme/tokens.toml.
+const design = createRoute({ getParentRoute: () => signedIn, path: "/design", component: Design });
+
 // The whole blog's settings; post settings live in the editor.
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
 
@@ -261,6 +265,7 @@ const routeTree = root.addChildren([
     team,
     handOver,
     look,
+    design,
     site,
     seo,
     privacy,

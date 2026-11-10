@@ -42,7 +42,8 @@ fn demo_copy() -> TempDir {
 }
 
 /// The demo site with a `YouTube` and a Vimeo embed at the end of "Fixing
-/// slow pages", whose lead image stands in for Vimeo's still.
+/// slow pages", whose lead image stands in for Vimeo's still. Only the
+/// `YouTube` one gives the day its host published it.
 #[cfg(test)]
 fn site_with_embeds() -> TempDir {
     let site = demo_copy();
@@ -52,7 +53,7 @@ fn site_with_embeds() -> TempDir {
     );
     let mut text = fs::read_to_string(&post).unwrap();
     text.push_str(
-        "\n::embed{src=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" title=\"How search works\"}\n\
+        "\n::embed{src=\"https://www.youtube.com/watch?v=dQw4w9WgXcQ\" title=\"How search works\" uploaded=\"2009-10-25\"}\n\
          \n::embed{src=\"https://vimeo.com/76979871\" title=\"A short film\"}\n",
     );
     fs::write(post, text).unwrap();
@@ -107,6 +108,33 @@ fn the_video_sitemap_lists_each_embed_by_its_player() {
     );
     let posts = read(&out, "sitemaps/posts-en-1.xml");
     assert!(!posts.contains("<video:video>"), "listed once: {posts}");
+}
+
+/// The page's JSON-LD holds a `VideoObject` for the embed that gives its
+/// upload date and none for the one that does not (G16 follow-up).
+#[test]
+fn a_dated_embed_writes_a_video_object_in_the_page() {
+    let site = site_with_embeds();
+    let out = build(site.path());
+    let page = read(&out, "fixing-slow-pages/index.html");
+    let (_, schema) = page
+        .split_once("<script type=\"application/ld+json\">")
+        .unwrap();
+    let (schema, _) = schema.split_once("</script>").unwrap();
+    assert_eq!(schema.matches("\"VideoObject\"").count(), 1, "{schema}");
+    for text in [
+        "\"uploadDate\":\"2009-10-25T00:00:00Z\"",
+        "\"embedUrl\":\"https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ\"",
+        "\"name\":\"How search works\"",
+    ] {
+        assert!(schema.contains(text), "{text} in:\n{schema}");
+    }
+    assert!(!schema.contains("player.vimeo.com"), "{schema}");
+    let videos = read(&out, "sitemaps/videos-en-1.xml");
+    assert!(
+        videos.contains("<video:publication_date>2009-10-25T00:00:00Z</video:publication_date>"),
+        "{videos}"
+    );
 }
 
 #[test]

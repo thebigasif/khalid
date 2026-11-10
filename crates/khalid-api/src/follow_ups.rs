@@ -1,6 +1,7 @@
-//! Where the Admin API finds Search Console follow-ups (GEO M3): the long,
-//! conversational searches that showed each post, the way people ask an AI
-//! assistant, and the heading of the post that answers each.
+//! Where the Admin API finds Search Console numbers: the follow-ups (GEO
+//! M3), the long, conversational searches that showed each post, the way
+//! people ask an AI assistant, with the heading of the post that answers
+//! each; and the report of each post's numbers (G43).
 
 use std::error::Error;
 
@@ -10,10 +11,12 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::content_store::BoxFuture;
+use crate::search_report::SearchReport;
 
-/// Finds the follow-ups of the site's posts. The `khalid` binary
-/// implements it with the same finder `khalid search-console follow-ups`
-/// runs; [`NoSearchConsole`] stands in for a site with no connection.
+/// Finds the Search Console numbers of the site's posts. The `khalid`
+/// binary implements it with the same code `khalid search-console
+/// follow-ups` and `report` run; [`NoSearchConsole`] stands in for a site
+/// with no connection.
 pub trait FollowUpFinder: Send + Sync {
     /// The long searches of the last 28 days whose numbers are final, per
     /// post.
@@ -25,6 +28,14 @@ pub trait FollowUpFinder: Send + Sync {
     /// be reached, and [`FollowUpError::Internal`] when the site's posts
     /// cannot be read.
     fn follow_ups(&self) -> BoxFuture<'_, Result<FollowUps, FollowUpError>>;
+
+    /// Each post's numbers for the last 28 days whose numbers are final,
+    /// the falling posts, the lost pages and the week's movers.
+    ///
+    /// # Errors
+    ///
+    /// As [`FollowUpFinder::follow_ups`].
+    fn report(&self) -> BoxFuture<'_, Result<SearchReport, FollowUpError>>;
 }
 
 /// The long searches that showed the site's posts in a month.
@@ -48,6 +59,9 @@ pub struct FollowUps {
 /// One post and the long searches that showed it.
 #[derive(Debug, Clone, PartialEq, Serialize, ToSchema)]
 pub struct FollowUpPost {
+    /// The post's identity, as in `/posts/{id}/`.
+    #[schema(example = "en.what-a-sitemap-does")]
+    pub id: String,
     /// The post's title.
     pub title: String,
     /// The post's full address.
@@ -96,11 +110,19 @@ pub struct NoSearchConsole;
 
 impl FollowUpFinder for NoSearchConsole {
     fn follow_ups(&self) -> BoxFuture<'_, Result<FollowUps, FollowUpError>> {
-        let message = UserMessage::new(
-            "This site is not connected to Google Search Console, Google's report of how a site does in search.",
-            "Only the running khalid serve, with [search_console] in site.toml, can ask Google.",
-            "Follow the steps in docs/deploy.md under Google Search Console, then send the request to khalid serve.",
-        );
-        Box::pin(async move { Err(FollowUpError::NotConnected(message)) })
+        Box::pin(async move { Err(not_served()) })
     }
+
+    fn report(&self) -> BoxFuture<'_, Result<SearchReport, FollowUpError>> {
+        Box::pin(async move { Err(not_served()) })
+    }
+}
+
+/// The answer outside the running `khalid serve`.
+fn not_served() -> FollowUpError {
+    FollowUpError::NotConnected(UserMessage::new(
+        "This site is not connected to Google Search Console, Google's report of how a site does in search.",
+        "Only the running khalid serve, with [search_console] in site.toml, can ask Google.",
+        "Follow the steps in docs/deploy.md under Google Search Console, then send the request to khalid serve.",
+    ))
 }

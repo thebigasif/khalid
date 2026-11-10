@@ -1,4 +1,4 @@
-import type { FollowUp, FollowUps } from "../src/api/searchConsole";
+import type { FollowUp, FollowUps, SearchReport } from "../src/api/searchConsole";
 import type { Answers } from "./redirects";
 import { json, serve } from "./render";
 
@@ -16,6 +16,7 @@ export function followUps(fields: Partial<FollowUps> = {}): FollowUps {
     words: 8,
     posts: [
       {
+        id: "en.why-internal-links-matter",
         title: "Why internal links matter",
         url: "https://www.example.com/blog/why-internal-links-matter/",
         searches: [
@@ -28,9 +29,82 @@ export function followUps(fields: Partial<FollowUps> = {}): FollowUps {
         ],
       },
       {
+        id: "en.what-a-sitemap-does",
         title: "What a sitemap does, and what it does not",
         url: "https://www.example.com/blog/what-a-sitemap-does/",
         searches: [search("do i need a sitemap if my blog has only ten posts", 35, null)],
+      },
+    ],
+    ...fields,
+  };
+}
+
+const SITEMAP = "https://www.example.com/blog/what-a-sitemap-does/";
+const GO_DEEPER = "https://app.serpdad.com/go-deeper?question=why-it-dropped";
+
+/** The report of the same month: two posts, one falling, two lost pages and one loser. */
+export function report(fields: Partial<SearchReport> = {}): SearchReport {
+  return {
+    property: "sc-domain:example.com",
+    first: "2026-10-01",
+    last: "2026-10-28",
+    posts: [
+      {
+        id: "en.why-internal-links-matter",
+        title: "Why internal links matter",
+        url: "https://www.example.com/blog/why-internal-links-matter/",
+        clicks: 120,
+        impressions: 2400,
+        ctr: 0.05,
+        position: 3.1,
+      },
+      {
+        id: "en.what-a-sitemap-does",
+        title: "What a sitemap does, and what it does not",
+        url: SITEMAP,
+        clicks: 0,
+        impressions: 0,
+        ctr: 0,
+        position: null,
+      },
+    ],
+    decaying: [
+      {
+        id: "en.what-a-sitemap-does",
+        title: "What a sitemap does, and what it does not",
+        url: SITEMAP,
+        clicks: [90, 70, 50, 40],
+        action: "Refresh this post",
+        go_deeper: GO_DEEPER,
+      },
+    ],
+    lost: [
+      {
+        url: "https://www.example.com/blog/old-sitemap-guide/",
+        clicks: 12,
+        impressions: 300,
+        why: "missing",
+        not_found_hits: 31,
+      },
+      {
+        url: "https://www.example.com/blog/draft-checklist/",
+        clicks: 3,
+        impressions: 90,
+        why: "noindex",
+        not_found_hits: null,
+      },
+    ],
+    week_clicks: 84,
+    last_week_clicks: 96,
+    winners: [],
+    losers: [
+      {
+        id: "en.what-a-sitemap-does",
+        title: "What a sitemap does, and what it does not",
+        url: SITEMAP,
+        before: 30,
+        now: 9,
+        go_deeper: GO_DEEPER,
       },
     ],
     ...fields,
@@ -51,6 +125,7 @@ export const NOT_SET_UP = {
 // What the Search Console screen reads when it opens, the month above unless a test says otherwise.
 const MONTH: Answers = {
   "GET /search-console/follow-ups/": () => json(200, followUps()),
+  "GET /search-console/report/": () => json(200, report()),
 };
 
 /** A blog that answers the Search Console route from `answers`, and the requests it was sent. */

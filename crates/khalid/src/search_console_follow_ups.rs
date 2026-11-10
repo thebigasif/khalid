@@ -89,6 +89,7 @@ pub(crate) fn found(
 
 fn post_found(post: &LivePost) -> FollowUpPost {
     FollowUpPost {
+        id: post.id.clone(),
         title: post.title.clone(),
         url: post.address.clone(),
         searches: Vec::new(),

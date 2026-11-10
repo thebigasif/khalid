@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { FollowUpPost } from "../api/searchConsole";
 import { count } from "../strings/dates";
 import { en } from "../strings/en";
@@ -18,6 +19,11 @@ export function PostSearches({ post, id }: Props) {
       <h3 id={id}>
         <a href={post.url}>{post.title}</a>
       </h3>
+      <p>
+        <Link to="/posts/$id" params={{ id: post.id }}>
+          {searchConsoleWords.edit(post.title)}
+        </Link>
+      </p>
       <div className="scroll">
         <table aria-labelledby={id}>
           <thead>

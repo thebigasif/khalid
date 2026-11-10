@@ -28,6 +28,9 @@ use tokio::task::JoinSet;
 
 use crate::{build_message, build_pages, build_seo, mounted};
 
+#[path = "indexnow_record.rs"]
+pub(crate) mod indexnow_record;
+
 /// How often failed webhook deliveries are looked at for one that is due.
 const RETRY_EVERY: Duration = Duration::from_mins(1);
 

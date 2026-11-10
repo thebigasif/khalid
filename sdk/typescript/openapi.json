@@ -1927,6 +1927,178 @@
         ]
       }
     },
+    "/api/admin/v1/design/": {
+      "get": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Reads the colours, fonts, shape and logo the site's pages use, each\nfrom `theme/tokens.toml` or else the chosen template, with the WCAG\ncontrast of every colour pair. Needs `settings:write`.",
+        "operationId": "read_design",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The design",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDesign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no design",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "theme/tokens.toml holds a mistake the pages cannot load",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin settings"
+        ],
+        "summary": "Changes the tokens sent in `theme/tokens.toml`, in place: comments and\nevery other table stay as written. Each value must be one the pages\nload. The change carries the `updated_at` of the copy it was made on;\nwhen the file changed since, the answer is a 409 (RULES.md BL-API-7).\nThe running server shows the change on the next page it renders.\nNeeds `settings:write`.",
+        "operationId": "change_design",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DesignChanges"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The design as saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteDesign"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no design",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "theme/tokens.toml changed after the copy the change was made on, or holds a mistake",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or a value is not one the pages load",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/keys/": {
       "get": {
         "tags": [
@@ -4615,7 +4787,7 @@
         },
         "responses": {
           "200": {
-            "description": "Who holds the lock, and who else has the post open",
+            "description": "Who holds the lock, and who else has the post open, each by identity and name",
             "content": {
               "application/json": {
                 "schema": {
@@ -5522,6 +5694,83 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FollowUps"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The site is not connected to Search Console",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Google refused or could not be reached",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/search-console/report/": {
+      "get": {
+        "tags": [
+          "admin search console"
+        ],
+        "summary": "Lists each published post's clicks, impressions, click-through rate\nand average position for the last 28 days whose numbers are final,\nthe pages whose clicks fell three months in a row, pages that answer\n404 or `noindex` but still get search traffic, and this week's winners\nand losers against last week. Google is asked on each request, so the\nanswer can take some seconds. Needs `settings:write`.",
+        "operationId": "search_report",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Each post's numbers and what to look at",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchReport"
                 }
               }
             }
@@ -11365,6 +11614,7 @@
           "id",
           "at",
           "by",
+          "by_name",
           "action",
           "route",
           "path"
@@ -11382,6 +11632,11 @@
           "by": {
             "type": "string",
             "description": "The identity of the key or staff account that made it."
+          },
+          "by_name": {
+            "type": "string",
+            "description": "The name the admin shows for them: the account's name, or the name\nthe key was made with. `by` when neither is known, such as for a\nrevoked key.",
+            "example": "Maria Lopez"
           },
           "id": {
             "type": "integer",
@@ -11744,6 +11999,62 @@
             "type": "string",
             "format": "date-time",
             "description": "When the next try is due, or when it was delivered or given up."
+          }
+        }
+      },
+      "AdminDesign": {
+        "type": "object",
+        "description": "The values the site's pages use from `theme/tokens.toml`, each over the\nchosen template's own, with the contrast of each colour pair.",
+        "required": [
+          "tokens",
+          "locked",
+          "fonts",
+          "contrast"
+        ],
+        "properties": {
+          "contrast": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContrastPair"
+            },
+            "description": "Each colour on the background and on the surface, with its WCAG\ncontrast."
+          },
+          "fonts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FontChoice"
+            },
+            "description": "The fonts a body or heading may use: the system fonts, each family\nthe site serves itself, and the ones the file names now."
+          },
+          "locked": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The tokens `khalid theme sync` keeps as they are, such as\n`colors.link`."
+          },
+          "tokens": {
+            "type": "object",
+            "description": "Every token by its name in the file, such as `colors.link`, with\nthe value pages use: the file's, else the template's, else the\ndefault. A logo or icon that is not set is an empty text.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            },
+            "example": {
+              "colors.link": "#0b57d0",
+              "fonts.body": "system-ui, sans-serif",
+              "brand.logo": ""
+            }
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When `theme/tokens.toml` last changed, or `null` when the site has\nno such file yet. A change sends it back."
           }
         }
       },
@@ -13454,6 +13765,48 @@
           }
         }
       },
+      "ContrastPair": {
+        "type": "object",
+        "description": "One colour pair the templates draw, with its contrast.",
+        "required": [
+          "token",
+          "ground",
+          "ratio",
+          "target",
+          "passes"
+        ],
+        "properties": {
+          "ground": {
+            "type": "string",
+            "description": "What it is drawn on: `colors.background` or `colors.surface`."
+          },
+          "nearest": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "For a colour that fails, the nearest shade that passes on both\ngrounds, such as `#2563eb`."
+          },
+          "passes": {
+            "type": "boolean",
+            "description": "Whether the ratio meets the target."
+          },
+          "ratio": {
+            "type": "number",
+            "format": "double",
+            "description": "The contrast, such as `6.3` for 6.3 to 1, rounded down so a failing\n4.47 never reads as a passing 4.5."
+          },
+          "target": {
+            "type": "number",
+            "format": "double",
+            "description": "What WCAG 2.2 AA asks: 4.5 for text, 3 for buttons and highlights."
+          },
+          "token": {
+            "type": "string",
+            "description": "The colour drawn, such as `colors.link`."
+          }
+        }
+      },
       "CreateOptions": {
         "allOf": [
           {
@@ -13536,6 +13889,58 @@
         "type": "string",
         "description": "JSON-LD written by hand for a type Khalid does not write itself, kept\nas written. It is read as schema.org nodes before it is kept, so a page\nnever carries JSON-LD a search engine would throw away.",
         "example": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
+      },
+      "DesignChange": {
+        "type": "object",
+        "description": "A change to the design: only the tokens sent change.",
+        "properties": {
+          "locked": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "The whole list of tokens a sync keeps, when it changes."
+          },
+          "tokens": {
+            "type": "object",
+            "description": "New values by token name, such as `{\"colors.link\": \"#b3261e\"}`. An\nempty logo or icon takes it out of the file.",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "type": "string"
+            },
+            "example": {
+              "colors.link": "#b3261e"
+            }
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "The `updated_at` of the copy the change was made on, `null` when\nthe site had no file."
+          }
+        },
+        "additionalProperties": false
+      },
+      "DesignChanges": {
+        "type": "object",
+        "description": "A change, wrapped the way the Admin API wraps the design.",
+        "required": [
+          "design"
+        ],
+        "properties": {
+          "design": {
+            "$ref": "#/components/schemas/DesignChange",
+            "description": "The change."
+          }
+        },
+        "additionalProperties": false
       },
       "DraftComment": {
         "type": "object",
@@ -13730,6 +14135,51 @@
           }
         }
       },
+      "FallingPage": {
+        "type": "object",
+        "description": "A page whose clicks fell three months in a row.",
+        "required": [
+          "title",
+          "url",
+          "clicks",
+          "action",
+          "go_deeper"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "description": "What to do about it.",
+            "example": "Refresh this post"
+          },
+          "clicks": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Clicks in each 28-day month, oldest first."
+          },
+          "go_deeper": {
+            "type": "string",
+            "description": "The go-deeper link, which asks why it dropped."
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's identity, or `null` for a page that is not a post."
+          },
+          "title": {
+            "type": "string",
+            "description": "The post's title, or the page's address."
+          },
+          "url": {
+            "type": "string",
+            "description": "The page's full address."
+          }
+        }
+      },
       "FeatureImage": {
         "type": "object",
         "description": "The image at the top of a post and on its cards. The alt text is\nrequired, as for every image (plan section 4.6).",
@@ -13847,11 +14297,17 @@
         "type": "object",
         "description": "One post and the long searches that showed it.",
         "required": [
+          "id",
           "title",
           "url",
           "searches"
         ],
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "The post's identity, as in `/posts/{id}/`.",
+            "example": "en.what-a-sitemap-does"
+          },
           "searches": {
             "type": "array",
             "items": {
@@ -13908,6 +14364,24 @@
             "description": "The fewest words a search had to have to count.",
             "example": 8,
             "minimum": 0
+          }
+        }
+      },
+      "FontChoice": {
+        "type": "object",
+        "description": "One font a body or heading may use.",
+        "required": [
+          "label",
+          "stack"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The name a person reads, such as `System font` or `Inter`."
+          },
+          "stack": {
+            "type": "string",
+            "description": "The CSS font list the file writes for it."
           }
         }
       },
@@ -14334,6 +14808,53 @@
           }
         }
       },
+      "LostPage": {
+        "type": "object",
+        "description": "A page that gets search traffic though readers cannot use it.",
+        "required": [
+          "url",
+          "clicks",
+          "impressions",
+          "why"
+        ],
+        "properties": {
+          "clicks": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks from Google search in the month."
+          },
+          "impressions": {
+            "type": "number",
+            "format": "double",
+            "description": "Times a search showed it in the month."
+          },
+          "not_found_hits": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "How many requests the 404 log counted, for a missing page.",
+            "minimum": 0
+          },
+          "url": {
+            "type": "string",
+            "description": "The page's full address."
+          },
+          "why": {
+            "$ref": "#/components/schemas/LostReason",
+            "description": "Why readers cannot use it."
+          }
+        }
+      },
+      "LostReason": {
+        "type": "string",
+        "description": "Why a page with search traffic cannot be used.",
+        "enum": [
+          "missing",
+          "noindex"
+        ]
+      },
       "MediaEditBody": {
         "type": "object",
         "description": "A change to an item's details. A field left out stays as it is.",
@@ -14496,6 +15017,50 @@
         "properties": {
           "pagination": {
             "$ref": "#/components/schemas/Pagination"
+          }
+        }
+      },
+      "Mover": {
+        "type": "object",
+        "description": "One page's clicks this week against last week.",
+        "required": [
+          "title",
+          "url",
+          "before",
+          "now"
+        ],
+        "properties": {
+          "before": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks last week."
+          },
+          "go_deeper": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The go-deeper link, which asks why it dropped, for a loser."
+          },
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's identity, or `null` for a page that is not a post."
+          },
+          "now": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks this week."
+          },
+          "title": {
+            "type": "string",
+            "description": "The post's title, or the page's address."
+          },
+          "url": {
+            "type": "string",
+            "description": "The page's full address."
           }
         }
       },
@@ -15796,6 +16361,57 @@
           }
         }
       },
+      "PostNumbers": {
+        "type": "object",
+        "description": "One post's numbers for the month.",
+        "required": [
+          "id",
+          "title",
+          "url",
+          "clicks",
+          "impressions",
+          "ctr"
+        ],
+        "properties": {
+          "clicks": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks from Google search."
+          },
+          "ctr": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks for each time shown, from 0 to 1."
+          },
+          "id": {
+            "type": "string",
+            "description": "The post's identity, as in `/posts/{id}/`.",
+            "example": "en.what-a-sitemap-does"
+          },
+          "impressions": {
+            "type": "number",
+            "format": "double",
+            "description": "Times a search showed it."
+          },
+          "position": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Its average position in results, 1 at the top, or `null` when no\nsearch showed it."
+          },
+          "title": {
+            "type": "string",
+            "description": "The post's title."
+          },
+          "url": {
+            "type": "string",
+            "description": "The post's full address.",
+            "example": "https://example.com/blog/what-a-sitemap-does/"
+          }
+        }
+      },
       "PostPresence": {
         "type": "object",
         "description": "Who has a post open, as the one checking in sees it.",
@@ -16218,6 +16834,14 @@
             ],
             "description": "Who saved them, as the post named them; `null` when not known, such\nas for a file written by hand."
           },
+          "saved_by_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The name the admin shows for whoever saved them: their account's\nname, the name their key was made with, or else `saved_by`; `null`\nwhen `saved_by` is.",
+            "example": "Maria Lopez"
+          },
           "title": {
             "type": "string",
             "description": "The title."
@@ -16271,9 +16895,15 @@
         "description": "Someone with a post open.",
         "required": [
           "who",
+          "name",
           "since"
         ],
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name the admin shows for them: their account's name, or the\nname their key was made with. Their identity when neither is known.",
+            "example": "Maria Lopez"
+          },
           "since": {
             "type": "string",
             "format": "date-time",
@@ -16592,6 +17222,84 @@
           "unsplash": {
             "type": "boolean",
             "description": "Photo search on Unsplash."
+          }
+        }
+      },
+      "SearchReport": {
+        "type": "object",
+        "description": "A site's Search Console numbers.",
+        "required": [
+          "property",
+          "first",
+          "last",
+          "posts",
+          "decaying",
+          "lost",
+          "week_clicks",
+          "last_week_clicks",
+          "winners",
+          "losers"
+        ],
+        "properties": {
+          "decaying": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FallingPage"
+            },
+            "description": "Pages whose clicks fell three 28-day months in a row."
+          },
+          "first": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day of the month looked at."
+          },
+          "last": {
+            "type": "string",
+            "format": "date",
+            "description": "The last day looked at: the last day whose numbers are final."
+          },
+          "last_week_clicks": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks on every page in the 7 days before."
+          },
+          "losers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Mover"
+            },
+            "description": "The pages that lost the most clicks this week against last."
+          },
+          "lost": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LostPage"
+            },
+            "description": "Pages that still get search traffic though readers cannot use them."
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostNumbers"
+            },
+            "description": "Every published post, the one with the most clicks first."
+          },
+          "property": {
+            "type": "string",
+            "description": "The Search Console property the numbers come from.",
+            "example": "sc-domain:example.com"
+          },
+          "week_clicks": {
+            "type": "number",
+            "format": "double",
+            "description": "Clicks on every page in the last 7 days."
+          },
+          "winners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Mover"
+            },
+            "description": "The pages that gained the most clicks this week against last."
           }
         }
       },
@@ -17208,6 +17916,19 @@
           "home": {
             "type": "boolean",
             "description": "Whether it is the home site, where this panel lives."
+          }
+        }
+      },
+      "SiteDesign": {
+        "type": "object",
+        "description": "The design as the Admin API wraps it.",
+        "required": [
+          "design"
+        ],
+        "properties": {
+          "design": {
+            "$ref": "#/components/schemas/AdminDesign",
+            "description": "The site's design."
           }
         }
       },

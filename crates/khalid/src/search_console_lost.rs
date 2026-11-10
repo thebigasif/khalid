@@ -7,28 +7,15 @@ use std::fmt::Write as _;
 use std::path::Path;
 
 use khalid_api::not_found_log::{MAX_MISSES, NotFoundLog as _};
+use khalid_api::search_report::{LostPage, LostReason};
 use khalid_core::Slug;
 use khalid_db::{Database, NotFoundTable};
 use khalid_search_console::PageNumbers;
-use serde::Serialize;
 
 use crate::bing::{Failed, block_on};
 use crate::exit::Exit;
 use crate::search_console_report::LivePost;
 use crate::{db, db_message};
-
-/// The JSON shape of a page that still gets search traffic.
-#[derive(Debug, Serialize)]
-pub(crate) struct LostBody {
-    pub(crate) url: String,
-    clicks: f64,
-    impressions: f64,
-    /// `missing` for an address that answers 404, `noindex` for a post
-    /// marked so.
-    pub(crate) why: &'static str,
-    /// How many requests the 404 log counted, for a missing page.
-    pub(crate) not_found_hits: Option<u64>,
-}
 
 /// Each address in the 404 log of the site in `folder`, with how many
 /// requests it answered.
@@ -70,7 +57,7 @@ pub(crate) fn lost(
     posts: &[LivePost],
     pages: &[PageNumbers],
     misses: &BTreeMap<String, u64>,
-) -> Vec<LostBody> {
+) -> Vec<LostPage> {
     let seen = pages
         .iter()
         .filter(|page| page.clicks > 0.0 || page.impressions > 0.0);
@@ -83,11 +70,11 @@ pub(crate) fn lost(
             .iter()
             .any(|post| post.noindex && post.address == page.key);
         let why = match (hits, hidden) {
-            (Some(_), _) => "missing",
-            (None, true) => "noindex",
+            (Some(_), _) => LostReason::Missing,
+            (None, true) => LostReason::Noindex,
             (None, false) => return None,
         };
-        Some(LostBody {
+        Some(LostPage {
             url: page.key.clone(),
             clicks: page.clicks,
             impressions: page.impressions,
@@ -99,7 +86,7 @@ pub(crate) fn lost(
 }
 
 /// `lost` as sentences for a person, added to `text`.
-pub(crate) fn sentences(lost: &[LostBody], text: &mut String) {
+pub(crate) fn sentences(lost: &[LostPage], text: &mut String) {
     if !lost.is_empty() {
         text.push_str("\nThese still get search traffic, but readers cannot use them:\n");
     }

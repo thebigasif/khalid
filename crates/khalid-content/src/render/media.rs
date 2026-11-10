@@ -1,11 +1,12 @@
-//! The HTML of the media blocks: video, audio, file download, gallery and
-//! embed.
+//! The HTML of the media blocks: figure, video, audio, file download,
+//! gallery and embed.
 
+use chrono::{DateTime, FixedOffset};
 use khalid_core::{AbsoluteUrl, Locale};
 
-use super::{Image, Link, Renderer, attribute};
+use super::{Image, Link, Renderer, attribute, inside};
 use crate::external_media::{MEDIA_CARD_END, MEDIA_CARD_START, MEDIA_END, MEDIA_FORM, MEDIA_START};
-use crate::{GalleryImage, StructuredBlock, VideoBlock, embed};
+use crate::{Block, GalleryImage, StructuredBlock, VideoBlock, embed};
 
 /// The height of an allowed site's frame when its embed does not say, in
 /// pixels: room for a calculator or a chart with its controls.
@@ -19,6 +20,23 @@ const PLAYER_RULES: &str = "sandbox=\"allow-scripts allow-same-origin allow-popu
 const SITE_RULES: &str = "sandbox=\"allow-scripts allow-same-origin allow-forms allow-popups\"";
 
 impl Renderer<'_> {
+    /// Writes a picture with its caption, the markdown inside `block`.
+    pub(super) fn figure(&mut self, block: &Block, src: &str, alt: &str) {
+        self.facts.images.push(Image {
+            src: src.to_owned(),
+            alt: Some(alt.to_owned()),
+        });
+        self.push(&[
+            "<figure>\n<img src=\"",
+            &attribute(src),
+            "\" alt=\"",
+            &attribute(alt),
+            "\" loading=\"lazy\" decoding=\"async\" />\n<figcaption>\n",
+        ]);
+        self.markdown(&inside(&block.source));
+        self.html.push_str("</figcaption>\n</figure>\n");
+    }
+
     /// Writes a video with controls that loads nothing until played, its
     /// file's link for browsers that cannot play it, and its caption.
     pub(super) fn video(&mut self, video: &VideoBlock) {
@@ -100,10 +118,18 @@ impl Renderer<'_> {
     /// Writes an embed: an allowed provider's player, or a page on a domain
     /// the site allows, as a card that holds its lazy, sandboxed frame of
     /// fixed size until the reader allows it, with the page's link under
-    /// it, or the link alone.
-    pub(super) fn embed(&mut self, src: &AbsoluteUrl, title: &str, height: Option<u16>) {
+    /// it, or the link alone. A host's video, `uploaded` on the day the
+    /// embed gives, is structured data too.
+    pub(super) fn embed(
+        &mut self,
+        src: &AbsoluteUrl,
+        title: &str,
+        height: Option<u16>,
+        uploaded: Option<DateTime<FixedOffset>>,
+    ) {
         self.link_out(src, title);
-        if let Some(video) = embed::video(src, title) {
+        if let Some(mut video) = embed::video(src, title) {
+            video.uploaded = uploaded;
             let block = StructuredBlock::EmbeddedVideo(video);
             self.facts.structured.push(block);
         }

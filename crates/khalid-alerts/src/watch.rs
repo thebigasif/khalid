@@ -9,8 +9,12 @@ use crate::{Finding, Kind};
 /// be a dropped connection on the way.
 const DOWN_IN_A_ROW: usize = 3;
 
-/// The answer times of fewer looks than this in the hour say nothing.
+/// The answer times of fewer looks than this in the window say nothing.
 const FEWEST_ANSWERS: usize = 3;
+
+/// The slow-site window holds at least this many rounds of the watch, one
+/// for each answer [`FEWEST_ANSWERS`] needs.
+const ROUNDS: i32 = 3;
 
 /// What one look at a page got back.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -73,13 +77,22 @@ pub fn site_down(probes: &[Probe], page: &str) -> Vec<Finding> {
 }
 
 /// A finding when the middle answer time of the `probes` at `page` that
-/// got the page in the hour before `at` is over `limit_ms`. Fewer than
-/// three answers say nothing, and 0 switches the check off.
-pub fn slow_site(probes: &[Probe], limit_ms: u32, page: &str, at: DateTime<Utc>) -> Vec<Finding> {
+/// got the page in the window before `at` is over `limit_ms`. The window
+/// is an hour, or three rounds when the watch looks `every` more than 20
+/// minutes, so it can always hold three answers. Fewer than three answers
+/// say nothing, and 0 switches the check off.
+pub fn slow_site(
+    probes: &[Probe],
+    limit_ms: u32,
+    every: Duration,
+    page: &str,
+    at: DateTime<Utc>,
+) -> Vec<Finding> {
     if limit_ms == 0 {
         return Vec::new();
     }
-    let since = at - Duration::hours(1);
+    let window = Duration::hours(1).max(every * ROUNDS);
+    let since = at - window;
     let mut times: Vec<u32> = probes
         .iter()
         .filter(|probe| probe.at > since && probe.is_up())
@@ -94,7 +107,8 @@ pub fn slow_site(probes: &[Probe], limit_ms: u32, page: &str, at: DateTime<Utc>)
         Some(&middle) if middle > limit_ms => vec![Finding {
             key: Kind::SlowSite.key(page),
             line: format!(
-                "{page} took {middle} ms in the middle of {count} answers in the last hour; the limit is {limit_ms} ms."
+                "{page} took {middle} ms in the middle of {count} answers in the last {} minutes; the limit is {limit_ms} ms.",
+                window.num_minutes()
             ),
         }],
         _ => Vec::new(),

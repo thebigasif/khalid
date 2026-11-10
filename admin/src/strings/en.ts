@@ -33,6 +33,7 @@ export const en = {
     webhooks: "Webhooks",
     team: "Team",
     look: "Look",
+    design: "Design",
     settings: "Blog settings",
     serpdad: "SerpDad",
   },

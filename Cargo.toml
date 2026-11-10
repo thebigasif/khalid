@@ -106,8 +106,12 @@ panic = "abort"
 # binary bigger than before (docs/standards/performance.md, "Binary size").
 opt-level = "s"
 
-# The reader's path at full speed: the server, the allocator, and the
-# render, build and lint code with the parsers it runs for every post.
+# The reader's path at full speed: the server, the allocator, the lint
+# code, and the markdown and YAML parsers the build runs for every post.
+# The content, render and static crates, the template engine and the code
+# highlighter are at "s": at 3 they cost 1.27 MB, and at "s" the full
+# rebuild, the first byte and a post's render measured no slower
+# (docs/standards/performance.md, "Room 4").
 [profile.release.package.tokio]
 opt-level = 3
 [profile.release.package.hyper]
@@ -138,23 +142,11 @@ opt-level = 3
 opt-level = 3
 [profile.release.package.khalid-core]
 opt-level = 3
-[profile.release.package.khalid-content]
-opt-level = 3
-[profile.release.package.khalid-render]
-opt-level = 3
-[profile.release.package.khalid-static]
-opt-level = 3
 [profile.release.package.khalid-lint]
 opt-level = 3
 [profile.release.package.khalid-search]
 opt-level = 3
 [profile.release.package.comrak]
-opt-level = 3
-[profile.release.package.minijinja]
-opt-level = 3
-[profile.release.package.syntect]
-opt-level = 3
-[profile.release.package.fancy-regex]
 opt-level = 3
 [profile.release.package.regex]
 opt-level = 3

@@ -62,7 +62,9 @@ table{min-width:44rem}
 .preview a{color:#0b57d0}
 .preview .tagline{color:#57606a;margin:0}
 .actions{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:flex-start;margin-top:2rem}
-.resync{max-width:36rem}
+.resync{max-width:36rem;margin:0}
+.logo-now{display:flex;align-items:center;gap:.75rem}
+.logo-box{display:inline-flex;align-items:center;justify-content:center;width:3rem;height:3rem;border:1px solid var(--border);border-radius:var(--radius);font-weight:700;color:var(--link)}
 </style>
 </head>
 <body>
@@ -113,6 +115,10 @@ table{min-width:44rem}
       <h2>Shape</h2>
       <div class="field"><label for="radius">Corner roundness</label><span class="hint" id="radius-hint">How round the corners of buttons, images and boxes are.</span><input id="radius" aria-describedby="radius-hint" value="0.375rem"></div>
       <div class="field"><label for="measure">Line length</label><span class="hint" id="measure-hint">The widest a line of text may get. About 68 letters is easy to read.</span><input id="measure" aria-describedby="measure-hint" value="68ch"></div>
+      <h2>Logo</h2>
+      <p class="hint" id="logo-hint">The picture at the top of every page. Pick one you uploaded to Media. Without one, the blog shows its name.</p>
+      <p class="logo-now"><span class="logo-box" aria-hidden="true">FN</span> field-notes-logo.svg</p>
+      <div class="row"><button class="btn" type="button" aria-describedby="logo-hint">Choose from Media</button><button class="btn" type="button">Show the name instead</button></div>
     </div>
     <div>
       <h2>How a post looks</h2>
@@ -126,14 +132,11 @@ table{min-width:44rem}
 
   <div class="actions">
     <button class="btn primary" type="submit">Save changes</button>
-    <div class="resync">
-      <button class="btn" type="submit" formaction="design.html">Sync again from www.example.com</button>
-      <p class="hint">Use this after your main site changes its look. It replaces every colour and font you have not ticked to keep. Two are kept now: links, and buttons and highlights.</p>
-    </div>
+    <p class="hint resync">After your main site changes its look, run <code>khalid theme sync</code> on the server. It replaces every colour and font you have not ticked to keep. Two are kept now: links, and buttons and highlights.</p>
   </div>
   </form>
 
-  <p class="note">Mockup for the founder's review. Nothing on this page saves. The values are Khalid's default tokens. Logo, icon, cover image, social accounts, menus and the announcement bar live on this screen too; they get their own mockup once this layout has a yes. <a href="index.html">All mockups</a></p>
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. The values are Khalid's default tokens. Updated on 10 November 2026 for the build: the logo comes from Media, and syncing again is the <code>khalid theme sync</code> command, since the admin has no sync button yet. The icon, cover image, social accounts, menus and the announcement bar get their own mockup later. <a href="index.html">All mockups</a></p>
 </main>
 </div>
 </body>

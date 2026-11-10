@@ -6,7 +6,7 @@ use std::fmt;
 use utoipa_axum::router::OpenApiRouter;
 
 use crate::content_store::BoxFuture;
-use crate::keys::{KeyStoreError, Principal};
+use crate::keys::{KeyId, KeyStoreError, Principal};
 
 /// The header a request signed in by cookie carries with the session's
 /// CSRF token (RULES.md BL-SEC-9).
@@ -29,6 +29,17 @@ pub trait SessionCheck: Send + Sync {
         cookies: &'a str,
         csrf: Option<&'a str>,
     ) -> BoxFuture<'a, Result<Option<Principal>, KeyStoreError>>;
+
+    /// Each staff account's name, by the identity its [`Principal`]
+    /// carries, so the admin shows a person where it would show their
+    /// identity. None by default.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`KeyStoreError`] when the accounts cannot be read.
+    fn names(&self) -> BoxFuture<'_, Result<Vec<(KeyId, String)>, KeyStoreError>> {
+        Box::pin(std::future::ready(Ok(Vec::new())))
+    }
 }
 
 /// The staff routes another crate adds to the Admin API: `open` routes

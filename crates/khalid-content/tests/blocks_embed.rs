@@ -42,6 +42,7 @@ fn an_embed_round_trips() {
             src: url("https://www.youtube.com/watch?v=dQw4w9WgXcQ"),
             title: "How search works".to_owned(),
             height: None,
+            uploaded: None,
         }
     );
 }
@@ -163,6 +164,7 @@ fn an_embed_round_trips_with_its_height_and_refuses_a_wrong_one() {
             src: url("https://tools.example.com/roi?plan=pro"),
             title: "Content ROI calculator".to_owned(),
             height: Some(560),
+            uploaded: None,
         }
     );
     for height in ["50", "3000", "tall"] {
@@ -391,4 +393,27 @@ fn audio_code_and_other_sites_are_not_videos() {
 ",
     );
     assert_eq!(videos, []);
+}
+
+/// An embed may give the day its host published the video, which search
+/// engines need for a `VideoObject`; a date it cannot read is refused.
+#[test]
+fn a_video_embed_may_give_its_upload_date() {
+    let markdown = "::embed{src=\"https://youtu.be/dQw4w9WgXcQ\" title=\"How search works\" uploaded=\"2024-05-16\"}\n";
+    let BlockKind::Embed { uploaded, .. } = round_trip(markdown) else {
+        panic!("not an embed");
+    };
+    let day = uploaded.map(|date| date.to_rfc3339());
+    assert_eq!(day.as_deref(), Some("2024-05-16T00:00:00+00:00"));
+    assert_eq!(embedded(markdown)[0].uploaded, uploaded);
+    let timed = "::embed{src=\"https://vimeo.com/76979871\" title=\"A short film\" uploaded=\"2024-05-16T09:30+02:00\"}\n";
+    let at = embedded(timed)[0].uploaded.map(|date| date.to_rfc3339());
+    assert_eq!(at.as_deref(), Some("2024-05-16T09:30:00+02:00"));
+    assert_eq!(embedded(YOUTUBE)[0].uploaded, None, "never guessed");
+    assert_eq!(
+        error(
+            "::embed{src=\"https://youtu.be/dQw4w9WgXcQ\" title=\"T\" uploaded=\"16 May 2024\"}\n"
+        ),
+        "line 1: an uploaded date is written as 2024-05-16, or with its time, such as 2024-05-16T09:30+02:00"
+    );
 }

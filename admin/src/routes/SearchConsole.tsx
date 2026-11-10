@@ -5,10 +5,16 @@ import { readFollowUps } from "../api/searchConsole";
 import { Problem } from "../components/Problem";
 import { OpenSearches } from "../searchConsole/OpenSearches";
 import { PostSearches } from "../searchConsole/PostSearches";
+import { Report } from "../searchConsole/Report";
 import { en } from "../strings/en";
 import { searchConsoleWords } from "../strings/searchConsoleWords";
 
-/** What Search Console says about the posts: the long searches no heading answers yet. */
+/**
+ * What Search Console says about the posts: first the long searches no heading answers yet,
+ * then the week, the posts to fix, each post's month and each post's long searches.
+ * The report is asked for only once the follow-ups answered, so a blog that is not
+ * connected shows its problem once.
+ */
 export function SearchConsole() {
   const words = searchConsoleWords;
   // Google is asked once per visit; the answer does not change within minutes.
@@ -24,6 +30,7 @@ export function SearchConsole() {
     body = (
       <>
         <OpenSearches found={found} />
+        <Report />
         {found.posts.length > 0 && (
           <>
             <h2>{words.posts.title}</h2>

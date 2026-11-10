@@ -282,7 +282,7 @@ email = "owner@example.com"
 not_found_spike = 50     # new 404s in one hour that count as a burst
 stale_after_days = 365   # 0 switches the stale-post alert off
 watch_minutes = 5        # how often the speed and uptime watch looks; 0 switches it off
-slow_ms = 1000           # a slower middle answer time over an hour is an alert; 0 switches it off
+slow_ms = 1000           # a slower middle answer time over an hour, or three looks, is an alert; 0 switches it off
 ```
 
 ### Speed and uptime
@@ -449,9 +449,11 @@ Then, all with `--json` when a program reads the answer:
 - `khalid --site <folder> search-console post <slug>` shows one post's top searches and whether Google has it in its index.
 - `khalid --site <folder> search-console index` asks Google about every published post, up to 200 a run. Google allows 2,000 of these a day.
 - `khalid --site <folder> search-console follow-ups` lists the long searches, 8 words or more, that showed each post in the last 28 days. People ask AI assistants in whole questions like these, and each is one a reader brings to the post. Next to each, it names the heading that answers it, or says no heading does yet. The fix is a heading that asks the question, with a 40 to 60 word answer under it. Google leaves out searches too rare to share, so a small site may see none.
-- `khalid --site <folder> search-console email` sends the weekly email. Run it once a week, for example from a systemd timer with `OnCalendar=Mon 08:00`, or a cron line such as `0 8 * * 1`.
+- `khalid --site <folder> search-console email` sends the weekly email now. `khalid serve` sends it on its own once a week, so you need no timer while it runs. On a static site, run the command once a week, for example from a systemd timer with `OnCalendar=Mon 08:00`, or a cron line such as `0 8 * * 1`.
 
-`khalid serve` reads the connection and the two secrets once, at start, so restart it after setting them. It then answers the same follow-ups at `GET /api/admin/v1/search-console/follow-ups/` for a key with `settings:write`, and the admin shows them under Search Console. The posts are read on each request, so a heading you just added counts.
+The weekly email goes out when a week has passed since the last one, and the first soon after `khalid serve` starts. Khalid keeps the day it last went out in `data/search-console-email.txt`, and the command writes it too, so a restart or a run by hand never sends the email twice in a week. If Google or the mail service fails, the server tries again an hour later.
+
+`khalid serve` reads the connection and the two secrets once, at start, so restart it after setting them. It then answers the same follow-ups at `GET /api/admin/v1/search-console/follow-ups/`, and the same report at `GET /api/admin/v1/search-console/report/`, for a key with `settings:write`. The admin shows both under Search Console, with a link from each post to its editor. The posts are read on each request, so a heading you just added counts.
 
 A refresh token stops working when you take Khalid's permission back in your Google account, or when Google lets it lapse. The commands then say so: make a new one with step 3.
 

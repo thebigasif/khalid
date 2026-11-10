@@ -169,13 +169,19 @@ pub struct VerificationSettings {
 ///
 /// ```toml
 /// [seo.crawlers]
+/// ai_training = "block"
 /// disallow = ["/drafts/"]
-/// block = ["GPTBot", "CCBot"]
+/// block = ["AhrefsBot"]
 /// ```
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 #[non_exhaustive]
 pub struct CrawlerSettings {
+    /// Whether the crawlers that copy posts to train AI models may read the
+    /// blog. Search and AI answer crawlers, which quote and link the blog,
+    /// are not affected. A crawler named in `allow` or `block` keeps that
+    /// setting.
+    pub ai_training: AiTraining,
     /// Paths inside the mount folder that no crawler may read.
     pub disallow: Vec<String>,
     /// Crawlers named as allowed, such as `Googlebot`.
@@ -192,6 +198,7 @@ pub struct CrawlerSettings {
 impl Default for CrawlerSettings {
     fn default() -> Self {
         Self {
+            ai_training: AiTraining::Allow,
             disallow: Vec::new(),
             allow: Vec::new(),
             block: Vec::new(),
@@ -199,6 +206,20 @@ impl Default for CrawlerSettings {
             extra_lines: Vec::new(),
         }
     }
+}
+
+/// Whether AI training crawlers may read the blog, from
+/// `[seo.crawlers] ai_training`. Allowed by default (decision D1,
+/// 2026-10-28).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+#[non_exhaustive]
+pub enum AiTraining {
+    /// They may read it like any other crawler.
+    #[default]
+    Allow,
+    /// robots.txt names every known training crawler and blocks it.
+    Block,
 }
 
 /// What every feed carries, from `[seo.feeds]`:

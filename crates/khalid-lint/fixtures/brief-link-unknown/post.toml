@@ -1,0 +1,15 @@
+# The brief plans six links. A post that exists is fine. An old address of a
+# post is flagged with the post's current one, and an address under /blog/
+# that no post has is flagged. A tag page, the about page and another site
+# are not where posts live, so they are never judged.
+extends = "clean"
+
+[brief]
+links = [
+    "/blog/choosing-link-text/",
+    "/blog/link-text-tips/",
+    "/blog/orphan-pages/",
+    "/blog/tags/seo/",
+    "/about/",
+    "https://developers.google.com/search/docs",
+]

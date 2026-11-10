@@ -34,17 +34,24 @@ fn convert(formula: &str, style: MathDisplay) -> Result<String, String> {
         .map_err(|error| error.label().to_owned())
 }
 
-/// Turns every formula under `root` into its `MathML`. A formula that cannot
-/// be drawn keeps its source, shown as escaped text; the content check
-/// refuses such a site before it is built.
+/// Turns every formula under `root` into its `MathML`. A `$$` formula goes
+/// in a `span.maths` box, which scrolls on its own as a `:::maths` figure
+/// does: a `<figure>` cannot sit in the paragraph that holds the formula.
+/// A formula that cannot be drawn keeps its source, shown as escaped text;
+/// the content check refuses such a site before it is built.
 pub(crate) fn draw<'a>(root: &'a AstNode<'a>) {
     for node in root.descendants() {
         let mut data = node.data.borrow_mut();
         let NodeValue::Math(math) = &data.value else {
             continue;
         };
+        let boxed = math.display_math;
         if let Ok(drawn) = mathml(math) {
-            data.value = NodeValue::Raw(drawn);
+            data.value = NodeValue::Raw(if boxed {
+                format!("<span class=\"maths\">{drawn}</span>")
+            } else {
+                drawn
+            });
         }
     }
 }

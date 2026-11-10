@@ -17,6 +17,7 @@ use crate::keys::{
 };
 use crate::problem::{Problem, ProblemType};
 use crate::session_check::{CSRF_HEADER, SessionCheck};
+use crate::staff_names::NameBook;
 
 /// The `Authorization` scheme for integration keys and staff tokens.
 const SCHEME: &str = "Khalid";
@@ -64,6 +65,8 @@ pub(crate) async fn require_admin_key(
                 let (route, uri) = (extensions.get(), extensions.get());
                 AuditDesk::pending(request.method(), route, uri, &principal)
             });
+            let book = NameBook::new(Arc::clone(&door.keys), door.sessions.clone());
+            request.extensions_mut().insert(book);
             request.extensions_mut().insert(principal);
             let response = next.run(request).await;
             if let (Some(audit), Some(pending)) = (&door.audit, pending)
