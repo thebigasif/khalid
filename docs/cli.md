@@ -5,7 +5,7 @@ order: 15
 
 # The khalid command
 
-Everything Khalid does starts from one command, `khalid`, followed by what you want it to do, such as `khalid build`. This page shows how to see every command, and how to make your shell finish the commands for you.
+Everything Khalid does starts from one command, `khalid`, followed by what you want it to do, such as `khalid build`. This page shows how to see every command, how to make your shell finish the commands for you, and where the manual pages are. A test runs each example that starts with `$` against the real binary (`crates/khalid/tests/doc_examples.rs`), so the output shown is what you get; `...` stands for the lines left out.
 
 ## See every command
 
