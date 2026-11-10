@@ -50,6 +50,44 @@ pub struct PageNumbers {
     pub position: f64,
 }
 
+/// What Google counted for every page together in a window.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+#[non_exhaustive]
+pub struct Totals {
+    /// Times a searcher clicked through to any page.
+    pub clicks: f64,
+    /// Times any page showed in results.
+    pub impressions: f64,
+    /// Clicks divided by impressions, from 0 to 1, and 0 when no page
+    /// showed.
+    pub ctr: f64,
+    /// The pages' average position, each weighted by how often it showed,
+    /// 1 being the top, or `None` when no page showed.
+    pub position: Option<f64>,
+}
+
+impl Totals {
+    /// Adds up the pages in `rows`. A page shown more often weighs more in
+    /// the average position, as one shown once tells little.
+    pub fn of(rows: &[PageNumbers]) -> Self {
+        let clicks = rows.iter().map(|row| row.clicks).sum();
+        let impressions: f64 = rows.iter().map(|row| row.impressions).sum();
+        if impressions <= 0.0 {
+            return Self {
+                clicks,
+                ..Self::default()
+            };
+        }
+        let weighted: f64 = rows.iter().map(|row| row.position * row.impressions).sum();
+        Self {
+            clicks,
+            impressions,
+            ctr: clicks / impressions,
+            position: Some(weighted / impressions),
+        }
+    }
+}
+
 /// The first of a row's keys, the one dimension asked for.
 fn first_key<'de, D: serde::Deserializer<'de>>(keys: D) -> Result<String, D::Error> {
     let keys = Vec::<String>::deserialize(keys)?;
@@ -95,6 +133,35 @@ mod tests {
         assert_eq!(before.last, day("2026-09-30"));
         assert_eq!(before.first, day("2026-09-03"));
         assert_eq!(Window::ending(day("2026-10-28"), 0), None);
+    }
+
+    fn row(key: &str, clicks: f64, impressions: f64, position: f64) -> PageNumbers {
+        PageNumbers {
+            key: key.to_owned(),
+            clicks,
+            impressions,
+            ctr: 0.0,
+            position,
+        }
+    }
+
+    #[test]
+    fn totals_add_the_pages_and_weigh_each_position_by_its_impressions() {
+        let rows = [row("/a/", 30.0, 300.0, 2.0), row("/b/", 10.0, 100.0, 10.0)];
+        let totals = Totals::of(&rows);
+        assert_eq!((totals.clicks, totals.impressions), (40.0, 400.0));
+        assert!((totals.ctr - 0.1).abs() < 1e-9, "{totals:?}");
+        assert!(
+            totals.position.is_some_and(|at| (at - 4.0).abs() < 1e-9),
+            "{totals:?}"
+        );
+    }
+
+    #[test]
+    fn totals_of_no_pages_have_no_position_and_no_division_by_zero() {
+        assert_eq!(Totals::of(&[]), Totals::default());
+        let unseen = Totals::of(&[row("/a/", 0.0, 0.0, 0.0)]);
+        assert_eq!((unseen.ctr, unseen.position), (0.0, None));
     }
 
     #[test]

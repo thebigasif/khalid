@@ -16,7 +16,8 @@ use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
 use khalid_api::search_report::{
-    FallingPage, LostPage, LostReason, Mover, PostNumbers, SearchReport,
+    FallingPage, LostPage, LostReason, Mover, PostNumbers, SearchNumbers, SearchReport,
+    SearchTotals,
 };
 use khalid_core::UserMessage;
 use serde_json::{Value, json};
@@ -30,6 +31,7 @@ const POSTS_ONLY: &str =
 
 const FOLLOW_UPS: &str = "/api/admin/v1/search-console/follow-ups/";
 const REPORT: &str = "/api/admin/v1/search-console/report/";
+const TOTALS: &str = "/api/admin/v1/search-console/totals/";
 
 /// What the finder in a test answers.
 #[derive(Clone, Copy)]
@@ -69,6 +71,47 @@ impl FollowUpFinder for Finder {
             ))),
         };
         Box::pin(async move { answer })
+    }
+
+    fn totals(&self, days: u32) -> BoxFuture<'_, Result<SearchTotals, FollowUpError>> {
+        let answer = match self.0 {
+            Answer::Found => Ok(totals(days)),
+            Answer::NotConnected => Err(FollowUpError::NotConnected(UserMessage::new(
+                "This site is not connected to Google Search Console.",
+                "Khalid asks Google nothing until the owner opts in.",
+                "Follow the steps in docs/deploy.md.",
+            ))),
+            Answer::GoogleRefused => Err(FollowUpError::Google(UserMessage::new(
+                "Google's quota for these requests is spent for now.",
+                "Google allows a set number of requests a day.",
+                "Wait until tomorrow.",
+            ))),
+        };
+        Box::pin(async move { answer })
+    }
+}
+
+/// The site's totals for `days` days, the days before shown nothing.
+#[cfg(test)]
+fn totals(days: u32) -> SearchTotals {
+    let none = SearchNumbers {
+        clicks: 0.0,
+        impressions: 0.0,
+        ctr: 0.0,
+        position: None,
+    };
+    SearchTotals {
+        property: "sc-domain:example.com".to_owned(),
+        days,
+        first: NaiveDate::from_ymd_opt(2026, 10, 1).unwrap(),
+        last: NaiveDate::from_ymd_opt(2026, 10, 28).unwrap(),
+        now: SearchNumbers {
+            clicks: 40.0,
+            impressions: 400.0,
+            ctr: 0.1,
+            position: Some(4.0),
+        },
+        before: none,
     }
 }
 
@@ -258,6 +301,57 @@ async fn the_document_lists_the_route() {
     let served: Value = serde_json::from_slice(&bytes.unwrap()).unwrap();
     assert!(served["paths"][FOLLOW_UPS]["get"].is_object());
     assert!(served["paths"][REPORT]["get"].is_object());
+    let days = &served["paths"][TOTALS]["get"]["parameters"][0];
+    assert_eq!(
+        (&days["name"], &days["in"]),
+        (&json!("days"), &json!("query"))
+    );
+}
+
+#[tokio::test]
+async fn the_totals_add_up_the_site_for_the_days_asked_and_the_days_before() {
+    let (status, json) = get_at(&format!("{TOTALS}?days=7"), Answer::Found, SETTINGS).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(
+        json,
+        json!({
+            "property": "sc-domain:example.com", "days": 7,
+            "first": "2026-10-01", "last": "2026-10-28",
+            "now": { "clicks": 40.0, "impressions": 400.0, "ctr": 0.1, "position": 4.0 },
+            "before": { "clicks": 0.0, "impressions": 0.0, "ctr": 0.0, "position": null },
+        })
+    );
+    let (status, json) = get_at(TOTALS, Answer::Found, SETTINGS).await;
+    assert_eq!((status, &json["days"]), (StatusCode::OK, &json!(28)));
+}
+
+#[tokio::test]
+async fn the_totals_refuse_days_outside_1_to_90_in_plain_words() {
+    for days in ["0", "91", "a-month", "-3"] {
+        let route = format!("{TOTALS}?days={days}");
+        let (status, json) = get_at(&route, Answer::Found, SETTINGS).await;
+        assert_eq!(status, StatusCode::BAD_REQUEST, "{days}: {json}");
+        assert_eq!(
+            json["detail"],
+            "The days are not a number from 1 to 90. \
+            The Analytics screen shows at most 90 days, against the 90 days before."
+        );
+        assert_eq!(json["fix"], "Ask for days=28, or leave it out.");
+    }
+    let (status, _) = get_at(&format!("{TOTALS}?days=90"), Answer::Found, SETTINGS).await;
+    assert_eq!(status, StatusCode::OK);
+}
+
+#[tokio::test]
+async fn the_totals_say_how_to_connect_or_why_google_failed_and_need_settings_write() {
+    let (status, json) = get_at(TOTALS, Answer::NotConnected, SETTINGS).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    assert_eq!(json["type"], "https://khalid.dev/problems/not-set-up");
+    let (status, json) = get_at(TOTALS, Answer::GoogleRefused, SETTINGS).await;
+    assert_eq!(status, StatusCode::BAD_GATEWAY, "{json}");
+    assert_eq!(json["fix"], "Wait until tomorrow.");
+    let (status, _) = get_at(TOTALS, Answer::Found, POSTS_ONLY).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
 }
 
 #[tokio::test]

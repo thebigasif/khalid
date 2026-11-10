@@ -1,5 +1,6 @@
 //! The Search Console numbers `khalid serve` finds for the Admin API: the
-//! follow-ups (GEO M3) and the report (G43), with the code `khalid
+//! follow-ups (GEO M3), the report (G43) and the whole site's totals for
+//! the Analytics screen, with the code `khalid
 //! search-console follow-ups` and `report` run. The
 //! connection is read once at start; the posts are read on each request,
 //! so a heading saved since counts.
@@ -9,15 +10,15 @@ use std::sync::Arc;
 
 use khalid_api::content_store::BoxFuture;
 use khalid_api::follow_ups::{FollowUpError, FollowUpFinder, FollowUps};
-use khalid_api::search_report::SearchReport;
+use khalid_api::search_report::{SearchNumbers, SearchReport, SearchTotals};
 use khalid_content::{ContentTree, read_content};
 use khalid_core::{Clock, Config, Environment, SystemClock, UserMessage};
 use khalid_outbound::Outbound;
-use khalid_search_console::SearchConsole;
+use khalid_search_console::{SearchConsole, Totals};
 
 use crate::cli::Cli;
 use crate::exit::Exit;
-use crate::search_console::{self, last_month};
+use crate::search_console::{self, last_days, last_month};
 use crate::search_console_follow_ups::found;
 use crate::search_console_report::gather;
 
@@ -92,6 +93,43 @@ impl SiteFollowUps {
     }
 }
 
+impl SiteFollowUps {
+    /// Every page's numbers added up for the last `days` final days, and
+    /// for the `days` days before, in one sign-in and two requests.
+    async fn totals_now(&self, days: u32) -> Result<SearchTotals, FollowUpError> {
+        let Some((console, outbound)) = self.connection.as_deref() else {
+            return Err(FollowUpError::NotConnected(not_connected()));
+        };
+        let window = last_days(SystemClock.now().date_naive(), days);
+        let before = window.before().unwrap_or(window);
+        let asked = async {
+            let session = console.sign_in(outbound).await?;
+            tokio::try_join!(session.pages(window), session.pages(before))
+        };
+        let (now, then) = asked.await.map_err(|error| {
+            FollowUpError::Google(search_console::message(console.property(), &error))
+        })?;
+        Ok(SearchTotals {
+            property: console.property().to_owned(),
+            days,
+            first: window.first,
+            last: window.last,
+            now: numbers(Totals::of(&now)),
+            before: numbers(Totals::of(&then)),
+        })
+    }
+}
+
+/// `totals` in the Admin API's shape.
+fn numbers(totals: Totals) -> SearchNumbers {
+    SearchNumbers {
+        clicks: totals.clicks,
+        impressions: totals.impressions,
+        ctr: totals.ctr,
+        position: totals.position,
+    }
+}
+
 impl FollowUpFinder for SiteFollowUps {
     fn follow_ups(&self) -> BoxFuture<'_, Result<FollowUps, FollowUpError>> {
         Box::pin(self.find())
@@ -99,6 +137,10 @@ impl FollowUpFinder for SiteFollowUps {
 
     fn report(&self) -> BoxFuture<'_, Result<SearchReport, FollowUpError>> {
         Box::pin(self.report_now())
+    }
+
+    fn totals(&self, days: u32) -> BoxFuture<'_, Result<SearchTotals, FollowUpError>> {
+        Box::pin(self.totals_now(days))
     }
 }
 

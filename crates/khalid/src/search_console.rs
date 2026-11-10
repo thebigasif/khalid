@@ -95,10 +95,16 @@ fn check(
 /// The last 28 days before `today` whose numbers are final, or the day
 /// itself when the calendar runs out.
 pub(crate) fn last_month(today: NaiveDate) -> Window {
+    last_days(today, MONTH_DAYS)
+}
+
+/// The last `days` days before `today` whose numbers are final, or the
+/// last such day alone when `days` is 0 or the calendar runs out.
+pub(crate) fn last_days(today: NaiveDate, days: u32) -> Window {
     let last = today
         .checked_sub_days(Days::new(SETTLING_DAYS))
         .unwrap_or(today);
-    Window::ending(last, MONTH_DAYS).unwrap_or(Window { first: last, last })
+    Window::ending(last, days).unwrap_or(Window { first: last, last })
 }
 
 /// The connection `[search_console]` names, with the secrets from `env`,

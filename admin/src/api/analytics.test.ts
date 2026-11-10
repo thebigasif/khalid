@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { aiVisitors, analyticsBlog, uncited, visitors } from "../../test/analytics";
+import { aiVisitors, analyticsBlog, searchTotals, uncited, visitors } from "../../test/analytics";
 import { json, serve, serverAnswers, signedIn } from "../../test/render";
-import { readAiVisitors, readUncited, readVisitors } from "./analytics";
+import { readAiVisitors, readSearchTotals, readUncited, readVisitors } from "./analytics";
 
 const LACKS = {
   type: "https://khalid.dev/problems/forbidden",
@@ -28,6 +28,14 @@ describe("the analytics client", () => {
       "/api/admin/v1/analytics/uncited/?days=90",
     ]);
     expect(sent[0]?.headers.get("Authorization")).toBe("Khalid ks_0123456789abcdef_test");
+  });
+
+  it("reads Google search's numbers for the days asked for", async () => {
+    signedIn();
+    const sent = analyticsBlog();
+    expect(await readSearchTotals(7)).toEqual({ data: searchTotals() });
+    const url = new URL(sent[0]?.url ?? "http://blog.test/");
+    expect(`${url.pathname}${url.search}`).toBe("/api/admin/v1/search-console/totals/?days=7");
   });
 
   it("gives back the API's problem when the key may not read visitor data", async () => {
