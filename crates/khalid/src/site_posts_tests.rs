@@ -515,3 +515,31 @@ fn a_trash_key_names_one_folder_inside_trash_and_never_climbs() {
         assert!(!names(climbing), "{climbing}");
     }
 }
+
+#[tokio::test]
+async fn the_trash_keeps_copies_trash_days_long_or_for_good_at_0() {
+    let (site, posts) = demo();
+    let put = |key: &str| {
+        let file = within(site.path(), &format!("trash/{key}/drafts/en/old.md"));
+        fs::create_dir_all(file.parent().unwrap()).unwrap();
+        fs::write(&file, "---\ntitle: Old\nslug: old\n---\n\nWords.\n").unwrap();
+    };
+    // The clock says 2026-10-26 09:00, so 30 days back is 2026-09-26 09:00.
+    put("20260926T085959Z-en.old");
+    put("20260926T090001Z-en.kept");
+    let emptied = posts.empty_old_trash().await.unwrap();
+    assert_eq!(emptied, ["20260926T085959Z-en.old"]);
+    assert!(within(site.path(), "trash/20260926T090001Z-en.kept").is_dir());
+
+    let toml = within(site.path(), "site.toml");
+    let text = fs::read_to_string(&toml).unwrap();
+    fs::write(&toml, format!("trash_days = 0\n{text}")).unwrap();
+    let config = Config::load(site.path(), &Environment::empty()).unwrap();
+    let clock = FixedClock::new(Utc.with_ymd_and_hms(2036, 1, 1, 0, 0, 0).unwrap());
+    let forever = SitePosts::new(site.path(), config, clock);
+    assert_eq!(
+        forever.empty_old_trash().await.unwrap(),
+        Vec::<String>::new()
+    );
+    assert!(within(site.path(), "trash/20260926T090001Z-en.kept").is_dir());
+}

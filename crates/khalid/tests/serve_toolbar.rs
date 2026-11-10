@@ -122,6 +122,13 @@ fn a_signed_in_owner_sees_the_bar_and_a_reader_does_not() {
     );
     assert!(page.contains("in the last 30 days."), "{page}");
     assert!(page.contains("/blog/_toolbar.css"), "{page}");
+    // The second view reuses the lint result and says the same thing.
+    let lint_line = |page: &str| {
+        let (_, after) = page.split_once("Edit this post</a><p>").unwrap();
+        after.split("</p>").next().unwrap().to_owned()
+    };
+    let (_, again) = exchange(host, ("GET", PAGE), &signed_in, "");
+    assert_eq!(lint_line(&again), lint_line(&page));
     let (head, home) = exchange(host, ("GET", "/blog/"), &signed_in, "");
     assert!(head.starts_with("HTTP/1.1 200"), "{head}");
     assert!(
