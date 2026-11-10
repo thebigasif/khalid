@@ -1,0 +1,5 @@
+en/fieldwork-plumbing: block case-study-incomplete: outcome
+en/fieldwork-plumbing: block case-study-incomplete: date
+de/corner-bakery: block case-study-incomplete: client
+de/corner-bakery: block case-study-incomplete: outcome
+de/corner-bakery: block case-study-incomplete: date
