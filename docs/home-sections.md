@@ -37,6 +37,8 @@ Each section shows up to six posts. Some templates show fewer.
 - The newsletter form shows once. When you place it as a section, the template's usual place for it on the home page stays empty. Posts keep their form as the template sets it.
 - Dispatch and Versions always show their own sign-up form, at the top and beside the changes, so a newsletter section adds nothing there. Manual shows the form after its grid of topic tiles.
 - Without `home_sections`, the home page stays exactly as it was.
+- `khalid serve` shows the same home page as `khalid build`. With sections, the home page answers once the whole site has rendered, because the sections come from the category, series and archive pages. On a small site that is under a second.
+- Every section is plain HTML in the page, so a reader with scripts off sees all of it, and the newsletter form still sends.
 - With home sections, the archive page is no longer a copy of the home page, so search engines may list it.
 
 The older form with one table per section, `[[reader.home_sections]]` with `category = "slug"`, still works for categories, collections and channels.
