@@ -4,13 +4,14 @@
 use std::sync::Arc;
 
 use chrono::TimeDelta;
-use khalid_core::{Clock, Locale, Slug};
+use khalid_core::{AbsoluteUrl, Clock, Locale, Slug};
 
+use crate::clicks::{self, Piece};
 use crate::{
     BackPath, ConfirmationLinks, Confirmed, EmailAddress, GenerateTokenError, Issue, Lists, Mail,
     MailError, Mailer, Member, NewsletterWords, PostalAddress, ReaderPass, Recipient, Segment,
-    SendTotals, Sent, SignUp, SignedUp, SiteLinks, StoreError, SubscriberId, SubscriberStore,
-    SubscriberToken, Unsubscribed, Welcome, Welcomes, WordsError,
+    SendId, SendTotals, Sent, SignUp, SignedUp, SiteLinks, StoreError, SubscriberId,
+    SubscriberStore, SubscriberToken, Unsubscribed, Welcome, Welcomes, WordsError,
 };
 
 /// How long after its day a later welcome step may still go out, so a
@@ -41,6 +42,7 @@ pub struct Newsletter {
     pass: Option<ReaderPass>,
     lists: Arc<Lists>,
     welcomes: Option<Arc<Welcomes>>,
+    count_clicks: bool,
 }
 
 impl Newsletter {
@@ -66,6 +68,7 @@ impl Newsletter {
             pass: None,
             lists: Arc::new(Lists::main_only()),
             welcomes: None,
+            count_clicks: false,
         })
     }
 
@@ -334,6 +337,7 @@ impl Newsletter {
             return Ok(Sent::Before);
         };
         let (site, words) = &*self.site;
+        let body = self.counted(send, issue.text()).await?;
         let mut totals = SendTotals::default();
         for recipient in self.store.audience(segment).await? {
             let remove = SubscriberToken::generate()?;
@@ -342,7 +346,7 @@ impl Newsletter {
                 .await?;
             let link = site.links.unsubscribe(&remove);
             let footer = words.footer(&site.locale, &site.name, &link, postal);
-            let text = format!("{}{footer}", issue.text());
+            let text = format!("{body}{footer}");
             let mail = Mail::new(recipient.email, issue.subject().to_owned(), text);
             match self.mailer.send(&mail).await {
                 Ok(()) => totals.sent = totals.sent.saturating_add(1),
@@ -356,6 +360,50 @@ impl Newsletter {
             .finish_send(send, totals, self.clock.now())
             .await?;
         Ok(Sent::Now(totals))
+    }
+
+    /// The same newsletter, counting clicks on the links in each email it
+    /// sends, as `[mail] count_clicks = true` asks (G39).
+    #[must_use]
+    pub fn with_click_counting(self) -> Self {
+        Self {
+            count_clicks: true,
+            ..self
+        }
+    }
+
+    /// `text` of `send` as every copy carries it: when clicks are counted,
+    /// each web link is stored and leads through the blog first.
+    async fn counted(&self, send: SendId, text: &str) -> Result<String, NewsletterError> {
+        if !self.count_clicks {
+            return Ok(text.to_owned());
+        }
+        let (pieces, links) = clicks::pieces(text);
+        for (position, url) in (1_u32..).zip(&links) {
+            self.store.add_link(send, position, url).await?;
+        }
+        let links = &self.site.0.links;
+        Ok(pieces
+            .iter()
+            .map(|piece| match piece {
+                Piece::Text(text) => (*text).to_owned(),
+                Piece::Link(position) => links.click(send, *position),
+            })
+            .collect())
+    }
+
+    /// Counts a click on link number `position` of `send`, and gives where
+    /// it leads, or `None` when no email had that link.
+    ///
+    /// # Errors
+    ///
+    /// [`NewsletterError::Store`] when the store fails.
+    pub async fn click(
+        &self,
+        send: SendId,
+        position: u32,
+    ) -> Result<Option<AbsoluteUrl>, NewsletterError> {
+        Ok(self.store.click(send, position).await?)
     }
 }
 

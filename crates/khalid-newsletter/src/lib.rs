@@ -12,6 +12,7 @@
 //! binary picks.
 
 mod archive;
+mod clicks;
 mod confirmation;
 mod email_address;
 mod issue;

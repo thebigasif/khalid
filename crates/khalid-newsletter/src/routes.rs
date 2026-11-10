@@ -1,6 +1,7 @@
 //! The newsletter's addresses on a running site: the form posts to
 //! `subscribe`, and the links in emails open `subscribe/confirm` and
-//! `unsubscribe`, all under the mount path.
+//! `unsubscribe`, all under the mount path. A counted link in a newsletter
+//! email opens `subscribe/click` (G39).
 
 use std::sync::Arc;
 
@@ -13,8 +14,8 @@ use axum::routing::{get, post};
 use serde::Deserialize;
 
 use crate::{
-    BackPath, Confirmed, EmailAddress, Newsletter, Page, Pages, ReaderPass, SubscriberToken,
-    Unsubscribed,
+    BackPath, Confirmed, EmailAddress, Newsletter, Page, Pages, ReaderPass, SendId,
+    SubscriberToken, Unsubscribed,
 };
 
 /// The largest form body read. An address and a token fit many times over.
@@ -78,6 +79,14 @@ struct PassLink {
     back: Option<String>,
 }
 
+/// A counted link's email and its number there, read as text so a link
+/// someone changed by hand gets a page, not an error.
+#[derive(Debug, Deserialize)]
+struct ClickLink {
+    send: Option<String>,
+    link: Option<String>,
+}
+
 /// The routes of the newsletter, with `pages` in the site's language.
 /// The sign-up form of the `::newsletter` block posts to `/subscribe`, so
 /// on a site under a mount path that address answers too.
@@ -91,6 +100,7 @@ pub fn router(pages: Pages, newsletter: Option<Newsletter>) -> Router {
             get(confirm_page).post(confirm),
         )
         .route(&format!("{mount}subscribe/pass"), get(pass))
+        .route(&format!("{mount}subscribe/click"), get(click))
         .route(&format!("{mount}unsubscribe"), get(leave_page).post(leave));
     if mount != "/" {
         router = router.route("/subscribe", post(sign_up));
@@ -200,6 +210,36 @@ async fn pass(State(shared): State<Arc<Shared>>, Query(link): Query<PassLink>) -
     }
     let back = shared.back(link.back.as_deref());
     let_in(&shared, newsletter, back.as_ref())
+}
+
+/// A counted link from an email: one more click on it, then a 302 to where
+/// it leads. Only links stored with an email lead anywhere, so the route
+/// sends no one to an address of their choosing.
+async fn click(State(shared): State<Arc<Shared>>, Query(link): Query<ClickLink>) -> Response<Body> {
+    let Some(newsletter) = &shared.newsletter else {
+        return page(&shared, StatusCode::SERVICE_UNAVAILABLE, Page::Closed);
+    };
+    let send = link.send.as_deref().and_then(|send| send.parse().ok());
+    let position = link.link.as_deref().and_then(|link| link.parse().ok());
+    let (Some(send), Some(position)) = (send, position) else {
+        return page(&shared, StatusCode::NOT_FOUND, Page::Unknown);
+    };
+    match newsletter.click(SendId::from_row(send), position).await {
+        Ok(Some(url)) => {
+            let mut response = Response::new(Body::empty());
+            *response.status_mut() = StatusCode::FOUND;
+            let headers = response.headers_mut();
+            headers.insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+            let policy = HeaderValue::from_static("no-referrer");
+            headers.insert(header::REFERRER_POLICY, policy);
+            if let Ok(location) = HeaderValue::try_from(url.as_str()) {
+                headers.insert(header::LOCATION, location);
+            }
+            response
+        }
+        Ok(None) => page(&shared, StatusCode::NOT_FOUND, Page::Unknown),
+        Err(error) => failed(&shared, &error),
+    }
 }
 
 /// A confirmed reader: the reader cookie when gated content opens, then
