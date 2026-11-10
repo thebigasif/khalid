@@ -1,0 +1,12 @@
+# Posts live under /blog/. One post moved from /blog/link-text-tips/.
+[[posts]]
+locale = "en"
+slug = "choosing-link-text"
+path = "/blog/choosing-link-text/"
+aliases = ["/blog/link-text-tips/"]
+title = "Choosing link text readers trust"
+body_text = "Good link text tells readers where a link goes before they click."
+
+[[pages]]
+locale = "en"
+slug = "about"

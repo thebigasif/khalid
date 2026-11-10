@@ -1,0 +1,5 @@
+# The post names two facts. The registry keeps the Pro plan's price, so
+# that one shows its value. It has no team size, so that one is flagged.
+extends = "clean"
+
+wikilinks = ["fact:pro-plan-price", "fact:team-size"]
