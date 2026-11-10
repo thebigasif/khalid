@@ -26,6 +26,7 @@ mod admin_duplicate;
 mod admin_entries;
 mod admin_follow_ups;
 mod admin_key;
+mod admin_newsletters;
 mod admin_not_found;
 mod admin_pages;
 mod admin_presence;
