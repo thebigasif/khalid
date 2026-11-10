@@ -7,7 +7,44 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use utoipa::ToSchema;
 
-use super::TemplateSetting;
+use super::{CtaSetting, TemplateSetting};
+
+/// A field that was sent, `null` included, so `null` reaches `T` instead
+/// of reading as a field left out.
+fn sent<'de, D, T>(field: D) -> Result<Option<T>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+    T: Deserialize<'de>,
+{
+    T::deserialize(field).map(Some)
+}
+
+/// What a change does to the call to action: sets a new one, or removes
+/// it when sent as `null`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(from = "Option<CtaSetting>")]
+pub enum CtaChange {
+    /// `[template.cta]` becomes this one.
+    Set(CtaSetting),
+    /// `[template.cta]` goes, so no band or header button shows.
+    Remove,
+}
+
+impl From<Option<CtaSetting>> for CtaChange {
+    fn from(sent: Option<CtaSetting>) -> Self {
+        sent.map_or(Self::Remove, Self::Set)
+    }
+}
+
+impl CtaChange {
+    /// The call to action the site has after this change.
+    pub fn into_setting(self) -> Option<CtaSetting> {
+        match self {
+            Self::Set(cta) => Some(cta),
+            Self::Remove => None,
+        }
+    }
+}
 
 /// The site's core settings from `site.toml`, in Admin API shape. The
 /// running server puts most of a saved change in use at once; the settings
@@ -29,6 +66,9 @@ pub struct AdminSettings {
     pub mode: String,
     /// The template the site uses and the options it sets.
     pub template: TemplateSetting,
+    /// The call to action from `[template.cta]`, or `null` when the site
+    /// sets none, so no band or header button shows.
+    pub cta: Option<CtaSetting>,
     /// The `[seo]` table as `site.toml` writes it, one key per part such
     /// as `titles` or `crawlers`. A setting left out of the file is left
     /// out here too and keeps its default; `docs/seo-settings.md` lists
@@ -78,6 +118,11 @@ pub struct SettingsChange {
     /// A new template with the options it sets. It replaces the template's
     /// name and every option; the call to action, `[template.cta]`, stays.
     pub template: Option<TemplateSetting>,
+    /// A new call to action in place of `[template.cta]`, or `null` to
+    /// remove it. Left out, the call to action stays as it is.
+    #[serde(default, deserialize_with = "sent")]
+    #[schema(value_type = Option<CtaSetting>, nullable)]
+    pub cta: Option<CtaChange>,
     /// New parts of the `[seo]` table, each replacing the part of that
     /// name whole, such as `{"titles": {"separator": "·"}}`. `null`
     /// removes a part, so its settings go back to their defaults. Parts
