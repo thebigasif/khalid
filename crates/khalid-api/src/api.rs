@@ -23,6 +23,7 @@ use crate::content_key::ContentDoor;
 use crate::content_store::ContentStore;
 use crate::draft_comments::DraftComments;
 use crate::follow_ups::FollowUpFinder;
+use crate::form_answers::FormAnswers;
 use crate::key_schemes::KeySchemes;
 use crate::keys::KeyStore;
 use crate::media_api::{self, MediaLibrary};
@@ -38,7 +39,7 @@ use crate::webhook_store::WebhookStore;
 use crate::{
     admin_analytics, admin_api, admin_api_keys, admin_audit, admin_authors, admin_calendar,
     admin_categories, admin_check, admin_comments, admin_consent, admin_design,
-    admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_newsletters,
+    admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_forms, admin_newsletters,
     admin_not_found, admin_pages, admin_redirect_csv, admin_redirects, admin_schema_templates,
     admin_serpdad, admin_site_settings, admin_snippets, admin_subscribers, admin_tags,
     admin_templates, admin_trash, admin_webhooks, api_version, content_api,
@@ -234,6 +235,21 @@ pub fn router_with_follow_ups(
     assemble(content, door, keys, desks, None)
 }
 
+/// [`router_with_door`] with the form routes under
+/// `/api/admin/v1/forms/` reading the answers in `forms`.
+pub fn router_with_forms(
+    content: Arc<dyn ContentStore>,
+    door: Arc<PublishDoor>,
+    keys: Arc<dyn KeyStore>,
+    forms: Arc<dyn FormAnswers>,
+) -> (Router, Document) {
+    let desks = AdminDesks {
+        forms: Some(forms),
+        ..AdminDesks::none()
+    };
+    assemble(content, door, keys, desks, None)
+}
+
 /// [`router_with_door`] with the analytics routes under
 /// `/api/admin/v1/analytics/` reading the views in `analytics`.
 pub fn router_with_analytics(
@@ -388,6 +404,7 @@ fn assemble(
         .merge(admin_consent::routes(desks.analytics.clone(), door.clone()))
         .merge(admin_analytics::routes(desks.analytics, door.clone()))
         .merge(admin_follow_ups::routes(desks.follow_ups, door.clone()))
+        .merge(admin_forms::routes(desks.forms, door.clone()))
         .merge(admin_serpdad::routes(serpdad, door.clone()))
         .merge(admin_ai::routes(ai, door.clone()));
     if let Some(staff) = routes {

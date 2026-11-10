@@ -23,6 +23,7 @@ export const en = {
     posts: "Posts",
     media: "Media",
     comments: "Comments",
+    forms: "Forms",
     authors: "Authors",
     trash: "Trash",
     audit: "Audit log",

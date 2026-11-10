@@ -13,6 +13,7 @@ use crate::design_desk::DesignDesk;
 use crate::draft_comments::DraftComments;
 use crate::entry_store::EntryStore;
 use crate::follow_ups::{FollowUpFinder, NoSearchConsole};
+use crate::form_answers::FormAnswers;
 use crate::media_api::MediaLibrary;
 use crate::post_check::PostChecks;
 use crate::post_trash::PostTrash;
@@ -80,6 +81,9 @@ pub struct AdminDesks {
     /// The Search Console follow-ups, under
     /// `/api/admin/v1/search-console/follow-ups/`.
     pub follow_ups: Arc<dyn FollowUpFinder>,
+    /// What visitors sent through form blocks, or `None` when the form
+    /// routes answer that this server keeps none.
+    pub forms: Option<Arc<dyn FormAnswers>>,
     /// The `SerpDad` connection, or `None` when the `SerpDad` route answers
     /// that the site keeps no database.
     pub serpdad: Option<Arc<dyn SerpdadStore>>,
@@ -107,9 +111,9 @@ impl AdminDesks {
     /// No comments, no media library, no stored redirects, no webhooks, no
     /// audit log, no trash, no post checks, no schema templates, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no design, no
-    /// templates, no counted views, no comments on drafts, no Search Console connection
-    /// no `SerpDad` connection, no writing suggestions and no subscribers,
-    /// with the usual limits.
+    /// templates, no counted views, no comments on drafts, no Search Console connection,
+    /// no form answers, no `SerpDad` connection, no writing suggestions and no
+    /// subscribers, with the usual limits.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
@@ -131,6 +135,7 @@ impl AdminDesks {
             analytics: AnalyticsDesk::none(),
             draft_comments: None,
             follow_ups: Arc::new(NoSearchConsole),
+            forms: None,
             serpdad: None,
             ai: AiDesk::off(),
             limits: LimitSettings::default(),

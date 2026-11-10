@@ -122,6 +122,13 @@ const trash = createRoute({ getParentRoute: () => signedIn, path: "/trash", comp
 
 const audit = createRoute({ getParentRoute: () => signedIn, path: "/audit", component: AuditLog });
 
+// Only owners and admins read form answers, so the screen loads when opened.
+const forms = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/forms",
+  component: lazyRouteComponent(() => import("./Forms"), "Forms"),
+});
+
 const redirects = createRoute({
   getParentRoute: () => signedIn,
   path: "/redirects",
@@ -258,6 +265,7 @@ const routeTree = root.addChildren([
     mediaItem,
     comments,
     subscribers,
+    forms,
     authors,
     authorPage,
     trash,

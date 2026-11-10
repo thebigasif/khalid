@@ -2264,6 +2264,181 @@
         ]
       }
     },
+    "/api/admin/v1/forms/": {
+      "get": {
+        "tags": [
+          "admin forms"
+        ],
+        "summary": "Lists the forms visitors answered, with how many answers each has and\nwhen the newest came. Spam caught by the trap is left out. Needs\n`subscribers:write`.",
+        "operationId": "list_forms",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Every form with answers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminForms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no form answers",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/forms/{id}/answers/": {
+      "get": {
+        "tags": [
+          "admin forms"
+        ],
+        "summary": "Lists one page of a form's answers, newest first, each field in the\norder the form sent them. A form with no answers lists none. Needs\n`subscribers:write`.",
+        "operationId": "list_answers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The form's id, as its block names it",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page, from 1.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Answers per page: 25 when not given, from 1 to 100.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "One page of the form's answers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAnswers"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The page or limit is not a whole number in range",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no form answers",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/keys/": {
       "get": {
         "tags": [
@@ -12650,6 +12825,27 @@
           }
         }
       },
+      "AdminAnswers": {
+        "type": "object",
+        "description": "One page of a form's answers.",
+        "required": [
+          "answers",
+          "meta"
+        ],
+        "properties": {
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormAnswer"
+            },
+            "description": "The answers on this page, newest first."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Pagination."
+          }
+        }
+      },
       "AdminAttempt": {
         "type": "object",
         "description": "One try at sending a delivery: the receiver's status, or why it could\nnot be reached. Exactly one of the two is there.",
@@ -13287,6 +13483,22 @@
             ],
             "format": "date-time",
             "description": "When `theme/tokens.toml` last changed, or `null` when the site has\nno such file yet. A change sends it back."
+          }
+        }
+      },
+      "AdminForms": {
+        "type": "object",
+        "description": "The forms visitors answered.",
+        "required": [
+          "forms"
+        ],
+        "properties": {
+          "forms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FormSummary"
+            },
+            "description": "Each form with at least one answer, the one answered last first."
           }
         }
       },
@@ -14622,6 +14834,26 @@
         "description": "An old address on this site that redirects to the post, such as\n`/2019/05/old-title/`, so a moved post keeps its links.",
         "example": "/2019/05/old-title/"
       },
+      "AnswerField": {
+        "type": "object",
+        "description": "One field of an answer.",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The field's name in the form block.",
+            "example": "email"
+          },
+          "value": {
+            "type": "string",
+            "description": "What the visitor typed.",
+            "example": "lena@example.com"
+          }
+        }
+      },
       "Author": {
         "type": "object",
         "description": "An author in one language, in API shape.",
@@ -15809,6 +16041,68 @@
           "stack": {
             "type": "string",
             "description": "The CSS font list the file writes for it."
+          }
+        }
+      },
+      "FormAnswer": {
+        "type": "object",
+        "description": "One answer a visitor sent.",
+        "required": [
+          "id",
+          "page",
+          "sent_at",
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnswerField"
+            },
+            "description": "Each field in the order the form sent them."
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Its identity: a later answer has a larger number."
+          },
+          "page": {
+            "type": "string",
+            "description": "The address of the page the form was on.",
+            "example": "/blog/write-to-us/"
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When it was sent."
+          }
+        }
+      },
+      "FormSummary": {
+        "type": "object",
+        "description": "One form and how many answers it has.",
+        "required": [
+          "id",
+          "answers",
+          "last_at"
+        ],
+        "properties": {
+          "answers": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many answers are kept, spam left out.",
+            "example": 12,
+            "minimum": 0
+          },
+          "id": {
+            "type": "string",
+            "description": "The form's id, as its block names it.",
+            "example": "contact"
+          },
+          "last_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the newest answer was sent."
           }
         }
       },
