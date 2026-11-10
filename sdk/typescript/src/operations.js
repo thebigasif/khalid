@@ -38,6 +38,7 @@ export const operations = {
   photo_used: { method: "POST", path: "/api/admin/v1/media/search/used/", key: "admin", body: "application/json" },
   read_media: { method: "GET", path: "/api/admin/v1/media/{id}/", key: "admin", body: null },
   edit_media: { method: "PUT", path: "/api/admin/v1/media/{id}/", key: "admin", body: "application/json" },
+  delete_media: { method: "DELETE", path: "/api/admin/v1/media/{id}/", key: "admin", body: null },
   copy_picture: { method: "POST", path: "/api/admin/v1/media/{id}/copies/", key: "admin", body: "application/json" },
   list_misses: { method: "GET", path: "/api/admin/v1/not-found/", key: "admin", body: null },
   redirect_miss: { method: "POST", path: "/api/admin/v1/not-found/redirect/", key: "admin", body: "application/json" },

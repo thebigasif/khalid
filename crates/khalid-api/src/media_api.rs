@@ -11,8 +11,8 @@ use axum::{Extension, Json, middleware};
 use chrono::{DateTime, Utc};
 use khalid_core::UserMessage;
 use khalid_media::{
-    ContentKey, EditMediaError, FocalPoint, Folder, Kind, Library, MediaEdit, MediaItem, Refusal,
-    StockSearch, Upload, UploadMediaError, Uploaded,
+    ContentKey, DeleteMediaError, EditMediaError, FocalPoint, Folder, Kind, Library, MediaEdit,
+    MediaItem, Refusal, StockSearch, Upload, UploadMediaError, Uploaded,
 };
 use serde::Deserialize;
 use utoipa::IntoParams;
@@ -20,6 +20,7 @@ use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
 use crate::admin_api::BASE;
+use crate::admin_delete::DeleteQuery;
 use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::content_api::check_fields;
@@ -68,7 +69,7 @@ type Media = Option<MediaLibrary>;
 pub(crate) fn routes(media: Media, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(upload_media, list_media))
-        .routes(routes!(read_media, edit_media))
+        .routes(routes!(read_media, edit_media, delete_media))
         .routes(routes!(media_search::search_pictures))
         .routes(routes!(media_search::photo_used))
         .routes(routes!(media_picture::copy_picture))
@@ -249,6 +250,68 @@ async fn edit_media(
     };
     let media = vec![media.shown(&item)];
     Ok(Json(MediaItems { media }))
+}
+
+/// Deletes an item and its file for good. The delete names the
+/// `updated_at` of the copy it was made on, and is a 409 when the item
+/// changed since (RULES.md BL-API-7), or when a post, a page or the theme
+/// still names the file, since deleting it would break them. Needs
+/// `media:write`.
+#[utoipa::path(
+    delete, path = "/media/{id}/", tag = "admin media",
+    security(("admin_key" = [])),
+    params(("id" = String, Path, description = "The item's identity"), DeleteQuery),
+    responses(
+        (status = 204, description = "The item and its file are gone"),
+        (status = 400, description = "updated_at is missing or is not a time", body = Problem, content_type = "application/problem+json"),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks media:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "No item has this identity", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The item changed after the copy the delete was made on, or site files still name it", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn delete_media(
+    State(media): State<Media>,
+    Extension(principal): Extension<Principal>,
+    Path(id): Path<String>,
+    OriginalUri(uri): OriginalUri,
+    query: Result<Query<DeleteQuery>, QueryRejection>,
+) -> Result<StatusCode, Problem> {
+    require(&principal, Scope::MediaWrite)?;
+    let media = media.ok_or_else(no_library)?;
+    let seen = query.ok().and_then(|Query(query)| query.updated_at);
+    let seen = seen.ok_or_else(no_copy)?;
+    let item = ContentKey::parse(&id)
+        .and_then(|id| media.library.get(&id))
+        .ok_or_else(|| missing(uri.path()))?;
+    match media.library.delete(&item.id, seen).await {
+        Ok(_) => Ok(StatusCode::NO_CONTENT),
+        Err(DeleteMediaError::NotFound) => Err(missing(uri.path())),
+        Err(DeleteMediaError::Stale {
+            updated_at,
+            updated_by,
+        }) => Err(changed_since(updated_at, &updated_by)),
+        Err(error) => Err(Problem::internal(&error)),
+    }
+}
+
+fn no_copy() -> Problem {
+    let message = UserMessage::new(
+        "This delete does not say which copy of the item it was made on.",
+        "Without it, an item someone changed a moment ago could be deleted unseen.",
+        "Add updated_at with the time the item last changed, such as ?updated_at=2026-10-20T08:30:00Z.",
+    );
+    Problem::new(ProblemType::InvalidQuery, &message).with_rule("updated_at")
+}
+
+fn changed_since(updated_at: DateTime<Utc>, updated_by: &str) -> Problem {
+    let when = updated_at.format("%Y-%m-%d %H:%M UTC");
+    let message = UserMessage::new(
+        format!("{updated_by} changed this item at {when}, after the copy you saw."),
+        "It was not deleted, so you can see their change first.",
+        "Fetch the item again, and delete it with its new updated_at if it should still go.",
+    );
+    Problem::new(ProblemType::Conflict, &message).with_rule("updated_at")
 }
 
 /// The edit `body` asks for, with its folder and focal point checked.
