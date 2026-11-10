@@ -69,7 +69,8 @@ fn privacy_and_tagged_code_are_saved_into_site_toml_and_a_bad_lifetime_saves_not
 #[test]
 fn body_code_added_on_the_scripts_tab_is_checked_and_an_empty_list_removes_code() {
     let site = demo_copy();
-    let owner = ["--name", "Owner", "--scope", "settings:write"];
+    // Site code runs on every reader's page, so only `admin:all` may change it.
+    let owner = ["--name", "Owner", "--scope", "admin:all"];
     let key = new_key(site.path(), &owner);
     let server = start(site.path(), &key);
     let (_, read) = server.admin("GET", SETTINGS, None);

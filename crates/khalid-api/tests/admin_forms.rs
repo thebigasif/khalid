@@ -122,7 +122,7 @@ async fn get_from(router: axum::Router, route: &str, key: &str) -> (StatusCode, 
     send(router, Method::GET, route, key).await
 }
 
-/// DELETEs `route` with `key` from a server keeping [`Answers`].
+/// Sends a DELETE for `route` with `key` from a server keeping [`Answers`].
 #[cfg(test)]
 async fn delete(route: &str, key: &str) -> (StatusCode, Value) {
     let router = router(Some(Arc::new(Answers)));
