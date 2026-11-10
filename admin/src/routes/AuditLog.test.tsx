@@ -6,9 +6,15 @@ import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import type { Change } from "../api/records";
 import { en } from "../strings/en";
 
-/** A change logged at place `id`, made by one key at 09:30 on 31 October. */
+/** A change logged at place `id`, made by Maria Lopez's account at 09:30 on 31 October. */
 function change(id: number, action: string, route: string, path: string): Change {
-  return { id, at: "2026-10-31T09:30:00Z", by: "4f1c9a20b7e3d615", action, route, path };
+  const by = { by: "0000000000000002", by_name: "Maria Lopez" };
+  return { id, at: "2026-10-31T09:30:00Z", ...by, action, route, path };
+}
+
+/** The same change made by a key revoked since, which has no name left. */
+function byRevokedKey(logged: Change): Change {
+  return { ...logged, by: "4f1c9a20b7e3d615", by_name: "4f1c9a20b7e3d615" };
 }
 
 const REMOVED = change(
@@ -17,11 +23,13 @@ const REMOVED = change(
   "/api/admin/v1/posts/{id}/",
   "/api/admin/v1/posts/en.what-a-sitemap-does/",
 );
-const RESTORED = change(
-  2,
-  "added",
-  "/api/admin/v1/trash/{key}/restore/",
-  "/api/admin/v1/trash/20261030T160500Z-en.hello/restore/",
+const RESTORED = byRevokedKey(
+  change(
+    2,
+    "added",
+    "/api/admin/v1/trash/{key}/restore/",
+    "/api/admin/v1/trash/20261030T160500Z-en.hello/restore/",
+  ),
 );
 const REDIRECT = change(1, "added", "/api/admin/v1/redirects/", "/api/admin/v1/redirects/");
 
@@ -36,8 +44,10 @@ describe("the audit log", () => {
     const [, removed, restored] = within(table).getAllByRole("row");
     expect(removed).toHaveTextContent("Removed a post");
     expect(removed).toHaveTextContent("/posts/en.what-a-sitemap-does/");
-    expect(removed).toHaveTextContent("4f1c9a20b7e3d615");
+    expect(removed).toHaveTextContent("Maria Lopez");
+    expect(removed).not.toHaveTextContent("0000000000000002");
     expect(restored).toHaveTextContent("Put a post back from the trash");
+    expect(restored).toHaveTextContent("4f1c9a20b7e3d615");
     expect(screen.queryByRole("button", { name: en.audit.older })).toBeNull();
     expect(await axeViolations()).toEqual([]);
   });
