@@ -25,8 +25,9 @@ const EDITOR: &str =
     "ki_2222333344445555_aaaabbbbccccddddeeeeffff00001111aaaabbbbccccddddeeeeffff00001111";
 
 const GLOSSARY: &str = "/api/admin/v1/glossary/";
-/// The one term.
+/// The one term, and when it last changed.
 const AUTHORITY: &str = "/api/admin/v1/glossary/en.topical-authority/";
+const LAST_CHANGE: &str = "2026-10-20T09:00:00Z";
 
 /// A site keeping `glossary`, or none at all.
 #[cfg(test)]
@@ -149,4 +150,51 @@ async fn a_server_without_a_glossary_answers_404_naming_why() {
     assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
     let detail = json["detail"].as_str().unwrap();
     assert!(detail.contains("no glossary terms"), "{json}");
+}
+
+#[tokio::test]
+async fn an_edit_on_the_latest_copy_changes_only_what_it_sends() {
+    let router = with_authority();
+    let edit = json!({"glossary": [{"markdown": "Trust on one subject.", "translation": "", "updated_at": LAST_CHANGE}]});
+    let (status, json) = send(&router, "PUT", AUTHORITY, EDITOR, Some(edit.clone())).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let saved = &json["glossary"][0];
+    assert_eq!(saved["term"], "Topical authority", "{json}");
+    assert_eq!(saved["markdown"], "Trust on one subject.", "{json}");
+    assert_eq!(saved["translation"], Value::Null, "an empty key removes it");
+    assert_eq!(saved["updated_at"], "2026-10-27T09:00:00Z");
+    let (status, json) = send(&router, "PUT", AUTHORITY, EDITOR, Some(edit)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "a stale replay: {json}");
+    assert_eq!(json["rule"], "updated_at", "{json}");
+}
+
+#[tokio::test]
+async fn an_edit_that_cannot_be_kept_is_refused() {
+    let router = with_authority();
+    let blank = json!({"glossary": [{"term": "", "updated_at": LAST_CHANGE}]});
+    let (status, json) = send(&router, "PUT", AUTHORITY, EDITOR, Some(blank)).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{json}");
+    let edit = json!({"glossary": [{"term": "Authority", "updated_at": LAST_CHANGE}]});
+    let (status, _) = send(&router, "PUT", AUTHORITY, WRITER, Some(edit.clone())).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
+    let missing = "/api/admin/v1/glossary/en.anchor-text/";
+    let (status, _) = send(&router, "PUT", missing, EDITOR, Some(edit)).await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn a_term_is_deleted_only_on_its_latest_copy() {
+    let router = with_authority();
+    let (status, _) = send(&router, "DELETE", AUTHORITY, EDITOR, None).await;
+    assert_eq!(status, StatusCode::BAD_REQUEST);
+    let stale = format!("{AUTHORITY}?updated_at=2026-10-19T09:00:00Z");
+    let (status, _) = send(&router, "DELETE", &stale, EDITOR, None).await;
+    assert_eq!(status, StatusCode::CONFLICT);
+    let latest = format!("{AUTHORITY}?updated_at={LAST_CHANGE}");
+    let (status, _) = send(&router, "DELETE", &latest, WRITER, None).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
+    let (status, _) = send(&router, "DELETE", &latest, EDITOR, None).await;
+    assert_eq!(status, StatusCode::NO_CONTENT);
+    let (status, _) = send(&router, "GET", AUTHORITY, EDITOR, None).await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
 }

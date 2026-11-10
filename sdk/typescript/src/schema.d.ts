@@ -2694,6 +2694,24 @@ export type Term = {
   slug: string;
 };
 
+/** A change to a glossary term: only the fields sent change. An empty `translation` removes it. */
+export type TermEdit = {
+  /** A new definition, in markdown. */
+  markdown?: string | null;
+  /** The term as it is now written. */
+  term?: string | null;
+  /** A new translation key, or `""` to remove it. */
+  translation?: string | null;
+  /** The `updated_at` of the copy this edit was made on. */
+  updated_at: string;
+};
+
+/** An edit, wrapped the way the Admin API wraps the glossary: exactly one. */
+export type TermEdits = {
+  /** The one edit. */
+  glossary: TermEdit[];
+};
+
 /** The trash as the Admin API wraps it. */
 export type TrashList = {
   /** The deleted posts, the most recently deleted first. */
@@ -3165,6 +3183,39 @@ export interface Operations {
       };
     };
     output: AdminGlossary;
+  };
+  /** Edits one glossary term: only the fields sent change. The edit carries the `updated_at` of the copy it was made on; when the term changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
+  edit_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: TermEdits;
+    };
+    output: AdminGlossary;
+  };
+  /** Deletes one glossary term. A post that still links to it keeps the wikilink, and the linter names it as broken. The request names the `updated_at` of the copy it was made on; when the term changed since, the answer is a 409. Needs `posts:publish`. */
+  delete_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      query: {
+        /** The `updated_at` as last read, such as `2026-10-20T08:30:00Z`. */
+        updated_at: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: null;
   };
   /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
   list_keys: {

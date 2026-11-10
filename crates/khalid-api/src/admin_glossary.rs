@@ -2,8 +2,8 @@
 //! a post links with a wikilink and that each get their own page (plan
 //! section 5.12, KH-API-2).
 
-use axum::extract::rejection::JsonRejection;
-use axum::extract::{OriginalUri, Path, State};
+use axum::extract::rejection::{JsonRejection, QueryRejection};
+use axum::extract::{OriginalUri, Path, Query, State};
 use axum::http::header::LOCATION;
 use axum::http::{HeaderName, StatusCode};
 use axum::{Extension, Json, middleware};
@@ -13,13 +13,14 @@ use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
 use crate::admin_api::BASE;
+use crate::admin_delete::DeleteQuery;
 use crate::admin_entries::{Kept, Noun};
 use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::entry_store::Entry;
 use crate::keys::{Principal, Scope};
 use crate::problem::Problem;
-use crate::resources::{AdminTerm, NewTerm};
+use crate::resources::{AdminTerm, NewTerm, TermEdit};
 
 /// How messages name a glossary term.
 const TERM: Noun = Noun {
@@ -34,7 +35,7 @@ const TERM: Noun = Noun {
 pub(crate) fn routes(glossary: Kept<AdminTerm>, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(list_terms, create_term))
-        .routes(routes!(read_term))
+        .routes(routes!(read_term, edit_term, delete_term))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(glossary)
@@ -142,4 +143,81 @@ async fn read_term(
     let term = found.map_err(|error| Problem::internal(&error))?;
     let term = term.ok_or_else(|| TERM.missing(uri.path()))?;
     Ok(AdminGlossary::one(term))
+}
+
+/// An edit, wrapped the way the Admin API wraps the glossary: exactly one.
+#[derive(Debug, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct TermEdits {
+    /// The one edit.
+    glossary: Vec<TermEdit>,
+}
+
+/// Edits one glossary term: only the fields sent change. The edit carries
+/// the `updated_at` of the copy it was made on; when the term changed
+/// since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.
+#[utoipa::path(
+    put, path = "/glossary/{id}/", tag = "admin glossary",
+    security(("admin_key" = [])),
+    params(("id" = String, Path, description = "The language and slug, such as en.topical-authority")),
+    request_body = TermEdits,
+    responses(
+        (status = 200, description = "The glossary term as saved", body = AdminGlossary),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks posts:publish", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "No term has this identity, or this server keeps no glossary terms", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The term changed after the copy the edit was made on", body = Problem, content_type = "application/problem+json"),
+        (status = 422, description = "The body could not be read, or the term or definition is empty", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn edit_term(
+    State(glossary): State<Kept<AdminTerm>>,
+    Extension(principal): Extension<Principal>,
+    Path(id): Path<String>,
+    OriginalUri(uri): OriginalUri,
+    body: Result<Json<TermEdits>, JsonRejection>,
+) -> Result<Json<AdminGlossary>, Problem> {
+    require(&principal, Scope::PostsPublish)?;
+    let edit = TERM.one(TERM.body(body)?.glossary)?;
+    edit.term()
+        .map(|term| TERM.filled("term", term))
+        .transpose()?;
+    edit.markdown()
+        .map(|markdown| TERM.filled("markdown", markdown))
+        .transpose()?;
+    let saved = TERM.store(glossary.as_deref())?.update(&id, edit).await;
+    let term = saved.map_err(|error| TERM.problem(error, uri.path()))?;
+    Ok(AdminGlossary::one(term))
+}
+
+/// Deletes one glossary term. A post that still links to it keeps the
+/// wikilink, and the linter names it as broken. The request names the
+/// `updated_at` of the copy it was made on; when the term changed since,
+/// the answer is a 409. Needs `posts:publish`.
+#[utoipa::path(
+    delete, path = "/glossary/{id}/", tag = "admin glossary",
+    security(("admin_key" = [])),
+    params(("id" = String, Path, description = "The language and slug, such as en.topical-authority"), DeleteQuery),
+    responses(
+        (status = 204, description = "The glossary term is gone"),
+        (status = 400, description = "updated_at is missing or is not a time", body = Problem, content_type = "application/problem+json"),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks posts:publish", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "No term has this identity, or this server keeps no glossary terms", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The term changed after the copy the delete was made on", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn delete_term(
+    State(glossary): State<Kept<AdminTerm>>,
+    Extension(principal): Extension<Principal>,
+    Path(id): Path<String>,
+    OriginalUri(uri): OriginalUri,
+    query: Result<Query<DeleteQuery>, QueryRejection>,
+) -> Result<StatusCode, Problem> {
+    require(&principal, Scope::PostsPublish)?;
+    let seen = query.ok().and_then(|Query(query)| query.updated_at);
+    let seen = seen.ok_or_else(|| TERM.no_copy())?;
+    let deleted = TERM.store(glossary.as_deref())?.delete(&id, seen).await;
+    deleted.map_err(|error| TERM.problem(error, uri.path()))?;
+    Ok(StatusCode::NO_CONTENT)
 }
