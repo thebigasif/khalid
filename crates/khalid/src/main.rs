@@ -39,7 +39,9 @@ mod cli;
 mod cli_access;
 mod cli_import;
 mod cli_name;
+mod cli_parse;
 mod comment_pages;
+mod completions;
 mod config_message;
 mod consent_route;
 mod content_feed;
@@ -215,7 +217,6 @@ use std::ffi::OsString;
 use std::path::Path;
 use std::process::ExitCode;
 
-use clap::error::ErrorKind;
 use clap::{CommandFactory, Parser};
 use khalid_content::{ContentTree, SiteContent, check_bodies, read_content};
 use khalid_core::{Config, Environment, SystemClock, UserMessage};
@@ -235,7 +236,7 @@ fn main() -> ExitCode {
     let args: Vec<OsString> = std::env::args_os().collect();
     let exit = match Cli::try_parse_from(&args) {
         Ok(cli) => run(&cli.here()),
-        Err(error) => parse_failure(&error, Output::requested_in(&args)),
+        Err(error) => cli_parse::parse_failure(&error, Output::requested_in(&args)),
     };
     exit.into()
 }
@@ -424,8 +425,8 @@ fn access(folder: &Path, config: &Config, command: &Command, output: Output) -> 
 }
 
 /// Runs the commands that do not start from a checked site: `init`, which
-/// makes the site, `restore`, which makes one from a backup, `agents` and
-/// `update`, which need none, `doctor`, which
+/// makes the site, `restore`, which makes one from a backup, `agents`,
+/// `completions` and `update`, which need none, `doctor`, which
 /// checks the settings, routes and content itself so it can list every
 /// problem instead of stopping at the first, and the commands
 /// [`on_folder`] runs. Returns `None` for every other command.
@@ -440,6 +441,7 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
             Some(init::run(folder, args, cli.output))
         }
         Some(Command::Agents) => Some(agents::run(cli.output)),
+        Some(Command::Completions(args)) => Some(completions::run(args, cli.output)),
         Some(Command::Restore { archive, folder }) => {
             Some(restore::run(archive, folder, cli.output))
         }
@@ -556,45 +558,4 @@ fn not_built(command: &Command) -> UserMessage {
         "Khalid is in its first phase, and this command arrives in a later one.",
         "Run `khalid --help` to see every command, and check the next release.",
     )
-}
-
-/// Answers `--help`, `--version` and command lines `clap` could not read.
-fn parse_failure(error: &clap::Error, output: Output) -> Exit {
-    match error.kind() {
-        ErrorKind::DisplayHelp => report::text(&error.render().to_string(), Exit::Success),
-        ErrorKind::DisplayVersion => report::version(output),
-        _ => report::failure(output, &usage_message(error), Exit::Usage),
-    }
-}
-
-/// Turns a `clap` error into what, why and fix.
-fn usage_message(error: &clap::Error) -> UserMessage {
-    let rendered = error.render().to_string();
-    let detail: Vec<&str> = rendered
-        .lines()
-        .map(str::trim)
-        .take_while(|line| !line.starts_with("Usage:") && !line.starts_with("For more information"))
-        .filter(|line| !line.is_empty())
-        .collect();
-    let detail = detail.join(" ");
-    let detail = detail.strip_prefix("error: ").unwrap_or(&detail);
-    UserMessage::new(
-        format!(
-            "Khalid could not read the command line: {}.",
-            detail.trim_end_matches('.')
-        ),
-        "Khalid stopped before doing anything, so nothing has changed.",
-        "Run `khalid --help` to see the commands and their options.",
-    )
-}
-
-impl Output {
-    /// Whether `--json` appears in arguments that `clap` could not parse.
-    fn requested_in(args: &[OsString]) -> Self {
-        if args.iter().any(|arg| arg == "--json") {
-            Self::Json
-        } else {
-            Self::Human
-        }
-    }
 }
