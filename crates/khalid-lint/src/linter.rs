@@ -7,8 +7,8 @@ use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 use crate::builtin;
 use crate::{
-    Analysis, Catalogue, EntryRule, Finding, Hit, LintConfig, LintError, LintPost, Location,
-    Message, Rule, RuleId, Score, Severity, SiteRule, SiteView,
+    Analysis, Catalogue, EntryRule, Finding, Hit, LintConfig, LintEntry, LintError, LintPost,
+    Location, LocationKind, Message, Rule, RuleId, Score, Severity, SiteRule, SiteView,
 };
 
 /// The configured rules, each with its severity and message.
@@ -176,7 +176,7 @@ impl Linter {
         let mut findings = Vec::new();
         for configured in &self.rules {
             for hit in configured.rule.check(post, site) {
-                let at = (&post.locale, &post.slug);
+                let at = (LocationKind::Post, &post.locale, &post.slug);
                 findings.push(configured.finding(configured.rule.id(), at, hit));
             }
         }
@@ -202,18 +202,29 @@ impl Linter {
         let mut findings = Vec::new();
         for configured in &self.site_rules {
             for (post, hit) in configured.rule.check(site) {
-                let at = (&post.locale, &post.slug);
+                let at = (LocationKind::Post, &post.locale, &post.slug);
                 findings.push(configured.finding(configured.rule.id(), at, hit));
             }
         }
         for configured in &self.entry_rules {
             for entry in site.entries() {
-                for hit in configured.rule.check(entry) {
-                    let at = (&entry.locale, &entry.slug);
-                    findings.push(configured.finding(configured.rule.id(), at, hit));
-                }
+                findings.extend(configured.entry_findings(entry));
             }
         }
+        Report {
+            findings,
+            score: None,
+            analysis: None,
+        }
+    }
+
+    /// Runs the case study and changelog rules on one entry: the check
+    /// before it is published. The report has no score, because only posts
+    /// are scored.
+    pub fn lint_entry(&self, entry: &LintEntry) -> Report {
+        let findings = (self.entry_rules.iter())
+            .flat_map(|configured| configured.entry_findings(entry))
+            .collect();
         Report {
             findings,
             score: None,
@@ -239,9 +250,25 @@ impl Linter {
     }
 }
 
+impl Configured<dyn EntryRule> {
+    /// This rule's findings on `entry`.
+    fn entry_findings(&self, entry: &LintEntry) -> Vec<Finding> {
+        let at = (LocationKind::of(&entry.kind), &entry.locale, &entry.slug);
+        (self.rule.check(entry).into_iter())
+            .map(|hit| self.finding(self.rule.id(), at, hit))
+            .collect()
+    }
+}
+
 impl<R: ?Sized> Configured<R> {
-    /// The finding `hit` of `rule` on the post or entry `slug` in `locale`.
-    fn finding(&self, rule: RuleId, (locale, slug): (&Locale, &Slug), hit: Hit) -> Finding {
+    /// The finding `hit` of `rule` on the post or entry of `kind` at `slug`
+    /// in `locale`.
+    fn finding(
+        &self,
+        rule: RuleId,
+        (kind, locale, slug): (LocationKind, &Locale, &Slug),
+        hit: Hit,
+    ) -> Finding {
         let message = if hit.is_on_the_only_post() {
             self.message.for_only_post()
         } else {
@@ -249,6 +276,7 @@ impl<R: ?Sized> Configured<R> {
         };
         let (subject, suggestions) = hit.into_parts();
         let location = Location {
+            kind,
             locale: locale.clone(),
             slug: slug.clone(),
             subject,
@@ -299,7 +327,8 @@ impl Report {
     /// post of a large site stays fast.
     pub fn scores<'p>(&self, posts: &'p [LintPost]) -> Vec<(&'p LintPost, Score)> {
         let mut by_post: BTreeMap<(&str, &str), Vec<&Finding>> = BTreeMap::new();
-        for finding in &self.findings {
+        let in_posts = (self.findings.iter()).filter(|f| f.location().kind == LocationKind::Post);
+        for finding in in_posts {
             let at = finding.location();
             let key = (at.locale.as_str(), at.slug.as_str());
             by_post.entry(key).or_default().push(finding);

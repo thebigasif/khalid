@@ -119,6 +119,35 @@ fn lint_blocks_a_study_without_its_fields_and_an_undated_change() {
 }
 
 #[test]
+fn build_leaves_out_the_entries_lint_blocks_and_builds_the_rest() {
+    let studies = [("bakery.md", STUDY), ("plumber.md", BARE_STUDY)];
+    let changes = [("2026-11.md", CHANGE), ("next.md", UNDATED_CHANGE)];
+    let site = site(&studies, &changes);
+    let mut command = Command::new(env!("CARGO_BIN_EXE_khalid"));
+    let Output { status, stdout, .. } = command
+        .arg("--site")
+        .arg(site.path())
+        .arg("build")
+        .output()
+        .unwrap();
+    let said = String::from_utf8_lossy(&stdout);
+    assert_eq!(status.code(), Some(0), "{said}");
+    assert!(said.contains("Rule case-study-incomplete"), "{said}");
+    assert!(said.contains("Rule changelog-entry-undated"), "{said}");
+    assert!(said.contains("Left out 2 pages"), "{said}");
+    let public = within(site.path(), "public");
+    let built = |rest: &str| within(&public, rest).exists();
+    assert!(built(
+        "case-studies/how-a-bakery-doubled-its-search-visits/index.html"
+    ));
+    assert!(!built("case-studies/how-a-plumber-got-steady-calls"));
+    assert!(built("changelog/series-and-case-studies/index.html"));
+    assert!(!built("changelog/2-5"));
+    let list = fs::read_to_string(within(&public, "case-studies/index.html")).unwrap();
+    assert!(!list.contains("Fieldwork Plumbing"), "{list}");
+}
+
+#[test]
 fn lint_says_which_field_to_add_in_sentences() {
     let site = site(&[("plumber.md", BARE_STUDY)], &[]);
     let (code, said) = lint(site.path(), &[]);
