@@ -1,52 +1,21 @@
-// The author routes of the Admin API. They are typed by hand, field for
-// field as `AdminAuthor`, `NewAuthor` and `AuthorEdit` in the G24 stack's
-// OpenAPI document, because this document gains them only when that stack
-// lands (docs/decisions/2026-10-31-admin-screens.md). Then these types
-// become `components["schemas"]`.
+// The author routes of the Admin API, typed from the OpenAPI document. The
+// calls go through `call`, which keeps the answer's problem.
 import { call, nothing, type Reply, sending } from "./call";
+import type { components } from "./schema";
+
+type Schemas = components["schemas"];
 
 /** An author in one language, as their file in the site folder holds them. */
-export type AdminAuthor = {
-  /** The language and the slug, such as `en.asif`. */
-  id: string;
-  /** The short name posts name the author by. */
-  slug: string;
-  language: string;
-  name: string;
-  role?: string | null;
-  /** Why to trust the author, such as ten years in the field. */
-  credentials?: string | null;
-  photo?: string | null;
-  /** The bio, in markdown. */
-  bio: string;
-  /** Profiles elsewhere, each a full address, in order. */
-  same_as: string[];
-  /** When the author's file last changed; an edit or delete sends it back. */
-  updated_at: string;
-};
+export type AdminAuthor = Schemas["AdminAuthor"];
 
 /** A new author; the language is the site's default when left out. */
-export type NewAuthor = {
-  slug: string;
-  name: string;
-  language?: string | null;
-  role?: string | null;
-  bio?: string;
-};
+export type NewAuthor = Schemas["NewAuthor"];
 
 /** A change to an author: only the fields sent change; an empty role removes it. */
-export type AuthorEdit = {
-  updated_at: string;
-  name?: string | null;
-  role?: string | null;
-  credentials?: string | null;
-  photo?: string | null;
-  bio?: string | null;
-  same_as?: string[] | null;
-};
+export type AuthorEdit = Schemas["AuthorEdit"];
 
 async function authors(response: Response): Promise<AdminAuthor[]> {
-  const body: { authors: AdminAuthor[] } = await response.json();
+  const body: Schemas["AdminAuthors"] = await response.json();
   return body.authors;
 }
 
@@ -68,12 +37,14 @@ export function readAuthor(id: string): Promise<Reply<AdminAuthor[]>> {
 
 /** Makes an author's file. */
 export function createAuthor(author: NewAuthor): Promise<Reply<AdminAuthor[]>> {
-  return call("/authors/", sending("POST", { authors: [author] }), authors);
+  const body: Schemas["NewAuthors"] = { authors: [author] };
+  return call("/authors/", sending("POST", body), authors);
 }
 
 /** Saves an edit made on the copy that `edit.updated_at` names. */
 export function editAuthor(id: string, edit: AuthorEdit): Promise<Reply<AdminAuthor[]>> {
-  return call(`/authors/${encodeURIComponent(id)}/`, sending("PUT", { authors: [edit] }), authors);
+  const body: Schemas["AuthorEdits"] = { authors: [edit] };
+  return call(`/authors/${encodeURIComponent(id)}/`, sending("PUT", body), authors);
 }
 
 /** Deletes an author's file, unless it changed after the copy `updatedAt` names. */

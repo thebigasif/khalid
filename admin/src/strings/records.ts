@@ -7,7 +7,7 @@ const was = { draft: "Draft", published: "Live", scheduled: "Scheduled" } as con
 /** What each part of the Admin API holds, by the first part of a route after its base. */
 const things: Record<string, string> = {
   posts: "a post",
-  trash: "a post in the trash",
+  trash: "a post or page in the trash",
   redirects: "a redirect",
   "not-found": "an address that found nothing",
   comments: "a comment",
@@ -22,7 +22,7 @@ const doing: Record<string, string> = { added: "Added", changed: "Changed", remo
 /** What one change in the audit log did, in words, from its action and route. */
 function happened(action: string, route: string): string {
   if (route.endsWith("/restore/")) {
-    return "Put a post back from the trash";
+    return "Put a post or page back from the trash";
   }
   if (route.endsWith("/preview-link/")) {
     return "Made a preview link for a post";
@@ -35,13 +35,14 @@ function happened(action: string, route: string): string {
 export const records = {
   trash: {
     title: "Trash",
-    lede: "Posts you deleted wait here until you put them back or delete them for good. Readers never see them.",
+    lede: "Posts and pages you deleted wait here until you put them back or delete them for good. Readers never see them.",
     loading: "Reading the trash",
-    none: "The trash is empty. A post you delete waits here until you decide what to do with it.",
-    count: (n: number) => (n === 1 ? "1 post is in the trash." : `${n} posts are in the trash.`),
+    none: "The trash is empty. A post or page you delete waits here until you decide what to do with it.",
+    count: (n: number) => (n === 1 ? "1 item is in the trash." : `${n} items are in the trash.`),
     titleColumn: "Title",
     was: "Was",
     status: was,
+    page: "Live page",
     deleted: "Deleted",
     action: "What to do",
     restoreText: "Put it back",
@@ -55,7 +56,7 @@ export const records = {
     purged: (title: string) => `${title} is deleted for good.`,
     beforeTitle: "Before you delete for good",
     before:
-      "Putting a post back returns it to where it was. A live post goes live again at the same address. Deleting for good removes the file, and it cannot be undone.",
+      "Putting a post or page back returns it to where it was. A live post or a page goes live again at the same address. Deleting for good removes the file, and it cannot be undone.",
   },
   audit: {
     title: "Audit log",

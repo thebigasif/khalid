@@ -31,6 +31,7 @@ use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::outside_writes::Reloads;
 use crate::post_files::Assets;
+use crate::prune_rows::Pruning;
 use crate::scheduler::{NightlyAudit, WeeklyEmail};
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
@@ -74,6 +75,8 @@ pub(crate) struct Keys {
     pub(crate) mail: Option<Secret<String>>,
     /// The secret git mode's push hook checks, which opens the hook.
     pub(crate) git_hook: Option<Secret<String>>,
+    /// The secret the mail hook checks, which opens the hook.
+    pub(crate) mail_hook: Option<Secret<String>>,
     /// The Search Console follow-ups, signed in with the owner's Google
     /// secrets when the site opts in.
     pub(crate) follow_ups: SiteFollowUps,
@@ -99,6 +102,7 @@ impl Keys {
             bucket: env.s3_keys(),
             mail: mail_secret(env, config),
             git_hook: env.git_hook_secret(),
+            mail_hook: env.mail_hook_secret(),
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
             weekly: WeeklyEmail::new(folder, config, env, cli),
             ai: crate::serve_apis::ai_writer::desk(config, env, cli),
@@ -203,13 +207,13 @@ fn serve_with(
     let (source, first) = first_pages((site, config, routes), reload, &checked)
         .and_then(|first| bodies.finish().map(|()| first))
         .map_err(|message| (message, Exit::Failure))?;
-    let security = security_headers(config)?;
+    let security = security_headers(config, listen)?;
     let search = search_route::Search::of(&source, (database, id), &security);
     let ((posted, forms), alerting) = mail_and_alerts(
         (site, config, listen, every),
         (&search, runtime, &telling),
         &content,
-        (keys.mail, outbound),
+        ((keys.mail, keys.mail_hook), outbound),
     )?;
     let (mailer, panel) = (alerting.mailer.clone(), site_hosts::panel(among));
     let served = runtime.block_on(async {
@@ -236,6 +240,7 @@ fn serve_with(
         let nightly = NightlyAudit::new(site, config, routes);
         let timed = (alerting, keys.weekly, forms, nightly);
         let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
+        let pruning = Pruning::start((database, id), every.clock);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -258,13 +263,12 @@ fn serve_with(
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook, &rest));
         // The rest renders once the routes are ready, so it does not slow
         // setting them up (ADR "the APIs are built beside the first answer").
-        let (failed, failure) = oneshot::channel();
-        tokio::spawn(render_the_rest(rest, (checked, assets), failed));
+        let failure = render_later(rest, (checked, assets));
         let why = Arc::new(Mutex::new(None));
         let stopping = stop_or_fail(failure, Arc::clone(&why));
         let stopped = front.answer(app, stopping).await;
         watching.stop().await;
-        tokio::join!(scheduling.stop(), alert_watching.stop());
+        tokio::join!(scheduling.stop(), alert_watching.stop(), pruning.stop());
         tokio::join!(announcing.stop(), counter.stop());
         ended(&why, stopped)
     });
@@ -413,6 +417,17 @@ async fn unlocking(
     ))
 }
 
+/// Starts [`render_the_rest`] in the background and hands back where it
+/// says why, if the pages cannot be rendered.
+fn render_later(
+    rest: (SitePages, LivePages),
+    built: (Arc<SiteContent>, Assets),
+) -> oneshot::Receiver<UserMessage> {
+    let (failed, failure) = oneshot::channel();
+    tokio::spawn(render_the_rest(rest, built, failed));
+    failure
+}
+
 /// Renders every page from the `checked` content on a blocking thread
 /// (RULES.md BL-RUN-7), serves them in place of the first pages, with any
 /// post saved meanwhile kept on top, then adds their Brotli copies. A save
@@ -509,11 +524,20 @@ pub(crate) fn open(site: &Path, runtime: &Runtime) -> Result<(Database, SiteId),
 
 /// The security headers of every page, letting in the frames of the embed
 /// providers and `[media] embed_domains`, and the reader script by its hash.
-fn security_headers(config: &Config) -> Result<SecurityHeaders, (UserMessage, Exit)> {
+/// With `--https` Khalid ends TLS itself, so it sends HSTS too; on plain
+/// HTTP that header belongs to the proxy in front.
+fn security_headers(
+    config: &Config,
+    listen: &Listen,
+) -> Result<SecurityHeaders, (UserMessage, Exit)> {
     let origins = site_config::frame_origins(config);
-    SecurityHeaders::new(&origins.iter().map(String::as_str).collect::<Vec<_>>())
+    let headers = SecurityHeaders::new(&origins.iter().map(String::as_str).collect::<Vec<_>>())
         .and_then(|headers| headers.with_script(&assets::reader().integrity))
-        .map_err(|_| (serve_message::internal(), Exit::Internal))
+        .map_err(|_| (serve_message::internal(), Exit::Internal))?;
+    Ok(match listen {
+        Listen::Https(_) => headers.with_hsts(),
+        Listen::Plain(_) => headers,
+    })
 }
 
 /// Says where the site answers. In JSON, this one line is the whole output.

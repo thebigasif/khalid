@@ -2719,6 +2719,7 @@ version = "1.8.0"
 dependencies = [
  "atom_syndication",
  "axum",
+ "base64 0.23.1",
  "brotli",
  "chrono",
  "clap",

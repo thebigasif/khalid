@@ -36,21 +36,33 @@ impl NotFoundTable {
         if counted.rows_affected() > 0 {
             return Ok(());
         }
-        // A new address goes in only while the log has room.
+        // A full log makes room for the new address by dropping the one
+        // hit least, and of those the one seen longest ago, so a scanner
+        // cannot keep real 404s out once it has filled the log.
         let limit = i64::try_from(MAX_MISSES).unwrap_or(i64::MAX);
+        let mut tx = self.db.writer.begin().await?;
+        sqlx::query(
+            "DELETE FROM not_found_log WHERE site_id = ?1 AND path = \
+             (SELECT path FROM not_found_log WHERE site_id = ?1 \
+              AND (SELECT count(*) FROM not_found_log WHERE site_id = ?1) >= ?2 \
+              ORDER BY hits, last_seen, path LIMIT 1)",
+        )
+        .bind(self.site.as_row())
+        .bind(limit)
+        .execute(&mut *tx)
+        .await?;
         sqlx::query(
             "INSERT INTO not_found_log (site_id, path, hits, first_seen, last_seen) \
-             SELECT ?1, ?2, 1, ?3, ?3 \
-             WHERE (SELECT count(*) FROM not_found_log WHERE site_id = ?1) < ?4 \
+             VALUES (?1, ?2, 1, ?3, ?3) \
              ON CONFLICT (site_id, path) DO UPDATE SET \
              hits = hits + 1, last_seen = excluded.last_seen",
         )
         .bind(self.site.as_row())
         .bind(path)
         .bind(&at)
-        .bind(limit)
-        .execute(&self.db.writer)
+        .execute(&mut *tx)
         .await?;
+        tx.commit().await?;
         Ok(())
     }
 

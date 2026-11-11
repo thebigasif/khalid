@@ -1,8 +1,9 @@
-//! The publish gate: whether a post may go live, and why not.
+//! The publish gate: whether a post, case study or changelog entry may go
+//! live, and why not.
 
 use serde::Serialize;
 
-use crate::{LintPost, Linter, Report, SiteView};
+use crate::{LintEntry, LintPost, Linter, Report, SiteView};
 
 /// What the publish gate decided for one post, with every finding behind it.
 ///
@@ -48,6 +49,17 @@ impl Linter {
             Verdict::Publish { report }
         }
     }
+
+    /// The publish gate for a case study or changelog entry: runs the entry
+    /// rules on `entry` and refuses it when any finding blocks.
+    pub fn entry_gate(&self, entry: &LintEntry) -> Verdict {
+        let report = self.lint_entry(entry);
+        if report.blocks() {
+            Verdict::Refuse { report }
+        } else {
+            Verdict::Publish { report }
+        }
+    }
 }
 
 /// Whatever decides if a post may go live, as every publish path holds it.
@@ -64,11 +76,18 @@ pub trait PublishGate {
     fn refuses(&self, post: &LintPost, site: &dyn SiteView) -> bool {
         !self.verdict(post, site).allows_publishing()
     }
+
+    /// The decision for a case study or changelog `entry`.
+    fn entry_verdict(&self, entry: &LintEntry) -> Verdict;
 }
 
 impl PublishGate for Linter {
     fn verdict(&self, post: &LintPost, site: &dyn SiteView) -> Verdict {
         self.gate(post, site)
+    }
+
+    fn entry_verdict(&self, entry: &LintEntry) -> Verdict {
+        self.entry_gate(entry)
     }
 
     fn refuses(&self, post: &LintPost, site: &dyn SiteView) -> bool {

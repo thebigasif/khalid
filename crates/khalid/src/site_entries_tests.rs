@@ -176,3 +176,52 @@ fn a_delete_on_the_latest_copy_removes_the_file_or_its_folder() {
         Err(EntryError::NotFound)
     ));
 }
+
+#[tokio::test]
+async fn a_deleted_page_folder_waits_in_the_trash_until_its_address_is_free() {
+    use khalid_api::post_trash::{PostTrash, Restored, TrashError, TrashedKind};
+
+    let (site, pages) = site();
+    let toml = within(site.path(), &["site.toml"]);
+    let config = Config::from_toml(&toml, SITE_TOML, &Environment::empty()).unwrap();
+    let at = chrono::TimeZone::with_ymd_and_hms(&Utc, 2026, 11, 11, 9, 0, 0).unwrap();
+    let clock = khalid_core::FixedClock::new(at);
+    let posts = SitePosts::new(site.path(), config, clock);
+    let pages = pages.with_trash(posts.clone());
+    let folder = within(site.path(), &["content", "en", "pages", "team"]);
+    fs::create_dir_all(&folder).unwrap();
+    fs::write(
+        within(&folder, &["index.md"]),
+        "---\ntitle: Team\n---\nUs.\n",
+    )
+    .unwrap();
+    fs::write(within(&folder, &["photo.jpg"]), "jpeg").unwrap();
+    let team = pages.find("en.team").unwrap().unwrap().entry;
+    pages.delete_now("en.team", team.updated_at()).unwrap();
+    assert!(!folder.exists());
+
+    let trashed = posts.trashed().await.unwrap();
+    let copy = trashed.first().unwrap();
+    assert_eq!((copy.id.as_str(), copy.title.as_str()), ("en.team", "Team"));
+    assert_eq!(copy.kind, TrashedKind::Page);
+    let kept = [
+        "trash",
+        &copy.key,
+        "content",
+        "en",
+        "pages",
+        "team",
+        "photo.jpg",
+    ];
+    assert!(within(site.path(), &kept).is_file());
+
+    // A new page took the address, under another file name.
+    let other = within(site.path(), &["content", "en", "pages", "us.md"]);
+    fs::write(&other, "---\ntitle: Us\nslug: team\n---\nWe.\n").unwrap();
+    let taken = posts.restore(&copy.key).await;
+    assert!(matches!(taken, Err(TrashError::Taken { id }) if id == "en.team"));
+    fs::remove_file(&other).unwrap();
+    assert_eq!(posts.restore(&copy.key).await.unwrap(), Restored::Page);
+    assert!(within(&folder, &["photo.jpg"]).is_file());
+    assert_eq!(posts.trashed().await.unwrap(), []);
+}

@@ -47,7 +47,10 @@ async fn routes(mailer: &MemoryMailer) -> (tempfile::TempDir, Router) {
     let mail = Arc::new(mailer.clone());
     let newsletter = Newsletter::new(store, mail, Arc::new(SystemClock), site()).unwrap();
     let newsletter = newsletter.with_pass(reader_pass());
-    (dir, router(Pages::new(site()).unwrap(), Some(newsletter)))
+    (
+        dir,
+        router(Pages::new(site()).unwrap(), Some(newsletter), None),
+    )
 }
 
 /// The status and headers `router` answers.

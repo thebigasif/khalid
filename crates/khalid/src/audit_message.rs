@@ -261,6 +261,18 @@ pub(crate) fn write(file: &Path, error: &io::Error) -> UserMessage {
     )
 }
 
+/// The message when another audit holds the lock `file`.
+pub(crate) fn busy(file: &Path) -> UserMessage {
+    UserMessage::new(
+        "Another audit of this site is running, so this one did not start.",
+        "Two audits at once would build into the same folder and mix up their pages.",
+        format!(
+            "Wait a few minutes and run `khalid audit` again. If no audit is running, delete {} first.",
+            file.display()
+        ),
+    )
+}
+
 /// The message for a fault inside Khalid.
 pub(crate) fn internal() -> UserMessage {
     UserMessage::new(

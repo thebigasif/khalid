@@ -25,7 +25,8 @@
 //! connection, as the [`SerpdadTable`] the Admin API keeps, the earlier
 //! versions of posts, as the [`VersionTable`] the publish door keeps, and
 //! the consent proof, as the [`ConsentProofTable`] the consent form counts
-//! readers' choices into.
+//! readers' choices into. [`Prune`] deletes the visitor rows that have
+//! aged out, once an hour while `khalid serve` runs.
 
 mod account_table;
 mod alert_table;
@@ -46,6 +47,7 @@ mod newsletter_sends;
 mod not_found_table;
 mod passkey_table;
 mod posts;
+mod prune;
 mod rebuild;
 mod redirect_rows;
 mod schedule_table;
@@ -83,6 +85,7 @@ pub use key_table::KeyTable;
 pub use link_table::LinkTable;
 pub use not_found_table::NotFoundTable;
 pub use passkey_table::PasskeyTable;
+pub use prune::{DELIVERY_DAYS, MISS_DAYS, Prune, Pruned};
 pub use rebuild::{PostChanges, RebuildSummary};
 pub use redirect_rows::RedirectRows;
 pub use schedule_table::ScheduleTable;

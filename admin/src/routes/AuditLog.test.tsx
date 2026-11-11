@@ -46,7 +46,7 @@ describe("the audit log", () => {
     expect(removed).toHaveTextContent("/posts/en.what-a-sitemap-does/");
     expect(removed).toHaveTextContent("Maria Lopez");
     expect(removed).not.toHaveTextContent("0000000000000002");
-    expect(restored).toHaveTextContent("Put a post back from the trash");
+    expect(restored).toHaveTextContent("Put a post or page back from the trash");
     expect(restored).toHaveTextContent("4f1c9a20b7e3d615");
     expect(screen.queryByRole("button", { name: en.audit.older })).toBeNull();
     expect(await axeViolations()).toEqual([]);

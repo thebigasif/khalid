@@ -12,6 +12,7 @@ const LIVE: TrashedPost = {
   title: "What a sitemap does",
   status: "published",
   trashed_at: "2026-10-31T09:30:00Z",
+  kind: "post",
 };
 const DRAFT: TrashedPost = {
   key: "20261030T160500Z-en.choosing-anchor-text",
@@ -19,6 +20,15 @@ const DRAFT: TrashedPost = {
   title: "Choosing anchor text",
   status: "draft",
   trashed_at: "2026-10-30T16:05:00Z",
+  kind: "post",
+};
+const PAGE: TrashedPost = {
+  key: "20261029T120000Z-en.about",
+  id: "en.about",
+  title: "About Field Notes",
+  status: "published",
+  trashed_at: "2026-10-29T12:00:00Z",
+  kind: "page",
 };
 
 /** A blog whose trash holds `held`, restoring and purging on request. */
@@ -32,6 +42,11 @@ function trashing(held: TrashedPost[]) {
     [`POST /trash/${LIVE.key}/restore/`]: () => {
       without(LIVE.key);
       return json(200, { posts: [{ id: LIVE.id }] });
+    },
+    // A page comes back with no body, which the page routes then read.
+    [`POST /trash/${PAGE.key}/restore/`]: () => {
+      without(PAGE.key);
+      return new Response(null, { status: 204 });
     },
     [`DELETE /trash/${DRAFT.key}/`]: () => {
       without(DRAFT.key);
@@ -65,6 +80,18 @@ describe("the trash", () => {
     expect(await screen.findByText(en.trash.restored(LIVE.title))).toBeVisible();
     await waitFor(() => expect(screen.queryByRole("cell", { name: LIVE.title })).toBeNull());
     expect(sent.filter((request) => request.method === "POST")).toHaveLength(1);
+  });
+
+  it("lists a deleted page as a page and puts it back", async () => {
+    signedIn();
+    trashing([PAGE]);
+    renderAt("/trash");
+    const table = await screen.findByRole("table", { name: en.trash.title });
+    const [, page] = within(table).getAllByRole("row");
+    expect(page).toHaveTextContent(en.trash.page);
+    await userEvent.click(screen.getByRole("button", { name: en.trash.restore(PAGE.title) }));
+    expect(await screen.findByText(en.trash.restored(PAGE.title))).toBeVisible();
+    expect(await screen.findByText(en.trash.none)).toBeVisible();
   });
 
   it("asks once more before it deletes a post for good", async () => {

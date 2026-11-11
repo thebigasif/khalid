@@ -16,6 +16,7 @@ mod clicks;
 mod confirmation;
 mod email_address;
 mod issue;
+mod limits;
 mod lists;
 mod mail;
 mod newsletter;
@@ -31,6 +32,7 @@ pub use archive::{ArchivedIssue, NewsletterPage, archive};
 pub use confirmation::{ConfirmationLinks, NewsletterWords, SiteLinks, WordsError};
 pub use email_address::{EmailAddress, ParseEmailError};
 pub use issue::{Issue, PostalAddress, SendId, SendNumbers, SendTotals, Sent};
+pub use limits::{SignUpCheck, SignUpLimits};
 pub use lists::Lists;
 #[cfg(any(test, feature = "test-util"))]
 pub use mail::MemoryMailer;
@@ -41,7 +43,8 @@ pub use reader_pass::{BackPath, PASS_DAYS, ReaderPass};
 pub use routes::router;
 pub use segment::{Labelled, Member, Recipient, Segment};
 pub use store::{
-    BoxFuture, Confirmed, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, Unsubscribed,
+    BoxFuture, Confirmed, SignUp, SignedUp, Stop, StoreError, SubscriberId, SubscriberStore,
+    Unsubscribed,
 };
 pub use token::{GenerateTokenError, ParseTokenError, SubscriberToken, TokenHash};
 pub use welcome::{LAST_DAY, Welcome, WelcomeFiles, Welcomes};
