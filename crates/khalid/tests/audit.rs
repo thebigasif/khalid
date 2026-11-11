@@ -195,6 +195,34 @@ fn each_run_adds_to_the_trend() {
         "{said}"
     );
     assert_eq!(file(site.path(), "runs.jsonl").lines().count(), 2);
+    let mut lock = site.path().to_path_buf();
+    lock.push("data/audit/running");
+    assert!(!lock.exists(), "a finished audit lets go of its lock");
+}
+
+#[test]
+fn an_audit_does_not_start_while_another_runs() {
+    let site = demo_copy();
+    let mut folder = site.path().to_path_buf();
+    folder.push("data/audit");
+    fs::create_dir_all(&folder).unwrap();
+    let mut lock = folder.clone();
+    lock.push("running");
+    // A start time ahead of any clock, so the lock is never old enough to
+    // be taken over.
+    fs::write(&lock, "2999-01-01T00:00:00+00:00").unwrap();
+    let output = audit(site.path(), &[]);
+    assert_eq!(output.status.code(), Some(1));
+    let said = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        said.contains("Another audit of this site is running"),
+        "{said}"
+    );
+    assert!(said.contains("data/audit/running"), "{said}");
+    let mut built = folder;
+    built.push("site");
+    assert!(!built.exists(), "the running audit's pages are left alone");
+    assert!(lock.exists(), "the running audit keeps its lock");
 }
 
 #[test]
