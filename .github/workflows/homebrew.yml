@@ -1,0 +1,115 @@
+name: Homebrew
+
+# When a release is published, writes its Homebrew formula with
+# scripts/homebrew-formula.sh, installs and tests it with brew on macOS and
+# Linux, and only then puts it in the tap repository
+# thebigasif/homebrew-khalid, so `brew install thebigasif/khalid/khalid`
+# and `brew upgrade` get the new release. A prerelease is left out. Run it
+# by hand with a tag to write an older release's formula again.
+#
+# Pushing to the tap needs the HOMEBREW_TAP_TOKEN secret: a fine-grained
+# token that may write contents to thebigasif/homebrew-khalid only. Without
+# it the formula is still written and tested, kept as an artifact, and the
+# run says the tap was not updated.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The release, such as v1.9.0
+        required: true
+
+permissions:
+  contents: read
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
+
+jobs:
+  formula:
+    name: Write the formula
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: The release's checksums
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "$TAG" --repo "${{ github.repository }}" --pattern SHA256SUMS --dir release
+      - name: Write the formula
+        run: |
+          mkdir formula
+          ./scripts/homebrew-formula.sh "$TAG" release/SHA256SUMS > formula/khalid.rb
+          cat formula/khalid.rb
+      - uses: actions/upload-artifact@v7
+        with:
+          name: homebrew-formula
+          path: formula/khalid.rb
+          if-no-files-found: error
+
+  # brew installs the formula from a local tap, as a user's machine would,
+  # then runs its test, which makes a site with `khalid init`.
+  brew:
+    name: brew install on ${{ matrix.os }}
+    needs: formula
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: homebrew-formula
+          path: formula
+      - name: Install, test and check the extras
+        shell: bash
+        run: |
+          if ! command -v brew >/dev/null; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          fi
+          brew tap-new --no-git local/khalid
+          cp formula/khalid.rb "$(brew --repository local/khalid)/Formula/khalid.rb"
+          brew install local/khalid/khalid
+          brew test local/khalid/khalid
+          prefix="$(brew --prefix)"
+          "$prefix/bin/khalid" --version
+          for file in share/man/man1/khalid-init.1 share/zsh/site-functions/_khalid share/fish/vendor_completions.d/khalid.fish; do
+            if [ ! -f "$prefix/$file" ]; then
+              echo "brew did not install $file, so the formula is missing an extra. Check scripts/homebrew-formula.sh."
+              exit 1
+            fi
+          done
+
+  tap:
+    name: Update the tap
+    needs: brew
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: homebrew-formula
+          path: formula
+      - name: Push the formula to thebigasif/homebrew-khalid
+        env:
+          TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::warning::The tap was not updated, because the HOMEBREW_TAP_TOKEN secret is not set. The formula is in this run's homebrew-formula artifact. Set the secret, then run this workflow again with the tag."
+            exit 0
+          fi
+          git clone "https://x-access-token:$TOKEN@github.com/${{ github.repository_owner }}/homebrew-khalid.git" tap
+          mkdir -p tap/Formula
+          cp formula/khalid.rb tap/Formula/khalid.rb
+          cd tap
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/khalid.rb
+          if git diff --cached --quiet; then
+            echo "The tap already has the formula for $TAG."
+            exit 0
+          fi
+          git commit -m "khalid ${TAG#v}"
+          git push

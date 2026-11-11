@@ -199,6 +199,8 @@ jobs:
         run: cargo machete
       - name: Lint table proven to fire (BL-LNT-3)
         run: ./scripts/check-lints.sh
+      - name: Published crates package and build alone (cargo publish --dry-run, KH-LNT-6)
+        run: cargo publish --dry-run --locked -p khalid-core -p khalid-lint
 
   # The job id stays rust, so the test build keeps its warm cache.
   # A pull request runs the suite in four parts at once, without coverage
@@ -399,7 +401,13 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: admin/package-lock.json
+          cache-dependency-path: |
+            admin/package-lock.json
+            sdk/typescript/package-lock.json
+      # The SDK has no admin dependency, but it shares this job's Node.
+      - name: TypeScript SDK, Biome and TypeScript (G27)
+        run: npm ci && npm run check
+        working-directory: sdk/typescript
       - name: Install
         if: steps.admin.outputs.present == 'true'
         run: npm ci
@@ -408,7 +416,7 @@ jobs:
         if: steps.admin.outputs.present == 'true'
         run: npx biome ci . && npx tsc --noEmit && npx vitest run
         working-directory: admin
-      - name: Build and size budget (under 350 KB compressed)
+      - name: Build and size check (first download 250 KB, all files 450 KB)
         if: steps.admin.outputs.present == 'true'
         run: npm run build && node scripts/size-budget.mjs
         working-directory: admin
@@ -514,7 +522,7 @@ jobs:
   #                     and then off. A page that breaks with scripts off
   #                     fails here.
   #   Demo layout       the showcase in each template pack in Chromium,
-  #                     Firefox and WebKit at 390, 768, 1440 and 2000 px,
+  #                     Firefox and WebKit at 320, 390, 768, 1440 and 2000 px,
   #                     one job per group of packs and browser. The
   #                     Chromium jobs also hold each pack's demo home page
   #                     to the page-weight budgets.

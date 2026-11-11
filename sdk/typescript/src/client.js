@@ -7,9 +7,9 @@ import { operations } from "./operations.js";
  * @typedef {import("./index.js").OperationId} OperationId
  * @typedef {import("./schema.js").Problem} Problem
  * @typedef {{
- *   path?: Readonly<Record<string, string | number>>;
+ *   path?: Readonly<Record<string, string | number | null>>;
  *   query?: Readonly<Record<string, string | number | boolean | null | undefined>>;
- *   headers?: Readonly<Record<string, string | undefined>>;
+ *   headers?: Readonly<Record<string, string | null | undefined>>;
  *   body?: unknown;
  * }} Values
  */
@@ -40,7 +40,7 @@ export function createClient(options) {
       }
       const headers = new Headers({ Accept: "application/json, application/problem+json" });
       for (const [name, value] of Object.entries(values.headers ?? {})) {
-        if (value !== undefined) headers.set(name, value);
+        if (value !== undefined && value !== null) headers.set(name, value);
       }
       if (route.key === "admin" && options.adminKey !== undefined) {
         headers.set("Authorization", `Khalid ${options.adminKey}`);
@@ -70,13 +70,14 @@ export function createClient(options) {
  * The path template with each `{name}` replaced by its encoded value.
  *
  * @param {string} template
- * @param {Readonly<Record<string, string | number>>} values
+ * @param {Readonly<Record<string, string | number | null>>} values
  * @returns {string}
  */
 function fill(template, values) {
   return template.replace(/\{([^}]+)\}/g, (_, name) => {
     const value = values[name];
-    if (value === undefined) throw new TypeError(`The path needs ${name}. Pass it in input.path.`);
+    if (value === undefined || value === null)
+      throw new TypeError(`The path needs ${name}. Pass it in input.path.`);
     return encodeURIComponent(String(value));
   });
 }
