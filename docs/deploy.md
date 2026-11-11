@@ -347,6 +347,8 @@ To check mail before you start the server, run `khalid --site <folder> doctor` i
 
 `khalid serve` audits the blog once a day, the way `khalid audit --offline` does: it builds the site into `data/audit/site/`, reads every page as a search engine's crawler would, and keeps the health score in `data/audit/runs.jsonl`. The health score is the share of pages with no error, out of 100. The first audit runs an hour after the server starts, so it never slows the start, and the next one a day after the last audit, whether the server or you ran it. The issues and their fixes are in `data/audit/issues.csv`.
 
+Only one audit of a site runs at a time. While one runs, it keeps the file `data/audit/running`. A `khalid audit` started then stops at once and says so, and the server's audit tries again an hour later. If an audit stopped without removing the file, the next audit takes it over once it is six hours old, or you can delete it.
+
 The dashboard shows the score from `GET /api/admin/v1/site/health/`, which sends the last audit and up to the last 30 as the trend. Before the first audit, `last` is `null`.
 
 ## Alerts

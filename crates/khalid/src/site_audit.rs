@@ -9,6 +9,10 @@
 //! length and the stale window from the site's `lint.toml`, like the
 //! linter. `khalid serve` runs the same audit offline once a day
 //! (plan 5.10), so the dashboard's score is never more than a day old.
+//! Both hold the lock in `data/audit/running` while they run, so they
+//! never build into the same folder at once.
+
+mod lock;
 
 use std::fs::{self, OpenOptions};
 use std::io::Write as _;
@@ -24,6 +28,7 @@ use khalid_outbound::{Limits, Outbound, Resolver};
 use khalid_routes::Routes;
 use tokio::runtime::Handle;
 
+use self::lock::AuditLock;
 use crate::cli::{Cli, Network, Output};
 use crate::exit::Exit;
 use crate::{audit_alert, audit_events, audit_message, build, lint, outbound, report};
@@ -48,6 +53,11 @@ pub(crate) fn run(
     let config = checked.0;
     let thresholds = match thresholds(site, clock) {
         Ok(thresholds) => thresholds,
+        Err(message) => return report::failure(output, &message, Exit::Failure),
+    };
+    // Held to the end of the run, the CSV files and the trend included.
+    let _held = match AuditLock::take(&folder, clock) {
+        Ok(held) => held,
         Err(message) => return report::failure(output, &message, Exit::Failure),
     };
     let (Ok(home), Ok(runtime)) = (
@@ -142,6 +152,7 @@ pub(crate) fn nightly(
     let folder = within(site, FOLDER);
     let thresholds = thresholds(site, clock)?;
     let home = home(checked.0).map_err(|()| audit_message::internal())?;
+    let _held = AuditLock::take(&folder, clock)?;
     let built = within(&folder, "site");
     emptied(&built)?;
     build::quietly(site, checked, &built, clock)?;
