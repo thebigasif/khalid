@@ -1,8 +1,9 @@
 //! The tools `khalid mcp` offers: the Content and Admin API tools from
 //! `khalid-mcp`, and `lint_post`, which runs the lint publish gate on a
-//! post without publishing it. The Admin API has no lint route yet, so
-//! `lint_post` calls the function the publish route calls, and checks the
-//! key's scope the way a route would. Each call that changed something is
+//! post without publishing it. `lint_post` calls the function the publish
+//! route calls, and checks the key's scope the way a route would. The Admin
+//! API's `GET /posts/{id}/check/` gives the same findings with the search
+//! result and the JSON-LD added. Each call that changed something is
 //! noted for a running `khalid serve` (ADR "khalid serve reads again what
 //! khalid mcp writes").
 

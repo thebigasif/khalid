@@ -448,7 +448,7 @@ body = "<script src='https://chat.example.com/widget.js' defer></script>"
 
 `head` goes at the end of every page's head and may hold `script`, `style`, `meta` and `link`. `body` goes at the end of every page's body and may hold only `script`. Khalid checks both when it starts and says what to change if something does not belong.
 
-By default this code waits for each reader's consent, which means their yes. Every page then ends with a short note and two buttons, Allow and Do not allow. The buttons are a plain form, so they work with scripts turned off. The code runs only for a reader who pressed Allow, and a post's own head code waits too. A reader's choice is kept in a cookie for 180 days, and a small form at the bottom of each page lets them change it.
+By default this code waits for each reader's consent, which means their yes. Every page then starts with a short note and three choices: Accept all, Reject all and Choose. Accept all and Reject all are a plain form, so they work with scripts turned off. Choose opens the `privacy-choices/` page, which has one switch per kind of consent. Each piece of code runs only for a reader who allowed its kind, and a post's own head code waits too, as `marketing`. A reader's choice is kept in a cookie for as long as `[privacy]` says, six months unless you change it. After that, a short line on each page links to the choices page, so the reader can change their mind.
 
 For code that sets no cookie and tracks no one, add `consent = "not-needed"` to `[code]`. The code then runs for every reader and no note is shown.
 
@@ -462,7 +462,7 @@ vendor = "Example Stats"
 policy = "https://stats.example.net/privacy"
 ```
 
-The old single `[code]` table still works: `consent = "ask"` reads as one `marketing` entry and `consent = "not-needed"` as one `no-tracking` entry. For now, when any entry waits for consent, all of the site's code waits together; the banner with a switch per kind of consent comes in a later release.
+The old single `[code]` table still works: `consent = "ask"` reads as one `marketing` entry and `consent = "not-needed"` as one `no-tracking` entry. Each entry waits for its own kind: a reader who allows only `analytics` gets the `analytics` entries and none of the `marketing` ones.
 
 The `[privacy]` table sets how consent is asked. Every key may be left out:
 
