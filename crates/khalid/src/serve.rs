@@ -263,8 +263,7 @@ fn serve_with(
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook, &rest));
         // The rest renders once the routes are ready, so it does not slow
         // setting them up (ADR "the APIs are built beside the first answer").
-        let (failed, failure) = oneshot::channel();
-        tokio::spawn(render_the_rest(rest, (checked, assets), failed));
+        let failure = render_later(rest, (checked, assets));
         let why = Arc::new(Mutex::new(None));
         let stopping = stop_or_fail(failure, Arc::clone(&why));
         let stopped = front.answer(app, stopping).await;
@@ -416,6 +415,17 @@ async fn unlocking(
         pages,
         SystemClock,
     ))
+}
+
+/// Starts [`render_the_rest`] in the background and hands back where it
+/// says why, if the pages cannot be rendered.
+fn render_later(
+    rest: (SitePages, LivePages),
+    built: (Arc<SiteContent>, Assets),
+) -> oneshot::Receiver<UserMessage> {
+    let (failed, failure) = oneshot::channel();
+    tokio::spawn(render_the_rest(rest, built, failed));
+    failure
 }
 
 /// Renders every page from the `checked` content on a blocking thread
