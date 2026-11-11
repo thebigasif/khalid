@@ -199,6 +199,8 @@ jobs:
         run: cargo machete
       - name: Lint table proven to fire (BL-LNT-3)
         run: ./scripts/check-lints.sh
+      - name: Published crates package and build alone (cargo publish --dry-run, KH-LNT-6)
+        run: cargo publish --dry-run --locked -p khalid-core -p khalid-lint
 
   # The job id stays rust, so the test build keeps its warm cache.
   # A pull request runs the suite in four parts at once, without coverage
@@ -399,7 +401,13 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: admin/package-lock.json
+          cache-dependency-path: |
+            admin/package-lock.json
+            sdk/typescript/package-lock.json
+      # The SDK has no admin dependency, but it shares this job's Node.
+      - name: TypeScript SDK, Biome and TypeScript (G27)
+        run: npm ci && npm run check
+        working-directory: sdk/typescript
       - name: Install
         if: steps.admin.outputs.present == 'true'
         run: npm ci
