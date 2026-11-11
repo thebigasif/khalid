@@ -7,11 +7,11 @@ use crate::catalogue::Swap;
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
-    Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, facts, focus_shape,
-    focus_spread, headings, inclusive, link_hygiene, link_targets, link_text, page_checks,
-    page_or_section, page_shape, readability, reading, site_content, site_keywords, site_links,
-    site_sections, site_trust, snippet, statistics, structure, title_width, topics, voice, words,
-    writing,
+    EntryRule, Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, entries,
+    facts, focus_shape, focus_spread, headings, inclusive, link_hygiene, link_targets, link_text,
+    page_checks, page_or_section, page_shape, readability, reading, site_content, site_keywords,
+    site_links, site_sections, site_trust, snippet, statistics, structure, title_width, topics,
+    voice, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
@@ -223,6 +223,15 @@ fn topic_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(page_shape::ComparisonAnswerLate),
         Box::new(page_shape::FewerPicksThanTitle),
         Box::new(page_shape::ReviewWithoutRating),
+    ]
+}
+
+/// The rules on each case study and changelog entry (plan section 5.13),
+/// after the site rules.
+pub(crate) fn entry_rules() -> Vec<Box<dyn EntryRule>> {
+    vec![
+        Box::new(entries::CaseStudyIncomplete),
+        Box::new(entries::ChangelogEntryUndated),
     ]
 }
 

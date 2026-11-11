@@ -2,13 +2,13 @@
 
 use std::collections::BTreeMap;
 
-use khalid_core::Clock;
+use khalid_core::{Clock, Locale, Slug};
 use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 use crate::builtin;
 use crate::{
-    Analysis, Catalogue, Finding, Hit, LintConfig, LintError, LintPost, Location, Message, Rule,
-    RuleId, Score, Severity, SiteRule, SiteView,
+    Analysis, Catalogue, EntryRule, Finding, Hit, LintConfig, LintError, LintPost, Location,
+    Message, Rule, RuleId, Score, Severity, SiteRule, SiteView,
 };
 
 /// The configured rules, each with its severity and message.
@@ -17,6 +17,7 @@ pub struct Linter {
     catalogue: Catalogue,
     rules: Vec<Configured<dyn Rule>>,
     site_rules: Vec<Configured<dyn SiteRule>>,
+    entry_rules: Vec<Configured<dyn EntryRule>>,
 }
 
 /// A rule that is switched on, with what the linter shows when it fires.
@@ -47,7 +48,8 @@ impl Linter {
         let reviewed = config.reviewers_required_in().to_vec();
         let rules = builtin::rules(thresholds, terms, reviewed);
         Self::with_catalogue(catalogue, config, rules)?
-            .with_site_rules(config, builtin::site_rules(thresholds, today))
+            .with_site_rules(config, builtin::site_rules(thresholds, today))?
+            .with_entry_rules(config, builtin::entry_rules())
     }
 
     /// A linter running the post rules `rules` with the severities in
@@ -72,6 +74,7 @@ impl Linter {
             catalogue,
             rules: Vec::new(),
             site_rules: Vec::new(),
+            entry_rules: Vec::new(),
         };
         for rule in rules {
             let (id, default) = (rule.id(), rule.default_severity());
@@ -102,6 +105,31 @@ impl Linter {
             let (id, default) = (rule.id(), rule.default_severity());
             if let Some((severity, message)) = self.configure(config, id, default)? {
                 self.site_rules.push(Configured {
+                    severity,
+                    message,
+                    rule,
+                });
+            }
+        }
+        Ok(self)
+    }
+
+    /// This linter with the case study and changelog rules `rules` added,
+    /// with the severities in `config`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LintError::MissingMessage`] for a rule the catalogue has no
+    /// message for.
+    fn with_entry_rules(
+        mut self,
+        config: &LintConfig,
+        rules: Vec<Box<dyn EntryRule>>,
+    ) -> Result<Self, LintError> {
+        for rule in rules {
+            let (id, default) = (rule.id(), rule.default_severity());
+            if let Some((severity, message)) = self.configure(config, id, default)? {
+                self.entry_rules.push(Configured {
                     severity,
                     message,
                     rule,
@@ -147,7 +175,8 @@ impl Linter {
         let mut findings = Vec::new();
         for configured in &self.rules {
             for hit in configured.rule.check(post, site) {
-                findings.push(configured.finding(configured.rule.id(), post, hit));
+                let at = (&post.locale, &post.slug);
+                findings.push(configured.finding(configured.rule.id(), at, hit));
             }
         }
         findings
@@ -166,12 +195,22 @@ impl Linter {
     }
 
     /// Runs the site rules once over the whole site: the checks that only
-    /// make sense after posts are published, such as orphan posts.
+    /// make sense after posts are published, such as orphan posts. Then the
+    /// rules on each case study and changelog entry.
     pub fn site_health(&self, site: &dyn SiteView) -> Report {
         let mut findings = Vec::new();
         for configured in &self.site_rules {
             for (post, hit) in configured.rule.check(site) {
-                findings.push(configured.finding(configured.rule.id(), post, hit));
+                let at = (&post.locale, &post.slug);
+                findings.push(configured.finding(configured.rule.id(), at, hit));
+            }
+        }
+        for configured in &self.entry_rules {
+            for entry in site.entries() {
+                for hit in configured.rule.check(entry) {
+                    let at = (&entry.locale, &entry.slug);
+                    findings.push(configured.finding(configured.rule.id(), at, hit));
+                }
             }
         }
         Report {
@@ -200,7 +239,8 @@ impl Linter {
 }
 
 impl<R: ?Sized> Configured<R> {
-    fn finding(&self, rule: RuleId, post: &LintPost, hit: Hit) -> Finding {
+    /// The finding `hit` of `rule` on the post or entry `slug` in `locale`.
+    fn finding(&self, rule: RuleId, (locale, slug): (&Locale, &Slug), hit: Hit) -> Finding {
         let message = if hit.is_on_the_only_post() {
             self.message.for_only_post()
         } else {
@@ -208,8 +248,8 @@ impl<R: ?Sized> Configured<R> {
         };
         let (subject, suggestions) = hit.into_parts();
         let location = Location {
-            locale: post.locale.clone(),
-            slug: post.slug.clone(),
+            locale: locale.clone(),
+            slug: slug.clone(),
             subject,
         };
         Finding::new(rule, self.severity, location, message, suggestions)

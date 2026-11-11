@@ -1,0 +1,25 @@
+# A changelog entry needs a date, which also gives the month it is listed
+# under; the version may be left out. Only the entry with a version and no
+# date is reported. A case study is not a changelog entry.
+[[entries]]
+locale = "en"
+slug = "two-four"
+date = "2026-11-01"
+kind = { type = "changelog", version = "2.4" }
+
+[[entries]]
+locale = "en"
+slug = "october"
+date = "2026-10-26"
+kind = { type = "changelog" }
+
+[[entries]]
+locale = "en"
+slug = "two-five"
+kind = { type = "changelog", version = "2.5" }
+
+[[entries]]
+locale = "en"
+slug = "harbour-tea"
+date = "2026-10-09"
+kind = { type = "case-study", client = "Harbour Tea Rooms", outcome = "Search visits back in eight weeks." }
