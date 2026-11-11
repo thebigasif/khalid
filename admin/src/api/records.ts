@@ -1,11 +1,11 @@
 // The trash and the audit log of the Admin API, and the calls the posts
 // table makes for many posts at once (KH-EDT-6).
 import { createApi } from "./client";
-import { type AdminPost, isProblem } from "./posts";
+import { isProblem } from "./posts";
 import type { Failure, Reply } from "./redirects";
 import type { components } from "./schema";
 
-/** A deleted post waiting in the trash. */
+/** A deleted post or page waiting in the trash. */
 export type TrashedPost = components["schemas"]["TrashedPost"];
 /** One change in the audit log. */
 export type Change = components["schemas"]["AdminChange"];
@@ -32,20 +32,19 @@ export async function listTrash(): Promise<Reply<TrashedPost[]>> {
   }
 }
 
-/** Puts a deleted post back where it was, and answers it as it is now. */
-export async function restoreTrashed(key: string): Promise<Reply<AdminPost>> {
+/** Puts a deleted post or page back where it was. A page comes back with no body. */
+export async function restoreTrashed(key: string): Promise<Reply<null>> {
   try {
-    const { data, error, response } = await api.POST("/api/admin/v1/trash/{key}/restore/", {
+    const { error, response } = await api.POST("/api/admin/v1/trash/{key}/restore/", {
       params: { path: { key } },
     });
-    const post = data?.posts[0];
-    return post === undefined ? failed(error, response) : { data: post };
+    return response.ok ? { data: null } : failed(error, response);
   } catch {
     return UNREACHABLE;
   }
 }
 
-/** Deletes a post in the trash for good. */
+/** Deletes a post or page in the trash for good. */
 export async function purgeTrashed(key: string): Promise<Reply<null>> {
   try {
     const { error, response } = await api.DELETE("/api/admin/v1/trash/{key}/", {

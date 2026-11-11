@@ -226,7 +226,7 @@ mod memory {
     use khalid_lint::Report;
 
     use crate::content_store::select;
-    use crate::post_trash::{PostTrash, TrashError, Trashed};
+    use crate::post_trash::{PostTrash, Restored, TrashError, Trashed};
     use crate::resources::{LintCounts, PostSettings};
 
     /// Posts held in memory, for tests. It runs no publish gate: an edit
@@ -480,8 +480,11 @@ mod memory {
             Box::pin(std::future::ready(Ok(listed.collect())))
         }
 
-        fn restore<'a>(&'a self, key: &'a str) -> BoxFuture<'a, Result<AdminPost, TrashError>> {
-            Box::pin(std::future::ready(self.take_back(key)))
+        fn restore<'a>(&'a self, key: &'a str) -> BoxFuture<'a, Result<Restored, TrashError>> {
+            Box::pin(std::future::ready(
+                self.take_back(key)
+                    .map(|post| Restored::Post(Box::new(post))),
+            ))
         }
 
         fn purge<'a>(&'a self, key: &'a str) -> BoxFuture<'a, Result<(), TrashError>> {

@@ -14,6 +14,8 @@ use common::{Server, demo_copy, new_key, start};
 /// The demo post the tests delete, and its address.
 const ID: &str = "en.why-internal-links-matter";
 const PAGE: &str = "/blog/why-internal-links-matter/";
+/// The address of the demo's About page.
+const ABOUT: &str = "/blog/about/";
 
 /// `parts` under `site`.
 #[cfg(test)]
@@ -156,4 +158,44 @@ fn a_draft_comes_back_to_drafts_unless_its_address_was_taken() {
     let (status, body) = server.admin("POST", &restore, None);
     assert_eq!(status, 200, "{body}");
     assert!(fs::read_to_string(&draft).unwrap().contains("Words."));
+}
+
+#[test]
+fn a_deleted_page_waits_in_the_trash_and_comes_back_when_restored() {
+    let site = demo_copy();
+    let key = new_key(site.path(), &["--name", "Owner", "--scope", "admin:all"]);
+    let server = start(site.path(), &key);
+    let (status, page) = server.admin("GET", "/api/admin/v1/pages/en.about/", None);
+    assert_eq!(status, 200, "{page}");
+    let seen = page["pages"][0]["updated_at"].as_str().unwrap();
+    let path = format!("/api/admin/v1/pages/en.about/?updated_at={seen}");
+    let (status, body) = server.admin("DELETE", &path, None);
+    assert_eq!(status, 204, "{body}");
+    let kept = under(site.path(), &["content", "en", "pages", "about.md"]);
+    assert!(!kept.exists());
+    assert!(
+        server.answers(ABOUT, 404),
+        "the deleted page is still served"
+    );
+
+    let (status, trash) = server.admin("GET", "/api/admin/v1/trash/", None);
+    assert_eq!(status, 200, "{trash}");
+    let listed = &trash["trash"][0];
+    assert_eq!(listed["id"], "en.about", "{trash}");
+    assert_eq!(listed["kind"], "page", "{trash}");
+    assert_eq!(listed["title"], "About Field Notes", "{trash}");
+    let trashed = listed["key"].as_str().unwrap();
+    let waiting = ["trash", trashed, "content", "en", "pages", "about.md"];
+    assert!(under(site.path(), &waiting).is_file());
+
+    let restore = format!("/api/admin/v1/trash/{trashed}/restore/");
+    let (status, body) = server.admin("POST", &restore, None);
+    assert_eq!(status, 204, "{body}");
+    assert!(kept.is_file());
+    assert!(
+        server.answers(ABOUT, 200),
+        "the restored page is not served"
+    );
+    let (_, trash) = server.admin("GET", "/api/admin/v1/trash/", None);
+    assert_eq!(trash["trash"], Value::Array(Vec::new()), "{trash}");
 }
