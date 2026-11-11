@@ -14658,6 +14658,17 @@
             },
             "description": "The site's own code from `[code]`, one object per entry as written:\n`head`, `body`, the `category` it waits for (`preferences`,\n`analytics`, `marketing` or `no-tracking`), the `vendor` and its\n`policy` link. An entry with no `category` counts as Marketing. The\nold single `[code]` table reads as one entry."
           },
+          "cta": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CtaSetting",
+                "description": "The call to action from `[template.cta]`, or `null` when the site\nsets none, so no band or header button shows."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "default_language": {
             "type": "string",
             "description": "The language a reader gets first, such as `en`."
@@ -16027,6 +16038,34 @@
             "format": "int32",
             "description": "How wide, so that `left` plus `width` is at most 1000.",
             "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      },
+      "CtaSetting": {
+        "type": "object",
+        "description": "The site's one call to action, as `[template.cta]` in `site.toml` holds\nit: the band, the header button and the `::cta` block show it.",
+        "required": [
+          "label",
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Where the button goes: a path on this site, such as `/blog/start/`,\nor a full `http` or `https` address.",
+            "example": "https://example.com/signup"
+          },
+          "label": {
+            "type": "string",
+            "description": "The words on the button, one line, such as `Start a free trial`.",
+            "example": "Start a free trial"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "One line beside the button, such as `No card needed.` Left out, the\nbutton shows alone."
           }
         },
         "additionalProperties": false
@@ -20192,6 +20231,17 @@
               "type": "object"
             },
             "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`. A list that differs\nfrom the saved one needs `admin:all`."
+          },
+          "cta": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CtaSetting",
+                "description": "A new call to action in place of `[template.cta]`, or `null` to\nremove it. Left out, the call to action stays as it is."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "default_language": {
             "type": [

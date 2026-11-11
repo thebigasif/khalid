@@ -511,6 +511,7 @@ export type AdminSettings = {
   address: string;
   /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
   code: (Record<string, unknown>)[];
+  cta?: CtaSetting | null;
   /** The language a reader gets first, such as `en`. */
   default_language: string;
   /** The home page's sections from `[reader] home_sections`, top first. Empty means one list of the newest posts. */
@@ -973,6 +974,16 @@ export type CropBoxBody = {
   top: number;
   /** How wide, so that `left` plus `width` is at most 1000. */
   width: number;
+};
+
+/** The site's one call to action, as `[template.cta]` in `site.toml` holds it: the band, the header button and the `::cta` block show it. */
+export type CtaSetting = {
+  /** Where the button goes: a path on this site, such as `/blog/start/`, or a full `http` or `https` address. */
+  href: string;
+  /** The words on the button, one line, such as `Start a free trial`. */
+  label: string;
+  /** One line beside the button, such as `No card needed.` Left out, the button shows alone. */
+  note?: string | null;
 };
 
 /** JSON-LD written by hand for a type Khalid does not write itself, kept as written. It is read as schema.org nodes before it is kept, so a page never carries JSON-LD a search engine would throw away. */
@@ -2327,6 +2338,7 @@ export type SettingsChange = {
   address?: string | null;
   /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. A list that differs from the saved one needs `admin:all`. */
   code?: (Record<string, unknown>)[] | null;
+  cta?: CtaSetting | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
   /** Every home section, top first, in place of the old ones. An empty list goes back to one list of the newest posts. */

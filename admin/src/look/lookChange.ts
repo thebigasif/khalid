@@ -1,9 +1,11 @@
 // What the Look screen works out without the network: each option's value
 // with the template's default filled in, what a template turns on and
 // off, and the change to send, holding only the options that differ from
-// the defaults so site.toml stays short.
+// the defaults so site.toml stays short, and the call to action only when
+// it changed.
 import type { SiteChange, SiteSettings } from "../api/site";
 import type { OptionTakes, Template, TemplateValue } from "../api/templates";
+import { type CtaLines, ctaChanged, ctaLines, ctaOf } from "./cta";
 
 /** Every option of one template, by key. */
 export type Values = Record<string, TemplateValue>;
@@ -52,18 +54,34 @@ export function setOnly(template: Template, values: Values): Values {
   return set;
 }
 
-/** The change that saves `chosen` with `values`, or null when it is what the site has. */
-export function lookChange(site: SiteSettings, chosen: Template, values: Values) {
+/**
+ * The change that saves `chosen` with `values` and the call to action
+ * `cta`, holding only the parts that differ, or null when it is all what
+ * the site has.
+ */
+export function lookChange(
+  site: SiteSettings,
+  chosen: Template,
+  values: Values,
+  cta: CtaLines = ctaLines(site.cta),
+): SiteChange | null {
   const options = setOnly(chosen, values);
   const before = setOnly(chosen, valuesOf(chosen, site.template.options));
-  const unchanged =
+  const sameLook =
     site.template.name === chosen.name &&
     chosen.options.every((option) => same(options[option.key], before[option.key]));
-  const change: SiteChange = {
-    updated_at: site.updated_at,
-    template: { name: chosen.name, options },
-  };
-  return unchanged ? null : change;
+  const newCta = ctaChanged(site.cta, cta);
+  if (sameLook && !newCta) {
+    return null;
+  }
+  const change: SiteChange = { updated_at: site.updated_at };
+  if (!sameLook) {
+    change.template = { name: chosen.name, options };
+  }
+  if (newCta) {
+    change.cta = ctaOf(cta);
+  }
+  return change;
 }
 
 /** The reader features and switch options a template turns on, and the features it turns off. */

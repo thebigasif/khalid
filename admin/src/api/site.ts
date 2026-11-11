@@ -31,6 +31,16 @@ export type MenuName = "primary" | "footer";
 /** The header and footer menus from `[nav]`. */
 export type SiteNav = Record<MenuName, MenuLink[]>;
 
+/** The site's one call to action, as `[template.cta]` holds it. */
+export type Cta = {
+  /** The words on the button, such as `Start a free trial`. */
+  label: string;
+  /** A path on the blog, such as `/blog/start/`, or a full `https` address. */
+  href: string;
+  /** One line beside the button; the button shows alone when left out. */
+  note?: string;
+};
+
 /** The site's core settings, as `site.toml` holds them. */
 export type SiteSettings = {
   name: string;
@@ -42,6 +52,11 @@ export type SiteSettings = {
   languages: string[];
   /** The template the blog uses and the options `site.toml` sets for it. */
   template: TemplateSetting;
+  /**
+   * The call to action, or `null` when the site sets none. A server from
+   * before the Look screen edited it sends none.
+   */
+  cta?: Cta | null;
   /**
    * The `[seo]` table as `site.toml` writes it, one key per part such as
    * `titles`. A server from before the SEO settings screen sends none.
@@ -73,6 +88,8 @@ export type SiteChange = {
   languages?: string[] | null;
   /** A new template; it replaces the name and every option. */
   template?: TemplateSetting | null;
+  /** A new call to action in place of the old one; `null` removes it. */
+  cta?: Cta | null;
   /** New parts of `[seo]`, each replacing its part whole; `null` removes one. */
   seo?: Record<string, Part | null>;
   /** New parts of `[privacy]`, each replacing its part whole; `null` removes one. */
