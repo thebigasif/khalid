@@ -33,8 +33,12 @@
 // page, one window around its first problem, goes to --shots, and every
 // failure to report.json beside the sites folder.
 //
+// The narrowest width, 320 px, is the smallest phone FRONTEND.md holds a
+// page to, and what a 1280 px window shows at 400% zoom, where WCAG 2.2
+// (1.4.10, reflow) asks that nothing scrolls sideways.
+//
 // Usage: node layout.mjs --sites <folder> [--browsers chromium,firefox,webkit]
-//          [--widths 390,768,1440,2000] [--packs keystone,wire] [--shots <folder>]
+//          [--widths 320,390,768,1440,2000] [--packs keystone,wire] [--shots <folder>]
 //          [--tabs 4] [--frames frames.json]
 // Each folder in --sites holds a site.toml and the site built into public/.
 // A folder whose name ends in -side-contents is a pack built with its
@@ -93,7 +97,7 @@ for (let i = 2; i < process.argv.length; i += 1) {
 }
 const list = (value, fallback) => (value || fallback).split(",").map((s) => s.trim()).filter(Boolean);
 const browsers = list(options.browsers, "chromium,firefox,webkit");
-const widths = list(options.widths, "390,768,1440,2000").map(Number);
+const widths = list(options.widths, "320,390,768,1440,2000").map(Number);
 const packs = options.packs ? new Set(list(options.packs)) : null;
 const tabs = Number(options.tabs) || 4;
 const shots = options.shots;
