@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import type { Visitors } from "../api/analytics";
+import type { SiteHealth } from "../api/seo";
 import { Icon } from "../components/Icon";
 import { dashboardWords as words } from "../strings/dashboardWords";
 import { count } from "../strings/dates";
+import { HealthCard } from "./HealthCard";
 
 type Props = {
   live: number;
@@ -10,10 +12,12 @@ type Props = {
   failing: number;
   /** The last 28 days of visits; `null` when the blog cannot count them yet. */
   visits: Visitors | null;
+  /** The last site audit and its trend; `null` when the blog cannot send them. */
+  health: SiteHealth | null;
 };
 
 /** The row of cards at the top of the dashboard: the blog's numbers, each with where to go next. */
-export function Metrics({ live, drafts, failing, visits }: Props) {
+export function Metrics({ live, drafts, failing, visits, health }: Props) {
   return (
     <section aria-labelledby="numbers-title">
       <h2 id="numbers-title" className="sr-only">
@@ -71,6 +75,7 @@ export function Metrics({ live, drafts, failing, visits }: Props) {
             <Link to="/analytics">{words.visitsLink}</Link>
           </li>
         )}
+        {health === null ? null : <HealthCard health={health} />}
       </ul>
     </section>
   );

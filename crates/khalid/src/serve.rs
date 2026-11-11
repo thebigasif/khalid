@@ -31,7 +31,7 @@ use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::outside_writes::Reloads;
 use crate::post_files::Assets;
-use crate::scheduler::WeeklyEmail;
+use crate::scheduler::{NightlyAudit, WeeklyEmail};
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
 use crate::serve_https::{Listen, ServeClock};
@@ -233,7 +233,8 @@ fn serve_with(
             )?;
         posts.follow(source.live_config());
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
-        let timed = (alerting, keys.weekly, forms);
+        let nightly = NightlyAudit::new(site, config, routes);
+        let timed = (alerting, keys.weekly, forms, nightly);
         let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());

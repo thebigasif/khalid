@@ -1,5 +1,6 @@
 // The Admin API's SEO routes the editor, the dashboard and the link
-// screens use: link suggestions, copying a post, and the site's issues.
+// screens use: link suggestions, copying a post, the site's issues and its
+// health score.
 import { call, type Reply } from "./call";
 import type { AdminPost } from "./posts";
 import type { components } from "./schema";
@@ -8,6 +9,13 @@ import type { components } from "./schema";
 export type LinkSuggestion = components["schemas"]["LinkSuggestion"];
 /** One lint rule that fires on the site, as a task. */
 export type SiteIssue = components["schemas"]["SiteIssue"];
+/** The site's health: its last audit and up to 30 before it, oldest first. */
+export type SiteHealth = components["schemas"]["SiteHealth"];
+
+/** The site's health score from its last audit, which the blog runs once a day. */
+export function readSiteHealth(): Promise<Reply<SiteHealth>> {
+  return call("/site/health/", {}, (response): Promise<SiteHealth> => response.json());
+}
 
 /** Up to ten posts that post `id` should link to and does not yet, best first. */
 export function readLinkSuggestions(id: string): Promise<Reply<LinkSuggestion[]>> {

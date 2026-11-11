@@ -109,6 +109,7 @@ export const operations = {
   sign_out_everywhere: { method: "DELETE", path: "/api/admin/v1/sessions/", key: "none", body: null },
   read_admin_settings: { method: "GET", path: "/api/admin/v1/settings/", key: "admin", body: null },
   change_settings: { method: "PUT", path: "/api/admin/v1/settings/", key: "admin", body: "application/json" },
+  site_health: { method: "GET", path: "/api/admin/v1/site/health/", key: "admin", body: null },
   list_sites: { method: "GET", path: "/api/admin/v1/sites/", key: "none", body: null },
   add_site: { method: "POST", path: "/api/admin/v1/sites/", key: "none", body: "application/json" },
   list_snippets: { method: "GET", path: "/api/admin/v1/snippets/", key: "admin", body: null },

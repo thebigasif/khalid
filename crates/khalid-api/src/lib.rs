@@ -100,6 +100,7 @@ pub mod search_report;
 pub mod serpdad_store;
 pub mod session_check;
 pub mod settings_store;
+pub mod site_health;
 pub mod site_issues;
 pub mod staff_names;
 pub mod subscriber_desk;
