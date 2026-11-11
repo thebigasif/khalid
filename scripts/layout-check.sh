@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The layout check: the showcase site once per template pack, in the pack's
-# sample brand, opened in Chromium, Firefox and WebKit at 390, 768, 1440 and
-# 2000 px. It fails on text over text or a picture, a list marker over its
+# sample brand, opened in Chromium, Firefox and WebKit at 320, 390, 768,
+# 1440 and 2000 px. It fails on text over text or a picture, a list marker over its
 # text, a page that scrolls sideways, a table column narrower than its
 # longest word, a picture that did not load, a frame narrower than the
 # template's brief on a wide screen, post text too small or lines too short
@@ -30,7 +30,7 @@
 #   npx --prefix scripts/demo-check playwright install --with-deps chromium firefox webkit
 #
 # Usage: scripts/layout-check.sh [--browsers chromium,firefox] [--packs keystone,wire]
-#                                [--widths 390,768,1440,2000] [--shots <folder>]
+#                                [--widths 320,390,768,1440,2000] [--shots <folder>]
 #                                [--frames <file>]
 # The options go to layout.mjs as they are. A screenshot of each failing
 # page, around its first problem, goes to --shots, by default
