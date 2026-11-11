@@ -19,6 +19,7 @@ use tokio::runtime::Runtime;
 
 use crate::announce::SiteAnnounce;
 use crate::newsletter_files::WelcomeFolder;
+use crate::serve_https::ServeClock;
 use crate::subscriber_events::AnnouncedSubscribers;
 use crate::{newsletter_files, serve_message};
 
@@ -29,10 +30,12 @@ use crate::{newsletter_files, serve_message};
 /// the way [`mailer`] made from `[mail]`. A reader who confirms gets the
 /// reader cookie, signed with the site's preview key read on `runtime`.
 /// Beside the routes comes the newsletter itself, when the site sends mail,
-/// for the hourly round that sends the later welcome steps.
+/// for the hourly round that sends the later welcome steps. Sign-ups and
+/// welcome steps read `clock`, the server's, so a test build can bring a
+/// day-N step into the next round.
 pub(crate) fn router(
     (folder, config): (&Path, &Config),
-    (database, id): (&Database, SiteId),
+    (database, id, clock): (&Database, SiteId, ServeClock),
     (runtime, announce): (&Runtime, &SiteAnnounce),
     mailer: Option<Arc<dyn Mailer>>,
 ) -> Result<(Router, Option<Newsletter>), UserMessage> {
@@ -44,7 +47,7 @@ pub(crate) fn router(
             let store = Arc::new(AnnouncedSubscribers::new(table, announce.clone()));
             let key = runtime.block_on(database.preview_key(id, &SystemClock));
             let key = key.map_err(|_| serve_message::internal())?;
-            let made = Newsletter::new(store, mailer, Arc::new(SystemClock), site);
+            let made = Newsletter::new(store, mailer, Arc::new(clock), site);
             let made = made.map_err(|_| serve_message::internal())?;
             let made = made.with_pass(reader_pass(config, &key));
             Some(with_files(made, folder, config))
