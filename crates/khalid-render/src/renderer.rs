@@ -58,7 +58,7 @@ impl Renderer {
     /// Returns a [`RenderError`] if a built-in template or strings file is
     /// broken, which this crate's tests rule out.
     pub fn new() -> Result<Self, RenderError> {
-        Self::build(Vec::new(), &RenderPack::classic())
+        Self::build(Vec::new(), &RenderPack::classic(), Strings::load()?)
     }
 
     /// A renderer where the template pack `pack` replaces the default
@@ -68,10 +68,16 @@ impl Renderer {
     /// its own parts, such as `parts-locale.html`, which its other files
     /// import. A site cannot add or replace a part.
     /// Templates read the pack's name and options as `template`.
+    /// Each file in `site_root/theme/strings/`, such as `fr.toml`, lays the
+    /// site's own words over that language's built-in ones.
     ///
     /// # Errors
     ///
-    /// The errors of [`Renderer::with_theme`], and
+    /// The errors of [`Renderer::with_theme`];
+    /// [`RenderError::SiteStrings`], [`RenderError::UnknownStringsKey`],
+    /// [`RenderError::StringsFileName`] or [`RenderError::ReadStrings`] for
+    /// a site strings file that is broken, names a key no template reads,
+    /// is not named for a language or cannot be read; and
     /// [`RenderError::UnknownTemplate`] for a pack file that is neither a
     /// default template, a post template nor a part.
     pub fn with_pack(site_root: &Path, pack: &RenderPack<'_>) -> Result<Self, RenderError> {
@@ -89,7 +95,7 @@ impl Renderer {
             });
         }
         sources.extend(templates::overrides(site_root)?);
-        Self::build(sources, pack)
+        Self::build(sources, pack, Strings::with_site(site_root)?)
     }
 
     /// A renderer where each file in `site_root/theme/templates/` replaces
@@ -105,7 +111,11 @@ impl Renderer {
         Self::with_pack(site_root, &RenderPack::classic())
     }
 
-    fn build(overrides: Vec<Source>, pack: &RenderPack<'_>) -> Result<Self, RenderError> {
+    fn build(
+        overrides: Vec<Source>,
+        pack: &RenderPack<'_>,
+        strings: Strings,
+    ) -> Result<Self, RenderError> {
         let mut env = Environment::new();
         env.set_auto_escape_callback(|_| AutoEscape::Html);
         env.set_formatter(escape::format);
@@ -123,7 +133,7 @@ impl Renderer {
         }
         Ok(Self {
             env,
-            strings: Strings::load()?,
+            strings,
             pack: PackContext::from(pack),
             brand: BrandContext::default(),
         })

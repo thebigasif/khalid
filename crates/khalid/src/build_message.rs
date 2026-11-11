@@ -89,12 +89,37 @@ pub(crate) fn seo(error: &SeoError) -> UserMessage {
 
 /// The message when a template cannot render a page.
 pub(crate) fn render(error: &RenderError) -> UserMessage {
+    if matches!(
+        error,
+        RenderError::SiteStrings { .. }
+            | RenderError::UnknownStringsKey { .. }
+            | RenderError::StringsFileName { .. }
+            | RenderError::ReadStrings { .. }
+    ) {
+        return site_strings(error);
+    }
     UserMessage::new(
         format!("Khalid could not render a page: {error}."),
         "A site is built only when every page renders, so nothing broken goes live.",
         "Check the templates in theme/templates, or remove the one named, then build again.",
     )
 }
+
+/// The message when a site's own strings file in `theme/strings/` cannot
+/// be used.
+fn site_strings(error: &RenderError) -> UserMessage {
+    UserMessage::new(
+        format!("Khalid could not use the site's own words: {error}."),
+        "A strings file, such as theme/strings/fr.toml, gives one language the words its pages show.",
+        format!(
+            "Name the file for a language and use only keys the English files in {STRING_KEYS} have, then build again."
+        ),
+    )
+}
+
+/// Where a site owner finds every key a strings file may hold.
+const STRING_KEYS: &str =
+    "https://github.com/thebigasif/khalid/tree/main/crates/khalid-render/strings";
 
 /// The message when the post at `source` asks for a template the theme
 /// does not have.
