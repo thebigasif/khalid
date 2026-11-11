@@ -1,6 +1,7 @@
 import type { SiteChange, SiteSettings } from "../api/site";
 import { type PartProps, type Section, SettingsTabs } from "../components/SettingsTabs";
 import { Contact } from "../privacy/Contact";
+import { Imprint } from "../privacy/Imprint";
 import { Options } from "../privacy/Options";
 import { Proof } from "../privacy/Proof";
 import { Scripts } from "../privacy/Scripts";
@@ -20,6 +21,7 @@ const SECTIONS: Section<keyof typeof privacyWords.tabs, PrivacyChange>[] = [
   { tab: "scripts", show: (props) => <Scripts {...props} /> },
   { tab: "text", show: (props) => <Text {...props} /> },
   { tab: "contact", show: (props) => <Contact {...props} /> },
+  { tab: "imprint", show: (props) => <Imprint {...props} /> },
   { tab: "proof", show: (props) => <Proof {...props} /> },
 ];
 

@@ -21,6 +21,8 @@ responsible = "Erika Muster, Hauptstraße 1, 10115 Berlin"
 
 If the table is there but a name, a postal address or an email is missing, Khalid stops with the field to fill in. A site without the table has no imprint and no footer link.
 
+You can do the same in the admin: open Privacy, then Imprint, turn on "Add an imprint page", fill in the lines you need and save. Your name, postal address and email go on the Contact tab. Until all three are there, the Imprint tab says so and saving is refused. Turning the switch off and saving removes `[privacy.imprint]` and the page. The blog shows the change within a few seconds, with no restart.
+
 ## The lines you can add
 
 | Setting | What it shows |

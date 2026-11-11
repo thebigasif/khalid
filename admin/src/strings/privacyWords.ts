@@ -26,6 +26,7 @@ export const privacyWords = {
     scripts: "Scripts",
     text: "Text",
     contact: "Contact",
+    imprint: "Imprint",
     proof: "Proof",
   },
   settings: {
@@ -114,6 +115,23 @@ export const privacyWords = {
     emailHint: "Readers write here to see or delete their data.",
     address: "Postal address",
     addressHint: "Where letters about readers' data can be sent.",
+  },
+  imprint: {
+    lede: "An imprint, the Impressum German law asks for, says who runs the site and how to reach them. Turned on, Khalid adds an Imprint page in each language at impressum/ and links it from every page's footer.",
+    show: "Add an imprint page",
+    showHint:
+      "Sites run from Germany or Austria need one. It shows the name, postal address and email from the Contact tab, and the lines below.",
+    missing: "The imprint needs a name, a postal address and an email.",
+    missingWhy: "German law asks for all three. Add them on the Contact tab, then save here.",
+    phone: "Phone",
+    phoneHint: "A second quick way to reach you. Leave it empty to show none.",
+    register: "Trade register entry",
+    registerHint: "For a company, the court and number, such as Amtsgericht Berlin, HRB 12345.",
+    vatId: "VAT number",
+    vatIdHint: "Your VAT identification number, such as DE123456789, if you have one.",
+    responsible: "Responsible for the articles",
+    responsibleHint:
+      "Who answers for what the blog publishes, with their address, if it is not you.",
   },
   proof: {
     lede: "What readers were shown and what they chose, to show a regulator. Khalid keeps daily totals only, with no address and no reader ID.",
