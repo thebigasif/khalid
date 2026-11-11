@@ -1,8 +1,9 @@
 //! Where the Admin API finds Search Console numbers: the follow-ups (GEO
 //! M3), the long, conversational searches that showed each post, the way
 //! people ask an AI assistant, with the heading of the post that answers
-//! each; the report of each post's numbers (G43); and the whole site's
-//! totals for the Analytics screen.
+//! each; the report of each post's numbers (G43), and those numbers alone
+//! for the posts table; and the whole site's totals for the Analytics
+//! screen.
 
 use std::error::Error;
 
@@ -12,7 +13,7 @@ use serde::Serialize;
 use utoipa::ToSchema;
 
 use crate::content_store::BoxFuture;
-use crate::search_report::{SearchReport, SearchTotals};
+use crate::search_report::{SearchPosts, SearchReport, SearchTotals};
 
 /// Finds the Search Console numbers of the site's posts. The `khalid`
 /// binary implements it with the same code `khalid search-console
@@ -45,6 +46,14 @@ pub trait FollowUpFinder: Send + Sync {
     ///
     /// As [`FollowUpFinder::follow_ups`].
     fn totals(&self, days: u32) -> BoxFuture<'_, Result<SearchTotals, FollowUpError>>;
+
+    /// Each post's numbers for the last 28 days whose numbers are final,
+    /// without the rest of the report, for the posts table.
+    ///
+    /// # Errors
+    ///
+    /// As [`FollowUpFinder::follow_ups`].
+    fn posts(&self) -> BoxFuture<'_, Result<SearchPosts, FollowUpError>>;
 }
 
 /// The long searches that showed the site's posts in a month.
@@ -127,6 +136,10 @@ impl FollowUpFinder for NoSearchConsole {
     }
 
     fn totals(&self, _days: u32) -> BoxFuture<'_, Result<SearchTotals, FollowUpError>> {
+        Box::pin(async move { Err(not_served()) })
+    }
+
+    fn posts(&self) -> BoxFuture<'_, Result<SearchPosts, FollowUpError>> {
         Box::pin(async move { Err(not_served()) })
     }
 }

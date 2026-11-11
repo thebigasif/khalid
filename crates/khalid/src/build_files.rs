@@ -1,13 +1,15 @@
 //! The files `khalid build` writes beside the pages, from `khalid-seo`: the
 //! sitemap index and its sitemaps, the news sitemap, `locations.kml`, `robots.txt`, `llms.txt`, the RSS,
-//! Atom and JSON feeds of each language, category and channel, and the `IndexNow` key file
+//! Atom and JSON feeds of each language, category and channel, the `IndexNow` key file,
+//! and the verification files with Bluesky's `atproto-did`
 //! (KH-SEO-5, KH-SEO-6, KH-SEO-7, KH-SEO-11).
 
 use chrono::{DateTime, Utc};
 use khalid_core::{IndexNowSettings, Locale, UserMessage};
 use khalid_seo::{
-    ArticleType, Feed, FeedFormat, FeedScope, IndexNow, LlmsTxt, NewsSitemap, RobotsTxt, SeoError,
-    SeoPage, SeoSite, SitemapSet, UrlPath, locations_kml, locations_kml_url, site_schema,
+    ATPROTO_DID_FILE, ArticleType, Feed, FeedFormat, FeedScope, IndexNow, LlmsTxt, NewsSitemap,
+    RobotsTxt, SeoError, SeoPage, SeoSite, SitemapSet, UrlPath, locations_kml, locations_kml_url,
+    site_schema,
 };
 
 use crate::build_message;
@@ -52,11 +54,22 @@ pub(crate) fn root_files(site: &SeoSite) -> Result<Vec<SiteFile>, UserMessage> {
         "# For {host}/robots.txt. Every rule here is about {mount}, so use it as the whole file or add it to the one there.\n{robots}"
     );
     let mut files = vec![file("robots.txt", said)];
-    for root in &site.root_files {
-        let name = root.path().as_str().trim_start_matches('/');
-        files.push(file(name, root.body().to_owned()));
-    }
+    files.extend(proof_files(site));
     Ok(files)
+}
+
+/// The files that prove the host is the owner's: each verification file,
+/// and the Bluesky account's DID at [`ATPROTO_DID_FILE`]. They belong at
+/// the root of the host, so a blog at the root writes them beside its
+/// pages and a blog in a folder with [`root_files`].
+fn proof_files(site: &SeoSite) -> impl Iterator<Item = SiteFile> + '_ {
+    let verification = site.root_files.iter().map(|root| {
+        let name = root.path().as_str().trim_start_matches('/');
+        file(name, root.body().to_owned())
+    });
+    let bluesky = (site.verification.bluesky.iter())
+        .map(|did| file(ATPROTO_DID_FILE, did.as_str().to_owned()));
+    verification.chain(bluesky)
 }
 
 /// Where the news sitemap lives in the mount folder, beside the others. It
@@ -124,6 +137,9 @@ fn collect(
         let name = key.path().as_str().trim_start_matches('/');
         files.push(file(name, key.body().to_owned()));
     }
+    if site.mount == UrlPath::root() {
+        files.extend(proof_files(site));
+    }
     Ok(files)
 }
 
@@ -170,9 +186,9 @@ fn prefix(site: &SeoSite, language: &Locale) -> String {
 mod tests {
     use chrono::{TimeZone, Utc};
     use khalid_core::{AbsoluteUrl, Locale};
-    use khalid_seo::{Feed, FeedFormat, FeedScope, SeoSite};
+    use khalid_seo::{AtprotoDid, Feed, FeedFormat, FeedScope, RootFile, SeoSite, UrlPath};
 
-    use super::{files, prefix};
+    use super::{files, prefix, root_files};
 
     #[test]
     fn each_feed_file_sits_where_the_feed_says_it_lives() {
@@ -198,6 +214,45 @@ mod tests {
                 assert!(written.iter().any(|written| written.file == file), "{file}");
             }
         }
+    }
+
+    #[test]
+    fn the_proof_files_go_to_the_root_of_the_host() {
+        let mut site = SeoSite::new(
+            "Field Notes on SEO",
+            AbsoluteUrl::parse("https://www.example.com").unwrap(),
+            Locale::try_new("en").unwrap(),
+        );
+        let did = "did:plc:z72i7hdynmk6r22z27h6tvur";
+        site.verification.bluesky = Some(AtprotoDid::try_new(did).unwrap());
+        site.root_files = vec![RootFile::try_new("google1a2b.html", "google").unwrap()];
+        let now = Utc.with_ymd_and_hms(2026, 10, 26, 12, 0, 0).unwrap();
+        let text_of = |written: &[super::SiteFile], name: &str| {
+            let found = written.iter().find(|file| file.file == name);
+            found.map(|file| file.text.clone())
+        };
+        let at_root = files(&site, &[], None, now).unwrap();
+        assert_eq!(
+            text_of(&at_root, ".well-known/atproto-did").as_deref(),
+            Some(did)
+        );
+        assert_eq!(
+            text_of(&at_root, "google1a2b.html").as_deref(),
+            Some("google")
+        );
+        assert!(root_files(&site).unwrap().is_empty());
+        site.mount = UrlPath::try_new("/blog/").unwrap();
+        let in_folder = files(&site, &[], None, now).unwrap();
+        assert_eq!(text_of(&in_folder, ".well-known/atproto-did"), None);
+        let for_root = root_files(&site).unwrap();
+        assert_eq!(
+            text_of(&for_root, ".well-known/atproto-did").as_deref(),
+            Some(did)
+        );
+        assert_eq!(
+            text_of(&for_root, "google1a2b.html").as_deref(),
+            Some("google")
+        );
     }
 
     #[test]

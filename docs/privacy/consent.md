@@ -55,7 +55,7 @@ Each setting is on the admin's Privacy screen, in the `[privacy]` table of `site
 | Certified consent tool, `external_tool` | none | The name of a paid consent tool you run instead, such as Cookiebot. See below. |
 | Banner words, `[privacy.text.<language>]` | Khalid's own | Your own words for the banner and each category, in English and German. |
 | Contact, `[privacy.contact]` | none | Your name, email and postal address, for the privacy page. |
-| Imprint, `[privacy.imprint]` | none | Adds the imprint German law asks for. See [the imprint](imprint.md). The admin screen has no fields for it yet, so set it in `site.toml`. |
+| Imprint, `[privacy.imprint]` | none | Adds the imprint German law asks for. See [the imprint](imprint.md). On the admin's Privacy screen it is the Imprint tab. |
 
 Until the contact details are filled in, `khalid doctor` and `khalid build` remind you. Readers never see that reminder.
 

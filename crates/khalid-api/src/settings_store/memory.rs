@@ -56,6 +56,9 @@ impl MemorySettings {
         next.default_language = change.default_language.unwrap_or(next.default_language);
         next.languages = change.languages.unwrap_or(next.languages);
         next.template = change.template.unwrap_or(next.template);
+        if let Some(cta) = change.cta {
+            next.cta = cta.into_setting();
+        }
         set_parts(&mut next.seo, change.seo);
         set_parts(&mut next.privacy, change.privacy);
         next.code = change.code.unwrap_or(next.code);

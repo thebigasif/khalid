@@ -99,6 +99,43 @@ pub struct MediaEdits {
     pub media: Vec<MediaEditBody>,
 }
 
+/// Words to find in the alt text of every library item, and what to put in
+/// their place. Matching is exact, letter case included.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+#[schema(example = json!({ "find": "Acme Ltd", "replace": "Acme", "apply": false }))]
+pub struct AltReplaceBody {
+    /// The words to find; not empty.
+    pub find: String,
+    /// What to put in their place; empty removes them.
+    pub replace: String,
+    /// `true` makes the changes; `false`, the default, only lists them.
+    #[serde(default)]
+    pub apply: bool,
+}
+
+/// One item's alt text before and after a replace.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+pub struct AltChangeBody {
+    /// The item's identity.
+    pub id: String,
+    /// Its file name.
+    pub name: String,
+    /// Its alt text before.
+    pub before: String,
+    /// Its alt text after, trimmed.
+    pub after: String,
+}
+
+/// What a replace changes, or changed, by item identity.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+pub struct AltChanges {
+    /// Whether the changes were made, or only listed.
+    pub applied: bool,
+    /// Every item whose alt text holds the words.
+    pub changes: Vec<AltChangeBody>,
+}
+
 /// A turned or cropped copy of a picture to make. The original stays.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]

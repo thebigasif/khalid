@@ -26,7 +26,7 @@ fn words(count: usize) -> String {
 #[cfg(test)]
 async fn found(head: &str, body: &str) -> Vec<String> {
     let crawl = crawled(&[(HOME, page(head, body))]).await;
-    khalid_audit::audit(&crawl, Thresholds::default())
+    khalid_audit::audit(&crawl, &Thresholds::default())
         .iter()
         .filter(|issue| issue.check() == Check::FixedWidth)
         .map(|issue| issue.detail().to_owned())

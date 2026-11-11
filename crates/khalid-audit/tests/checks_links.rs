@@ -1,5 +1,5 @@
 //! The checks that need the whole crawl: broken pages and links,
-//! redirects, broken files, click depth and inbound links.
+//! redirects, broken files, heavy images, click depth and inbound links.
 
 pub mod support;
 
@@ -9,7 +9,7 @@ use support::{HOME, crawled, html};
 /// The issues of `checks` in `crawl`, as check, address and detail.
 #[cfg(test)]
 fn only(crawl: &Crawl, checks: &[Check]) -> Vec<(Check, String, String)> {
-    audit(crawl, Thresholds::default())
+    audit(crawl, &Thresholds::default())
         .iter()
         .filter(|issue| checks.contains(&issue.check()))
         .map(|issue| {
@@ -124,6 +124,40 @@ async fn a_missing_image_or_stylesheet_is_named_on_its_page() {
             ),
         ]
     );
+}
+
+/// A 200 JPEG answer of `bytes` bytes.
+#[cfg(test)]
+fn jpeg(bytes: usize) -> Answer {
+    Answer::new(200, vec![0; bytes]).with_header("content-type", "image/jpeg")
+}
+
+#[tokio::test]
+async fn an_image_over_100_kb_is_named_with_its_size_once_per_page() {
+    let crawl = crawled(&[
+        (
+            HOME,
+            html(
+                r#"<img src="big.jpg" alt=""><img src="big.jpg" alt="">
+                <img src="edge.jpg" alt=""><img src="small.jpg" alt="">
+                <link rel="stylesheet" href="site.css">"#,
+            ),
+        ),
+        ("https://www.example.com/blog/big.jpg", jpeg(250_000)),
+        ("https://www.example.com/blog/edge.jpg", jpeg(100_000)),
+        ("https://www.example.com/blog/small.jpg", jpeg(40_000)),
+        ("https://www.example.com/blog/site.css", jpeg(500_000)),
+    ])
+    .await;
+    assert_eq!(
+        only(&crawl, &[Check::ImageTooLarge]),
+        [(
+            Check::ImageTooLarge,
+            String::new(),
+            "https://www.example.com/blog/big.jpg is 250 KB".to_owned()
+        )]
+    );
+    assert_eq!(Check::ImageTooLarge.id(), "image-too-large");
 }
 
 #[tokio::test]

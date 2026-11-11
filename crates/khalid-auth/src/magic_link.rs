@@ -52,8 +52,8 @@ impl LinkToken {
     }
 }
 
-/// Mails a sign-in link. The newsletter track's mail sender implements it
-/// once it lands; until then a site has no link sign-in.
+/// Mails a sign-in link. `khalid serve` mails through the site's mail
+/// sender when `[mail]` is set; without it a site has no link sign-in.
 pub trait LinkSender: Send + Sync {
     /// Sends `link` to `to`.
     ///

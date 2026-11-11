@@ -124,3 +124,79 @@ fn a_reviewer_category_that_is_not_a_slug_names_its_line() {
         "{error:?}"
     );
 }
+
+#[test]
+fn a_reviewer_category_the_site_lacks_names_its_line_and_the_real_ones() {
+    let text = "[reviewers]\nrequired-in = [\n  \"money\",\n  \"heath\",\n]\n";
+    let config = LintConfig::parse(text).unwrap();
+    let error = config
+        .check_categories(["money", "health", "money"])
+        .unwrap_err();
+    let LintError::UnknownCategory {
+        category,
+        line,
+        known,
+    } = error
+    else {
+        panic!("{error:?}");
+    };
+    assert_eq!((category.as_str(), line), ("heath", 4));
+    assert_eq!(known, ["health", "money"], "sorted, once each");
+    let fixed = LintConfig::parse("[reviewers]\nrequired-in = [\"health\"]\n").unwrap();
+    assert!(fixed.check_categories(["health"]).is_ok());
+    assert!(LintConfig::default().check_categories([]).is_ok());
+}
+
+#[test]
+fn lint_toml_adds_a_sites_own_unclear_words() {
+    let text = "[words]\nhedges = [\"Vielleicht\"]\nvague-openers = [\"es gibt\"]\n";
+    let config = LintConfig::parse(text).unwrap();
+    let words = config.unclear_words();
+    assert_eq!(
+        words.hedges().last().map(String::as_str),
+        Some("vielleicht")
+    );
+    assert_eq!(words.openers().last().map(String::as_str), Some("es gibt"));
+    assert_eq!(
+        LintConfig::default().unclear_words(),
+        &khalid_core::UnclearWords::default(),
+        "a site that adds no words keeps the built-in lists"
+    );
+}
+
+#[test]
+fn an_unknown_key_in_words_names_its_line() {
+    let error = LintConfig::parse("[words]\nhedge = [\"eher\"]\n").unwrap_err();
+    assert!(
+        matches!(error, LintError::Syntax { line: 2, .. }),
+        "{error:?}"
+    );
+}
+
+#[test]
+fn the_plain_answer_rule_flags_a_sites_own_hedge() {
+    use chrono::{TimeZone, Utc};
+    use khalid_core::{FixedClock, Locale, Slug};
+    use khalid_lint::{Heading, HeadingLevel, LintPost, LintSite, Linter};
+
+    let mut post = LintPost::new(
+        Locale::try_new("de").unwrap(),
+        Slug::try_new("brot").unwrap(),
+    );
+    post.headings = vec![Heading::new(HeadingLevel::H2, "Wird Brot schwer?")];
+    post.body_text = "Wird Brot schwer?\nBrot wird vielleicht leicht.".to_owned();
+    let site = LintSite::default();
+    let clock = FixedClock::new(Utc.with_ymd_and_hms(2026, 11, 11, 9, 0, 0).unwrap());
+    let plain = |lint_toml: &str| {
+        let linter = Linter::new(&LintConfig::parse(lint_toml).unwrap(), &clock).unwrap();
+        let verdict = linter.gate(&post, &site);
+        verdict
+            .report()
+            .findings()
+            .iter()
+            .filter(|finding| finding.rule().as_str() == "plain-answer")
+            .count()
+    };
+    assert_eq!(plain(""), 0, "German is not in the built-in list");
+    assert_eq!(plain("[words]\nhedges = [\"vielleicht\"]\n"), 1);
+}

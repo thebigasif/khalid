@@ -12,7 +12,7 @@ use crate::{Check, Page, Thresholds};
 const ARTICLES: [&str; 4] = ["Article", "BlogPosting", "NewsArticle", "TechArticle"];
 
 /// Runs the checks on what one page shows.
-pub(crate) fn shown_issues(page: &Page, thresholds: Thresholds, found: &mut Found<'_>) {
+pub(crate) fn shown_issues(page: &Page, thresholds: &Thresholds, found: &mut Found<'_>) {
     for question in page.folded() {
         found.add(Check::HiddenAnswer, question.as_str());
     }

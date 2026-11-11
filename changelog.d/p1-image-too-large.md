@@ -1,0 +1,2 @@
+Added
+- The site audit notes when a page shows an image file over 100 KB. The new check is `image-too-large`, a notice in the Images group. The detail names the image and its size, such as `https://example.com/blog/media/hero.jpg is 250 KB`. A page that shows the same image twice gets one note. Stylesheets and scripts are not counted, and neither are images named only in `srcset`, which the crawl does not fetch.

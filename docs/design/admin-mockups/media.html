@@ -107,6 +107,28 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   </div>
   <p class="muted">To put a file in a post, copy its address from Edit details and paste it into the editor.</p>
 
+  <section aria-labelledby="alt-replace-title">
+    <h2 id="alt-replace-title">Change words in alt text</h2>
+    <p class="muted">Changes the same words in the alt text of every file at once, such as an old company name. Letter case counts. You see every change before anything is saved.</p>
+    <form action="media.html" method="post" aria-labelledby="alt-replace-title">
+      <div class="field"><label for="alt-find">Find</label><input id="alt-find" value="Acme Ltd"></div>
+      <div class="field"><label for="alt-replace">Replace with</label><span class="hint" id="alt-replace-hint">Leave it empty to remove the words.</span><input id="alt-replace" aria-describedby="alt-replace-hint" value="Acme"></div>
+      <button class="btn" type="submit">Show the changes</button>
+    </form>
+    <p role="status">2 files have these words. Check each change, then save.</p>
+    <div class="scroll">
+    <table aria-label="Alt text changes">
+      <thead><tr><th scope="col">File</th><th scope="col">Now</th><th scope="col">After</th></tr></thead>
+      <tbody>
+        <tr><td data-label="File"><code>team-photo.jpg</code></td><td data-label="Now">Staff outside the Acme Ltd office</td><td data-label="After">Staff outside the Acme office</td></tr>
+        <tr><td data-label="File"><code>logo.png</code></td><td data-label="Now">The Acme Ltd logo</td><td data-label="After">The Acme logo</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="muted">This changes the alt text kept in your library. A post you already wrote keeps the alt text it has. The new words go into a post the next time you add the file from the library.</p>
+    <button class="btn primary" type="button">Change 2 files</button>
+  </section>
+
   <p class="note">Mockup for the founder's review. Nothing on this page saves. The demo blog has one image, so the other rows are examples, and the grey boxes stand in for the small previews of each image. <a href="media-details.html">Edit details of one file</a> · <a href="index.html">All mockups</a></p>
 </main>
 </div>

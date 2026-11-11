@@ -82,7 +82,7 @@ pub use page_body::PageBody;
 pub use page_meta::{Alternate, HeadHtml, PageKind, PageMeta, Robots, ShareImage};
 pub use parts::part_keys;
 pub use person::{Person, Profile, ProfileIcon};
-pub use post::{BodyHtml, Link, RenderPost};
+pub use post::{BodyHtml, Link, RenderPost, RenderUpdate};
 pub use privacy::{
     Collected, CookiePurpose, GpcAnswer, Lasts, PrivacyCategory, PrivacyContact, PrivacyCookie,
     PrivacyFacts, PrivacyVendor, RenderPrivacy,

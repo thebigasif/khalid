@@ -63,6 +63,11 @@ export const searchConsoleWords = {
     notShown: "Not shown yet",
   },
   edit: (title: string) => `Open "${title}" in the editor`,
+  table: {
+    column: "Google search, last 28 days",
+    numbers: (clicks: string, shown: string) => `${clicks} clicks, shown ${shown} times`,
+    notShown: "Not shown in Google yet",
+  },
   posts: {
     title: "Each post's long searches",
     terms: [

@@ -21,6 +21,24 @@ pub struct TemplateSetting {
     pub options: BTreeMap<String, TemplateValue>,
 }
 
+/// The site's one call to action, as `[template.cta]` in `site.toml` holds
+/// it: the band, the header button and the `::cta` block show it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct CtaSetting {
+    /// The words on the button, one line, such as `Start a free trial`.
+    #[schema(example = "Start a free trial")]
+    pub label: String,
+    /// Where the button goes: a path on this site, such as `/blog/start/`,
+    /// or a full `http` or `https` address.
+    #[schema(example = "https://example.com/signup")]
+    pub href: String,
+    /// One line beside the button, such as `No card needed.` Left out, the
+    /// button shows alone.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
+}
+
 /// One option's value: on or off, a whole number, a word, or a list of
 /// words or lines.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]

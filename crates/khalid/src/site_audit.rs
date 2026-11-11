@@ -7,7 +7,8 @@
 //! `audit.finished` to the site's webhooks. It exits with 1 when it finds
 //! an error. The AI search checks read the answer length, the paragraph
 //! length and the stale window from the site's `lint.toml`, like the
-//! linter.
+//! linter. `khalid serve` runs the same audit offline once a day
+//! (plan 5.10), so the dashboard's score is never more than a day old.
 
 use std::fs::{self, OpenOptions};
 use std::io::Write as _;
@@ -21,6 +22,7 @@ use khalid_content::SiteContent;
 use khalid_core::{AbsoluteUrl, Clock, Config, Secret, UserMessage};
 use khalid_outbound::{Limits, Outbound, Resolver};
 use khalid_routes::Routes;
+use tokio::runtime::Handle;
 
 use crate::cli::{Cli, Network, Output};
 use crate::exit::Exit;
@@ -70,7 +72,7 @@ pub(crate) fn run(
         };
         runtime.block_on(crawl(&source, &home, Limit::default()))
     };
-    let mut audit = Report::of(&crawled, thresholds);
+    let mut audit = Report::of(&crawled, &thresholds);
     if network == Network::Fetch {
         let Ok(public) = outbound::client(cli) else {
             return report::failure(output, &audit_message::internal(), Exit::Internal);
@@ -114,12 +116,7 @@ fn built(
     output: Output,
 ) -> Result<Folder, Exit> {
     let built = within(folder, "site");
-    if built.exists()
-        && let Err(error) = fs::remove_dir_all(&built)
-    {
-        let message = audit_message::write(&built, &error);
-        return Err(report::failure(output, &message, Exit::Failure));
-    }
+    emptied(&built).map_err(|message| report::failure(output, &message, Exit::Failure))?;
     build::into_folder(site, checked, &built, clock, output)?;
     let home = home(checked.0)
         .map_err(|()| report::failure(output, &audit_message::internal(), Exit::Internal))?;
@@ -127,15 +124,63 @@ fn built(
         .map_err(|error| report::failure(output, &audit_message::of(&error), Exit::Internal))
 }
 
+/// Audits the site in `site` as `khalid audit` does offline, printing
+/// nothing: builds it into `data/audit/site/`, crawls it on `handle`,
+/// writes the CSV files and adds the run to the trend, which it returns.
+/// The scheduler in `khalid serve` calls it once a day on a blocking
+/// thread (plan 5.10).
+///
+/// # Errors
+///
+/// Returns the message of the first read, build or write that fails.
+pub(crate) fn nightly(
+    site: &Path,
+    checked: (&Config, &Routes, &SiteContent),
+    clock: &dyn Clock,
+    handle: &Handle,
+) -> Result<Run, UserMessage> {
+    let folder = within(site, FOLDER);
+    let thresholds = thresholds(site, clock)?;
+    let home = home(checked.0).map_err(|()| audit_message::internal())?;
+    let built = within(&folder, "site");
+    emptied(&built)?;
+    build::quietly(site, checked, &built, clock)?;
+    let source = Folder::open(&built, &home).map_err(|error| audit_message::of(&error))?;
+    let crawled = handle.block_on(crawl(&source, &home, Limit::default()));
+    let audit = Report::of(&crawled, &thresholds);
+    let reports = (&LinkReport::of(&crawled), &WeightReport::of(&crawled));
+    let trend = keep(&folder, &audit, reports, clock)?;
+    trend.last().copied().ok_or_else(audit_message::internal)
+}
+
+/// Every audit the site in `site` has kept, oldest first, or none when no
+/// audit has run or the history cannot be read.
+pub(crate) fn runs(site: &Path) -> Vec<Run> {
+    let file = within(&within(site, FOLDER), "runs.jsonl");
+    fs::read_to_string(file).map_or_else(|_| Vec::new(), |text| history(&text))
+}
+
+/// Removes `built`, a page left from an earlier build being audited as if
+/// it were still there.
+fn emptied(built: &Path) -> Result<(), UserMessage> {
+    if built.exists() {
+        fs::remove_dir_all(built).map_err(|error| audit_message::write(built, &error))?;
+    }
+    Ok(())
+}
+
 /// The audit's limits, measured on today's date from `clock`. The answer
-/// length, the paragraph length and the stale window come from the site's
-/// `lint.toml`, so the linter and the audit judge a post alike.
+/// length, the paragraph length, the stale window and the site's own
+/// hedge words and vague openers come from the site's `lint.toml`, so the
+/// linter and the audit judge a post alike.
 fn thresholds(site: &Path, clock: &dyn Clock) -> Result<Thresholds, UserMessage> {
-    let lint = lint::lint_settings(site)?.thresholds();
+    let settings = lint::lint_settings(site)?;
+    let lint = settings.thresholds();
     Ok(Thresholds::default()
         .with_answer_words(lint.answer_min_words, lint.answer_max_words)
         .with_paragraph_words(lint.paragraph_max_words)
         .with_stale_months(lint.stale_months)
+        .with_unclear_words(settings.unclear_words().clone())
         .with_today(clock.now().date_naive()))
 }
 

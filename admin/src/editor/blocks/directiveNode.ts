@@ -68,8 +68,12 @@ export function printDirective(spec: BlockSpec, attrs: Record<string, string | n
   return `${fence}${opening}\n${body}${fence}`;
 }
 
-/** The node name of a directive, kept apart from Tiptap's own nodes. */
-export const nodeName = (spec: BlockSpec) => `${spec.name}Block`;
+/**
+ * The node name of a directive, kept apart from Tiptap's own nodes and
+ * written as one word: `privacy-facts` is `privacyFactsBlock`.
+ */
+export const nodeName = (spec: BlockSpec) =>
+  `${spec.name.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase())}Block`;
 
 /** A Tiptap node for `spec` that reads and writes its directive unchanged. */
 export function directiveNode(spec: BlockSpec) {

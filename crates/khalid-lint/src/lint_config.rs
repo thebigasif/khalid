@@ -1,8 +1,8 @@
 //! Severities a site sets in `lint.toml`.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
-use khalid_core::Slug;
+use khalid_core::{Slug, UnclearWords};
 use serde::Deserialize;
 use toml::Spanned;
 
@@ -16,6 +16,9 @@ use crate::{Catalogue, LintError, RuleId, Severity, Thresholds};
 /// tunes the numbers behind the rules that measure (see [`Thresholds`]).
 /// The `[reviewers]` table names, in `required-in`, the categories whose
 /// posts must say who checked them, such as health or money posts.
+/// The `[words]` table adds a site's own `hedges` and `vague-openers`,
+/// such as words in its own language, to the built-in [`UnclearWords`]
+/// that the `plain-answer` rule and the audit both flag.
 ///
 /// # Examples
 ///
@@ -31,6 +34,9 @@ pub struct LintConfig {
     severities: BTreeMap<String, Severity>,
     thresholds: Thresholds,
     reviewers_required_in: Vec<Slug>,
+    /// The line of each category in `reviewers_required_in`, in its order.
+    required_in_lines: Vec<usize>,
+    unclear_words: UnclearWords,
 }
 
 /// The file as written, with the position of each rule name.
@@ -43,6 +49,18 @@ struct RawConfig {
     thresholds: Thresholds,
     #[serde(default)]
     reviewers: RawReviewers,
+    #[serde(default)]
+    words: RawWords,
+}
+
+/// The `[words]` table as written.
+#[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields, rename_all = "kebab-case")]
+struct RawWords {
+    #[serde(default)]
+    hedges: Vec<String>,
+    #[serde(default)]
+    vague_openers: Vec<String>,
 }
 
 /// The `[reviewers]` table as written.
@@ -50,7 +68,7 @@ struct RawConfig {
 #[serde(deny_unknown_fields, rename_all = "kebab-case")]
 struct RawReviewers {
     #[serde(default)]
-    required_in: Vec<Slug>,
+    required_in: Vec<Spanned<Slug>>,
 }
 
 impl LintConfig {
@@ -84,10 +102,17 @@ impl LintConfig {
             }
             severities.insert(name.into_inner(), severity);
         }
+        let required_in = raw.reviewers.required_in;
+        let required_in_lines = (required_in.iter())
+            .map(|slug| position(text, slug.span().start).0)
+            .collect();
         Ok(Self {
             severities,
             thresholds: raw.thresholds,
-            reviewers_required_in: raw.reviewers.required_in,
+            reviewers_required_in: required_in.into_iter().map(Spanned::into_inner).collect(),
+            required_in_lines,
+            unclear_words: UnclearWords::default()
+                .with_own(&raw.words.hedges, &raw.words.vague_openers),
         })
     }
 
@@ -107,6 +132,38 @@ impl LintConfig {
     /// when the file sets none, so no post needs one.
     pub fn reviewers_required_in(&self) -> &[Slug] {
         &self.reviewers_required_in
+    }
+
+    /// Checks that each category in `required-in` is one of `known`, the
+    /// slugs of the site's categories, so a slip such as `heath` cannot
+    /// switch the reviewer rule off without a word.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`LintError::UnknownCategory`] for the first category that
+    /// `known` lacks, with its line and the known slugs.
+    pub fn check_categories<'k>(
+        &self,
+        known: impl IntoIterator<Item = &'k str>,
+    ) -> Result<(), LintError> {
+        let known: BTreeSet<&str> = known.into_iter().collect();
+        let lines = self.required_in_lines.iter().copied();
+        let unknown = (self.reviewers_required_in.iter().zip(lines))
+            .find(|(slug, _)| !known.contains(slug.as_str()));
+        match unknown {
+            None => Ok(()),
+            Some((category, line)) => Err(LintError::UnknownCategory {
+                category: category.clone(),
+                line,
+                known: known.into_iter().map(str::to_owned).collect(),
+            }),
+        }
+    }
+
+    /// The hedge words and vague openers to flag: the built-in ones, then
+    /// the site's own from the `[words]` table.
+    pub fn unclear_words(&self) -> &UnclearWords {
+        &self.unclear_words
     }
 }
 

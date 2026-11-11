@@ -271,6 +271,12 @@ export type AdminForms = {
   forms: FormSummary[];
 };
 
+/** Glossary terms as the Admin API wraps them. */
+export type AdminGlossary = {
+  /** The term or terms. */
+  glossary: AdminTerm[];
+};
+
 /** Issues as the Admin API wraps them. */
 export type AdminIssues = {
   /** Up to ten problems, those that stop posts going live first. */
@@ -511,6 +517,7 @@ export type AdminSettings = {
   address: string;
   /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
   code: (Record<string, unknown>)[];
+  cta?: CtaSetting | null;
   /** The language a reader gets first, such as `en`. */
   default_language: string;
   /** The home page's sections from `[reader] home_sections`, top first. Empty means one list of the newest posts. */
@@ -535,6 +542,12 @@ export type AdminSettings = {
   template: TemplateSetting;
   /** When `site.toml` last changed. A change sends it back. */
   updated_at: string;
+};
+
+/** The settings as the Admin API wraps them. */
+export type AdminSiteSettings = {
+  /** The site's core settings. */
+  settings: AdminSettings;
 };
 
 /** A snippet in one language, such as an affiliate disclosure, in Admin API shape. A post places it by its slug, so a change shows in every post that uses it as soon as it is saved. */
@@ -627,6 +640,24 @@ export type AdminTemplate = {
   reader: ReaderDefault[];
   /** One plain sentence on what the template is for. */
   summary: string;
+};
+
+/** A glossary term in one language, such as "topical authority", in Admin API shape. A post links to it with a wikilink to its slug, and the term gets its own page under the glossary. */
+export type AdminTerm = {
+  /** The language and the slug, such as `en.topical-authority`. */
+  id: string;
+  /** The language, such as `en`. */
+  language: string;
+  /** The definition, in markdown. */
+  markdown: string;
+  /** The slug a wikilink names the term by, such as `topical-authority`. */
+  slug: string;
+  /** The term as it is written. */
+  term: string;
+  /** The key shared by the term in other languages, if any. */
+  translation?: string | null;
+  /** When the term last changed. An edit or delete sends it back. */
+  updated_at: string;
 };
 
 /** What one AI assistant's bots read, and the readers it sent. */
@@ -743,6 +774,36 @@ export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_d
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
+/** One item's alt text before and after a replace. */
+export type AltChangeBody = {
+  /** Its alt text after, trimmed. */
+  after: string;
+  /** Its alt text before. */
+  before: string;
+  /** The item's identity. */
+  id: string;
+  /** Its file name. */
+  name: string;
+};
+
+/** What a replace changes, or changed, by item identity. */
+export type AltChanges = {
+  /** Whether the changes were made, or only listed. */
+  applied: boolean;
+  /** Every item whose alt text holds the words. */
+  changes: AltChangeBody[];
+};
+
+/** Words to find in the alt text of every library item, and what to put in their place. Matching is exact, letter case included. */
+export type AltReplaceBody = {
+  /** `true` makes the changes; `false`, the default, only lists them. */
+  apply?: boolean;
+  /** The words to find; not empty. */
+  find: string;
+  /** What to put in their place; empty removes them. */
+  replace: string;
+};
+
 /** One field of an answer. */
 export type AnswerField = {
   /** The field's name in the form block. */
@@ -796,7 +857,7 @@ export type AuthorEdits = {
 };
 
 export type Authors = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   authors: Author[];
   meta?: Meta | null;
 };
@@ -852,13 +913,13 @@ export type CalendarPost = {
 };
 
 export type CaseStudies = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   case_studies: Post[];
   meta?: Meta | null;
 };
 
 export type Categories = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   categories: Term[];
   meta?: Meta | null;
 };
@@ -878,7 +939,7 @@ export type CategoryEdits = {
 };
 
 export type ChangelogEntries = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   changelog: Post[];
   meta?: Meta | null;
 };
@@ -896,7 +957,7 @@ export type Claim = "join" | "take_over";
 export type ClusterPlace = "pillar" | "member";
 
 export type Collections = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   collections: ContentCollection[];
   meta?: Meta | null;
 };
@@ -975,6 +1036,16 @@ export type CropBoxBody = {
   width: number;
 };
 
+/** The site's one call to action, as `[template.cta]` in `site.toml` holds it: the band, the header button and the `::cta` block show it. */
+export type CtaSetting = {
+  /** Where the button goes: a path on this site, such as `/blog/start/`, or a full `http` or `https` address. */
+  href: string;
+  /** The words on the button, one line, such as `Start a free trial`. */
+  label: string;
+  /** One line beside the button, such as `No card needed.` Left out, the button shows alone. */
+  note?: string | null;
+};
+
 /** JSON-LD written by hand for a type Khalid does not write itself, kept as written. It is read as schema.org nodes before it is kept, so a page never carries JSON-LD a search engine would throw away. */
 export type CustomJsonLd = string;
 
@@ -1041,6 +1112,36 @@ export type DraftLint = LintCounts & {
 export type EditPosts = {
   /** The one edit. */
   posts: PostEdit[];
+};
+
+/** A post as an oEmbed `rich` answer: a card of its title, summary and site that the consumer puts in its page as it is. */
+export type Embed = {
+  /** The first author's name. */
+  author_name?: string | null;
+  /** The first author's page on the blog. */
+  author_url?: string | null;
+  /** Unset: the card is as tall as its text. */
+  height?: number | null;
+  /** The card: a quote of the title, the summary and the site, each a plain link, with no script and no frame. */
+  html: string;
+  /** The site's name. */
+  provider_name: string;
+  /** The blog's front page. */
+  provider_url: string;
+  /** Its height in pixels. */
+  thumbnail_height?: number | null;
+  /** The post's share image. */
+  thumbnail_url?: string | null;
+  /** Its width in pixels. */
+  thumbnail_width?: number | null;
+  /** The post's title. */
+  title: string;
+  /** Always `rich`. */
+  type: string;
+  /** Always `1.0`. */
+  version: string;
+  /** The card's width in pixels. */
+  width: number;
 };
 
 /** How many sessions signing out everywhere ended. */
@@ -1179,7 +1280,7 @@ export type Gate = "passes" | "refuses";
 export type GetOptions = Record<string, unknown>;
 
 export type GlossaryTerms = {
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   glossary: Post[];
   meta?: Meta | null;
 };
@@ -1213,6 +1314,22 @@ export type HeadParts = {
   json_ld: string;
   /** The title, meta and link tags, in order. */
   tags: HeadElement[];
+};
+
+/** One audit as the dashboard shows it. */
+export type HealthRun = {
+  /** When the audit ran, in UTC. */
+  at: string;
+  /** How many errors it found. */
+  errors: number;
+  /** How many notices it found. */
+  notices: number;
+  /** How many pages it read. */
+  pages: number;
+  /** The health score out of 100: the share of pages with no error. */
+  score: number;
+  /** How many warnings it found. */
+  warnings: number;
 };
 
 /** One section of the home page: `{"kind": "latest"}`, or a list named by its slug, such as `{"kind": "category", "slug": "technical-seo"}`. */
@@ -1425,7 +1542,7 @@ export type NavSetting = {
 
 export type Navigation = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   navigation: Menu[];
 };
 
@@ -1588,6 +1705,26 @@ export type NewSnippets = {
   snippets: NewSnippet[];
 };
 
+/** A new glossary term, as a create request sends it. */
+export type NewTerm = {
+  /** The language, such as `de`; the site's default when left out. */
+  language?: string | null;
+  /** The definition, in markdown. */
+  markdown: string;
+  /** The slug a wikilink will name it by, such as `topical-authority`. */
+  slug: string;
+  /** The term as it is written. */
+  term: string;
+  /** The key shared by the term in other languages, if any. */
+  translation?: string | null;
+};
+
+/** A new term, wrapped the way the Admin API wraps the glossary: exactly one. */
+export type NewTerms = {
+  /** The one new term. */
+  glossary: NewTerm[];
+};
+
 /** One new webhook. */
 export type NewWebhook = {
   /** The event to send, such as `post.published`. */
@@ -1680,7 +1817,7 @@ export type PageEdits = {
 
 export type Pages = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   pages: Post[];
 };
 
@@ -2062,7 +2199,7 @@ export type PostVersions = {
 
 export type Posts = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   posts: Post[];
 };
 
@@ -2169,6 +2306,22 @@ export type RoleChange = {
   role: string;
 };
 
+/** Another page's JSON-LD, as text for a custom JSON-LD field. */
+export type SchemaCopy = {
+  /** Every JSON-LD node on the page in one graph, pretty-printed, without the other site's `@id`s. */
+  json_ld: string;
+  /** Why the custom field would refuse the copy as it is, or `null` when it takes it. */
+  problem?: string | null;
+  /** The `@type` of each node at the top, in page order. */
+  types: string[];
+};
+
+/** The page to copy schema from. */
+export type SchemaCopyAsk = {
+  /** The page's full web address. */
+  url: string;
+};
+
 /** The site's schema templates, in the order `site.toml` lists them. */
 export type SchemaTemplates = {
   /** The site's collections, to pick a template's collection from. */
@@ -2199,6 +2352,18 @@ export type SearchNumbers = {
   impressions: number;
   /** The average position in results, 1 at the top, or `null` when no search showed a page. */
   position?: number | null;
+};
+
+/** Each published post's numbers for the month and nothing else, which the posts table shows beside each post. One request to Google finds them, where the whole report needs six. */
+export type SearchPosts = {
+  /** The first day of the month looked at. */
+  first: string;
+  /** The last day looked at: the last day whose numbers are final. */
+  last: string;
+  /** Every published post, the one with the most clicks first. */
+  posts: PostNumbers[];
+  /** The Search Console property the numbers come from. */
+  property: string;
 };
 
 /** A site's Search Console numbers. */
@@ -2315,6 +2480,7 @@ export type SettingsChange = {
   address?: string | null;
   /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. A list that differs from the saved one needs `admin:all`. */
   code?: (Record<string, unknown>)[] | null;
+  cta?: CtaSetting | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
   /** Every home section, top first, in place of the old ones. An empty list goes back to one list of the newest posts. */
@@ -2431,6 +2597,13 @@ export type SiteAnswer = {
 export type SiteDesign = {
   /** The site's design. */
   design: AdminDesign;
+};
+
+/** The site's health: its last audit and the trend. */
+export type SiteHealth = {
+  last?: HealthRun | null;
+  /** Up to the last 30 audits, oldest first, the last among them. */
+  trend: HealthRun[];
 };
 
 /** One lint rule that fires on the site, as one task. */
@@ -2596,7 +2769,7 @@ export type TagEdits = {
 
 export type Tags = {
   meta?: Meta | null;
-  /** The entries on this page, or the one entry asked for. */
+  /** The entries on this page, or the one entry asked for. On a list, `fields` keeps only the fields named. */
   tags: Term[];
 };
 
@@ -2650,6 +2823,24 @@ export type Term = {
   slug: string;
 };
 
+/** A change to a glossary term: only the fields sent change. An empty `translation` removes it. */
+export type TermEdit = {
+  /** A new definition, in markdown. */
+  markdown?: string | null;
+  /** The term as it is now written. */
+  term?: string | null;
+  /** A new translation key, or `""` to remove it. */
+  translation?: string | null;
+  /** The `updated_at` of the copy this edit was made on. */
+  updated_at: string;
+};
+
+/** An edit, wrapped the way the Admin API wraps the glossary: exactly one. */
+export type TermEdits = {
+  /** The one edit. */
+  glossary: TermEdit[];
+};
+
 /** The trash as the Admin API wraps it. */
 export type TrashList = {
   /** The deleted posts, the most recently deleted first. */
@@ -2670,10 +2861,51 @@ export type TrashedPost = {
   trashed_at: string;
 };
 
+/** Every page the watch looked at. The list is empty until `khalid serve` has looked once, which it does only when it answers more than its own computer. */
+export type UptimeReport = {
+  /** Each watched page, in the order of its address. */
+  pages: WatchedPage[];
+};
+
 /** A photo from Unsplash that went into a post. */
 export type UsedPhoto = {
   /** The photo's identity at Unsplash, as the search gave it. */
   id: string;
+};
+
+/** One look at the page. */
+export type WatchLook = {
+  /** When the look started, in UTC. */
+  at: string;
+  /** How long it took, in milliseconds. */
+  millis: number;
+  /** The HTTP status it got, or `null` when nothing answered in time. */
+  status?: number | null;
+};
+
+/** The looks of one span of time. */
+export type WatchSpan = {
+  /** How many of them got the page: a status from 200 to 399. */
+  answered: number;
+  /** The longest time between two looks, or from the last look to now, in minutes. A long gap is time nobody watched, as when the server itself was down. */
+  longest_gap_minutes: number;
+  /** How many looks the watch took. */
+  looks: number;
+  /** The middle answer time of the looks that got the page, in milliseconds, or `null` when none did. */
+  middle_ms?: number | null;
+  /** The slowest of them, in milliseconds, or `null` when none did. */
+  slowest_ms?: number | null;
+};
+
+/** One page's looks, over two spans. */
+export type WatchedPage = {
+  /** The looks of the last 30 days, all the watch keeps. */
+  last_30_days: WatchSpan;
+  /** The looks of the last 24 hours. */
+  last_day: WatchSpan;
+  last_look?: WatchLook | null;
+  /** The page's full address: the blog's home page. */
+  page: string;
 };
 
 /** What each operation takes and what it answers on success. */
@@ -2996,6 +3228,34 @@ export interface Operations {
     };
     output: AdminComments;
   };
+  /** Marks a comment as spam, which hides it from its post. Needs `posts:write`. */
+  mark_spam: {
+    input: {
+      path: {
+        /** The comment's identity */
+        id: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminComments;
+  };
+  /** Puts a comment marked as spam back in the moderation queue, waiting for approval. A comment that is not spam is left as it is. Needs `posts:write`. */
+  not_spam: {
+    input: {
+      path: {
+        /** The comment's identity */
+        id: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminComments;
+  };
   /** Counts the readers' answers to the consent banner in the last `days` days, per day and version, with how many allowed each optional category. Needs `settings:write`. */
   consent_counts: {
     input: {
@@ -3079,6 +3339,74 @@ export interface Operations {
         id: string;
         /** The answer's identity */
         answer: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: null;
+  };
+  /** Lists every glossary term in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  list_terms: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminGlossary;
+  };
+  /** Creates a glossary term in the language it names or the site's default. Needs `posts:publish`. */
+  create_term: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: NewTerms;
+    };
+    output: AdminGlossary;
+  };
+  /** Reads one glossary term. Needs `posts:write`. */
+  read_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminGlossary;
+  };
+  /** Edits one glossary term: only the fields sent change. The edit carries the `updated_at` of the copy it was made on; when the term changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
+  edit_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: TermEdits;
+    };
+    output: AdminGlossary;
+  };
+  /** Deletes one glossary term. A post that still links to it keeps the wikilink, and the linter names it as broken. The request names the `updated_at` of the copy it was made on; when the term changed since, the answer is a 409. Needs `posts:publish`. */
+  delete_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      query: {
+        /** The `updated_at` as last read, such as `2026-10-20T08:30:00Z`. */
+        updated_at: string;
       };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
@@ -3174,6 +3502,17 @@ export interface Operations {
       body: Blob;
     };
     output: MediaItems;
+  };
+  /** Finds words in the alt text of every library item and puts others in their place. Without `apply` it only lists what would change, so a person can check before saving. Captions, folders and addresses stay as they are. Needs `media:write`. */
+  replace_alt: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: AltReplaceBody;
+    };
+    output: AltChanges;
   };
   /** Lists the library's folders by name: each one that holds an item, and each one above it, with how many items it holds itself. The top of the library is never listed. Needs `media:write`. */
   list_media_folders: {
@@ -3714,6 +4053,17 @@ export interface Operations {
     };
     output: SchemaTemplates;
   };
+  /** Fetches the page at `url` through the shared outbound client and answers with its JSON-LD, ready to edit in a post's custom JSON-LD field. Nothing is saved. Addresses inside the server's network are refused. Needs `posts:write`. */
+  copy_schema: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: SchemaCopyAsk;
+    };
+    output: SchemaCopy;
+  };
   /** Lists the long searches, of 8 words or more, that showed each post in the last 28 days whose numbers are final, with the heading of the post that answers each. Google is asked on each request, so the answer can take some seconds. Needs `settings:write`. */
   follow_ups: {
     input: {
@@ -3723,6 +4073,16 @@ export interface Operations {
       };
     };
     output: FollowUps;
+  };
+  /** Lists each published post's clicks, impressions, click-through rate and average position for the last 28 days whose numbers are final, and nothing else, for the posts table. One request to Google finds them, where the whole report needs six. Needs `settings:write`. */
+  search_posts: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SearchPosts;
   };
   /** Lists each published post's clicks, impressions, click-through rate and average position for the last 28 days whose numbers are final, the pages whose clicks fell three months in a row, pages that answer 404 or `noindex` but still get search traffic, and this week's winners and losers against last week. Google is asked on each request, so the answer can take some seconds. Needs `settings:write`. */
   search_report: {
@@ -3941,7 +4301,7 @@ export interface Operations {
         "Accept-Version"?: string;
       };
     };
-    output: SiteSettings;
+    output: AdminSiteSettings;
   };
   /** Changes the core settings in `site.toml`: only the fields sent change, and each value must pass the checks `khalid serve` makes at start. The change carries the `updated_at` of the copy it was made on; when `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The running server puts most settings in use once saved; `restart_needed` says when one it reads only at start, such as `address`, waits for a restart. Needs `settings:write`; a change to `code` also needs `admin:all`, as a post's head code does, because that code runs on every reader's page. Sending `code` back unchanged needs no more. */
   change_settings: {
@@ -3952,7 +4312,17 @@ export interface Operations {
       };
       body: SettingsChanges;
     };
-    output: SiteSettings;
+    output: AdminSiteSettings;
+  };
+  /** The site's health score out of 100 from its last audit, for the dashboard, and up to the last 30 audits as the trend, oldest first. `khalid serve` audits the site once a day, and `khalid audit` adds a run too. Before the first audit, `last` is `null` and the trend is empty. Needs `posts:write`. */
+  site_health: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SiteHealth;
   };
   /** Lists every site this process serves. Only a super admin, signed in on the home site, may see it; a key never may. */
   list_sites: {
@@ -4267,6 +4637,16 @@ export interface Operations {
       };
     };
     output: AdminPosts;
+  };
+  /** Reports how fast and how reliably the blog answered at its public address over the last 24 hours and the last 30 days, from the looks `khalid serve` takes every few minutes, as `khalid watch` does. The list is empty until the server has looked once. Needs `settings:write`. */
+  uptime_report: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: UptimeReport;
   };
   /** Lists every webhook that is switched on, oldest first, without their secrets. Needs `webhooks:manage`. */
   list_webhooks: {
@@ -4842,5 +5222,23 @@ export interface Operations {
       };
     };
     output: Tags;
+  };
+  /** Answers a consumer with the card of the post at `url`. */
+  embed: {
+    input: {
+      query: {
+        /** The full address of a published post. */
+        url: string;
+        /** `json`, the only format served. `xml` answers 501, as oEmbed asks. */
+        format?: string;
+        /** The widest the card may be, in pixels, from 200; 550 when left out. */
+        maxwidth?: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: Embed;
   };
 }

@@ -58,9 +58,10 @@ pub(crate) struct ServeTestArgs {
     /// apart, even when answering on loopback.
     #[arg(long, hide = true, value_name = "SECONDS")]
     pub(crate) watch_every: Option<u64>,
-    /// Test builds only: certificate renewal, the scheduler and preview
-    /// links read a clock this many seconds ahead, so a certificate, a
-    /// schedule or a link falls due in seconds.
+    /// Test builds only: certificate renewal, the scheduler, preview links
+    /// and the newsletter read a clock this many seconds ahead, so a
+    /// certificate, a schedule, a link or a welcome step falls due in
+    /// seconds.
     #[arg(long, hide = true, value_name = "SECONDS")]
     pub(crate) test_clock_ahead: Option<u32>,
 }

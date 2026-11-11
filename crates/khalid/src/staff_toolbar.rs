@@ -72,7 +72,7 @@ pub(crate) fn start(
     router: Router,
 ) -> Router {
     let toolbar = Toolbar {
-        accounts: staff::accounts(database, id, config),
+        accounts: staff::accounts(database, id, config, None),
         content: Arc::new(content),
         posts,
         views: Arc::new(AnalyticsTable::new(database.clone(), id)),

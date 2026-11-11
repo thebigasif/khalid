@@ -115,6 +115,38 @@ fn the_demo_snippet_is_edited_in_its_file_and_a_new_one_is_made_and_deleted() {
 }
 
 #[test]
+fn a_glossary_term_made_edited_and_deleted_through_the_admin_api_is_shown_then_gone() {
+    let site = demo_copy();
+    let server = start(site.path(), &new_key(site.path(), &EDITOR));
+    let (status, listed) = server.admin("GET", "/api/admin/v1/glossary/", None);
+    assert_eq!(status, 200, "{listed}");
+    assert_eq!(listed["glossary"][0]["id"], "en.topical-authority");
+    let new = json!({"glossary": [{"slug": "crawl-budget", "term": "Crawl budget", "markdown": "How many pages a search engine reads on a site each day."}]});
+    let (status, made) = server.admin("POST", "/api/admin/v1/glossary/", Some(&new));
+    assert_eq!(status, 201, "{made}");
+    assert!(shows(
+        &server,
+        "/blog/glossary/crawl-budget/",
+        "Crawl budget"
+    ));
+    let term = "/api/admin/v1/glossary/en.crawl-budget/";
+    let seen = made["glossary"][0]["updated_at"].as_str().unwrap();
+    let edit = json!({"glossary": [{"term": "Crawl allowance", "updated_at": seen}]});
+    let (status, saved) = server.admin("PUT", term, Some(&edit));
+    assert_eq!(status, 200, "{saved}");
+    assert!(shows(
+        &server,
+        "/blog/glossary/crawl-budget/",
+        "Crawl allowance"
+    ));
+
+    let seen = saved["glossary"][0]["updated_at"].as_str().unwrap();
+    let (status, body) = server.admin("DELETE", &format!("{term}?updated_at={seen}"), None);
+    assert_eq!(status, 204, "{body}");
+    assert!(server.answers("/blog/glossary/crawl-budget/", 404));
+}
+
+#[test]
 fn an_author_edited_through_the_admin_api_shows_on_their_page_and_a_new_one_goes() {
     let site = demo_copy();
     let server = start(site.path(), &new_key(site.path(), &EDITOR));

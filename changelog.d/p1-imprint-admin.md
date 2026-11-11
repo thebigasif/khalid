@@ -1,0 +1,2 @@
+Added
+- An Imprint tab on the admin's Privacy screen. Turn on "Add an imprint page", fill in a phone number, register entry, VAT number or the person who answers for the articles, and save: Khalid writes `[privacy.imprint]` to `site.toml` and the imprint page appears within a few seconds. The tab warns while the Contact tab lacks a name, postal address or email, and turning the switch off removes the page.

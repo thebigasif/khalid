@@ -25,6 +25,16 @@ export function approveComment(id: number): Promise<Reply<AdminComment[]>> {
   return call(`/comments/${id}/approve/`, { method: "POST" }, comments);
 }
 
+/** Marks a comment as spam, which hides it from its post. */
+export function markSpam(id: number): Promise<Reply<AdminComment[]>> {
+  return call(`/comments/${id}/spam/`, { method: "POST" }, comments);
+}
+
+/** Puts a comment marked as spam back among the waiting ones. */
+export function notSpam(id: number): Promise<Reply<AdminComment[]>> {
+  return call(`/comments/${id}/spam/`, { method: "DELETE" }, comments);
+}
+
 /** Answers a comment as staff; the answer shows at once and approves what it answers. */
 export function replyToComment(
   id: number,

@@ -68,6 +68,50 @@ fn a_template_saved_through_the_settings_is_in_site_toml_and_needs_no_restart() 
 }
 
 #[test]
+fn a_call_to_action_saved_through_the_settings_shows_and_null_removes_it() {
+    let site = demo_copy();
+    let key = new_key(site.path(), &OWNER);
+    let server = start(site.path(), &key);
+    let (_, read) = server.admin("GET", SETTINGS, None);
+    assert_eq!(read["settings"]["cta"], json!(null), "{read}");
+    let seen = read["settings"]["updated_at"].as_str().unwrap();
+    let trial = json!({"name": "trial", "options": {}});
+    let bad = json!({"label": "Try it", "href": "javascript:alert(1)"});
+    let wrong = json!({"settings": {"template": trial, "cta": bad, "updated_at": seen}});
+    let (status, body) = server.admin("PUT", SETTINGS, Some(&wrong));
+    assert_eq!(status, 422, "{body}");
+
+    let cta = json!({"label": "Start a free trial", "href": "/blog/start/",
+        "note": "No card needed."});
+    let set = json!({"settings": {"template": trial, "cta": cta, "updated_at": seen}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&set));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["cta"], cta, "{saved}");
+    let mut file = PathBuf::from(site.path());
+    file.push("site.toml");
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(
+        text.contains("[template.cta]\nlabel = \"Start a free trial\"\n"),
+        "{text}"
+    );
+
+    drop(server);
+    let restarted = start(site.path(), &key);
+    let home = restarted.raw("GET", "/blog/", &[], None).1;
+    let button = "<a class=\"button\" href=\"/blog/start/\">Start a free trial</a>";
+    assert!(home.contains(button), "{home}");
+    let (_, read) = restarted.admin("GET", SETTINGS, None);
+    let seen = read["settings"]["updated_at"].as_str().unwrap();
+    let removed = json!({"settings": {"cta": null, "updated_at": seen}});
+    let (status, saved) = restarted.admin("PUT", SETTINGS, Some(&removed));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["cta"], json!(null), "{saved}");
+    assert_eq!(saved["settings"]["template"]["name"], "trial", "{saved}");
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(!text.contains("[template.cta]"), "{text}");
+}
+
+#[test]
 fn the_templates_are_the_engines_packs_with_their_options() {
     let site = demo_copy();
     let server = start(site.path(), &new_key(site.path(), &OWNER));

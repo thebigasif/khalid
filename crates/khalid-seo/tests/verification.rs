@@ -6,7 +6,8 @@ mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, locale};
 use khalid_seo::{
-    PageKind, RootFile, SeoError, SeoPage, SiteVerification, UrlPath, VerificationCode, head_tags,
+    ATPROTO_DID_FILE, AtprotoDid, PageKind, RootFile, SeoError, SeoPage, SiteVerification, UrlPath,
+    VerificationCode, head_tags,
 };
 
 fn code(text: &str) -> VerificationCode {
@@ -56,6 +57,33 @@ fn a_code_with_markup_or_spaces_is_refused() {
             "{bad:?}"
         );
     }
+}
+
+#[test]
+fn a_bluesky_did_is_a_plc_or_web_did() {
+    for good in [
+        "did:plc:z72i7hdynmk6r22z27h6tvur",
+        "did:web:blog.example.com",
+    ] {
+        assert_eq!(AtprotoDid::try_new(good).unwrap().as_str(), good);
+    }
+    for bad in [
+        "",
+        "z72i7hdynmk6r22z27h6tvur",
+        "did:plc:short",
+        "did:plc:Z72I7HDYNMK6R22Z27H6TVUR",
+        "did:plc:z72i7hdynmk6r22z27h6tvu1",
+        "did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK",
+        "did:web:",
+        "did:web:a b.com",
+        "did:plc:z72i7hdynmk6r22z27h6tvur\n",
+    ] {
+        assert!(
+            matches!(AtprotoDid::try_new(bad), Err(SeoError::BlueskyDid { .. })),
+            "{bad:?}"
+        );
+    }
+    assert_eq!(ATPROTO_DID_FILE, ".well-known/atproto-did");
 }
 
 #[test]

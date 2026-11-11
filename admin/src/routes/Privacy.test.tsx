@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { PRIVACY_DEMO, privacyBlog } from "../../test/privacy";
@@ -99,6 +99,44 @@ describe("the Privacy screen", () => {
     });
     expect(screen.queryByText(WORDS.contact.missing)).toBeNull();
     expect(await axeViolations()).toEqual([]);
+  });
+
+  it("adds an imprint with its own lines, and warns while the contact lacks an address", async () => {
+    signedIn();
+    const contact = { name: "Notes GmbH", email: "hello@example.com" };
+    const changes = privacyBlog({ ...PRIVACY_DEMO, privacy: { contact } });
+    renderAt("/privacy");
+    await openTab(WORDS.tabs.imprint);
+    expect(screen.queryByLabelText(WORDS.imprint.phone)).toBeNull();
+    expect(screen.queryByText(WORDS.imprint.missing)).toBeNull();
+    await userEvent.click(screen.getByRole("checkbox", { name: WORDS.imprint.show }));
+    expect(screen.getByText(WORDS.imprint.missing)).toBeVisible();
+    await userEvent.type(screen.getByLabelText(WORDS.imprint.phone), "+49 30 1234567");
+    await userEvent.type(screen.getByLabelText(WORDS.imprint.vatId), "DE123456789");
+    await userEvent.click(screen.getByRole("button", { name: SAVE }));
+    expect(await screen.findByText(WORDS.live)).toBeVisible();
+    expect(changes.at(-1)?.privacy).toEqual({
+      imprint: { phone: "+49 30 1234567", vat_id: "DE123456789" },
+    });
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("keeps an imprint with no lines of its own, and removes it once switched off", async () => {
+    signedIn();
+    const contact = { name: "Notes GmbH", email: "hello@example.com", address: "Berlin" };
+    const changes = privacyBlog({ ...PRIVACY_DEMO, privacy: { contact } });
+    renderAt("/privacy");
+    await openTab(WORDS.tabs.imprint);
+    await userEvent.click(screen.getByRole("checkbox", { name: WORDS.imprint.show }));
+    expect(screen.queryByText(WORDS.imprint.missing)).toBeNull();
+    await userEvent.click(screen.getByRole("button", { name: SAVE }));
+    expect(await screen.findByText(WORDS.live)).toBeVisible();
+    expect(changes.at(-1)?.privacy).toEqual({ imprint: {} });
+    const show = await screen.findByRole("checkbox", { name: WORDS.imprint.show });
+    expect(show).toBeChecked();
+    await userEvent.click(show);
+    await userEvent.click(screen.getByRole("button", { name: SAVE }));
+    await waitFor(() => expect(changes.at(-1)?.privacy).toEqual({ imprint: null }));
   });
 
   it("keeps each language's banner words apart and saves them as one part", async () => {

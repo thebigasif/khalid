@@ -25,7 +25,7 @@ A post's identity is `<language>.<slug>`, such as `en.choosing-anchor-text`. It 
 - `khalid plan` suggests a day for each draft the linter passes, at the site's own pace or `--per-week <count>`, each topic group's pillar before its members, keeping scheduled days. It lists the drafts that wait and warns when the pace dropped. It changes nothing.
 - `khalid publish <slug>` lints a draft and takes it live, as `publish_post` does. It refuses a post that is already live.
 - `khalid serve` runs the blog and the APIs.
-- `khalid watch` shows how fast and how reliably the blog answered at its public address over the last day and the last 30 days, from the looks `khalid serve` takes every few minutes.
+- `khalid watch` shows how fast and how reliably the blog answered at its public address over the last day and the last 30 days, from the looks `khalid serve` takes every few minutes. The `uptime_report` tool answers the same report.
 - `khalid import wordpress|ghost|medium|substack|markdown <export> --dry-run` says what an import would bring in and leave behind. Without `--dry-run` it writes the posts with their old slugs and stores a redirect for each old address that moves. For `wordpress`, the export may be the site's address, which brings in its published posts and pages.
 - `khalid keys create` makes a key. `khalid doctor` says what is wrong and how to fix it, and on a static site which features are off.
 - `khalid backup --out <file>.tar.gz` writes one archive of the site folder with a whole copy of the database, safe while `khalid serve` runs. It leaves out `public/` and `data/media/`, which Khalid makes again, and never writes over a file.

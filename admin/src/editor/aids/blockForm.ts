@@ -1,6 +1,7 @@
 import type { Editor } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { type EditorState, NodeSelection } from "@tiptap/pm/state";
+import { en } from "../../strings/en";
 import { nodeName } from "../blocks/directiveNode";
 import { BLOCK_SPECS, type BlockSpec } from "../blocks/specs";
 
@@ -11,6 +12,27 @@ export type Details = {
   at: number;
   editing: boolean;
 };
+
+const labels: Record<string, string> = en.fields;
+const blockLabels: Record<string, Record<string, string>> = en.blockFields;
+
+/** The label of `field` in the form of block `block`, if the words have one. */
+export function labelOf(block: string, field: string): string | undefined {
+  return blockLabels[block]?.[field] ?? labels[field];
+}
+
+/** The details that take one of a few words, the default first. */
+const CHOICES: Record<string, readonly string[]> = {
+  kind: ["note", "tip", "warning"],
+  show: ["everyone", "visitors", "members"],
+  "chart.type": ["column", "bar", "line"],
+  "event.status": ["scheduled", "cancelled", "postponed", "rescheduled", "moved-online"],
+};
+
+/** The words `field` of block `block` takes, or `undefined` when it takes any text. */
+export function choicesOf(block: string, field: string): readonly string[] | undefined {
+  return CHOICES[`${block}.${field}`] ?? CHOICES[field];
+}
 
 /** The fields a block's form asks for: its attributes, then its text if it holds any. */
 export function fieldsOf(spec: BlockSpec): string[] {

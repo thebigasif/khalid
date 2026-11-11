@@ -2029,6 +2029,164 @@
         ]
       }
     },
+    "/api/admin/v1/comments/{id}/spam/": {
+      "post": {
+        "tags": [
+          "admin comments"
+        ],
+        "summary": "Marks a comment as spam, which hides it from its post. Needs `posts:write`.",
+        "operationId": "mark_spam",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The comment's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The comment, marked as spam",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminComments"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No comment has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin comments"
+        ],
+        "summary": "Puts a comment marked as spam back in the moderation queue, waiting\nfor approval. A comment that is not spam is left as it is. Needs\n`posts:write`.",
+        "operationId": "not_spam",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The comment's identity",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The comment, waiting again",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminComments"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No comment has this identity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/consent/counts/": {
       "get": {
         "tags": [
@@ -2611,6 +2769,459 @@
         ]
       }
     },
+    "/api/admin/v1/glossary/": {
+      "get": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Lists every glossary term in every language. A site has tens, so the\nlist comes whole. Needs `posts:write`.",
+        "operationId": "list_terms",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Every glossary term",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Creates a glossary term in the language it names or the site's\ndefault. Needs `posts:publish`.",
+        "operationId": "create_term",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTerms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The new glossary term",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another term in that language has the slug",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, the term or definition is empty, or the site has no such language",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/glossary/{id}/": {
+      "get": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Reads one glossary term. Needs `posts:write`.",
+        "operationId": "read_term",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The language and slug, such as en.topical-authority",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The glossary term",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No term has this identity, or this server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Edits one glossary term: only the fields sent change. The edit carries\nthe `updated_at` of the copy it was made on; when the term changed\nsince, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.",
+        "operationId": "edit_term",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The language and slug, such as en.topical-authority",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TermEdits"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The glossary term as saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No term has this identity, or this server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The term changed after the copy the edit was made on",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or the term or definition is empty",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Deletes one glossary term. A post that still links to it keeps the\nwikilink, and the linter names it as broken. The request names the\n`updated_at` of the copy it was made on; when the term changed since,\nthe answer is a 409. Needs `posts:publish`.",
+        "operationId": "delete_term",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The language and slug, such as en.topical-authority",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updated_at",
+            "in": "query",
+            "description": "The `updated_at` as last read, such as `2026-10-20T08:30:00Z`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The glossary term is gone"
+          },
+          "400": {
+            "description": "updated_at is missing or is not a time",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No term has this identity, or this server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The term changed after the copy the delete was made on",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/keys/": {
       "get": {
         "tags": [
@@ -3137,6 +3748,86 @@
           },
           "422": {
             "description": "The file is a type the library refuses, cannot be read, or is too large",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/media/alt-text/": {
+      "post": {
+        "tags": [
+          "admin media"
+        ],
+        "summary": "Finds words in the alt text of every library item and puts others in\ntheir place. Without `apply` it only lists what would change, so a\nperson can check before saving. Captions, folders and addresses stay\nas they are. Needs `media:write`.",
+        "operationId": "replace_alt",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AltReplaceBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "What changes, or changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AltChanges"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks media:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, the words to find are empty, or a change would make alt text longer than 1000 characters",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6626,6 +7317,106 @@
         ]
       }
     },
+    "/api/admin/v1/schema/copies/": {
+      "post": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Fetches the page at `url` through the shared outbound client and\nanswers with its JSON-LD, ready to edit in a post's custom JSON-LD\nfield. Nothing is saved. Addresses inside the server's network are\nrefused. Needs `posts:write`.",
+        "operationId": "copy_schema",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaCopyAsk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The page's JSON-LD",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaCopy"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server fetches no pages",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The address is not a public web address, or the page has no JSON-LD",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "description": "The page could not be fetched, or answered with an error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/search-console/follow-ups/": {
       "get": {
         "tags": [
@@ -6651,6 +7442,86 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FollowUps"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The site is not connected to Search Console",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "description": "Google refused or could not be reached",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/search-console/posts/": {
+      "get": {
+        "tags": [
+          "admin search console"
+        ],
+        "summary": "Lists each published post's clicks, impressions, click-through rate\nand average position for the last 28 days whose numbers are final,\nand nothing else, for the posts table. One request to Google finds\nthem, where the whole report needs six. Needs `settings:write`.",
+        "operationId": "search_posts",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Each post's numbers for the month",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchPosts"
                 }
               }
             }
@@ -7923,7 +8794,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SiteSettings"
+                  "$ref": "#/components/schemas/AdminSiteSettings"
                 }
               }
             }
@@ -8001,7 +8872,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SiteSettings"
+                  "$ref": "#/components/schemas/AdminSiteSettings"
                 }
               }
             }
@@ -8048,6 +8919,76 @@
           },
           "422": {
             "description": "The body could not be read, or a value would not pass the checks at start",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/site/health/": {
+      "get": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "The site's health score out of 100 from its last audit, for the\ndashboard, and up to the last 30 audits as the trend, oldest first.\n`khalid serve` audits the site once a day, and `khalid audit` adds a\nrun too. Before the first audit, `last` is `null` and the trend is\nempty. Needs `posts:write`.",
+        "operationId": "site_health",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The last audit and the trend",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SiteHealth"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server checks no posts",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -9996,6 +10937,76 @@
           },
           "409": {
             "description": "Another post has the address the restored one would take",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/watch/": {
+      "get": {
+        "tags": [
+          "admin watch"
+        ],
+        "summary": "Reports how fast and how reliably the blog answered at its public\naddress over the last 24 hours and the last 30 days, from the looks\n`khalid serve` takes every few minutes, as `khalid watch` does. The\nlist is empty until the server has looked once. Needs `settings:write`.",
+        "operationId": "uptime_report",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Each watched page's looks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UptimeReport"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no looks",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -13069,6 +14080,90 @@
           }
         ]
       }
+    },
+    "/api/oembed": {
+      "get": {
+        "tags": [
+          "oembed"
+        ],
+        "summary": "Answers a consumer with the card of the post at `url`.",
+        "operationId": "embed",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "description": "The full address of a published post.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "`json`, the only format served. `xml` answers 501, as oEmbed asks.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxwidth",
+            "in": "query",
+            "description": "The widest the card may be, in pixels, from 200; 550 when left out.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The post as a card",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Embed"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No url was given",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No published post is at the url",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "A format other than json was asked for"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -13855,6 +14950,22 @@
           }
         }
       },
+      "AdminGlossary": {
+        "type": "object",
+        "description": "Glossary terms as the Admin API wraps them.",
+        "required": [
+          "glossary"
+        ],
+        "properties": {
+          "glossary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTerm"
+            },
+            "description": "The term or terms."
+          }
+        }
+      },
       "AdminIssues": {
         "type": "object",
         "description": "Issues as the Admin API wraps them.",
@@ -14578,6 +15689,17 @@
             },
             "description": "The site's own code from `[code]`, one object per entry as written:\n`head`, `body`, the `category` it waits for (`preferences`,\n`analytics`, `marketing` or `no-tracking`), the `vendor` and its\n`policy` link. An entry with no `category` counts as Marketing. The\nold single `[code]` table reads as one entry."
           },
+          "cta": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CtaSetting",
+                "description": "The call to action from `[template.cta]`, or `null` when the site\nsets none, so no band or header button shows."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "default_language": {
             "type": "string",
             "description": "The language a reader gets first, such as `en`."
@@ -14632,6 +15754,19 @@
             "type": "string",
             "format": "date-time",
             "description": "When `site.toml` last changed. A change sends it back."
+          }
+        }
+      },
+      "AdminSiteSettings": {
+        "type": "object",
+        "description": "The settings as the Admin API wraps them.",
+        "required": [
+          "settings"
+        ],
+        "properties": {
+          "settings": {
+            "$ref": "#/components/schemas/AdminSettings",
+            "description": "The site's core settings."
           }
         }
       },
@@ -14896,6 +16031,54 @@
           "summary": {
             "type": "string",
             "description": "One plain sentence on what the template is for."
+          }
+        }
+      },
+      "AdminTerm": {
+        "type": "object",
+        "description": "A glossary term in one language, such as \"topical authority\", in Admin\nAPI shape. A post links to it with a wikilink to its slug, and the term\ngets its own page under the glossary.",
+        "required": [
+          "id",
+          "slug",
+          "language",
+          "term",
+          "markdown",
+          "updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The language and the slug, such as `en.topical-authority`."
+          },
+          "language": {
+            "type": "string",
+            "description": "The language, such as `en`.",
+            "example": "en"
+          },
+          "markdown": {
+            "type": "string",
+            "description": "The definition, in markdown."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The slug a wikilink names the term by, such as `topical-authority`.",
+            "example": "topical-authority"
+          },
+          "term": {
+            "type": "string",
+            "description": "The term as it is written."
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key shared by the term in other languages, if any."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the term last changed. An edit or delete sends it back."
           }
         }
       },
@@ -15241,6 +16424,83 @@
         "description": "An old address on this site that redirects to the post, such as\n`/2019/05/old-title/`, so a moved post keeps its links.",
         "example": "/2019/05/old-title/"
       },
+      "AltChangeBody": {
+        "type": "object",
+        "description": "One item's alt text before and after a replace.",
+        "required": [
+          "id",
+          "name",
+          "before",
+          "after"
+        ],
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "Its alt text after, trimmed."
+          },
+          "before": {
+            "type": "string",
+            "description": "Its alt text before."
+          },
+          "id": {
+            "type": "string",
+            "description": "The item's identity."
+          },
+          "name": {
+            "type": "string",
+            "description": "Its file name."
+          }
+        }
+      },
+      "AltChanges": {
+        "type": "object",
+        "description": "What a replace changes, or changed, by item identity.",
+        "required": [
+          "applied",
+          "changes"
+        ],
+        "properties": {
+          "applied": {
+            "type": "boolean",
+            "description": "Whether the changes were made, or only listed."
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AltChangeBody"
+            },
+            "description": "Every item whose alt text holds the words."
+          }
+        }
+      },
+      "AltReplaceBody": {
+        "type": "object",
+        "description": "Words to find in the alt text of every library item, and what to put in\ntheir place. Matching is exact, letter case included.",
+        "required": [
+          "find",
+          "replace"
+        ],
+        "properties": {
+          "apply": {
+            "type": "boolean",
+            "description": "`true` makes the changes; `false`, the default, only lists them."
+          },
+          "find": {
+            "type": "string",
+            "description": "The words to find; not empty."
+          },
+          "replace": {
+            "type": "string",
+            "description": "What to put in their place; empty removes them."
+          }
+        },
+        "additionalProperties": false,
+        "example": {
+          "find": "Acme Ltd",
+          "replace": "Acme",
+          "apply": false
+        }
+      },
       "AnswerField": {
         "type": "object",
         "description": "One field of an answer.",
@@ -15409,7 +16669,7 @@
             "items": {
               "$ref": "#/components/schemas/Author"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15569,7 +16829,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15595,7 +16855,7 @@
             "items": {
               "$ref": "#/components/schemas/Term"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15668,7 +16928,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15721,7 +16981,7 @@
             "items": {
               "$ref": "#/components/schemas/ContentCollection"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -15951,6 +17211,34 @@
         },
         "additionalProperties": false
       },
+      "CtaSetting": {
+        "type": "object",
+        "description": "The site's one call to action, as `[template.cta]` in `site.toml` holds\nit: the band, the header button and the `::cta` block show it.",
+        "required": [
+          "label",
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Where the button goes: a path on this site, such as `/blog/start/`,\nor a full `http` or `https` address.",
+            "example": "https://example.com/signup"
+          },
+          "label": {
+            "type": "string",
+            "description": "The words on the button, one line, such as `Start a free trial`.",
+            "example": "Start a free trial"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "One line beside the button, such as `No card needed.` Left out, the\nbutton shows alone."
+          }
+        },
+        "additionalProperties": false
+      },
       "CustomJsonLd": {
         "type": "string",
         "description": "JSON-LD written by hand for a type Khalid does not write itself, kept\nas written. It is read as schema.org nodes before it is kept, so a page\nnever carries JSON-LD a search engine would throw away.",
@@ -16150,6 +17438,101 @@
           }
         },
         "additionalProperties": false
+      },
+      "Embed": {
+        "type": "object",
+        "description": "A post as an oEmbed `rich` answer: a card of its title, summary and\nsite that the consumer puts in its page as it is.",
+        "required": [
+          "type",
+          "version",
+          "title",
+          "provider_name",
+          "provider_url",
+          "html",
+          "width"
+        ],
+        "properties": {
+          "author_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The first author's name."
+          },
+          "author_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The first author's page on the blog."
+          },
+          "height": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Unset: the card is as tall as its text.",
+            "minimum": 0
+          },
+          "html": {
+            "type": "string",
+            "description": "The card: a quote of the title, the summary and the site, each a\nplain link, with no script and no frame."
+          },
+          "provider_name": {
+            "type": "string",
+            "description": "The site's name."
+          },
+          "provider_url": {
+            "type": "string",
+            "description": "The blog's front page."
+          },
+          "thumbnail_height": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Its height in pixels.",
+            "minimum": 0
+          },
+          "thumbnail_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The post's share image."
+          },
+          "thumbnail_width": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "Its width in pixels.",
+            "minimum": 0
+          },
+          "title": {
+            "type": "string",
+            "description": "The post's title."
+          },
+          "type": {
+            "type": "string",
+            "description": "Always `rich`.",
+            "example": "rich"
+          },
+          "version": {
+            "type": "string",
+            "description": "Always `1.0`.",
+            "example": "1.0"
+          },
+          "width": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The card's width in pixels.",
+            "minimum": 0
+          }
+        }
       },
       "Ended": {
         "type": "object",
@@ -16541,7 +17924,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           },
           "meta": {
             "oneOf": [
@@ -16666,6 +18049,56 @@
               "$ref": "#/components/schemas/HeadElement"
             },
             "description": "The title, meta and link tags, in order."
+          }
+        }
+      },
+      "HealthRun": {
+        "type": "object",
+        "description": "One audit as the dashboard shows it.",
+        "required": [
+          "at",
+          "score",
+          "pages",
+          "errors",
+          "warnings",
+          "notices"
+        ],
+        "properties": {
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the audit ran, in UTC."
+          },
+          "errors": {
+            "type": "integer",
+            "description": "How many errors it found.",
+            "example": 2,
+            "minimum": 0
+          },
+          "notices": {
+            "type": "integer",
+            "description": "How many notices it found.",
+            "example": 9,
+            "minimum": 0
+          },
+          "pages": {
+            "type": "integer",
+            "description": "How many pages it read.",
+            "example": 48,
+            "minimum": 0
+          },
+          "score": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The health score out of 100: the share of pages with no error.",
+            "example": 96,
+            "minimum": 0
+          },
+          "warnings": {
+            "type": "integer",
+            "description": "How many warnings it found.",
+            "example": 5,
+            "minimum": 0
           }
         }
       },
@@ -17330,7 +18763,7 @@
             "items": {
               "$ref": "#/components/schemas/Menu"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -17798,6 +19231,63 @@
         },
         "additionalProperties": false
       },
+      "NewTerm": {
+        "type": "object",
+        "description": "A new glossary term, as a create request sends it.",
+        "required": [
+          "slug",
+          "term",
+          "markdown"
+        ],
+        "properties": {
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The language, such as `de`; the site's default when left out.",
+            "example": "en"
+          },
+          "markdown": {
+            "type": "string",
+            "description": "The definition, in markdown."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The slug a wikilink will name it by, such as `topical-authority`.",
+            "example": "topical-authority"
+          },
+          "term": {
+            "type": "string",
+            "description": "The term as it is written."
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key shared by the term in other languages, if any."
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewTerms": {
+        "type": "object",
+        "description": "A new term, wrapped the way the Admin API wraps the glossary: exactly one.",
+        "required": [
+          "glossary"
+        ],
+        "properties": {
+          "glossary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewTerm"
+            },
+            "description": "The one new term."
+          }
+        },
+        "additionalProperties": false
+      },
       "NewWebhook": {
         "type": "object",
         "description": "One new webhook.",
@@ -18132,7 +19622,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -19364,7 +20854,7 @@
             "items": {
               "$ref": "#/components/schemas/Post"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -19646,6 +21136,53 @@
         },
         "additionalProperties": false
       },
+      "SchemaCopy": {
+        "type": "object",
+        "description": "Another page's JSON-LD, as text for a custom JSON-LD field.",
+        "required": [
+          "json_ld",
+          "types"
+        ],
+        "properties": {
+          "json_ld": {
+            "type": "string",
+            "description": "Every JSON-LD node on the page in one graph, pretty-printed, without\nthe other site's `@id`s.",
+            "example": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Recipe\"\n}"
+          },
+          "problem": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why the custom field would refuse the copy as it is, or `null` when\nit takes it."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `@type` of each node at the top, in page order.",
+            "example": [
+              "Recipe"
+            ]
+          }
+        }
+      },
+      "SchemaCopyAsk": {
+        "type": "object",
+        "description": "The page to copy schema from.",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The page's full web address.",
+            "example": "https://www.example.com/recipes/lentil-soup/"
+          }
+        },
+        "additionalProperties": false
+      },
       "SchemaTemplates": {
         "type": "object",
         "description": "The site's schema templates, in the order `site.toml` lists them.",
@@ -19734,6 +21271,40 @@
             ],
             "format": "double",
             "description": "The average position in results, 1 at the top, or `null` when no\nsearch showed a page."
+          }
+        }
+      },
+      "SearchPosts": {
+        "type": "object",
+        "description": "Each published post's numbers for the month and nothing else, which\nthe posts table shows beside each post. One request to Google finds\nthem, where the whole report needs six.",
+        "required": [
+          "property",
+          "first",
+          "last",
+          "posts"
+        ],
+        "properties": {
+          "first": {
+            "type": "string",
+            "format": "date",
+            "description": "The first day of the month looked at."
+          },
+          "last": {
+            "type": "string",
+            "format": "date",
+            "description": "The last day looked at: the last day whose numbers are final."
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostNumbers"
+            },
+            "description": "Every published post, the one with the most clicks first."
+          },
+          "property": {
+            "type": "string",
+            "description": "The Search Console property the numbers come from.",
+            "example": "sc-domain:example.com"
           }
         }
       },
@@ -20078,6 +21649,17 @@
               "type": "object"
             },
             "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`. A list that differs\nfrom the saved one needs `admin:all`."
+          },
+          "cta": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CtaSetting",
+                "description": "A new call to action in place of `[template.cta]`, or `null` to\nremove it. Left out, the call to action stays as it is."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "default_language": {
             "type": [
@@ -20540,6 +22122,33 @@
           "design": {
             "$ref": "#/components/schemas/AdminDesign",
             "description": "The site's design."
+          }
+        }
+      },
+      "SiteHealth": {
+        "type": "object",
+        "description": "The site's health: its last audit and the trend.",
+        "required": [
+          "trend"
+        ],
+        "properties": {
+          "last": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HealthRun",
+                "description": "The last audit, or `null` when none has run yet."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "trend": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HealthRun"
+            },
+            "description": "Up to the last 30 audits, oldest first, the last among them."
           }
         }
       },
@@ -21016,7 +22625,7 @@
             "items": {
               "$ref": "#/components/schemas/Term"
             },
-            "description": "The entries on this page, or the one entry asked for."
+            "description": "The entries on this page, or the one entry asked for. On a\nlist, `fields` keeps only the fields named."
           }
         }
       },
@@ -21171,6 +22780,59 @@
           }
         }
       },
+      "TermEdit": {
+        "type": "object",
+        "description": "A change to a glossary term: only the fields sent change. An empty\n`translation` removes it.",
+        "required": [
+          "updated_at"
+        ],
+        "properties": {
+          "markdown": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new definition, in markdown."
+          },
+          "term": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The term as it is now written."
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new translation key, or `\"\"` to remove it."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The `updated_at` of the copy this edit was made on."
+          }
+        },
+        "additionalProperties": false
+      },
+      "TermEdits": {
+        "type": "object",
+        "description": "An edit, wrapped the way the Admin API wraps the glossary: exactly one.",
+        "required": [
+          "glossary"
+        ],
+        "properties": {
+          "glossary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TermEdit"
+            },
+            "description": "The one edit."
+          }
+        },
+        "additionalProperties": false
+      },
       "TrashList": {
         "type": "object",
         "description": "The trash as the Admin API wraps it.",
@@ -21223,6 +22885,22 @@
           }
         }
       },
+      "UptimeReport": {
+        "type": "object",
+        "description": "Every page the watch looked at. The list is empty until `khalid serve`\nhas looked once, which it does only when it answers more than its own\ncomputer.",
+        "required": [
+          "pages"
+        ],
+        "properties": {
+          "pages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WatchedPage"
+            },
+            "description": "Each watched page, in the order of its address."
+          }
+        }
+      },
       "UsedPhoto": {
         "type": "object",
         "description": "A photo from Unsplash that went into a post.",
@@ -21236,6 +22914,122 @@
           }
         },
         "additionalProperties": false
+      },
+      "WatchLook": {
+        "type": "object",
+        "description": "One look at the page.",
+        "required": [
+          "at",
+          "millis"
+        ],
+        "properties": {
+          "at": {
+            "type": "string",
+            "description": "When the look started, in UTC.",
+            "example": "2026-11-10T09:30:00Z"
+          },
+          "millis": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How long it took, in milliseconds.",
+            "example": 120,
+            "minimum": 0
+          },
+          "status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The HTTP status it got, or `null` when nothing answered in time.",
+            "example": 200,
+            "minimum": 0
+          }
+        }
+      },
+      "WatchSpan": {
+        "type": "object",
+        "description": "The looks of one span of time.",
+        "required": [
+          "looks",
+          "answered",
+          "longest_gap_minutes"
+        ],
+        "properties": {
+          "answered": {
+            "type": "integer",
+            "description": "How many of them got the page: a status from 200 to 399.",
+            "example": 287,
+            "minimum": 0
+          },
+          "longest_gap_minutes": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The longest time between two looks, or from the last look to now,\nin minutes. A long gap is time nobody watched, as when the server\nitself was down.",
+            "example": 5
+          },
+          "looks": {
+            "type": "integer",
+            "description": "How many looks the watch took.",
+            "example": 288,
+            "minimum": 0
+          },
+          "middle_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The middle answer time of the looks that got the page, in\nmilliseconds, or `null` when none did.",
+            "example": 120,
+            "minimum": 0
+          },
+          "slowest_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The slowest of them, in milliseconds, or `null` when none did.",
+            "example": 900,
+            "minimum": 0
+          }
+        }
+      },
+      "WatchedPage": {
+        "type": "object",
+        "description": "One page's looks, over two spans.",
+        "required": [
+          "page",
+          "last_day",
+          "last_30_days"
+        ],
+        "properties": {
+          "last_30_days": {
+            "$ref": "#/components/schemas/WatchSpan",
+            "description": "The looks of the last 30 days, all the watch keeps."
+          },
+          "last_day": {
+            "$ref": "#/components/schemas/WatchSpan",
+            "description": "The looks of the last 24 hours."
+          },
+          "last_look": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WatchLook",
+                "description": "The newest look, or `null` when there is none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "page": {
+            "type": "string",
+            "description": "The page's full address: the blog's home page.",
+            "example": "https://example.com/blog/"
+          }
+        }
       }
     },
     "responses": {

@@ -18,7 +18,7 @@ fn audit(crawl: &Crawl) -> Vec<Issue> {
         Category::Headings,
         Category::Localization,
     ];
-    khalid_audit::audit(crawl, Thresholds::default())
+    khalid_audit::audit(crawl, &Thresholds::default())
         .into_iter()
         .filter(|issue| head.contains(&issue.check().category()))
         .collect()

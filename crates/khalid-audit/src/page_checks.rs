@@ -13,7 +13,7 @@ const TITLE_CHARS: usize = 70;
 const DESCRIPTION_CHARS: usize = 160;
 
 /// Runs every page check on every page the crawl read.
-pub(crate) fn page_issues(crawl: &Crawl, thresholds: Thresholds, issues: &mut Vec<Issue>) {
+pub(crate) fn page_issues(crawl: &Crawl, thresholds: &Thresholds, issues: &mut Vec<Issue>) {
     for visit in crawl.visits() {
         if let Some(page) = visit.page() {
             let mut found = Found {

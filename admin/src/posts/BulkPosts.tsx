@@ -1,6 +1,7 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { PostRow } from "../api/rows";
+import { numbersById, readPostNumbers } from "../api/searchConsole";
 import { en } from "../strings/en";
 import { BulkChange } from "./BulkChange";
 import type { BulkResult } from "./bulk";
@@ -14,6 +15,14 @@ export function BulkPosts({ rows }: Props) {
   const [ticked, setTicked] = useState<string[]>([]);
   const [result, setResult] = useState<BulkResult | null>(null);
   const [said, setSaid] = useState<string | null>(null);
+  // Google is asked once per visit, and not again when it refuses: a blog that is not
+  // connected, or a key without settings:write, simply has no search column.
+  const searchNumbers = useQuery({
+    queryKey: ["search-console-posts"],
+    queryFn: readPostNumbers,
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+  }).data;
   const authors = [...new Set(rows.flatMap((row) => (row.author ? [row.author] : [])))];
   const chosen = rows.filter((row) => ticked.includes(row.id));
 
@@ -46,6 +55,7 @@ export function BulkPosts({ rows }: Props) {
         ticked={ticked}
         onTick={tick}
         authors={authors}
+        searchNumbers={numbersById(searchNumbers)}
         onSaid={(words) => {
           setSaid(words);
           setResult(null);

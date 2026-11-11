@@ -1,29 +1,31 @@
 //! The list of rules this crate ships.
 
 use chrono::NaiveDate;
-use khalid_core::Slug;
+use khalid_core::{Slug, UnclearWords};
 
 use crate::catalogue::Swap;
 use crate::focus::{FocusNotIn, FocusTooOften, FocusTooRare, Place, SecondaryKeywordUnused};
 use crate::secondary::{SecondaryNotIn, SecondaryTooOften, SecondaryTooRare};
 use crate::{
-    Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, facts, focus_shape,
-    focus_spread, headings, inclusive, link_hygiene, link_targets, link_text, page_checks,
-    page_or_section, page_shape, readability, reading, site_content, site_keywords, site_links,
-    site_sections, site_trust, snippet, statistics, structure, title_width, topics, voice, words,
-    writing,
+    EntryRule, Rule, SiteRule, Thresholds, address, blocking, brief, collections, complex, entries,
+    facts, focus_shape, focus_spread, headings, inclusive, link_hygiene, link_targets, link_text,
+    page_checks, page_or_section, page_shape, readability, reading, site_content, site_keywords,
+    site_links, site_sections, site_trust, snippet, statistics, structure, title_width, topics,
+    voice, words, writing,
 };
 
 /// Every built-in rule, measured against `thresholds`, in the order their
 /// findings are listed: the blocks first, then the warnings.
-/// `reviewed` lists the categories whose posts need a reviewer.
+/// `reviewed` lists the categories whose posts need a reviewer, and
+/// `words` the hedges and openers an answer should not use.
 pub(crate) fn rules(
     thresholds: Thresholds,
     terms: Vec<Swap>,
     reviewed: Vec<Slug>,
+    words: UnclearWords,
 ) -> Vec<Box<dyn Rule>> {
     let mut rules = blocking_and_structure_rules(thresholds, reviewed);
-    rules.extend(writing_and_reading_rules(thresholds));
+    rules.extend(writing_and_reading_rules(thresholds, words));
     rules.extend(readability_rules(thresholds, terms));
     rules
 }
@@ -120,8 +122,9 @@ fn blocking_and_structure_rules(thresholds: Thresholds, reviewed: Vec<Slug>) -> 
     ]
 }
 
-/// The rules that judge a post's writing, after the shape rules.
-fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
+/// The rules that judge a post's writing, after the shape rules. `words`
+/// are the hedges and openers the plain-answer rule flags.
+fn writing_and_reading_rules(thresholds: Thresholds, words: UnclearWords) -> Vec<Box<dyn Rule>> {
     let mut rules: Vec<Box<dyn Rule>> = vec![
         Box::new(writing::AnswerCapsule {
             min_answer_words: thresholds.answer_min_words,
@@ -130,10 +133,7 @@ fn writing_and_reading_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(writing::LongParagraph {
             max_paragraph_words: thresholds.paragraph_max_words,
         }),
-        Box::new(writing::PlainAnswer {
-            hedges: writing::HEDGE_WORDS.to_vec(),
-            openers: writing::VAGUE_OPENERS.to_vec(),
-        }),
+        Box::new(writing::PlainAnswer { words }),
         Box::new(statistics::SourcedStatistics),
         Box::new(headings::HeadingAgrees {
             max_duplicate_percent: thresholds.heading_duplicate_percent,
@@ -223,6 +223,15 @@ fn topic_rules(thresholds: Thresholds) -> Vec<Box<dyn Rule>> {
         Box::new(page_shape::ComparisonAnswerLate),
         Box::new(page_shape::FewerPicksThanTitle),
         Box::new(page_shape::ReviewWithoutRating),
+    ]
+}
+
+/// The rules on each case study and changelog entry (plan section 5.13),
+/// after the site rules.
+pub(crate) fn entry_rules() -> Vec<Box<dyn EntryRule>> {
+    vec![
+        Box::new(entries::CaseStudyIncomplete),
+        Box::new(entries::ChangelogEntryUndated),
     ]
 }
 

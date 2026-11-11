@@ -15,6 +15,7 @@ use crate::front_matter::{Fence, split};
 use crate::post_fields::{
     self, LeadImage, PostFact, PostSeries, ReviewState, ShareCards, Sitemap, TopicCluster,
 };
+use crate::post_updates::PostUpdate;
 use crate::{ContentError, parse_blocks};
 
 /// What a post's front matter may say.
@@ -42,6 +43,11 @@ pub struct PostFront {
     /// What changed in the last real update, in one plain sentence, such
     /// as "Refreshed the 2024 numbers." Shown beside the updated date.
     pub updated_note: Option<String>,
+    /// Dated notes of what changed, newest first, shown to readers as the
+    /// post's Updates list. The newest date counts as a real update, as
+    /// `updated` does: see [`PostFront::last_updated`].
+    #[serde(default, deserialize_with = "crate::post_updates::updates")]
+    pub updates: Vec<PostUpdate>,
     /// The day the post last came up for review and was looked at (F3,
     /// decision D4: at least every six months). A review that changes
     /// nothing sets this and nothing else: it never moves `date` or
@@ -160,6 +166,17 @@ pub struct PostFront {
     /// Google News. At most [`MAX_STOCK_TICKERS`].
     #[serde(default, deserialize_with = "stock_tickers")]
     pub stock_tickers: Vec<String>,
+}
+
+impl PostFront {
+    /// The day of the last real update: the later of `updated` and the
+    /// newest entry in the Updates list. Feeds the visible date,
+    /// `dateModified`, the sitemap's `lastmod` and the stale-post rule.
+    #[must_use]
+    pub fn last_updated(&self) -> Option<NaiveDate> {
+        let newest = self.updates.first().map(|update| update.date);
+        self.updated.max(newest)
+    }
 }
 
 /// The most stock tickers Google News reads for one article.

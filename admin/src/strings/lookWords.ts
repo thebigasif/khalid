@@ -16,6 +16,22 @@ export const lookWords = {
     "Each option starts at the template's own choice. Change only what you want different.",
   noOptions: "This template has no options. It looks the same on every blog, in your colours.",
   linesHint: (most: number) => `One per line, up to ${most}.`,
+  cta: {
+    title: "Your call to action",
+    about:
+      "A call to action is the one thing you ask readers to do, such as start a trial. Write it once here and every page that shows it uses the same button. Empty all three lines to remove it.",
+    shows:
+      "This template shows it as a band after posts or on the front page, and as a button in the header. The options above say where.",
+    blockOnly:
+      "This template shows it only where a post or page has a ::cta line. Pick a template with a call to action band to show it on every post.",
+    label: "Words on the button",
+    labelHint: "A few words, such as Start a free trial.",
+    href: "Where the button goes",
+    hrefHint:
+      "A full address, such as https://example.com/signup, or a path on your blog, such as /blog/start/.",
+    note: "Line beside the button",
+    noteHint: "Optional. One short line, such as No card needed.",
+  },
   save: "Save the look",
   saved: "Saved to site.toml.",
   live: LIVE,

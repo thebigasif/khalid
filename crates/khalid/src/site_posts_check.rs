@@ -11,7 +11,9 @@ use khalid_api::link_suggestions::{LinkSuggestion, Topics, suggest};
 use khalid_api::post_check::{PostCheck, PostChecks, Snippet};
 use khalid_api::post_store::PostStoreError;
 use khalid_api::resources::PostStatus;
+use khalid_api::site_health::{HealthRun, SiteHealth};
 use khalid_api::site_issues::{SiteIssue, top_issues};
+use khalid_audit::Run;
 use khalid_content::parse_post;
 use khalid_core::Slug;
 use khalid_seo::{HeadTag, SeoPage, SeoSite, head_tags, page_graph};
@@ -20,6 +22,19 @@ use serde_json::Value;
 use super::{Found, Site, SitePosts, blocking, failure};
 use crate::lint_input::{PostParts, lint_site, seo_page};
 use crate::post_text::PostText;
+use crate::site_audit;
+
+/// One kept audit as the Admin API sends it.
+fn health_run(run: &Run) -> HealthRun {
+    HealthRun {
+        at: run.at,
+        score: run.score,
+        pages: run.pages,
+        errors: run.errors,
+        warnings: run.warnings,
+        notices: run.notices,
+    }
+}
 
 impl Site {
     /// `found`'s text as it would go live now, and its path in the site
@@ -145,6 +160,16 @@ impl PostChecks for SitePosts {
         Box::pin(blocking(&self.0, |site| {
             let judge = site.judge(&site.content()?)?;
             Ok(top_issues(&judge.linter.lint_site(&judge.site)))
+        }))
+    }
+
+    /// The audits `khalid audit` and the nightly run kept in
+    /// `data/audit/runs.jsonl`.
+    fn site_health(&self) -> BoxFuture<'_, Result<SiteHealth, PostStoreError>> {
+        Box::pin(blocking(&self.0, |site| {
+            let runs = site_audit::runs(&site.folder);
+            let runs: Vec<HealthRun> = runs.iter().map(health_run).collect();
+            Ok(SiteHealth::of(&runs))
         }))
     }
 }

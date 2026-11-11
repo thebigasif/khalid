@@ -55,6 +55,8 @@ more = "More"
 # The heading over the first few related posts in templates that show two sets.
 keep_reading = "Keep reading"
 mentions = "Posts that link here"
+# The heading over a post's dated notes of what changed.
+post_updates = "Updates"
 # The words before a post's share links.
 share = "Share this post"
 # The share link that opens an email.

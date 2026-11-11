@@ -18,6 +18,17 @@ says what is wrong, why it matters and the fix, how many posts it names,
 and opens the first of them. A blog that cannot send the list leaves the
 panel out.
 
+## Dashboard: Site health
+
+The dashboard's row of numbers ends with the site health score: the share
+of the blog's pages with no error, out of 100, from the last site audit.
+`khalid serve` runs the audit once a day, and `khalid audit` adds a run
+when you start one. The card says how many errors and warnings the audit
+found on how many pages, and how the score moved since the oldest of the
+last 30 audits. It turns red when the audit found an error. The issues
+and their fixes are in `data/audit/issues.csv`. The card reads
+`GET /api/admin/v1/site/health/`; see [deploy.md](deploy.md#nightly-site-audit).
+
 ## Structured data that blocks a post
 
 Structured data is the JSON-LD a page carries so search engines can show
@@ -33,6 +44,22 @@ recommends never stops a post.
 Most blocks refuse to save without what Google needs, so the gap comes
 from the `schema` field, a schema template, or a recipe block with no
 `image`.
+
+## Copy schema from a URL
+
+`POST /api/admin/v1/schema/copies/` with `{"url": "https://..."}` fetches
+any public page and answers with its JSON-LD as text for a post's `schema`
+field. Every JSON-LD script on the page joins one `@graph`. The other
+site's `@id`s are left out, and so is a value that only pointed to one,
+since they name that site's pages. `types` lists each node's type, and
+`problem` says why the `schema` field would refuse the copy as it is, or
+is `null`. The copy is a starting point: change the names, dates and
+addresses to your own before you save.
+
+The page is fetched through Khalid's one outbound client, so an address
+inside the server's own network is refused, and a page over 4 MB or
+slower than 10 seconds is not read. Nothing is saved. The route needs a
+key with `posts:write`.
 
 ## Posts list
 
@@ -100,7 +127,8 @@ key = "3f9c0b5e2a8d4c71"
 ```
 
 Khalid then sends the address of each live post that is new, or whose
-`updated:` date is new or later. Any other edit, such as a typo fix, sends
+`updated:` date, or newest [Updates list](updates.md) entry, is new or
+later. Any other edit, such as a typo fix, sends
 nothing. Each change is sent once:
 
 - `khalid serve` sends a change as soon as the file is saved. When it

@@ -105,3 +105,73 @@ fn body_code_added_on_the_scripts_tab_is_checked_and_an_empty_list_removes_code(
         "{text}"
     );
 }
+
+#[test]
+fn the_imprint_tab_saves_an_imprint_once_contact_has_an_address_and_the_page_appears() {
+    let site = demo_copy();
+    let owner = ["--name", "Owner", "--scope", "admin:all"];
+    let key = new_key(site.path(), &owner);
+    let server = start(site.path(), &key);
+    let (_, read) = server.admin("GET", SETTINGS, None);
+    let mut file = PathBuf::from(site.path());
+    file.push("site.toml");
+    let before = std::fs::read_to_string(&file).unwrap();
+
+    // An imprint with no postal address breaks the law it is for.
+    let seen = read["settings"]["updated_at"].as_str().unwrap();
+    let bare = json!({"settings": {"updated_at": seen, "privacy": {
+        "contact": {"name": "Notes GmbH", "email": "hello@example.com"},
+        "imprint": {},
+    }}});
+    let (status, body) = server.admin("PUT", SETTINGS, Some(&bare));
+    assert_eq!(status, 422, "{body}");
+    assert_eq!(body["rule"], "address", "{body}");
+    assert_eq!(std::fs::read_to_string(&file).unwrap(), before);
+
+    // Switched on with no lines of its own, the imprint still has a page.
+    let contact = json!({"name": "Notes GmbH", "email": "hello@example.com",
+        "address": "Hauptstraße 1, 10115 Berlin"});
+    let on = json!({"settings": {"updated_at": seen, "privacy": {
+        "contact": contact, "imprint": {},
+    }}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&on));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(
+        saved["settings"]["privacy"]["imprint"],
+        json!({}),
+        "{saved}"
+    );
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(text.contains("[privacy.imprint]\n"), "{text}");
+
+    let seen = saved["settings"]["updated_at"].as_str().unwrap();
+    let lines = json!({"settings": {"updated_at": seen, "privacy": {
+        "imprint": {"phone": "+49 30 1234567", "vat_id": "DE123456789"},
+    }}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&lines));
+    assert_eq!(status, 200, "{saved}");
+    assert_eq!(saved["settings"]["restart_needed"], false, "{saved}");
+    assert!(server.answers("/blog/impressum/", 200), "no imprint page");
+    // The blog renders the saved lines within a few seconds.
+    let page = (0..40)
+        .map(|_| {
+            std::thread::sleep(std::time::Duration::from_millis(500));
+            server.raw("GET", "/blog/impressum/", &[], None).1
+        })
+        .find(|page| page.contains("+49 30 1234567"))
+        .unwrap_or_default();
+    assert!(page.contains("DE123456789"), "{page}");
+
+    // Switched off, the part leaves site.toml and the contact stays.
+    let seen = saved["settings"]["updated_at"].as_str().unwrap();
+    let off = json!({"settings": {"updated_at": seen, "privacy": {"imprint": null}}});
+    let (status, saved) = server.admin("PUT", SETTINGS, Some(&off));
+    assert_eq!(status, 200, "{saved}");
+    assert!(
+        saved["settings"]["privacy"].get("imprint").is_none(),
+        "{saved}"
+    );
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(!text.contains("imprint"), "{text}");
+    assert!(text.contains("[privacy.contact]"), "{text}");
+}

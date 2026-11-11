@@ -19,6 +19,7 @@ use crate::keys::{Principal, Scope};
 use crate::link_suggestions::LinkSuggestion;
 use crate::post_check::{PostCheck, PostChecks};
 use crate::problem::{Problem, ProblemType};
+use crate::site_health::SiteHealth;
 use crate::site_issues::SiteIssue;
 
 /// The site's post checks, or `None` for a server that makes none.
@@ -31,6 +32,7 @@ pub(crate) fn routes(checks: Checks, door: AdminDoor) -> OpenApiRouter {
         .routes(routes!(check_post))
         .routes(routes!(suggest_links))
         .routes(routes!(list_issues))
+        .routes(routes!(site_health))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(checks)
@@ -147,6 +149,31 @@ async fn list_issues(
     let issues = checks.site_issues().await;
     let issues = issues.map_err(|e| Problem::internal(&e))?;
     Ok(Json(AdminIssues { issues }))
+}
+
+/// The site's health score out of 100 from its last audit, for the
+/// dashboard, and up to the last 30 audits as the trend, oldest first.
+/// `khalid serve` audits the site once a day, and `khalid audit` adds a
+/// run too. Before the first audit, `last` is `null` and the trend is
+/// empty. Needs `posts:write`.
+#[utoipa::path(
+    get, path = "/site/health/", tag = "admin posts",
+    security(("admin_key" = [])),
+    responses(
+        (status = 200, description = "The last audit and the trend", body = SiteHealth),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "This server checks no posts", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn site_health(
+    State(checks): State<Checks>,
+    Extension(principal): Extension<Principal>,
+) -> Result<Json<SiteHealth>, Problem> {
+    require(&principal, Scope::PostsWrite)?;
+    let checks = checks.ok_or_else(no_checks)?;
+    let health = checks.site_health().await;
+    Ok(Json(health.map_err(|e| Problem::internal(&e))?))
 }
 
 fn no_checks() -> Problem {

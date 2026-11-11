@@ -4,19 +4,56 @@ import { writing } from "../../../test/editor";
 import { axeViolations } from "../../../test/render";
 import { en } from "../../strings/en";
 import { BLOCK_SPECS } from "../blocks/specs";
-import { fieldsOf } from "./blockForm";
+import { choicesOf, fieldsOf, labelOf } from "./blockForm";
 
 const fill = (label: string, value: string) =>
   fireEvent.change(screen.getByLabelText(label), { target: { value } });
 
 describe("a block's details", () => {
   it("has a label for every detail of every block", () => {
-    const labels: Record<string, string> = en.fields;
     for (const spec of BLOCK_SPECS) {
       for (const field of fieldsOf(spec)) {
-        expect(labels[field], `${spec.name} ${field}`).toBeDefined();
+        expect(labelOf(spec.name, field), `${spec.name} ${field}`).toBeDefined();
       }
     }
+  });
+
+  it("has a name for every choice of every block", () => {
+    const names: Record<string, string> = en.choices;
+    for (const spec of BLOCK_SPECS) {
+      for (const choice of fieldsOf(spec).flatMap((field) => choicesOf(spec.name, field) ?? [])) {
+        expect(names[choice], `${spec.name} ${choice}`).toBeDefined();
+      }
+    }
+  });
+
+  it("label a detail for the block it is in", () => {
+    expect(labelOf("review", "author")).toBe("Who wrote the review");
+    expect(labelOf("book", "author")).toBe("Who wrote it");
+    expect(choicesOf("chart", "type")).toEqual(["column", "bar", "line"]);
+    expect(choicesOf("business", "type")).toBeUndefined();
+  });
+
+  it("ask for a chart's kind from a list and write the numbers as its text", () => {
+    const { type, press, onChange } = writing();
+    type("/chart");
+    press("Enter");
+    expect(screen.getByRole("form", { name: "Chart" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Kind of chart")).toHaveValue("column");
+    fill("Kind of chart", "line");
+    fill("One line that says what the numbers show", "Visits by month");
+    fill(en.blockFields.chart?.body ?? "", "Month, Visits\nJan, 3\n");
+    fireEvent.click(screen.getByRole("button", { name: "Add the block" }));
+    const written = /^:::chart\{type=line title="Visits by month"\}\nMonth, Visits\nJan, 3\n:::\n/;
+    expect(onChange).toHaveBeenLastCalledWith(expect.stringMatching(written));
+  });
+
+  it("add a privacy facts block at once, since it has nothing to fill in", () => {
+    const { type, press, onChange } = writing();
+    type("/privacy");
+    press("Enter");
+    expect(screen.queryByRole("form")).not.toBeInTheDocument();
+    expect(onChange).toHaveBeenLastCalledWith(expect.stringMatching(/^::privacy-facts\n/));
   });
 
   it("are asked for before a block with details goes in", async () => {

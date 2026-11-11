@@ -1,6 +1,7 @@
 //! The Search Console numbers `khalid serve` finds for the Admin API: the
-//! follow-ups (GEO M3), the report (G43) and the whole site's totals for
-//! the Analytics screen, with the code `khalid
+//! follow-ups (GEO M3), the report (G43), each post's month for the posts
+//! table and the whole site's totals for the Analytics screen, with the
+//! code `khalid
 //! search-console follow-ups` and `report` run. The
 //! connection is read once at start; the posts are read on each request,
 //! so a heading saved since counts.
@@ -8,19 +9,25 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use chrono::NaiveDate;
 use khalid_api::content_store::BoxFuture;
 use khalid_api::follow_ups::{FollowUpError, FollowUpFinder, FollowUps};
-use khalid_api::search_report::{SearchNumbers, SearchReport, SearchTotals};
-use khalid_content::{ContentTree, read_content};
+use khalid_api::search_report::{SearchNumbers, SearchPosts, SearchReport, SearchTotals};
+use khalid_content::{ContentTree, SiteContent, read_content};
 use khalid_core::{Clock, Config, Environment, SystemClock, UserMessage};
 use khalid_outbound::Outbound;
 use khalid_search_console::{SearchConsole, Totals};
 
+use crate::bing::Failed;
 use crate::cli::Cli;
 use crate::exit::Exit;
 use crate::search_console::{self, last_days, last_month};
 use crate::search_console_follow_ups::found;
-use crate::search_console_report::gather;
+use crate::search_console_report::{gather, gather_posts};
+
+/// A gathering of numbers for the site in a folder, from Google up to a day.
+type Gather<T> =
+    fn((&Path, &Config, &SiteContent), (&SearchConsole, &Outbound, NaiveDate)) -> Result<T, Failed>;
 
 /// The follow-ups of the site in one folder.
 #[derive(Debug)]
@@ -67,10 +74,10 @@ impl SiteFollowUps {
             .map_err(|error| FollowUpError::Internal(Box::new(error)))?
     }
 
-    /// Each post's numbers, as `khalid search-console report` gathers
-    /// them, for the site as it is now. Gathering asks Google and reads
-    /// the 404 log on its own runtime, so it runs on a blocking thread.
-    async fn report_now(&self) -> Result<SearchReport, FollowUpError> {
+    /// What `work` gathers, as `khalid search-console report` does, for
+    /// the site as it is now. Gathering asks Google, and the report reads
+    /// the 404 log, on its own runtime, so it runs on a blocking thread.
+    async fn gathered<T: Send + 'static>(&self, work: Gather<T>) -> Result<T, FollowUpError> {
         let Some(connection) = self.connection.clone() else {
             return Err(FollowUpError::NotConnected(not_connected()));
         };
@@ -81,7 +88,7 @@ impl SiteFollowUps {
                 .map_err(|error| FollowUpError::Internal(Box::new(error)))?;
             let (console, outbound) = connection.as_ref();
             let today = SystemClock.now().date_naive();
-            gather((&folder, &config, &content), (console, outbound, today)).map_err(
+            work((&folder, &config, &content), (console, outbound, today)).map_err(
                 |(message, exit)| match exit {
                     Exit::Internal => unreadable(&message),
                     _ => FollowUpError::Google(message),
@@ -136,11 +143,15 @@ impl FollowUpFinder for SiteFollowUps {
     }
 
     fn report(&self) -> BoxFuture<'_, Result<SearchReport, FollowUpError>> {
-        Box::pin(self.report_now())
+        Box::pin(self.gathered(gather))
     }
 
     fn totals(&self, days: u32) -> BoxFuture<'_, Result<SearchTotals, FollowUpError>> {
         Box::pin(self.totals_now(days))
+    }
+
+    fn posts(&self) -> BoxFuture<'_, Result<SearchPosts, FollowUpError>> {
+        Box::pin(self.gathered(gather_posts))
     }
 }
 

@@ -53,6 +53,32 @@ fn seo_parts_are_saved_into_site_toml_and_a_bad_one_saves_nothing() {
 }
 
 #[test]
+fn a_bluesky_did_saved_in_settings_is_served_for_the_handle() {
+    let site = demo_copy();
+    let owner = ["--name", "Owner", "--scope", "settings:write"];
+    let key = new_key(site.path(), &owner);
+    let server = start(site.path(), &key);
+    let (status, _) = server.raw("GET", "/.well-known/atproto-did", &[], None);
+    assert_eq!(status, 404);
+    let (_, read) = server.admin("GET", "/api/admin/v1/settings/", None);
+    let seen = read["settings"]["updated_at"].as_str().unwrap();
+    let handle = json!({"settings": {"updated_at": seen,
+        "seo": {"verification": {"bluesky": "fieldnotes.bsky.social"}}}});
+    let (status, body) = server.admin("PUT", "/api/admin/v1/settings/", Some(&handle));
+    assert_eq!(status, 422, "{body}");
+
+    let did = "did:plc:z72i7hdynmk6r22z27h6tvur";
+    let change = json!({"settings": {"updated_at": seen,
+        "seo": {"verification": {"bluesky": did}}}});
+    let (status, saved) = server.admin("PUT", "/api/admin/v1/settings/", Some(&change));
+    assert_eq!(status, 200, "{saved}");
+    // The pages render again behind the save, a moment later.
+    assert!(server.answers("/.well-known/atproto-did", 200));
+    let (_, file) = server.raw("GET", "/.well-known/atproto-did", &[], None);
+    assert_eq!(file, did);
+}
+
+#[test]
 fn the_ai_training_switch_round_trips_and_reaches_robots_txt() {
     let site = demo_copy();
     let owner = ["--name", "Owner", "--scope", "settings:write"];

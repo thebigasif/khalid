@@ -4,7 +4,7 @@ use chrono::NaiveDate;
 use khalid_core::{Locale, Slug, SlugMode};
 use serde::Deserialize;
 
-use crate::LintPost;
+use crate::{LintEntry, LintPost};
 
 /// What a rule can read about the whole site.
 ///
@@ -79,6 +79,12 @@ pub trait SiteView {
     fn authors(&self) -> Option<&[PageRef]> {
         None
     }
+
+    /// Every case study and changelog entry, in every language. Empty
+    /// when the site has none.
+    fn entries(&self) -> &[LintEntry] {
+        &[]
+    }
 }
 
 /// A site's posts, pages and glossary, held in memory.
@@ -110,6 +116,8 @@ pub struct LintSite {
     pub facts: Vec<LintFact>,
     /// The author profiles, when known.
     pub authors: Option<Vec<PageRef>>,
+    /// Every case study and changelog entry.
+    pub entries: Vec<LintEntry>,
 }
 
 impl SiteView for LintSite {
@@ -159,6 +167,10 @@ impl SiteView for LintSite {
 
     fn authors(&self) -> Option<&[PageRef]> {
         self.authors.as_deref()
+    }
+
+    fn entries(&self) -> &[LintEntry] {
+        &self.entries
     }
 }
 

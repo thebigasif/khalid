@@ -278,6 +278,32 @@ fn a_link_to_a_missing_page_fails_the_audit_and_says_how_to_fix_it() {
 }
 
 #[test]
+fn the_hedge_words_in_lint_toml_reach_the_audit() {
+    let site = demo_copy();
+    let hedged = |site: &Path| -> Vec<String> {
+        let output = audit(site, &["--json"]);
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        let body: Value = serde_json::from_str(&stdout).unwrap_or_else(|_| panic!("{stdout}"));
+        body["issues"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|issue| issue["check"] == "hedged-answer")
+            .map(|issue| issue["detail"].as_str().unwrap().to_owned())
+            .collect()
+    };
+    assert_eq!(hedged(site.path()), Vec::<String>::new());
+    let mut lint_toml = site.path().to_path_buf();
+    lint_toml.push("lint.toml");
+    fs::write(&lint_toml, "[words]\nhedges = [\"warmer\"]\n").unwrap();
+    assert_eq!(
+        hedged(site.path()),
+        ["\"Title tag or headline?\": warmer"],
+        "the demo's title tag post answers with \"warmer\""
+    );
+}
+
+#[test]
 fn audit_needs_a_site_folder() {
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .arg("audit")

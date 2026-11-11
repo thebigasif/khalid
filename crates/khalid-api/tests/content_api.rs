@@ -281,3 +281,65 @@ async fn the_openapi_document_lists_the_routes() {
     assert!(json["components"]["schemas"]["Post"].is_object());
     assert!(json["components"]["schemas"]["Problem"].is_object());
 }
+
+/// The keys of each entry under `key`, in the order they were sent.
+#[cfg(test)]
+fn keys(json: &Value, key: &str) -> Vec<Vec<String>> {
+    let entries = json[key].as_array().unwrap();
+    entries
+        .iter()
+        .map(|entry| entry.as_object().unwrap().keys().cloned().collect())
+        .collect()
+}
+
+#[tokio::test]
+async fn fields_keeps_only_the_fields_asked_for() {
+    let (status, _, json) = get("/api/content/v1/posts/?fields=title,slug&limit=2").await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(keys(&json, "posts"), vec![vec!["slug", "title"]; 2]);
+    assert_eq!(json["meta"]["pagination"]["limit"], 2, "{json}");
+
+    let (_, _, json) =
+        get("/api/content/v1/posts/?fields=plaintext&formats=plaintext&limit=1").await;
+    assert_eq!(keys(&json, "posts"), vec![vec!["plaintext"]]);
+
+    let (_, _, json) = get("/api/content/v1/tags/?fields=name&limit=1").await;
+    assert_eq!(keys(&json, "tags"), vec![vec!["name"]]);
+}
+
+#[tokio::test]
+async fn without_fields_every_field_is_sent() {
+    let (_, _, json) = get("/api/content/v1/posts/?limit=1").await;
+    let sent = keys(&json, "posts");
+    assert!(sent[0].len() > 5, "{sent:?}");
+}
+
+#[tokio::test]
+async fn fields_refuses_a_name_the_resource_does_not_have() {
+    let (status, media, json) = get("/api/content/v1/posts/?fields=headline").await;
+    assert_eq!(
+        (status, media.as_str()),
+        (StatusCode::BAD_REQUEST, "application/problem+json")
+    );
+    assert_eq!(json["rule"], "fields");
+    let detail = json["detail"].as_str().unwrap();
+    assert!(
+        detail.starts_with("The fields parameter names headline, which is not a field here."),
+        "{detail}"
+    );
+    let fix = json["fix"].as_str().unwrap();
+    assert!(fix.contains("excerpt") && fix.contains("html"), "{fix}");
+
+    let (status, _, json) = get("/api/content/v1/authors/?fields=html").await;
+    assert_eq!(
+        (status, &json["rule"]),
+        (StatusCode::BAD_REQUEST, &Value::from("fields"))
+    );
+}
+
+#[tokio::test]
+async fn include_is_still_refused_as_not_answered() {
+    let (status, _, json) = get("/api/content/v1/posts/?include=authors").await;
+    assert_eq!(status, StatusCode::BAD_REQUEST);
+    assert_eq!(json["rule"], "include");
+}

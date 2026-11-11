@@ -53,6 +53,11 @@ impl AdminCategory {
         &self.slug
     }
 
+    /// The names readers see, by language code.
+    pub fn names(&self) -> &BTreeMap<String, String> {
+        &self.names
+    }
+
     /// How many posts are in it.
     pub fn posts(&self) -> usize {
         self.posts

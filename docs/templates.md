@@ -103,12 +103,14 @@ An option you leave out takes the template's default.
 
 The admin's **Look** screen does the same without opening `site.toml`. It lists every template your Khalid has, each with one sentence on what it is for and what it turns on and off. Pick one, change the options you want different, and press **Save the look**.
 
-Khalid checks the choice as it checks `site.toml` at start, so a template or value it would refuse is never saved. It writes only the options that differ from the template's defaults, and keeps your comments and `[template.cta]`. Your blog shows the new look within a few seconds, with no restart.
+Khalid checks the choice as it checks `site.toml` at start, so a template or value it would refuse is never saved. It writes only the options that differ from the template's defaults, and keeps your comments. Your blog shows the new look within a few seconds, with no restart.
+
+Under the options, **Your call to action** edits `[template.cta]`: the words on the button, where it goes, and an optional line beside it. It says whether the chosen template shows the call to action as a band and a header button, or only where a post has a `::cta` line. Empty all three lines to remove it. An address Khalid would refuse, such as one starting `javascript:`, is never saved.
 
 The screen reads two Admin API routes, which need `settings:write`:
 
 - `GET /api/admin/v1/templates/` lists the templates, each with its options: the values each takes and its default.
-- `PUT /api/admin/v1/settings/` saves the choice as `template`, with its `name` and `options`, beside the other settings.
+- `PUT /api/admin/v1/settings/` saves the choice as `template`, with its `name` and `options`, beside the other settings. It saves the call to action as `cta`, with its `label`, `href` and optional `note`; `"cta": null` removes it, and a change that leaves `cta` out keeps it. `GET` answers `cta` too, `null` when the site sets none.
 
 ## Colours, fonts and logo in the admin
 
@@ -117,6 +119,8 @@ The admin's **Design** screen changes `theme/tokens.toml` without opening it. It
 Beside each colour is its contrast, how far it stands out from what is behind it. WCAG AA, the web's standard for readable pages, asks text for 4.5 to 1 on the page background and on panels, and buttons for 3 to 1. The score moves as you type. A colour that is too faint says so, and after you save it offers the closest shade that passes, the same one `khalid theme sync` would pick. The fonts are a system font, a serif, and each font your site serves itself. The logo is a picture you uploaded to Media.
 
 **Save changes** writes only what you changed, each value in its place, so your comments and every other table stay as you wrote them. A site with no `theme/tokens.toml` gets one holding only your change, so the template keeps the rest. Tick **Keep when syncing** beside a colour to add it to `locked`, so the next `khalid theme sync` keeps it. Your blog shows the change on the next page it renders, with no restart.
+
+`khalid theme sync` and `khalid theme check` read a short file like this one the way your pages do: each value the file sets, then the template's, then the light default. A sync writes only the values the main site changes, each in its place, so the file stays short, your comments stay, and a colour the template already shares with your main site stays the template's.
 
 The screen reads one Admin API route, which needs `settings:write`, so among staff only the owner and admins see it:
 
