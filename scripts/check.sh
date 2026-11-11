@@ -101,4 +101,11 @@ if [ -f admin/package.json ]; then
   fi
 fi
 
+step "TypeScript SDK: Biome and TypeScript (G27)"
+if [ -d sdk/typescript/node_modules ]; then
+  (cd sdk/typescript && npm exec --no -- biome ci . && npm exec --no -- tsc)
+else
+  echo "sdk/typescript/node_modules is missing, so the SDK checks are left to CI. Run npm ci in sdk/typescript/ to run them here."
+fi
+
 printf '\nAll checks passed.\n'
