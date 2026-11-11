@@ -1,25 +1,21 @@
 import { en } from "../../strings/en";
+import { choicesOf, labelOf } from "./blockForm";
 import { SnippetChoice } from "./SnippetChoice";
 
-const labels: Record<string, string> = en.fields;
 const choiceNames: Record<string, string> = en.choices;
 
-/** The details that take one of a few words, the default first. */
-const CHOICES: Record<string, readonly string[]> = {
-  kind: ["note", "tip", "warning"],
-  show: ["everyone", "visitors", "members"],
-};
-
 type Props = {
+  /** The directive name of the block the form is for, such as `chart`. */
+  block: string;
   field: string;
   value: string;
   onChange: (value: string) => void;
 };
 
 /** One labelled detail of a block: a list of choices or snippets, the block's text, or a line. */
-export function DetailField({ field, value, onChange }: Props) {
+export function DetailField({ block, field, value, onChange }: Props) {
   const id = `block-${field}`;
-  const choices = CHOICES[field];
+  const choices = choicesOf(block, field);
   let input = <input id={id} value={value} onChange={(event) => onChange(event.target.value)} />;
   if (choices !== undefined) {
     input = (
@@ -50,7 +46,7 @@ export function DetailField({ field, value, onChange }: Props) {
   }
   return (
     <div className="field">
-      <label htmlFor={id}>{labels[field] ?? field}</label>
+      <label htmlFor={id}>{labelOf(block, field) ?? field}</label>
       {input}
     </div>
   );

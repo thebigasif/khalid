@@ -36,6 +36,24 @@ describe("the slash menu's blocks", () => {
     expect(ids("video")[0]).toBe("video");
   });
 
+  it("gives every item its own id", () => {
+    const all = SLASH_ITEMS.map((item) => item.id);
+    expect(new Set(all).size).toBe(all.length);
+  });
+
+  it("offers the grid table first and the folding table after it", () => {
+    expect(ids("table")[0]).toBe("table");
+    expect(ids("table")).toContain("folding-table");
+    expect(ids("fold")[0]).toBe("folding-table");
+  });
+
+  it("finds the blocks Google reads by their names", () => {
+    for (const block of ["book", "chart", "course", "dataset", "event", "takeaways"]) {
+      expect(ids(block)[0]).toBe(block);
+    }
+    expect(ids("privacy")[0]).toBe("privacy-facts");
+  });
+
   it("finds nothing for words no block has", () => {
     expect(ids("zzz")).toEqual([]);
   });
