@@ -14,7 +14,7 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 | Full rebuild, 10,000 posts | under 30 s | 10% | timed `khalid build` |
 | Incremental rebuild, one post | under 50 ms | 10% | timed file change to updated page |
 | Lint one post | under 20 ms | 10% | `khalid-perf lint`: the median over 100 posts of the 1,000-post site, each linted against the whole site |
-| Full site audit, 1,000 posts | under 60 s | 10% | timed `khalid audit` |
+| Full site audit, 1,000 posts | under 60 s | 10% | `khalid-perf audit`: the median of three `khalid audit --offline` runs on the 1,000-post site, each building, crawling and scoring the whole site. An audit that stops without a report, or crawls fewer pages than the site has posts, fails the measure |
 | Lighthouse, default post page | 100 in all four categories | none | Lighthouse CI against the demo site |
 | Largest Contentful Paint, demo site on a 5 dollar VPS class runner | under 1 s | none | Lighthouse CI |
 | Cumulative Layout Shift | 0 | none | Lighthouse CI |
@@ -43,7 +43,7 @@ Fast is a feature. These numbers are gates, not goals. CI measures them on every
 
 ## How the idle memory is read
 
-The 55 MB budget and the meaning in the CTO answers of 2026-10-27, section 2, stand. What changed on 2026-10-28 is only how the reading is taken, because one binary measured 51.43 to 81.49 MB across eight runs: mimalloc returns a freed page one second after it is freed, and only when a thread later frees a page or ends, so whether tokio's idle blocking threads had ended before the reading at 15 s decided the number.
+The 50 MB budget in the table above and the meaning in the CTO answers of 2026-10-27, section 2, stand. Those answers call it "the 55 MB budget", but the table and `perf/baseline.json` have said 50 MB since the first baseline, and 50 MB is what the gate checks. What changed on 2026-10-28 is only how the reading is taken, because one binary measured 51.43 to 81.49 MB across eight runs: mimalloc returns a freed page one second after it is freed, and only when a thread later frees a page or ends, so whether tokio's idle blocking threads had ended before the reading at 15 s decided the number.
 
 `khalid-perf serve` now reads the server's thread count and resident memory each second after the first answer, with no traffic in between. The server has settled when the trace is at least 15 s long (the wait still outlasts tokio's blocking threads, which end 10 s after their last task) and the last 3 readings show the thread count unchanged and the resident reading not falling by more than half a megabyte. A platform whose `/proc` does not say the thread count settles on its memory alone. Nothing waits for ever: after 60 s the readings are taken anyway, so a wedged server cannot hang the measure.
 
