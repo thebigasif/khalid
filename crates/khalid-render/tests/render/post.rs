@@ -7,7 +7,7 @@ use chrono::NaiveDate;
 use khalid_core::AbsoluteUrl;
 use khalid_render::{
     BodyHtml, Feature, Features, Link, PageBody, PageKind, Person, Profile, ReadingTime,
-    RenderPost, RenderSite, Renderer,
+    RenderPost, RenderSite, RenderUpdate, Renderer,
 };
 
 use crate::common::{demo_site, locale, meta};
@@ -50,6 +50,7 @@ pub(crate) fn sitemap_post() -> RenderPost {
         date: NaiveDate::from_ymd_opt(2026, 9, 28).unwrap(),
         updated: None,
         updated_note: None,
+        updates: Vec::new(),
         dek: None,
         facts: Vec::new(),
         reading_time: ReadingTime::of(&body, &locale("en")),
@@ -140,4 +141,43 @@ fn a_post_without_tags_or_category_has_no_empty_sections() {
     assert_valid_page(&page);
     assert!(!page.contains("post-footer"));
     assert!(!page.contains("Filed under"));
+}
+
+/// An update on `day` of October 2026 saying `note`.
+fn update(day: u32, note: &str) -> RenderUpdate {
+    RenderUpdate {
+        date: NaiveDate::from_ymd_opt(2026, 10, day).unwrap(),
+        note: note.to_owned(),
+    }
+}
+
+#[test]
+fn the_updates_list_shows_each_dated_note_newest_first() {
+    let mut post = sitemap_post();
+    post.updated = NaiveDate::from_ymd_opt(2026, 10, 20);
+    post.updates = vec![
+        update(20, "Refreshed the <2026> numbers."),
+        update(2, "Added the image sitemap part."),
+    ];
+    let page = render("en", post);
+    assert_valid_page(&page);
+    insta::assert_snapshot!(part(&page, r#"<section class="updates""#, "</section>"));
+}
+
+#[test]
+fn a_post_with_no_updates_has_no_updates_section() {
+    let page = render("en", sitemap_post());
+    assert!(!page.contains(r#"class="updates""#));
+}
+
+#[test]
+fn the_updates_heading_is_in_the_page_language() {
+    let mut post = sitemap_post();
+    post.updates = vec![update(20, "Neue Zahlen.")];
+    let page = render("de", post);
+    assert!(
+        page.contains(r#"<h2 id="post-updates">Änderungen</h2>"#),
+        "{page}"
+    );
+    assert!(page.contains(r#"<time datetime="2026-10-20">20. "#), "{page}");
 }

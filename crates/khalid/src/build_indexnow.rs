@@ -116,7 +116,7 @@ fn record(
     let updated: BTreeMap<_, _> = published
         .posts
         .iter()
-        .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.updated?)))
+        .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.last_updated()?)))
         .collect();
     Ok(Record::of(&addresses, &updated))
 }

@@ -116,7 +116,8 @@ key = "3f9c0b5e2a8d4c71"
 ```
 
 Khalid then sends the address of each live post that is new, or whose
-`updated:` date is new or later. Any other edit, such as a typo fix, sends
+`updated:` date, or newest [Updates list](updates.md) entry, is new or
+later. Any other edit, such as a typo fix, sends
 nothing. Each change is sent once:
 
 - `khalid serve` sends a change as soon as the file is saved. When it

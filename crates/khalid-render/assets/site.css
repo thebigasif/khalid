@@ -136,7 +136,7 @@ picture:has(> .avatar) { flex: none; }
 .topics { margin-block-start: 3rem; }
 
 /* The related posts under a post. */
-.related, .mentions { margin-block-start: 1rem; }
+.related, .mentions, .updates { margin-block-start: 1rem; }
 
 /* Readers' comments under a post. The honeypot field stays hidden from people; the thanks shows only after sending. */
 .comments { margin-block: var(--space-section); }

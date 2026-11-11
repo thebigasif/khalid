@@ -239,7 +239,7 @@ pub(crate) fn lint_parts(
     post.seo_title.clone_from(&front.seo_title);
     post.description.clone_from(&front.description);
     post.date = front.date;
-    post.updated = front.updated;
+    post.updated = front.last_updated();
     post.reviewed = front.reviewed;
     post.author = front
         .author

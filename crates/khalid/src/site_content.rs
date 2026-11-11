@@ -85,7 +85,7 @@ impl Catalog {
         let updated = content
             .posts
             .iter()
-            .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.updated?)))
+            .filter_map(|doc| Some((index::slashed(&doc.path)?, doc.front.last_updated()?)))
             .collect();
         let series = build_pages::series::by_path(config, content);
         let post_tags = content

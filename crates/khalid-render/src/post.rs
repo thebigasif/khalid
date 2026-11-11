@@ -27,6 +27,9 @@ pub struct RenderPost {
     /// Why it was updated, from `updated_note` in its front matter, shown
     /// by a template that turns on its `updated_note` part.
     pub updated_note: Option<String>,
+    /// Dated notes of what changed, newest first, from `updates` in its
+    /// front matter, shown as the post's Updates list.
+    pub updates: Vec<RenderUpdate>,
     /// The subtitle under the heading, from `description` in its front
     /// matter, shown by a template that turns on its `dek` part.
     pub dek: Option<String>,
@@ -64,6 +67,16 @@ pub struct RenderPost {
     pub comments: Option<RenderComments>,
     /// The post's HTML, already sanitised.
     pub body: BodyHtml,
+}
+
+/// One dated note in a post's Updates list.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct RenderUpdate {
+    /// The day the change happened.
+    #[serde(serialize_with = "display")]
+    pub date: NaiveDate,
+    /// What changed, in one plain sentence.
+    pub note: String,
 }
 
 /// A named link to a page on this site: an author, a tag or a category.
