@@ -469,7 +469,7 @@ async fn a_second_sync_keeps_the_locked_hand_edit_and_lists_what_changed() {
 }
 
 #[tokio::test(flavor = "multi_thread")]
-async fn a_tokens_file_with_a_token_missing_is_left_as_it_is() {
+async fn a_tokens_file_with_a_bad_value_is_left_as_it_is() {
     let site = site();
     let (_server, home) = stand_in(HOME, Some(STYLE)).await;
     let first = khalid(site.path(), &["theme", "sync", &home], Names::StandIn).await;
@@ -478,7 +478,13 @@ async fn a_tokens_file_with_a_token_missing_is_left_as_it_is() {
     let text_before = fs::read_to_string(&file).unwrap();
     let broken: Vec<&str> = text_before
         .lines()
-        .filter(|line| !line.starts_with("link = "))
+        .map(|line| {
+            if line.starts_with("link = ") {
+                "link = \"red\""
+            } else {
+                line
+            }
+        })
         .collect();
     fs::write(&file, broken.join("\n")).unwrap();
 
@@ -486,10 +492,7 @@ async fn a_tokens_file_with_a_token_missing_is_left_as_it_is() {
 
     assert_eq!(output.status.code(), Some(1));
     let said = text(&output.stderr);
-    assert!(
-        said.contains("theme/tokens.toml has a mistake on line"),
-        "{said}"
-    );
+    assert!(said.contains("theme/tokens.toml has a mistake"), "{said}");
     assert!(said.contains("link"), "{said}");
     assert_eq!(fs::read_to_string(&file).unwrap(), broken.join("\n"));
 }

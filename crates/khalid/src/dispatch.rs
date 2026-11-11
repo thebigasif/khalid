@@ -12,7 +12,7 @@ use crate::cli::{AnalyticsCommand, Cli, Command, Output, ThemeCommand};
 use crate::exit::Exit;
 use crate::new::NewPost;
 use crate::{
-    ai_visitors, backup, bing, build, crawl_report, export, keys, new, newsletter_cli, plan,
+    ai_visitors, backup, bing, build, crawl_report, export, keys, look, new, newsletter_cli, plan,
     publish, pull, redirects, report, search_console, serve, site_audit, staff_owner, theme_check,
     theme_sync, uncited_report, webhooks,
 };
@@ -82,15 +82,12 @@ pub(crate) fn on_content(
 /// Runs `theme sync` and `theme check` on a checked site.
 fn theme(folder: &Path, config: &Config, command: &ThemeCommand, cli: &Cli) -> Exit {
     match command {
-        ThemeCommand::Sync { url, from_css } => theme_sync::run(
-            folder,
-            url,
-            from_css.as_deref(),
-            config.default_language(),
-            cli,
-        ),
+        ThemeCommand::Sync { url, from_css } => {
+            theme_sync::run(folder, url, from_css.as_deref(), config, cli)
+        }
         ThemeCommand::Check { url } => {
-            theme_check::run(folder, url.as_ref().unwrap_or(config.address()), cli)
+            let url = url.as_ref().unwrap_or(config.address());
+            theme_check::run(folder, url, look::pack_text(config), cli)
         }
     }
 }

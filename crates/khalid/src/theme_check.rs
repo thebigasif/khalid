@@ -6,7 +6,7 @@ use std::fmt::Write as _;
 use std::path::Path;
 
 use khalid_core::{AbsoluteUrl, UserMessage};
-use khalid_theme::{ContrastFix, ThemeTokens, TokenChange};
+use khalid_theme::{ContrastFix, DesignFile, TokenChange};
 use serde::Serialize;
 
 use crate::cli::{Cli, Output};
@@ -57,10 +57,16 @@ impl From<&ContrastFix> for FaintBody {
     }
 }
 
-/// Checks the tokens in the `site` folder against the main site at `url`.
-pub(crate) fn run(site: &Path, url: &AbsoluteUrl, cli: &Cli) -> Exit {
+/// Checks the tokens in the `site` folder against the main site at `url`,
+/// as the pages see them: the file over `pack`, the chosen template's
+/// tokens, over the light default.
+pub(crate) fn run(site: &Path, url: &AbsoluteUrl, pack: &str, cli: &Cli) -> Exit {
     let output = cli.output;
-    let mut file = match ThemeTokens::read(site) {
+    let read = DesignFile::read(site).and_then(|file| {
+        let tokens = file.effective(pack)?;
+        Ok(file.changed().map(|_| tokens))
+    });
+    let mut file = match read {
         Ok(Some(file)) => file,
         Ok(None) => return report::failure(output, &no_tokens(url), Exit::Failure),
         Err(error) => return report::failure(output, &theme_message::read(&error), Exit::Failure),

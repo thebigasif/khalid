@@ -14,6 +14,7 @@ use crate::tokens::{HEADER, parse_table, tokens_path, write_text};
 use crate::{ThemeTokens, TokensError};
 
 mod edit;
+mod sync;
 
 /// `theme/tokens.toml` as the Design screen reads and changes it.
 #[derive(Debug, Clone)]

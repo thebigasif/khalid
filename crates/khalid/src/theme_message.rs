@@ -130,8 +130,9 @@ pub(crate) fn tokens(error: &TokensError) -> UserMessage {
 }
 
 /// Turns a failure to read the `theme/tokens.toml` already in the site into
-/// what, why and fix. A token that is missing or misspelt is a mistake on
-/// its line.
+/// what, why and fix. A misspelt token or a value the blog cannot use is a
+/// mistake, on its line when the reader knows it. A missing token is not:
+/// the template's value stands in.
 pub(crate) fn read(error: &TokensError) -> UserMessage {
     match error {
         TokensError::Parse { line, source } => {
@@ -143,7 +144,7 @@ pub(crate) fn read(error: &TokensError) -> UserMessage {
                     "theme/tokens.toml has a mistake{at}: {}.",
                     detail.unwrap_or("a value the blog cannot read")
                 ),
-                "Each of the twelve tokens must be there with a value the blog can use, so Khalid changed nothing.",
+                "Each value in it must be one the blog can use, so Khalid changed nothing.",
                 "Fix that line, or delete the file to take every value from the main site again, then run it again.",
             )
         }
