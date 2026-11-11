@@ -128,6 +128,20 @@ fn folder(page: &str) -> &str {
     page.rsplit_once('/').map_or("", |(folder, _)| folder)
 }
 
+/// `folder` with each part of only digits, such as a year or a month, in
+/// zeros of the same length, so the dated folders `/news/2025/03` and
+/// `/news/2026/11` have one shape, `/news/0000/00`.
+fn shape(folder: &str) -> String {
+    let parts = folder.split('/').map(|part| {
+        if !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit()) {
+            "0".repeat(part.len())
+        } else {
+            part.to_owned()
+        }
+    });
+    parts.collect::<Vec<_>>().join("/")
+}
+
 /// A page in the brief at an address where the site's posts live, such as
 /// `/blog/a-post/`, that no post, page or glossary term has, one hit per
 /// page in the brief's order. When the address is an old one of a post,
@@ -135,6 +149,8 @@ fn folder(page: &str) -> &str {
 ///
 /// Only addresses in a folder that holds posts are judged, so tag, list
 /// and home pages, which the linter does not know, never count as missing.
+/// A dated folder counts for every date, so `/news/2025/03/a-post/` is
+/// judged on a site whose posts sit in `/news/2026/11/`.
 #[derive(Debug)]
 pub(crate) struct LinkUnknown;
 
@@ -175,7 +191,7 @@ impl Rule for LinkUnknown {
             return Vec::new();
         };
         let paths = site.posts().iter().filter_map(|post| post.path.as_deref());
-        let folders: BTreeSet<&str> = paths.map(|path| folder(page(path))).collect();
+        let folders: BTreeSet<String> = paths.map(|path| shape(folder(page(path)))).collect();
         brief
             .links
             .iter()
@@ -184,7 +200,7 @@ impl Rule for LinkUnknown {
                 let wanted = page(link);
                 wanted.starts_with('/')
                     && wanted != "/"
-                    && folders.contains(folder(wanted))
+                    && folders.contains(&shape(folder(wanted)))
                     && !Self::known(wanted, site)
             })
             .map(|link| Hit::about(link).suggesting(Self::moved(page(link), site)))
@@ -201,6 +217,15 @@ mod tests {
         assert_eq!(folder("/blog/a"), "/blog");
         assert_eq!(folder("/news/2026/a"), "/news/2026");
         assert_eq!(folder("/a"), "");
+    }
+
+    #[test]
+    fn dated_folders_share_one_shape_and_others_keep_theirs() {
+        assert_eq!(shape("/news/2025/03"), shape("/news/2026/11"));
+        assert_eq!(shape("/news/2026/11"), "/news/0000/00");
+        assert_ne!(shape("/news/2026"), shape("/news/2026/11"));
+        assert_eq!(shape("/blog/v2"), "/blog/v2");
+        assert_eq!(shape(""), "");
     }
 
     #[test]

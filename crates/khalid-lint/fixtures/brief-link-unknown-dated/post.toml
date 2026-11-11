@@ -1,0 +1,12 @@
+# Posts live in dated folders, /news/<year>/<month>/. The brief plans a link
+# to a post of another year and month that the site does not have, which is
+# flagged though no post sits in /news/2025/03/. A post that exists is fine,
+# and the year page /news/2025/ is not where posts live, so it is not judged.
+extends = "clean"
+
+[brief]
+links = [
+    "/news/2026/11/choosing-link-text/",
+    "/news/2025/03/orphan-pages/",
+    "/news/2025/",
+]

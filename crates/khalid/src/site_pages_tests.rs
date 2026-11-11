@@ -339,3 +339,32 @@ fn a_full_render_reads_changed_settings_and_keeps_them_when_the_file_breaks() {
     let pages = source.render_all().unwrap().pages;
     assert!(text_at(&pages, "/blog/llms.txt").contains(intro));
 }
+
+#[test]
+fn an_edit_to_the_facts_file_alone_shows_at_the_next_full_render() {
+    let site = demo_copy();
+    let source = pages(site.path());
+    let mut facts = site.path().to_path_buf();
+    facts.push("facts.toml");
+    let fact =
+        |value: &str| format!("[pro-plan-price]\nvalue = \"{value}\"\nchecked = 2026-09-01\n");
+    fs::write(&facts, fact("29 USD a month")).unwrap();
+    let mut post = site.path().to_path_buf();
+    post.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
+    let text = fs::read_to_string(&post).unwrap();
+    fs::write(
+        &post,
+        format!("{text}\nPro costs [[fact:pro-plan-price]].\n"),
+    )
+    .unwrap();
+    let pages = source.render_all().unwrap().pages;
+    assert!(text_at(&pages, "/blog/what-a-sitemap-does/").contains("Pro costs 29 USD a month."));
+
+    // The watch hands the saved facts.toml on, which is no post, so it
+    // waits for the full render, which reads the facts again.
+    let saved = [PathBuf::from("facts.toml")];
+    assert_eq!(source.render_saved(&saved).unwrap(), None);
+    fs::write(&facts, fact("35 USD a month")).unwrap();
+    let pages = source.render_all().unwrap().pages;
+    assert!(text_at(&pages, "/blog/what-a-sitemap-does/").contains("Pro costs 35 USD a month."));
+}
