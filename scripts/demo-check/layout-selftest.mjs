@@ -3,8 +3,10 @@
 // check. The site "bad" breaks each check once: its home page draws a
 // frame of 800 px where its brief asks for 1100, its post's text is 17 px,
 // its folded-table post holds 85 characters a line, its home page's
-// stylesheets are over 10 KB together with Brotli, and a table column breaks a word onto a
-// second line, where "good" has the same word just fitting its column.
+// stylesheets are over 10 KB together with Brotli and it holds a strip
+// 340 px wide, so it scrolls sideways at 320 px only, and a table column
+// breaks a word onto a second line, where "good" has the same word just
+// fitting its column.
 // Both list their posts as narrow cards in small
 // text, which the reading check leaves alone. The text is monospaced, so
 // a line holds exactly as many characters as its column is wide in ch.
@@ -37,12 +39,13 @@ const CSS = `*{box-sizing:border-box}body{margin:0;font:16px/1.5 monospace}
 .narrow{max-width:800px}.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
 .card{border:1px solid #888;padding:8px;font-size:13px}.post-body p{font-size:19px;max-width:68ch}
 .small p{font-size:17px}.long p{max-width:85ch}
-.fit td{width:12ch;padding:0;overflow-wrap:normal}.crush td{width:6ch;padding:0;overflow-wrap:anywhere}`;
+.fit td{width:12ch;padding:0;overflow-wrap:normal}.crush td{width:6ch;padding:0;overflow-wrap:anywhere}
+.strip{min-width:340px}`;
 
 const page = (body, mainClass, heavy) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Fixture</title>
 <meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="/style.css">${heavy ? '<link rel="stylesheet" href="/heavy.css">' : ""}</head><body>
 <header class="site-header"><a href="/">Fixture blog</a><nav><a href="/search/">Search</a></nav></header>
-<main id="main"${mainClass ? ` class="${mainClass}"` : ""}>${body}</main></body></html>`;
+<main id="main"${mainClass ? ` class="${mainClass}"` : ""}>${body}${heavy ? '<p class="strip">A strip 340 px wide.</p>' : ""}</main></body></html>`;
 const cards = `<h1>Posts</h1><div class="cards">${Array.from({ length: 8 }, (_, i) => `<article class="card"><h2>Post ${i + 1}</h2><p>${prose(20)}</p></article>`).join("")}</div>`;
 // A table whose first column is wider than its longest word, or,
 // with tableClass "crush", narrower, so the word breaks onto a second line.
@@ -66,8 +69,9 @@ site("good", false);
 site("bad", true);
 writeFileSync(join(work, "frames.json"), JSON.stringify({ frames: { good: 1100, bad: 1100 } }));
 
+// With no widths named, layout.mjs checks its own default widths.
 const run = (widths) => {
-  const args = [join(here, "layout.mjs"), "--sites", join(work, "sites"), "--browsers", "chromium", "--widths", widths, "--frames", join(work, "frames.json")];
+  const args = [join(here, "layout.mjs"), "--sites", join(work, "sites"), "--browsers", "chromium", ...(widths ? ["--widths", widths] : []), "--frames", join(work, "frames.json")];
   spawnSync(process.execPath, args, { stdio: "inherit" });
   return JSON.parse(readFileSync(join(work, "report.json"), "utf8")).map((f) => [f.pack, f.page, f.check, f.width].join(" "));
 };
@@ -75,6 +79,8 @@ const expect = (width) => [`bad home frame-fill ${width}`, `bad post reading-siz
 const cases = [
   ["390,1440", [...expect(1440), "bad folded table crushed-cell 390", "bad home stylesheet-size 0"]],
   ["2000", [...expect(2000), "bad home stylesheet-size 0"]],
+  // The default widths start at 320 px, the only one the strip is too wide for.
+  ["", [...expect(1440), ...expect(2000), ...[320, 390, 768].map((w) => `bad folded table crushed-cell ${w}`), "bad home sideways-scroll 320", "bad home stylesheet-size 0"]],
 ];
 let wrong = 0;
 for (const [widths, wanted] of cases) {
@@ -92,4 +98,4 @@ if (wrong > 0) {
   console.log(`The layout check is wrong ${wrong} times on its own fixtures. Fix layout.mjs or layout-measure.mjs, then run this again.`);
   process.exit(1);
 }
-console.log("The frame, reading, table and stylesheet checks find every fault in the fixtures and nothing else, at 390, 1440 and 2000 px.");
+console.log("The frame, reading, table, stylesheet and sideways checks find every fault in the fixtures and nothing else, at 320, 390, 768, 1440 and 2000 px.");
