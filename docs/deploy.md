@@ -323,6 +323,15 @@ The password, API key or token never goes in `site.toml`. Set it in the server's
 
 With systemd, run `sudo systemctl edit khalid` and add `Environment=KHALID_SMTP_PASSWORD=...` under `[Service]`, or keep it in a file only root can read and name it with `EnvironmentFile=`. With Compose, put it in the `.env` file and pass it on under `environment:` in `compose.yaml`, as `KHALID_SMTP_PASSWORD: ${KHALID_SMTP_PASSWORD}`. Khalid refuses to start, and says which variable is missing, when the way you picked needs one that is not set.
 
+### Bounces and spam complaints
+
+A bounce is an email that comes back because the address does not exist or refuses mail. A spam complaint is a reader clicking "Report spam" on your email. Mail services watch both, and an account that keeps mailing such addresses has its mail sent to spam or is closed. With Resend or Postmark, Khalid can hear about both and stop mailing the address:
+
+1. Make a long random secret, for example with `openssl rand -hex 32`, or for Resend use the signing secret Resend shows (it starts with `whsec_`). Set it as `KHALID_MAIL_HOOK_SECRET` in the server's environment, the same way as the mail secrets above.
+2. In Resend, under Webhooks, add `https://<your-blog>/api/hooks/mail` with the events `email.bounced` and `email.complained`. In Postmark, under the message stream's Webhooks, add `https://khalid:<secret>@<your-blog>/api/hooks/mail` with Bounce and Spam Complaint ticked.
+
+When the service reports a bounce that is for good, or a complaint, the reader is unsubscribed from every newsletter, and the sign-up form never emails that address again. A bounce that may pass, such as a full mailbox, changes nothing. An event without the secret gets a 401 and changes nothing. Without `KHALID_MAIL_HOOK_SECRET`, or with SMTP, the address does not exist.
+
 To check mail before you start the server, run `khalid --site <folder> doctor` in the same environment. Its Mail line says which way mail leaves and whether the variable is set, without showing it. Add `--send-test-mail` to send one email to the address form answers go to, through the same server or service `khalid serve` uses. If it fails, doctor says why, such as a refused password or a server that did not answer.
 
 ## Alerts

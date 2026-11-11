@@ -94,6 +94,7 @@ mod lint_text;
 mod listed_post;
 mod live_redirects;
 mod look;
+mod mail_hook;
 #[cfg(feature = "man")]
 mod man;
 mod mcp;
