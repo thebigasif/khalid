@@ -112,5 +112,7 @@ pub use sitemap_set::{SitemapFile, SitemapSection, SitemapSet};
 pub use social::{ShareImage, TwitterHandle};
 pub use template_words::{PageNumber, TemplateWords};
 pub use url_path::UrlPath;
-pub use verification::{RootFile, SiteVerification, VerificationCode};
+pub use verification::{
+    ATPROTO_DID_FILE, AtprotoDid, RootFile, SiteVerification, VerificationCode,
+};
 pub use video::{Video, VideoSource};

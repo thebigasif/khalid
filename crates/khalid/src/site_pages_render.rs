@@ -2,7 +2,7 @@
 //! saved post alone.
 
 use khalid_content::SiteContent;
-use khalid_core::UserMessage;
+use khalid_core::{Mode, UserMessage};
 use khalid_render::Tokens;
 
 use super::{Settings, SitePages};
@@ -77,7 +77,10 @@ impl SitePages {
         form_pages::under_mount(config, &mut languages);
         post_gate::open(config, routes, content, &mut languages)?;
         let beside = post_files::served(folder, config, assets, &mut languages, shown)?;
-        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
+        let mut seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
+        // Only a page this server shows names `/api/oembed`, which it
+        // answers; `khalid build` output may sit on a host with no server.
+        seo_site.oembed = config.mode() == Mode::Server;
         let default_tokens = Tokens::default();
         let tokens = theme.as_ref().map_or(&default_tokens, |t| &t.tokens);
         let cards = share_images::attach(folder, config, tokens, &seo_site, &mut languages)?;

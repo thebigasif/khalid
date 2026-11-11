@@ -52,6 +52,24 @@ Then embed any `https` page on that host:
 
 The page loads in a frame only when a reader scrolls to it, keeps its height so nothing jumps (`height` in pixels, 120 to 2000, 480 by default), runs sandboxed, and has a link to the page under it. `title` is what a screen reader says for the frame. Each listed host is exact: `tools.example.com` does not allow `example.com`. Only listed hosts join the blog's Content Security Policy, so a browser refuses any other frame. An address on any other host shows as a plain link.
 
+## Your posts as cards on other sites
+
+oEmbed is the standard other sites use to turn a pasted link into a card, as WordPress, Discourse and Notion do. `khalid serve` answers it at `/api/oembed` (`/blog/api/oembed` for a blog in `/blog/`), with no key:
+
+```text
+/api/oembed?url=https://www.example.com/blog/fixing-slow-pages/
+```
+
+The answer is JSON with the post's title, first author, share image and site name, and `html`: a short quote of the title, the summary and the site, each a plain link, with no script and no frame. `maxwidth` makes the card narrower, down to 200 pixels from 550. An address with tracking tags such as `?utm_source=` still names its post. A draft, a page that is not a post, or an address on another site answers 404, and `format=xml` answers 501, because only JSON is served. A static site has no server to answer, so it has no oEmbed.
+
+Each post page that `khalid serve` shows names its card in its `<head>`, so a site given only the post's address finds it on its own:
+
+```html
+<link rel="alternate" type="application/json+oembed" href="https://www.example.com/blog/api/oembed?url=https%3A%2F%2Fwww.example.com%2Fblog%2Ffixing-slow-pages%2F">
+```
+
+Pages `khalid build` writes leave the link out, even for a site in server mode, because a static host has nothing to answer it.
+
 ## Tracking tags on links to your product
 
 To see in your product's analytics which posts send visitors, list the product's domains:

@@ -43,7 +43,7 @@ use crate::{
     admin_newsletters, admin_not_found, admin_pages, admin_redirect_csv, admin_redirects,
     admin_schema_copy, admin_schema_templates, admin_serpdad, admin_site_settings, admin_snippets,
     admin_subscribers, admin_tags, admin_templates, admin_trash, admin_uptime, admin_webhooks,
-    api_version, content_api,
+    api_version, content_api, oembed,
 };
 
 pub use crate::audit_desk::AuditDesk;
@@ -77,7 +77,8 @@ pub(crate) struct ApiDoc;
 pub type Staff = (StaffRoutes, Arc<dyn SessionCheck>);
 
 /// The Content API under `/api/content/v1/`, the Admin API under
-/// `/api/admin/v1/`, and `/api/openapi.json`, with the document every
+/// `/api/admin/v1/`, the oEmbed provider at `/api/oembed`, and
+/// `/api/openapi.json`, with the document every
 /// route declares (RULES.md BL-API-4). The document itself needs no key.
 /// A post that goes live is announced to nobody; see [`router_with_door`].
 pub fn router(
@@ -413,6 +414,7 @@ fn assemble(
         admin = admin.merge(staff);
     }
     let api = OpenApiRouter::with_openapi(ApiDoc::openapi())
+        .merge(oembed::routes(Arc::clone(&content)))
         .nest(
             content_api::BASE,
             content_api::routes(content, content_door),

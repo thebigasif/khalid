@@ -82,6 +82,10 @@ pub struct SeoSite {
     /// Whether the locations with a map point are written to
     /// `locations.kml`. On by default.
     pub local_kml: bool,
+    /// Whether each post page names the card the oEmbed provider at
+    /// `api/oembed` makes of it, so other sites find it. Off by default:
+    /// only a site Khalid serves has the provider.
+    pub oembed: bool,
 }
 
 impl SeoSite {
@@ -118,6 +122,7 @@ impl SeoSite {
             llms_txt: LlmsTxtOptions::default(),
             schema_map: SchemaMap::Files,
             local_kml: true,
+            oembed: false,
         }
     }
 

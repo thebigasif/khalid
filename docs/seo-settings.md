@@ -30,7 +30,7 @@ its settings as it starts. No key or password is ever sent back.
 | `[seo.index]` | `index` or `noindex` for `tags`, `categories`, `authors`, `dates`, `search` and the whole `site`; `thin_archives_below` | tags, categories and authors indexed; dates and search not; thin below 3 | Show in search |
 | `[seo.publisher]` | `type` (`organization` or `person`), `name`, `logo`, `same_as` (social profiles), `email`, `telephone`, `founded` | an organisation named after the site | Site representation |
 | `[seo.social]` | `twitter` (the X handle) and `image`, the default share image | none | Social sharing |
-| `[seo.verification]` | `google`, `bing`, `yandex`, `baidu`, `pinterest` codes, and `files` | none | Webmaster tools |
+| `[seo.verification]` | `google`, `bing`, `yandex`, `baidu`, `pinterest` codes, `bluesky` (see [Bluesky handle](#bluesky-handle)), and `files` | none | Webmaster tools (`bluesky` is not on the screen yet) |
 | `[seo.crawlers]` | `ai_training` (`allow` or `block`), `disallow` paths, `allow` and `block` crawler names | every crawler reads every page | Crawlers and AI bots |
 | `[seo.feeds]` | `content` (`full` or `excerpt`), `before_item`, `after_item`, `source_line`, `limit` | full posts, 20 items | Feeds |
 | `[seo.indexnow]` | `key` and `endpoint` | off | IndexNow |
@@ -47,6 +47,17 @@ The training switch on the Crawlers screen writes `[seo.crawlers]
 ai_training`. The box under each AI crawler writes its name into
 `[seo.crawlers] block`. The crawlers Khalid knows are listed under
 [AI crawlers](#ai-crawlers).
+
+## Bluesky handle
+
+Bluesky lets an account use a domain it owns as its handle, such as `@www.example.com`. Bluesky checks this by reading the account's DID, its permanent ID, from `/.well-known/atproto-did` on that domain. Copy the DID from Bluesky's settings under Account, Handle, "I have my own domain", No DNS panel, and set it:
+
+```toml
+[seo.verification]
+bluesky = "did:plc:z72i7hdynmk6r22z27h6tvur"
+```
+
+`khalid serve` answers the file at the root of the host, and `khalid build` writes it to `.well-known/atproto-did` in the output folder. A blog in a folder such as `/blog/` writes it to `_root/.well-known/atproto-did`, with the other files the host's root needs, and the main site passes it through. A handle such as `fieldnotes.bsky.social` in place of the DID is refused, with the fix. Verification files in `[seo.verification.files]` now reach the root of a blog at the root of its host too; before, only a blog in a folder wrote them.
 
 ## Titles and descriptions
 
