@@ -164,6 +164,36 @@ async fn the_site_script_runs_by_its_hash_beside_the_nonce() {
     assert_eq!(directive(policy, "style-src"), ["'self'"]);
 }
 
+/// The page at `/blog/` and the 404 page, as `security` sends them.
+#[cfg(test)]
+async fn page_and_missing(security: SecurityHeaders) -> Vec<Response<Body>> {
+    let path = PagePath::try_new("/blog/").unwrap();
+    let pages = Pages::new(vec![Page::new(path, MediaType::Html, "<h1>Blog</h1>")], "").unwrap();
+    let pages = router(pages, security);
+    let mut sent = Vec::new();
+    for uri in ["/blog/", "/no-such-page/"] {
+        let request = Request::builder().uri(uri).body(Body::empty()).unwrap();
+        sent.push(pages.clone().oneshot(request).await.unwrap());
+    }
+    sent
+}
+
+#[tokio::test]
+async fn khalid_ending_tls_itself_tells_browsers_to_keep_to_https() {
+    for response in page_and_missing(SecurityHeaders::default().with_hsts()).await {
+        let hsts = value(&response, &header::STRICT_TRANSPORT_SECURITY);
+        assert_eq!(hsts, "max-age=31536000", "{}", response.status());
+    }
+}
+
+#[tokio::test]
+async fn plain_http_sends_no_hsts_because_a_proxy_may_end_tls() {
+    for response in page_and_missing(SecurityHeaders::default()).await {
+        let hsts = response.headers().get(header::STRICT_TRANSPORT_SECURITY);
+        assert_eq!(hsts, None, "{}", response.status());
+    }
+}
+
 #[test]
 fn refuses_a_script_hash_that_would_change_the_policy() {
     for bad in [
