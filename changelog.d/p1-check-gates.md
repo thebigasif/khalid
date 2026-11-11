@@ -1,0 +1,2 @@
+Added
+- Four promised checks now run. A test pins every database migration's checksum, so an edited migration fails before it reaches a site that would refuse to start (BL-DB-2). `scripts/check.sh` caps the lines that name `serde_json::Value` at 47 (BL-TYP-2), asks every `AssertSqlSafe` for a comment saying why its joined SQL is safe (BL-RUN-3), and refuses `deny(warnings)` in source (BL-LNT-2). `scripts/prove-check-gates.sh` shows each search fires.
