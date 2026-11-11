@@ -1,6 +1,7 @@
 //! The site's core settings through the Admin API, with the 409 a stale
 //! copy gets and the 422 a value the site could not start with gets
-//! (KH-API-2).
+//! (KH-API-2), and the document naming the admin's wrapper apart from
+//! the Content API's (gap audit 4 row 40).
 
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -175,6 +176,33 @@ async fn the_home_sections_are_saved_and_read_back_in_order() {
     }});
     let (status, json) = send(&router, "PUT", OWNER, Some(unknown)).await;
     assert!(status.is_client_error(), "{status}: {json}");
+}
+
+/// The `$ref` a 200 answer of `method` on `path` names in the document.
+#[cfg(test)]
+fn answer_ref<'a>(document: &'a Value, path: &str, method: &str) -> &'a Value {
+    let answer = &document["paths"][path][method]["responses"]["200"];
+    &answer["content"]["application/json"]["schema"]["$ref"]
+}
+
+#[tokio::test]
+async fn the_document_types_the_admin_settings_apart_from_the_content_ones() {
+    let request = Request::get("/api/openapi.json").body(Body::empty());
+    let response = demo().oneshot(request.unwrap()).await.unwrap();
+    let bytes = to_bytes(response.into_body(), 8 * 1024 * 1024).await;
+    let document: Value = serde_json::from_slice(&bytes.unwrap()).unwrap();
+    let admin = "#/components/schemas/AdminSiteSettings";
+    for method in ["get", "put"] {
+        let named = answer_ref(&document, SETTINGS, method);
+        assert_eq!(named, admin, "{method} {SETTINGS}");
+    }
+    let schemas = &document["components"]["schemas"];
+    let wrapped = &schemas["AdminSiteSettings"]["properties"]["settings"]["$ref"];
+    assert_eq!(wrapped, "#/components/schemas/AdminSettings");
+    let content = answer_ref(&document, "/api/content/v1/settings/", "get");
+    assert_eq!(content, "#/components/schemas/SiteSettings");
+    let listed = &schemas["SiteSettings"]["properties"]["settings"]["items"]["$ref"];
+    assert_eq!(listed, "#/components/schemas/Settings");
 }
 
 #[tokio::test]

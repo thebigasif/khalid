@@ -537,6 +537,12 @@ export type AdminSettings = {
   updated_at: string;
 };
 
+/** The settings as the Admin API wraps them. */
+export type AdminSiteSettings = {
+  /** The site's core settings. */
+  settings: AdminSettings;
+};
+
 /** A snippet in one language, such as an affiliate disclosure, in Admin API shape. A post places it by its slug, so a change shows in every post that uses it as soon as it is saved. */
 export type AdminSnippet = {
   /** The language and the slug, such as `en.affiliate-disclosure`. */
@@ -3941,7 +3947,7 @@ export interface Operations {
         "Accept-Version"?: string;
       };
     };
-    output: SiteSettings;
+    output: AdminSiteSettings;
   };
   /** Changes the core settings in `site.toml`: only the fields sent change, and each value must pass the checks `khalid serve` makes at start. The change carries the `updated_at` of the copy it was made on; when `site.toml` changed since, the answer is a 409 (RULES.md BL-API-7). The running server puts most settings in use once saved; `restart_needed` says when one it reads only at start, such as `address`, waits for a restart. Needs `settings:write`; a change to `code` also needs `admin:all`, as a post's head code does, because that code runs on every reader's page. Sending `code` back unchanged needs no more. */
   change_settings: {
@@ -3952,7 +3958,7 @@ export interface Operations {
       };
       body: SettingsChanges;
     };
-    output: SiteSettings;
+    output: AdminSiteSettings;
   };
   /** Lists every site this process serves. Only a super admin, signed in on the home site, may see it; a key never may. */
   list_sites: {
