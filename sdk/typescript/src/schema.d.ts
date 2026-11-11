@@ -3169,6 +3169,34 @@ export interface Operations {
     };
     output: AdminComments;
   };
+  /** Marks a comment as spam, which hides it from its post. Needs `posts:write`. */
+  mark_spam: {
+    input: {
+      path: {
+        /** The comment's identity */
+        id: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminComments;
+  };
+  /** Puts a comment marked as spam back in the moderation queue, waiting for approval. A comment that is not spam is left as it is. Needs `posts:write`. */
+  not_spam: {
+    input: {
+      path: {
+        /** The comment's identity */
+        id: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminComments;
+  };
   /** Counts the readers' answers to the consent banner in the last `days` days, per day and version, with how many allowed each optional category. Needs `settings:write`. */
   consent_counts: {
     input: {

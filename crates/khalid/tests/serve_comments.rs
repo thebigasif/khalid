@@ -173,6 +173,13 @@ fn a_comment_sent_without_script_waits_then_shows_once_approved() {
         "the schema lists it"
     );
 
+    let spam = format!("/api/admin/v1/comments/{id}/spam/");
+    assert_eq!(send(&server, ("POST", &spam), &[&auth], "").0, 200);
+    let page = post_page_with(&server, "No comments yet.");
+    assert!(!page.contains("Very clear"), "spam leaves the page");
+    assert_eq!(send(&server, ("DELETE", &spam), &[&auth], "").0, 200);
+    assert_eq!(queue(&server, &key).len(), 1, "not spam waits again");
+
     let delete = format!("/api/admin/v1/comments/{id}/");
     assert_eq!(send(&server, ("DELETE", &delete), &[&auth], "").0, 204);
     let page = post_page_with(&server, "No comments yet.");

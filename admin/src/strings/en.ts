@@ -432,7 +432,7 @@ export const en = {
   },
   comments: {
     title: "Comments",
-    lede: "Readers' comments wait here until you approve them, so nothing appears under a post without your yes. Approve the good ones, answer questions, and delete spam.",
+    lede: "Readers' comments wait here until you approve them, so nothing appears under a post without your yes. Approve the good ones, answer questions, and mark spam so it stays hidden.",
     which: "Which comments",
     statuses: { pending: "Waiting", approved: "Shown", spam: "Spam", trash: "Bin" },
     loading: "Reading the comments",
