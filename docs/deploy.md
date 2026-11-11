@@ -46,6 +46,22 @@ For example, to install and set up the service on a server:
 curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sudo sh -s -- --systemd
 ```
 
+## Install with Homebrew
+
+Homebrew is a package manager for macOS and Linux: it installs programs and updates them with one command. Khalid has its own tap, a list of programs Homebrew can install, in the repository `thebigasif/homebrew-khalid`. This line adds the tap and installs Khalid, its manual pages and Tab completion for bash, zsh and fish:
+
+```sh
+brew install thebigasif/khalid/khalid
+```
+
+`brew upgrade khalid` installs a newer release. Homebrew downloads the same files as the one-line script, checks each against its checksum, and builds nothing on your machine.
+
+Each published release updates the tap by itself: the Homebrew workflow writes the formula, the recipe `brew` follows, with `scripts/homebrew-formula.sh`, installs it with `brew` on macOS and Linux, and only then puts it in the tap. A prerelease is left out. To write the formula for a release by hand, download its `SHA256SUMS` and run:
+
+```sh
+scripts/homebrew-formula.sh v1.9.0 SHA256SUMS > khalid.rb
+```
+
 ## Signing in to the admin the first time
 
 The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`.

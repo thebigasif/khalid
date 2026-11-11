@@ -39,6 +39,12 @@ On Linux or a Mac, this one line downloads the newest release, checks it and put
 curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sh
 ```
 
+With Homebrew, on a Mac or on Linux, this line installs it with its manual pages and Tab completion, and `brew upgrade` keeps it up to date:
+
+```text
+brew install thebigasif/khalid/khalid
+```
+
 Or build Khalid from source. You need git, Rust through [rustup](https://rustup.rs/), a C compiler and Node.js 22. The npm steps build the admin, the web editor; `cargo` alone builds a blog without it. `CONTRIBUTING.md` explains each step.
 
 ```sh

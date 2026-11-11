@@ -267,3 +267,12 @@ fn the_formula_is_ruby_that_parses() {
     let said = String::from_utf8_lossy(&parsed.stderr);
     assert!(parsed.status.success(), "{said}");
 }
+
+#[test]
+fn the_install_guides_give_the_brew_line() {
+    let brew = "brew install thebigasif/khalid/khalid";
+    for guide in ["README.md", "docs/getting-started.md", "docs/deploy.md"] {
+        let text = fs::read_to_string(repo_file(guide)).unwrap();
+        assert!(text.contains(brew), "{guide} has no {brew}");
+    }
+}
