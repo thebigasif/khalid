@@ -147,7 +147,7 @@ pub(crate) fn nightly(
     build::quietly(site, checked, &built, clock)?;
     let source = Folder::open(&built, &home).map_err(|error| audit_message::of(&error))?;
     let crawled = handle.block_on(crawl(&source, &home, Limit::default()));
-    let audit = Report::of(&crawled, thresholds);
+    let audit = Report::of(&crawled, &thresholds);
     let reports = (&LinkReport::of(&crawled), &WeightReport::of(&crawled));
     let trend = keep(&folder, &audit, reports, clock)?;
     trend.last().copied().ok_or_else(audit_message::internal)

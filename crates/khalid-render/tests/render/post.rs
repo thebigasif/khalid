@@ -179,5 +179,8 @@ fn the_updates_heading_is_in_the_page_language() {
         page.contains(r#"<h2 id="post-updates">Änderungen</h2>"#),
         "{page}"
     );
-    assert!(page.contains(r#"<time datetime="2026-10-20">20. "#), "{page}");
+    assert!(
+        page.contains(r#"<time datetime="2026-10-20">20. "#),
+        "{page}"
+    );
 }
