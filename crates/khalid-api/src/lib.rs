@@ -72,6 +72,7 @@ mod key_schemes;
 pub mod keys;
 pub mod link_map;
 pub mod link_suggestions;
+mod media_alt;
 pub mod media_api;
 mod media_picture;
 mod media_search;

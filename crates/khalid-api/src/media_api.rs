@@ -34,7 +34,7 @@ use crate::resources::{
     AdminMedia, MediaEditBody, MediaEdits, MediaFolder, MediaFolders, MediaItems, MediaList,
 };
 use crate::staff_names::NameBook;
-use crate::{media_picture, media_search};
+use crate::{media_alt, media_picture, media_search};
 
 /// A site's media library, and the address its own files are served under.
 #[derive(Debug, Clone)]
@@ -89,6 +89,7 @@ pub(crate) fn routes(media: Media, door: AdminDoor) -> OpenApiRouter {
         .routes(routes!(media_search::search_pictures))
         .routes(routes!(media_search::photo_used))
         .routes(routes!(media_picture::copy_picture))
+        .routes(routes!(media_alt::replace_alt))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(media)

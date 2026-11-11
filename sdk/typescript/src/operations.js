@@ -46,6 +46,7 @@ export const operations = {
   list_issues: { method: "GET", path: "/api/admin/v1/lint/issues/", key: "admin", body: null },
   list_media: { method: "GET", path: "/api/admin/v1/media/", key: "admin", body: null },
   upload_media: { method: "POST", path: "/api/admin/v1/media/", key: "admin", body: "application/octet-stream" },
+  replace_alt: { method: "POST", path: "/api/admin/v1/media/alt-text/", key: "admin", body: "application/json" },
   list_media_folders: { method: "GET", path: "/api/admin/v1/media/folders/", key: "admin", body: null },
   search_pictures: { method: "GET", path: "/api/admin/v1/media/search/", key: "admin", body: null },
   photo_used: { method: "POST", path: "/api/admin/v1/media/search/used/", key: "admin", body: "application/json" },

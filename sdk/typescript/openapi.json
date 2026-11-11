@@ -3767,6 +3767,86 @@
         ]
       }
     },
+    "/api/admin/v1/media/alt-text/": {
+      "post": {
+        "tags": [
+          "admin media"
+        ],
+        "summary": "Finds words in the alt text of every library item and puts others in\ntheir place. Without `apply` it only lists what would change, so a\nperson can check before saving. Captions, folders and addresses stay\nas they are. Needs `media:write`.",
+        "operationId": "replace_alt",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AltReplaceBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "What changes, or changed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AltChanges"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks media:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, the words to find are empty, or a change would make alt text longer than 1000 characters",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/media/folders/": {
       "get": {
         "tags": [
@@ -16330,6 +16410,83 @@
         "type": "string",
         "description": "An old address on this site that redirects to the post, such as\n`/2019/05/old-title/`, so a moved post keeps its links.",
         "example": "/2019/05/old-title/"
+      },
+      "AltChangeBody": {
+        "type": "object",
+        "description": "One item's alt text before and after a replace.",
+        "required": [
+          "id",
+          "name",
+          "before",
+          "after"
+        ],
+        "properties": {
+          "after": {
+            "type": "string",
+            "description": "Its alt text after, trimmed."
+          },
+          "before": {
+            "type": "string",
+            "description": "Its alt text before."
+          },
+          "id": {
+            "type": "string",
+            "description": "The item's identity."
+          },
+          "name": {
+            "type": "string",
+            "description": "Its file name."
+          }
+        }
+      },
+      "AltChanges": {
+        "type": "object",
+        "description": "What a replace changes, or changed, by item identity.",
+        "required": [
+          "applied",
+          "changes"
+        ],
+        "properties": {
+          "applied": {
+            "type": "boolean",
+            "description": "Whether the changes were made, or only listed."
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AltChangeBody"
+            },
+            "description": "Every item whose alt text holds the words."
+          }
+        }
+      },
+      "AltReplaceBody": {
+        "type": "object",
+        "description": "Words to find in the alt text of every library item, and what to put in\ntheir place. Matching is exact, letter case included.",
+        "required": [
+          "find",
+          "replace"
+        ],
+        "properties": {
+          "apply": {
+            "type": "boolean",
+            "description": "`true` makes the changes; `false`, the default, only lists them."
+          },
+          "find": {
+            "type": "string",
+            "description": "The words to find; not empty."
+          },
+          "replace": {
+            "type": "string",
+            "description": "What to put in their place; empty removes them."
+          }
+        },
+        "additionalProperties": false,
+        "example": {
+          "find": "Acme Ltd",
+          "replace": "Acme",
+          "apply": false
+        }
       },
       "AnswerField": {
         "type": "object",
