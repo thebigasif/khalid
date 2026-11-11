@@ -37,6 +37,8 @@ pub(crate) struct PageWords {
     failed_text: String,
     no_list_title: String,
     no_list_text: String,
+    too_many_title: String,
+    too_many_text: String,
 }
 
 /// What a page tells the reader.
@@ -72,6 +74,12 @@ pub enum Page<'a> {
     Failed,
     /// The form names a newsletter the site does not have.
     NoSuchList,
+    /// The reader's network address sent too many sign-ups; nothing was
+    /// sent.
+    TooMany {
+        /// Whole minutes until a sign-up is allowed again, at least one.
+        minutes: u64,
+    },
 }
 
 /// Writes the pages of one site, in its language.
@@ -127,9 +135,14 @@ impl Pages {
             Page::Closed => (&w.closed_title, &w.closed_text, String::new()),
             Page::Failed => (&w.failed_title, &w.failed_text, String::new()),
             Page::NoSuchList => (&w.no_list_title, &w.no_list_text, String::new()),
+            Page::TooMany { .. } => (&w.too_many_title, &w.too_many_text, String::new()),
         };
         let site = &self.site.name;
-        let (title, text) = (filled(title, site), filled(text, site));
+        let text = match page {
+            Page::TooMany { minutes } => text.replace("{minutes}", &minutes.to_string()),
+            _ => text.clone(),
+        };
+        let (title, text) = (filled(title, site), filled(&text, site));
         let lang = escape(self.site.locale.as_str());
         let (back, site, mount) = (filled(&w.back, site), escape(site), escape(mount));
         format!(

@@ -16,6 +16,7 @@ mod clicks;
 mod confirmation;
 mod email_address;
 mod issue;
+mod limits;
 mod lists;
 mod mail;
 mod newsletter;
@@ -31,6 +32,7 @@ pub use archive::{ArchivedIssue, NewsletterPage, archive};
 pub use confirmation::{ConfirmationLinks, NewsletterWords, SiteLinks, WordsError};
 pub use email_address::{EmailAddress, ParseEmailError};
 pub use issue::{Issue, PostalAddress, SendId, SendNumbers, SendTotals, Sent};
+pub use limits::{SignUpCheck, SignUpLimits};
 pub use lists::Lists;
 #[cfg(any(test, feature = "test-util"))]
 pub use mail::MemoryMailer;
