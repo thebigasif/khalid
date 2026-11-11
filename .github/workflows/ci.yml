@@ -416,7 +416,7 @@ jobs:
         if: steps.admin.outputs.present == 'true'
         run: npx biome ci . && npx tsc --noEmit && npx vitest run
         working-directory: admin
-      - name: Build and size budget (under 350 KB compressed)
+      - name: Build and size check (first download 250 KB, all files 450 KB)
         if: steps.admin.outputs.present == 'true'
         run: npm run build && node scripts/size-budget.mjs
         working-directory: admin
