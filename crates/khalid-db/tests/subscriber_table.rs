@@ -9,8 +9,8 @@ use chrono::{DateTime, TimeDelta, TimeZone, Utc};
 use khalid_core::Slug;
 use khalid_db::{Database, SubscriberTable};
 use khalid_newsletter::{
-    Confirmed, EmailAddress, SignUp, SignedUp, SubscriberId, SubscriberStore, SubscriberToken,
-    Unsubscribed,
+    Confirmed, EmailAddress, SignUp, SignedUp, Stop, SubscriberId, SubscriberStore,
+    SubscriberToken, Unsubscribed,
 };
 use sqlx::SqlitePool;
 
@@ -242,4 +242,56 @@ async fn a_site_cannot_unsubscribe_or_link_another_site_s_subscriber() {
     let added = db.other.add_unsubscribe(id, &token.hash(), nine()).await;
     assert!(added.is_err(), "{added:?}");
     assert_eq!(status(&db.file).await, "pending");
+}
+
+#[tokio::test]
+async fn a_bounce_unsubscribes_and_the_form_never_mails_the_address_again() {
+    let db = opened().await;
+    let (asked, token) = sign_up("grace@example.com", "main", nine());
+    let id = due(&db.demo, &asked).await;
+    open(&db.demo, &token, nine()).await;
+    let grace = EmailAddress::parse("Grace@Example.com").unwrap();
+    assert!(db.demo.stop(&grace, Stop::Bounced, nine()).await.unwrap());
+    assert_eq!(status(&db.file).await, "unsubscribed");
+    let why: String = sqlx::query_scalar("SELECT stopped_because FROM subscribers")
+        .fetch_one(&db.file)
+        .await
+        .unwrap();
+    assert_eq!(why, "bounced");
+    let lists: i64 = sqlx::query_scalar("SELECT count(*) FROM subscriber_lists")
+        .fetch_one(&db.file)
+        .await
+        .unwrap();
+    assert_eq!(lists, 0);
+    let later = nine() + TimeDelta::days(30);
+    let (back, unsent) = sign_up("grace@example.com", "main", later);
+    assert_eq!(db.demo.sign_up(&back).await.unwrap(), SignedUp::Stopped);
+    assert_eq!(open(&db.demo, &unsent, later).await, Confirmed::Unknown);
+    let link = leave_link(&db.demo, id).await;
+    assert_eq!(leave(&db.demo, &link, later).await, Unsubscribed::Done);
+}
+
+#[tokio::test]
+async fn a_complaint_about_an_unknown_or_other_site_s_address_changes_nothing() {
+    let db = opened().await;
+    let (asked, _) = sign_up("grace@example.com", "main", nine());
+    due(&db.demo, &asked).await;
+    let grace = EmailAddress::parse("grace@example.com").unwrap();
+    let stranger = EmailAddress::parse("nobody@example.com").unwrap();
+    let unknown = db.demo.stop(&stranger, Stop::Complained, nine()).await;
+    assert!(!unknown.unwrap());
+    assert!(
+        !db.other
+            .stop(&grace, Stop::Complained, nine())
+            .await
+            .unwrap()
+    );
+    assert_eq!(status(&db.file).await, "pending");
+    assert!(
+        db.demo
+            .stop(&grace, Stop::Complained, nine())
+            .await
+            .unwrap()
+    );
+    assert_eq!(status(&db.file).await, "unsubscribed");
 }

@@ -91,6 +91,30 @@ pub enum SignedUp {
     /// The address was confirmed before and joined this newsletter now, so
     /// its welcome is due.
     JoinedNow(SubscriberId),
+    /// The mail service said the address bounces or its owner marked an
+    /// email as spam. Nothing was stored, and nothing is sent.
+    Stopped,
+}
+
+/// Why the mail service said to send an address no more email.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum Stop {
+    /// The address does not take mail: it does not exist, or its mailbox
+    /// refuses mail for good.
+    Bounced,
+    /// The address's owner marked an email from the site as spam.
+    Complained,
+}
+
+impl Stop {
+    /// The word the store keeps for it.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Bounced => "bounced",
+            Self::Complained => "complained",
+        }
+    }
 }
 
 /// What a confirmation link did.
@@ -166,6 +190,20 @@ pub trait SubscriberStore: fmt::Debug + Send + Sync {
         token: &'a TokenHash,
         at: DateTime<Utc>,
     ) -> BoxFuture<'a, Result<Unsubscribed, StoreError>>;
+
+    /// Unsubscribes `email` `at` this time because of `why`, and keeps the
+    /// sign-up form from mailing it again. Returns whether the store holds
+    /// that address; an address it never held is left unknown.
+    ///
+    /// # Errors
+    ///
+    /// [`StoreError`] when the store cannot be read or written.
+    fn stop<'a>(
+        &'a self,
+        email: &'a EmailAddress,
+        why: Stop,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>>;
 
     /// Gives the subscriber at `email` the label `label`, `at` that time,
     /// unless they unsubscribed. Adding it twice changes nothing.
