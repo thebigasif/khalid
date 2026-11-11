@@ -86,6 +86,11 @@ if ls crates/*/Cargo.toml >/dev/null 2>&1; then
   step "File size (BL-SIZE-1): hand-written Rust files under 600 lines"
   over=$(git ls-files 'crates/*/src/*.rs' 'crates/*/src/**/*.rs' | grep -v '/generated/' | xargs -I{} awk 'END{ if (NR>600) print FILENAME": "NR" lines" }' {} || true)
   if [ -n "$over" ]; then echo "$over"; echo "Split the file (BL-SIZE-1)."; exit 1; fi
+
+  ./scripts/check-gates.sh
+
+  step "Source searches proven to fire"
+  ./scripts/prove-check-gates.sh
 else
   echo "No crates yet. Rust checks start with the first crate (Phase 0)."
 fi
