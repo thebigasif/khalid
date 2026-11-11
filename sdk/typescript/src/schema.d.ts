@@ -2180,6 +2180,22 @@ export type RoleChange = {
   role: string;
 };
 
+/** Another page's JSON-LD, as text for a custom JSON-LD field. */
+export type SchemaCopy = {
+  /** Every JSON-LD node on the page in one graph, pretty-printed, without the other site's `@id`s. */
+  json_ld: string;
+  /** Why the custom field would refuse the copy as it is, or `null` when it takes it. */
+  problem?: string | null;
+  /** The `@type` of each node at the top, in page order. */
+  types: string[];
+};
+
+/** The page to copy schema from. */
+export type SchemaCopyAsk = {
+  /** The page's full web address. */
+  url: string;
+};
+
 /** The site's schema templates, in the order `site.toml` lists them. */
 export type SchemaTemplates = {
   /** The site's collections, to pick a template's collection from. */
@@ -3778,6 +3794,17 @@ export interface Operations {
       body: TemplatesChange;
     };
     output: SchemaTemplates;
+  };
+  /** Fetches the page at `url` through the shared outbound client and answers with its JSON-LD, ready to edit in a post's custom JSON-LD field. Nothing is saved. Addresses inside the server's network are refused. Needs `posts:write`. */
+  copy_schema: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: SchemaCopyAsk;
+    };
+    output: SchemaCopy;
   };
   /** Lists the long searches, of 8 words or more, that showed each post in the last 28 days whose numbers are final, with the heading of the post that answers each. Google is asked on each request, so the answer can take some seconds. Needs `settings:write`. */
   follow_ups: {

@@ -19,6 +19,7 @@ use khalid_api::media_api::MediaLibrary;
 use khalid_api::publish_door::PublishDoor;
 use khalid_api::redirect_desk::RedirectDesk;
 use khalid_api::resources::{AdminAuthor, AdminPage, AdminSnippet};
+use khalid_api::schema_copy::SchemaCopier;
 use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
 use khalid_core::{Config, Environment, SystemClock};
@@ -41,17 +42,19 @@ use crate::watch_report::SiteUptime;
 use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
 pub(crate) mod ai_writer;
+pub(crate) mod schema_copier;
 mod subscribers;
 
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
-/// follow-ups and the writer of the editor's suggestions.
+/// follow-ups, the writer of the editor's suggestions and the page fetcher
+/// that copies schema from a URL.
 pub(crate) type Desks = (
     Arc<dyn CommentModeration>,
     MediaLibrary,
     RedirectDesk,
     SiteFollowUps,
-    AiDesk,
+    (AiDesk, Option<schema_copier::PageCopier>),
 );
 
 /// What [`api_router`] is built from: its four argument groups.
@@ -76,7 +79,7 @@ pub(crate) type ApiParts<'a> = (
 /// read `site.toml` with `env`, the environment the server started with.
 pub(crate) fn api_router(
     (content, door, posts): (LiveContent, Arc<PublishDoor>, SitePosts),
-    (comments, media, redirects, follow_ups, ai): Desks,
+    (comments, media, redirects, follow_ups, (ai, schema_copier)): Desks,
     (database, id, (site, config, env)): (&Database, SiteId, (&Path, &Config, &Environment)),
     (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
 ) -> Router {
@@ -105,6 +108,7 @@ pub(crate) fn api_router(
         // The same posts the door publishes, judged with the live settings.
         checks: Some(Arc::new(posts)),
         schema_templates: Some(Arc::new(SiteSchemaTemplates::new(site, config, env))),
+        schema_copier: schema_copier.map(|copier| -> Arc<dyn SchemaCopier> { Arc::new(copier) }),
         pages: Some(Arc::new(SiteEntries::<AdminPage>::new(site, config))),
         snippets: Some(Arc::new(SiteEntries::<AdminSnippet>::new(site, config))),
         authors: Some(Arc::new(SiteEntries::<AdminAuthor>::new(site, config))),

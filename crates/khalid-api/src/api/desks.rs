@@ -19,6 +19,7 @@ use crate::post_check::PostChecks;
 use crate::post_trash::PostTrash;
 use crate::redirect_desk::RedirectDesk;
 use crate::resources::{AdminAuthor, AdminCategory, AdminPage, AdminSnippet, AdminTemplate};
+use crate::schema_copy::SchemaCopier;
 use crate::schema_template_store::SchemaTemplateStore;
 use crate::serpdad_store::SerpdadStore;
 use crate::settings_store::SettingsStore;
@@ -50,6 +51,9 @@ pub struct AdminDesks {
     /// The site's schema templates, or `None` when their routes answer
     /// that this server keeps none.
     pub schema_templates: Option<Arc<dyn SchemaTemplateStore>>,
+    /// What fetches a page to copy its JSON-LD, or `None` when the copy
+    /// route answers that this server fetches no pages.
+    pub schema_copier: Option<Arc<dyn SchemaCopier>>,
     /// The site's pages, or `None` when the page routes answer that this
     /// server keeps none.
     pub pages: Option<Arc<dyn EntryStore<AdminPage>>>,
@@ -113,7 +117,8 @@ impl std::fmt::Debug for AdminDesks {
 
 impl AdminDesks {
     /// No comments, no media library, no stored redirects, no webhooks, no
-    /// audit log, no trash, no post checks, no schema templates, no pages,
+    /// audit log, no trash, no post checks, no schema templates, no schema
+    /// copier, no pages,
     /// no snippets, no authors, no tags, no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection,
     /// no form answers, no `SerpDad` connection, no writing suggestions, no
@@ -128,6 +133,7 @@ impl AdminDesks {
             trash: None,
             checks: None,
             schema_templates: None,
+            schema_copier: None,
             pages: None,
             snippets: None,
             authors: None,
