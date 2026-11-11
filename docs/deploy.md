@@ -440,7 +440,9 @@ khalid serve --https --accept-terms
 
 `--accept-terms` is your yes to Let's Encrypt's subscriber agreement, asked once for the whole folder. Without it, Khalid asks at the terminal. One Let's Encrypt account serves every site, kept in `data/https/` of the sites folder, and each site keeps its own certificate in its own `sites/<domain>/data/https/`, so it moves with the site. A site a super admin adds while the server runs gets its certificate within a minute, once its DNS leads here. A site whose domain does not lead here yet is tried again every hour, and the others are served meanwhile. Plain HTTP on port 80 moves each visitor to HTTPS on their own site. `--domain` is for a single site, and a sites folder refuses it.
 
-To keep a proxy such as Caddy in front instead, serve with `--listen 127.0.0.1:8080` and let the proxy get the certificates.
+When Khalid holds the certificate itself, with `--https` or `--domain`, every page also carries `Strict-Transport-Security: max-age=31536000`. HSTS (HTTP Strict Transport Security) tells a browser to use only HTTPS for this domain for a year, so `khalid audit` no longer notes "No HSTS support". It leaves out subdomains, because Khalid only knows its own.
+
+To keep a proxy such as Caddy in front instead, serve with `--listen 127.0.0.1:8080` and let the proxy get the certificates. Plain HTTP sends no HSTS, so set that header in the proxy.
 
 ## Backing up and restoring
 
