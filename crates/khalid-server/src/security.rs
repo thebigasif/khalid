@@ -56,10 +56,15 @@ const FIXED: [(HeaderName, HeaderValue); 5] = [
     ),
 ];
 
+/// The `Strict-Transport-Security` value: browsers keep to HTTPS for a
+/// year. Subdomains are left out, because Khalid holds a certificate for
+/// its own domain only and may not know the site's other hosts.
+const HSTS: HeaderValue = HeaderValue::from_static("max-age=31536000");
+
 /// The security headers for every response (RULES.md BL-SEC-2), with the
 /// players an embed may show in a frame.
 ///
-/// The default allows no frames at all.
+/// The default allows no frames at all and sends no HSTS header.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SecurityHeaders {
     /// The `frame-src` sources, the end of the policy.
@@ -67,6 +72,8 @@ pub struct SecurityHeaders {
     /// The hash sources of the site's own script files, each with a
     /// leading space, such as ` 'sha256-…'`. Empty allows none.
     scripts: String,
+    /// Whether responses carry `Strict-Transport-Security`.
+    hsts: bool,
 }
 
 impl SecurityHeaders {
@@ -122,13 +129,19 @@ impl SecurityHeaders {
         }
     }
 
+    /// These headers with `Strict-Transport-Security`, for a server that
+    /// ends TLS itself, as `khalid serve --https` does. Plain HTTP must not
+    /// send it: a proxy in front of the blog ends TLS and owns that header.
+    #[must_use]
+    pub fn with_hsts(self) -> Self {
+        Self { hsts: true, ..self }
+    }
+
     /// Sets every security header on `headers`, with a new nonce, for a
     /// response made outside [`router`](crate::router), such as a page of
     /// search results.
     pub fn apply(&self, headers: &mut HeaderMap) {
-        for (name, value) in &FIXED {
-            headers.insert(name.clone(), value.clone());
-        }
+        self.apply_fixed(headers);
         if let Some(policy) = self.policy() {
             headers.insert(header::CONTENT_SECURITY_POLICY, policy);
         }
@@ -139,11 +152,19 @@ impl SecurityHeaders {
     /// and scripts may send data to any `https` address, as analytics
     /// tags do (ADR "head code gets the nonce on each request").
     pub(crate) fn apply_with_head_code(&self, headers: &mut HeaderMap, nonce: &str) {
+        self.apply_fixed(headers);
+        if let Some(policy) = self.policy_with(Some(nonce), Sources::HeadCode) {
+            headers.insert(header::CONTENT_SECURITY_POLICY, policy);
+        }
+    }
+
+    /// Sets the headers that are the same on every response.
+    fn apply_fixed(&self, headers: &mut HeaderMap) {
         for (name, value) in &FIXED {
             headers.insert(name.clone(), value.clone());
         }
-        if let Some(policy) = self.policy_with(Some(nonce), Sources::HeadCode) {
-            headers.insert(header::CONTENT_SECURITY_POLICY, policy);
+        if self.hsts {
+            headers.insert(header::STRICT_TRANSPORT_SECURITY, HSTS);
         }
     }
 
@@ -210,6 +231,7 @@ impl Default for SecurityHeaders {
         Self {
             frames: "'none'".to_owned(),
             scripts: String::new(),
+            hsts: false,
         }
     }
 }

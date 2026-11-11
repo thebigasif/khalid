@@ -204,7 +204,7 @@ fn serve_with(
     let (source, first) = first_pages((site, config, routes), reload, &checked)
         .and_then(|first| bodies.finish().map(|()| first))
         .map_err(|message| (message, Exit::Failure))?;
-    let security = security_headers(config)?;
+    let security = security_headers(config, listen)?;
     let search = search_route::Search::of(&source, (database, id), &security);
     let ((posted, forms), alerting) = mail_and_alerts(
         (site, config, listen, every),
@@ -511,11 +511,20 @@ pub(crate) fn open(site: &Path, runtime: &Runtime) -> Result<(Database, SiteId),
 
 /// The security headers of every page, letting in the frames of the embed
 /// providers and `[media] embed_domains`, and the reader script by its hash.
-fn security_headers(config: &Config) -> Result<SecurityHeaders, (UserMessage, Exit)> {
+/// With `--https` Khalid ends TLS itself, so it sends HSTS too; on plain
+/// HTTP that header belongs to the proxy in front.
+fn security_headers(
+    config: &Config,
+    listen: &Listen,
+) -> Result<SecurityHeaders, (UserMessage, Exit)> {
     let origins = site_config::frame_origins(config);
-    SecurityHeaders::new(&origins.iter().map(String::as_str).collect::<Vec<_>>())
+    let headers = SecurityHeaders::new(&origins.iter().map(String::as_str).collect::<Vec<_>>())
         .and_then(|headers| headers.with_script(&assets::reader().integrity))
-        .map_err(|_| (serve_message::internal(), Exit::Internal))
+        .map_err(|_| (serve_message::internal(), Exit::Internal))?;
+    Ok(match listen {
+        Listen::Https(_) => headers.with_hsts(),
+        Listen::Plain(_) => headers,
+    })
 }
 
 /// Says where the site answers. In JSON, this one line is the whole output.
