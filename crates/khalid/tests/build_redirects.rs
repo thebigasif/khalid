@@ -1,5 +1,6 @@
 //! `khalid build` writes `_redirects` from the `aliases` in post front
-//! matter, one hop per line, for static hosts (KH-SEO-8).
+//! matter, one hop per line, for static hosts, and the same moves for
+//! nginx and Apache (KH-SEO-8).
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -168,6 +169,44 @@ fn stored_moves_join_the_aliases_in_one_step_and_the_rest_stay_on_the_server() {
          /blog/older-links/ /blog/why-links-matter/ 301\n\
          /blog/serpdad/ https://serpdad.com/ 307\n"
     );
+    let nginx = fs::read_to_string(at(site.path(), "public/nginx-redirects.conf")).unwrap();
+    assert!(
+        nginx.starts_with("# Redirects from khalid build."),
+        "{nginx}"
+    );
+    assert!(
+        nginx.contains(
+            "location = \"/blog/links/\" { return 301 \"/blog/why-links-matter/\"; }\n\
+             location = \"/blog/sale/\" { return 302 \"/blog/offers/\"; }\n\
+             location = \"/blog/older-links/\" { return 301 \"/blog/why-links-matter/\"; }\n\
+             location = \"/blog/serpdad/\" { return 307 \"https://serpdad.com/\"; }\n"
+        ),
+        "{nginx}"
+    );
+    let apache = fs::read_to_string(at(site.path(), "public/.htaccess")).unwrap();
+    assert!(
+        apache.starts_with("# Redirects from khalid build."),
+        "{apache}"
+    );
+    assert!(
+        apache.contains(
+            "<IfModule mod_alias.c>\n\
+             RedirectMatch 301 \"^/blog/links/$\" \"/blog/why-links-matter/\"\n\
+             RedirectMatch 302 \"^/blog/sale/$\" \"/blog/offers/\"\n\
+             RedirectMatch 301 \"^/blog/older-links/$\" \"/blog/why-links-matter/\"\n\
+             RedirectMatch 307 \"^/blog/serpdad/$\" \"https://serpdad.com/\"\n\
+             </IfModule>\n"
+        ),
+        "{apache}"
+    );
+}
+
+#[test]
+fn a_site_without_redirects_writes_no_server_redirect_files() {
+    let site = site(&[("why-links-matter", &[])]);
+    assert_eq!(build(&site).status.code(), Some(0));
+    assert!(!at(site.path(), "public/nginx-redirects.conf").exists());
+    assert!(!at(site.path(), "public/.htaccess").exists());
 }
 
 #[test]

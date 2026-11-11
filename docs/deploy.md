@@ -262,6 +262,18 @@ Cloudflare builds a static blog from GitHub and serves its files for free. `depl
 
 The button copies the folder into a new repository in your GitHub account and deploys it as a Worker. For Cloudflare Pages, the build command is `sh build.sh`, the output folder is `public`, and the root folder is `deploy/cloudflare`. `docs/deploy/cloudflare.md` gives every step, the blog's address and your own domain.
 
+### Redirects on a static host
+
+A redirect sends a reader from an old address to the new one, so a moved post keeps its links. When a site has any, `khalid build` writes the same redirects three times into the output folder, one file for each kind of host:
+
+| File | Host | What to do |
+| --- | --- | --- |
+| `_redirects` | Netlify, Cloudflare Pages | Nothing. The host reads it. |
+| `.htaccess` | Apache | Nothing, when Apache may read `.htaccess` files in the folder (`AllowOverride FileInfo`). |
+| `nginx-redirects.conf` | nginx | Add `include /path/to/public/nginx-redirects.conf;` inside the blog's `server` block, then reload nginx. |
+
+Each address matches exactly, with its trailing slash. Stored rules that answer 410 or 451, and pattern rules, need `khalid serve`, so no file holds them.
+
 A blog behind Cloudflare's proxy, static or served, needs Cloudflare's Email Address Obfuscation turned off. In the domain's dashboard, go to **Security**, **Settings** (or **Scrape Shield** on older dashboards) and switch it off. It rewrites every email address and `mailto:` link and adds a script from `/cdn-cgi/`. Khalid's content security policy blocks that script, as it should, so addresses show as "[email protected]" and the share-by-email link opens a missing page.
 
 ## Sending email

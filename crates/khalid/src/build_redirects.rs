@@ -1,7 +1,7 @@
-//! The `_redirects` file `khalid build` writes from the `aliases` in post
-//! front matter and the moves stored in `data/site.db`, so a moved post
-//! keeps its links on a static host (KH-SEO-8, ADR "the build writes its
-//! redirects as a `_redirects` file").
+//! The moves `khalid build` writes into its redirect files, from the
+//! `aliases` in post front matter and the moves stored in `data/site.db`,
+//! so a moved post keeps its links on a static host (KH-SEO-8, ADR "the
+//! build writes its redirects as a `_redirects` file").
 
 use std::path::{Path, PathBuf};
 
@@ -10,8 +10,8 @@ use khalid_core::{Config, UserMessage};
 use khalid_routes::{PostAddress, Routes};
 use khalid_seo::{Destination, Move, Redirect, RedirectRule, RedirectTable, UrlPath};
 
-use crate::build_files::SiteFile;
 use crate::build_pages::{named, prefix, routed};
+use crate::redirect_files::RedirectLine;
 use crate::{build_message, db, redirects};
 
 /// One alias and the address it ends at, each from the site root, mount
@@ -40,33 +40,32 @@ impl Hop {
     }
 }
 
-/// The redirects file, or `None` when there is nothing to redirect: one
-/// line per alias, then one per move stored in the `site` folder's
-/// database, if it has one, each chain followed to its end. Stored 410,
-/// 451 and regex rules have no line a static host reads, so they stay
-/// with `khalid serve`.
-pub(crate) fn file(
+/// The moves a static host answers, for the redirect files: one per alias,
+/// then one per move stored in the `site` folder's database, if it has
+/// one, each chain followed to its end. Stored 410, 451 and regex rules
+/// have no line a static host reads, so they stay with `khalid serve`.
+pub(crate) fn lines(
     site: &Path,
     config: &Config,
     routes: &Routes,
     content: &SiteContent,
-) -> Result<Option<SiteFile>, UserMessage> {
+) -> Result<Vec<RedirectLine>, UserMessage> {
     let hops = hops(config, routes, content)?;
     let mut rules: Vec<RedirectRule> = hops.iter().map(Hop::rule).collect::<Result<_, _>>()?;
     rules.extend(stored_moves(site)?);
     if rules.is_empty() {
-        return Ok(None);
+        return Ok(Vec::new());
     }
     let table = RedirectTable::new(rules).map_err(|error| build_message::seo(&error))?;
     let lines = table.rules().iter().filter_map(|rule| {
         let hit = table.resolve(&rule.from)?;
-        let to = hit.location()?;
-        Some(format!("{} {to} {}\n", rule.from, hit.status()))
+        Some(RedirectLine {
+            from: rule.from.to_string(),
+            to: hit.location()?.to_string(),
+            status: hit.status(),
+        })
     });
-    Ok(Some(SiteFile {
-        file: "_redirects".to_owned(),
-        text: lines.collect(),
-    }))
+    Ok(lines.collect())
 }
 
 /// The exact moves stored in `data/site.db` in `site`, or none when the

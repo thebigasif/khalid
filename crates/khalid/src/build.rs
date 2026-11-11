@@ -30,8 +30,8 @@ use crate::static_mode::consent::{self as static_consent, Asking};
 use crate::{
     assets, build_files, build_gate, build_lists, build_message, build_pages, build_redirects,
     build_seo, build_sitemap, categories, content_message, form_pages, look, own_descriptions,
-    post_categories, post_files, post_images, post_lock, privacy_page, report, search_page,
-    search_static, share_images, static_mode, trails,
+    post_categories, post_files, post_images, post_lock, privacy_page, redirect_files, report,
+    search_page, search_static, share_images, static_mode, trails,
 };
 
 #[path = "build_indexnow.rs"]
@@ -239,8 +239,9 @@ fn build(
         write_fonts(site, &tokens, out)?;
         written = write_html(out, (renderer, sheets), &languages, (locks.as_ref(), &code))?;
     }
-    let redirects = build_redirects::file(site, config, routes, content)?;
-    let redirects = archives_off::with_redirects(redirects, &gone);
+    let mut moves = build_redirects::lines(site, config, routes, content)?;
+    archives_off::with_redirects(&mut moves, &gone);
+    let redirects = redirect_files::files(&moves);
     let files = build_files::files(
         &seo_site,
         &seo_pages,

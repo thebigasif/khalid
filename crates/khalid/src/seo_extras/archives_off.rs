@@ -7,9 +7,9 @@ use khalid_core::{ArchiveSetting, Config, UserMessage};
 use khalid_render::PageBody;
 use khalid_server::{Moved, PagePath};
 
-use crate::build_files::SiteFile;
 use crate::build_message;
 use crate::build_pages::LanguagePages;
+use crate::redirect_files::RedirectLine;
 
 /// One page that is no longer made, and the home page it now sends
 /// readers to, each from the site root.
@@ -55,22 +55,14 @@ pub(crate) fn moves(gone: &[Gone]) -> Result<Vec<Moved>, UserMessage> {
         .collect()
 }
 
-/// The `_redirects` file `khalid build` writes, with a 301 line for each of
-/// `gone` after the lines it already has.
-pub(crate) fn with_redirects(file: Option<SiteFile>, gone: &[Gone]) -> Option<SiteFile> {
-    if gone.is_empty() {
-        return file;
-    }
-    let mut file = file.unwrap_or_else(|| SiteFile {
-        file: "_redirects".to_owned(),
-        text: String::new(),
-    });
-    for gone in gone {
-        for part in [gone.from.as_str(), " ", gone.to.as_str(), " 301\n"] {
-            file.text.push_str(part);
-        }
-    }
-    Some(file)
+/// The moves `khalid build` writes into its redirect files, with a 301
+/// for each of `gone` after the moves `lines` already has.
+pub(crate) fn with_redirects(lines: &mut Vec<RedirectLine>, gone: &[Gone]) {
+    lines.extend(gone.iter().map(|gone| RedirectLine {
+        from: gone.from.clone(),
+        to: gone.to.clone(),
+        status: 301,
+    }));
 }
 
 #[cfg(test)]
@@ -83,16 +75,19 @@ mod tests {
             from: "/blog/authors/asif/".to_owned(),
             to: "/blog/".to_owned(),
         }];
-        let file = SiteFile {
-            file: "_redirects".to_owned(),
-            text: "/blog/old/ /blog/new/ 301\n".to_owned(),
+        let old = RedirectLine {
+            from: "/blog/old/".to_owned(),
+            to: "/blog/new/".to_owned(),
+            status: 301,
         };
-        let text = with_redirects(Some(file), &gone).map(|file| file.text);
-        assert_eq!(
-            text.as_deref(),
-            Some("/blog/old/ /blog/new/ 301\n/blog/authors/asif/ /blog/ 301\n")
-        );
-        assert!(with_redirects(None, &[]).is_none());
+        let mut lines = vec![old.clone()];
+        with_redirects(&mut lines, &gone);
+        let home = RedirectLine {
+            from: "/blog/authors/asif/".to_owned(),
+            to: "/blog/".to_owned(),
+            status: 301,
+        };
+        assert_eq!(lines, [old, home]);
         assert_eq!(moves(&gone).unwrap().len(), 1);
     }
 }
