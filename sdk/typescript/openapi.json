@@ -8794,7 +8794,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SiteSettings"
+                  "$ref": "#/components/schemas/AdminSiteSettings"
                 }
               }
             }
@@ -8872,7 +8872,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SiteSettings"
+                  "$ref": "#/components/schemas/AdminSiteSettings"
                 }
               }
             }
@@ -15754,6 +15754,19 @@
             "type": "string",
             "format": "date-time",
             "description": "When `site.toml` last changed. A change sends it back."
+          }
+        }
+      },
+      "AdminSiteSettings": {
+        "type": "object",
+        "description": "The settings as the Admin API wraps them.",
+        "required": [
+          "settings"
+        ],
+        "properties": {
+          "settings": {
+            "$ref": "#/components/schemas/AdminSettings",
+            "description": "The site's core settings."
           }
         }
       },

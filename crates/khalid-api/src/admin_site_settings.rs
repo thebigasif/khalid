@@ -43,7 +43,7 @@ pub(crate) fn routes(settings: Settings, door: AdminDoor) -> OpenApiRouter {
 
 /// The settings as the Admin API wraps them.
 #[derive(Debug, Serialize, ToSchema)]
-pub(crate) struct SiteSettings {
+pub(crate) struct AdminSiteSettings {
     /// The site's core settings.
     settings: AdminSettings,
 }
@@ -54,7 +54,7 @@ pub(crate) struct SiteSettings {
     get, path = "/settings/", tag = "admin settings",
     security(("admin_key" = [])),
     responses(
-        (status = 200, description = "The settings", body = SiteSettings),
+        (status = 200, description = "The settings", body = AdminSiteSettings),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks settings:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no settings", body = Problem, content_type = "application/problem+json"),
@@ -63,11 +63,11 @@ pub(crate) struct SiteSettings {
 async fn read_admin_settings(
     State(settings): State<Settings>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<SiteSettings>, Problem> {
+) -> Result<Json<AdminSiteSettings>, Problem> {
     require(&principal, Scope::SettingsWrite)?;
     let read = SETTINGS.store(settings.as_deref())?.read().await;
     let settings = read.map_err(|error| Problem::internal(&error))?;
-    Ok(Json(SiteSettings { settings }))
+    Ok(Json(AdminSiteSettings { settings }))
 }
 
 /// A change, wrapped the way the Admin API wraps the settings.
@@ -92,7 +92,7 @@ pub(crate) struct SettingsChanges {
     security(("admin_key" = [])),
     request_body = SettingsChanges,
     responses(
-        (status = 200, description = "The settings as saved", body = SiteSettings),
+        (status = 200, description = "The settings as saved", body = AdminSiteSettings),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks settings:write, or changes code without admin:all", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no settings", body = Problem, content_type = "application/problem+json"),
@@ -104,7 +104,7 @@ async fn change_settings(
     State(settings): State<Settings>,
     Extension(principal): Extension<Principal>,
     body: Result<Json<SettingsChanges>, JsonRejection>,
-) -> Result<Json<SiteSettings>, Problem> {
+) -> Result<Json<AdminSiteSettings>, Problem> {
     require(&principal, Scope::SettingsWrite)?;
     let change = SETTINGS.body(body)?.settings;
     let store = SETTINGS.store(settings.as_deref())?;
@@ -119,7 +119,7 @@ async fn change_settings(
     }
     let changed = store.change(change).await;
     let settings = changed.map_err(problem)?;
-    Ok(Json(SiteSettings { settings }))
+    Ok(Json(AdminSiteSettings { settings }))
 }
 
 /// The 403 for a `[code]` change from anyone but an owner, an admin or
