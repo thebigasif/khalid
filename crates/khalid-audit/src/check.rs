@@ -438,4 +438,9 @@ checks! {
     FixedWidth => "fixed-width", Resources, Warning, "Fixed width wider than a phone",
         "On a phone the part runs off the screen, so readers must scroll sideways to read it.",
         "In the template override or raw HTML, use max-width or a percentage instead of a width over 320 pixels.";
+    /// A page shows an image file over 100 KB (`docs/plan.md` section 6,
+    /// "Oversized image").
+    ImageTooLarge => "image-too-large", Images, Notice, "Image file size too large",
+        "A heavy image makes the page slow to load, most of all on a phone.",
+        "Upload the image through the media library, which makes smaller copies, or save it smaller before adding it.";
 }
