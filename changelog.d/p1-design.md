@@ -1,2 +1,0 @@
-Added
-- The admin's Design screen changes your blog's colours, fonts, corners, line length and logo without opening `theme/tokens.toml`. Each colour shows its contrast as you type, with the closest readable shade when it is too faint, and "Keep when syncing" keeps a colour when `khalid theme sync` runs again. A save writes only what changed, keeps your comments, and shows on the blog with no restart. The Admin API gains `GET` and `PUT /api/admin/v1/design/` for owners and admins.

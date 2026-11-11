@@ -1,2 +1,0 @@
-Added
-- One switch for "search yes, AI training no": `ai_training = "block"` under `[seo.crawlers]` blocks every crawler that copies posts to train AI models (GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot and the rest Khalid knows), while search engines and AI answer crawlers, which quote and link the blog, keep reading it. It is off by default. A crawler named in `allow` or `block` keeps its own setting. The admin's Crawlers screen leads with the switch.

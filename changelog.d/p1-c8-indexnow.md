@@ -1,2 +1,0 @@
-Added
-- IndexNow now hears about every change, even when nothing was running. `khalid serve` sends, at start, each post that went live or got a new `updated:` date while it was stopped, and `khalid build` sends what changed since the last build and says how many addresses it sent. `khalid build --no-indexnow` skips it for one build. Khalid keeps what search engines heard in `data/indexnow-sent.txt`, so a restart sends nothing again, and the first run sends nothing so a new site does not send every address.

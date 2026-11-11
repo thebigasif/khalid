@@ -1,2 +1,0 @@
-Added
-- `khalid serve` now sends the weekly Search Console email on its own, to `report_to` under `[search_console]`, once a week. You no longer need a timer for it while the server runs. The day it last went out is kept in `data/search-console-email.txt`, which `khalid search-console email` writes too, so the email never goes out twice in one week. If Google or the mail service fails, the server tries again an hour later.

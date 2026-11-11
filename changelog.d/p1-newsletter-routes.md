@@ -1,2 +1,0 @@
-Added
-- The admin has a Subscribers screen. It lists your newsletter readers with search and filters, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and its sign-up form to copy, and sends a published post to a newsletter or a labelled part of it, once. Only the owner and admins see it. The Admin API gains the same routes under `/api/admin/v1/subscribers/` and `/api/admin/v1/newsletters/` for keys with `subscribers:write`; see `docs/newsletters.md`.
