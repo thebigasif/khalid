@@ -1,35 +1,21 @@
-// The key routes of the Admin API. They are typed by hand, field for field
-// as `AdminKey` and `NewKey` in the G24 stack's OpenAPI document, because
-// this document gains them only when that stack lands
-// (docs/decisions/2026-10-31-admin-screens.md). Then these types become
-// `components["schemas"]`.
+// The key routes of the Admin API, typed from the OpenAPI document. The
+// calls go through `call`, which keeps the answer's problem.
 import { call, nothing, type Reply, sending } from "./call";
+import type { components } from "./schema";
+
+type Schemas = components["schemas"];
 
 /** A key that works. Its secret is in `key` only in the answer that made it. */
-export type AdminKey = {
-  /** The part before the secret, such as `1111222233334444`. */
-  id: string;
-  /** Who or what uses it, such as `SerpDad`. */
-  name: string;
-  /** `content`, `integration` or `staff`. */
-  kind: string;
-  /** A staff token's role, such as `editor`. */
-  role?: string | null;
-  /** An integration key's scopes, such as `posts:write`. */
-  scopes: string[];
-  created_at: string;
-  /** The key itself, shown once. */
-  key?: string | null;
-};
+export type AdminKey = Schemas["AdminKey"];
 
 /** The kinds of key the API makes; staff tokens come from signing in. */
-export type NewKeyKind = "content" | "integration";
+export type NewKeyKind = Schemas["NewKeyKind"];
 
 /** A new key: a content key takes no scopes. */
-export type NewKey = { name: string; kind: NewKeyKind; scopes?: string[] };
+export type NewKey = Schemas["NewKey"];
 
 async function keys(response: Response): Promise<AdminKey[]> {
-  const body: { keys: AdminKey[] } = await response.json();
+  const body: Schemas["AdminKeys"] = await response.json();
   return body.keys;
 }
 
@@ -40,7 +26,8 @@ export function listKeys(): Promise<Reply<AdminKey[]>> {
 
 /** Makes a key; the answer holds the key itself this once. */
 export function createKey(key: NewKey): Promise<Reply<AdminKey[]>> {
-  return call("/keys/", sending("POST", { keys: [key] }), keys);
+  const body: Schemas["NewKeys"] = { keys: [key] };
+  return call("/keys/", sending("POST", body), keys);
 }
 
 /** Switches a key off at once; the API refuses the key making the request. */

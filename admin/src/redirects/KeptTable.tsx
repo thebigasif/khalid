@@ -3,6 +3,9 @@ import { en } from "../strings/en";
 
 type Props = { redirects: StoredRedirect[]; onRemove: (redirect: StoredRedirect) => void };
 
+/** Who made a redirect, by the word the API sends; a word this admin does not know shows as sent. */
+const origins: Record<string, string> = en.redirects.origins;
+
 /** The kept redirects: where each leads, what a visitor gets, who made it, and Remove. */
 export function KeptTable({ redirects, onRemove }: Props) {
   const words = en.redirects.kept;
@@ -27,7 +30,7 @@ export function KeptTable({ redirects, onRemove }: Props) {
                 <code>{redirect.from}</code>
               </td>
               <td data-label={words.to}>
-                {redirect.to === null ? (
+                {redirect.to === null || redirect.to === undefined ? (
                   <span className="muted">{words.nothing}</span>
                 ) : (
                   <code>{redirect.to}</code>
@@ -37,7 +40,7 @@ export function KeptTable({ redirects, onRemove }: Props) {
                 {en.redirects.kind(redirect.status, redirect.match === "regex")}
               </td>
               <td data-label={words.origin}>
-                <span className="pill quiet">{en.redirects.origins[redirect.origin]}</span>
+                <span className="pill quiet">{origins[redirect.origin] ?? redirect.origin}</span>
               </td>
               <td>
                 <button
