@@ -14,12 +14,10 @@ import { Shell } from "../components/Shell";
 import { mediaSearch } from "../media/search";
 import { postSearch } from "../posts/filters";
 import { Account } from "./Account";
-import { Analytics } from "./Analytics";
 import { AuditLog } from "./AuditLog";
 import { AuthorPage } from "./AuthorPage";
 import { Authors } from "./Authors";
 import { BulkSeo } from "./BulkSeo";
-import { Calendar } from "./Calendar";
 import { Comments } from "./Comments";
 import { Dashboard } from "./Dashboard";
 import { Design } from "./Design";
@@ -33,17 +31,13 @@ import { NewPost } from "./NewPost";
 import { Pages } from "./Pages";
 import { Passkeys } from "./Passkeys";
 import { Posts } from "./Posts";
-import { Privacy } from "./Privacy";
 import { Redirects } from "./Redirects";
 import { SchemaTemplates } from "./SchemaTemplates";
-import { SearchConsole } from "./SearchConsole";
-import { SeoSettings } from "./SeoSettings";
 import { Serpdad } from "./Serpdad";
 import { SignIn } from "./SignIn";
 import { Site } from "./Site";
 import { SitePage } from "./SitePage";
 import { Sites } from "./Sites";
-import { Subscribers } from "./Subscribers";
 import { Team } from "./Team";
 import { Trash } from "./Trash";
 import { WebhookActivity } from "./WebhookActivity";
@@ -91,10 +85,12 @@ const posts = createRoute({
   component: Posts,
 });
 
+// The screens with charts, long tables or many settings parts load when
+// opened, so the first download stays inside its budget.
 const calendar = createRoute({
   getParentRoute: () => signedIn,
   path: "/calendar",
-  component: Calendar,
+  component: lazyRouteComponent(() => import("./Calendar"), "Calendar"),
 });
 
 const newPost = createRoute({ getParentRoute: () => signedIn, path: "/new", component: NewPost });
@@ -159,13 +155,13 @@ const passkeys = createRoute({
 const analytics = createRoute({
   getParentRoute: () => signedIn,
   path: "/analytics",
-  component: Analytics,
+  component: lazyRouteComponent(() => import("./Analytics"), "Analytics"),
 });
 
 const searchConsole = createRoute({
   getParentRoute: () => signedIn,
   path: "/search-console",
-  component: SearchConsole,
+  component: lazyRouteComponent(() => import("./SearchConsole"), "SearchConsole"),
 });
 
 const comments = createRoute({
@@ -177,7 +173,7 @@ const comments = createRoute({
 const subscribers = createRoute({
   getParentRoute: () => signedIn,
   path: "/subscribers",
-  component: Subscribers,
+  component: lazyRouteComponent(() => import("./Subscribers"), "Subscribers"),
 });
 
 const account = createRoute({
@@ -255,13 +251,17 @@ const navigation = createRoute({
 const site = createRoute({ getParentRoute: () => signedIn, path: "/settings", component: Site });
 
 // Every [seo] setting of site.toml, saved through the same settings API.
-const seo = createRoute({ getParentRoute: () => signedIn, path: "/seo", component: SeoSettings });
+const seo = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/seo",
+  component: lazyRouteComponent(() => import("./SeoSettings"), "SeoSettings"),
+});
 
 // The [privacy] table and the categories of [code], saved through the same settings API.
 const privacy = createRoute({
   getParentRoute: () => signedIn,
   path: "/privacy",
-  component: Privacy,
+  component: lazyRouteComponent(() => import("./Privacy"), "Privacy"),
 });
 
 // Many posts' SEO titles, descriptions and focus keywords in one table.

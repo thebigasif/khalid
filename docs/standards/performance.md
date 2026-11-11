@@ -492,6 +492,8 @@ Until November 2026 the check counted every file against 350 KB. A lazy screen t
 
 Measured on 2026-11-10 (integration 32, 42 pull requests of new screens, with Forms, Tags and Navigation lazy): first download 208.6 KB, every file 370.7 KB.
 
+Measured on 2026-11-11 (gap audit 4 row 41, with Analytics, Calendar, Privacy, Search Console, SEO settings and Subscribers lazy too): first download 208.8 KB before, 193.1 KB after; every file 373.0 KB before, 378.4 KB after. `admin/src/routes/router.test.ts` lists the lazy screens, so one cannot turn eager by accident.
+
 ## Demo bundle
 
 `khalid-demos.tar.gz`, which serpdad.com/khalid/ is built from, has a budget of **464 MB** (MB of 1,000,000 bytes). `scripts/demos-bundle.sh` fails the Pages build when the archive is over it, and `scripts/demos-bundle.sh --check khalid-demos.tar.gz` checks a downloaded one. A budget is never raised to make the build pass.
