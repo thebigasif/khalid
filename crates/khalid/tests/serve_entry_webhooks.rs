@@ -38,8 +38,9 @@ const PAGE: &str = "---\ntitle: Contact Field Notes\nslug: contact\n---\n\nWrite
 const TERM: &str =
     "---\nterm: Crawl budget\nslug: crawl-budget\n---\n\nHow many pages a crawler reads.\n";
 
-/// A case study no demo post links to.
-const STUDY: &str = "---\ntitle: How a cafe got found\nslug: harbour-cafe\ndate: 2026-10-21\n---\n\nIt listed its menu.\n";
+/// A case study no demo post links to, with the client, outcome and date
+/// the publish check asks of every case study.
+const STUDY: &str = "---\ntitle: How a cafe got found\nslug: harbour-cafe\nclient: Harbour Cafe\noutcome: Map searches found it twice as often.\ndate: 2026-10-21\n---\n\nIt listed its menu.\n";
 
 /// A changelog entry no demo post links to.
 const CHANGELOG: &str = "---\ntitle: What changed in November\ndate: 2026-11-02\nversion: 2026.11\n---\n\n- Added a contact page.\n";
