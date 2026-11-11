@@ -420,6 +420,11 @@ checks! {
     AboutMissing => "about-missing", AiSearch, Warning, "No About or contact page",
         "Readers trust a blog less when they cannot find who runs it, and AI tools have no one to credit when they cite it.",
         "Write a page with the slug about or contact, or set page_type: AboutPage on the page that says who you are, and link to it from the blog.";
+    /// No page a reader can reach is an AI info page (GEO P3), the page
+    /// that tells AI tools who runs the site and how to cite it.
+    AiPageMissing => "ai-page-missing", AiSearch, Notice, "No AI info page",
+        "AI tools that quote the blog look for one page that says who runs it, what it covers and how to cite it.",
+        "Keep Khalid's AI info page on, so [seo.ai_page] has no off = true, and link to it, as the footer does. On another engine, publish a page with the slug ai.";
     /// An HTTPS page comes without a `Strict-Transport-Security` header.
     HstsMissing => "hsts-missing", Https, Notice, "No HSTS support",
         "Without it, a browser may still open the first visit over plain HTTP.",
