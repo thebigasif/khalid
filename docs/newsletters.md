@@ -7,6 +7,8 @@ order: 80
 
 Readers sign up with a plain form, confirm with one click in an email, and leave with one click in any email after that. Sending needs mail settings, see "Sending email" in `docs/deploy.md`.
 
+Each sign-up sends an email from your mail account, so `khalid serve` limits how often one network address can use the form: three sign-ups in ten minutes and ten in a day, the same limits as comments. A reader over the limit sees a page saying when to try again, and no email is sent. This stops one script from mailing thousands of inboxes in your name. Khalid keeps only a salted hash of the address, and forgets it at the end of the day. Behind a proxy on the same machine or network, the address comes from the proxy's `X-Forwarded-For` header.
+
 ## Several newsletters
 
 Every site has one newsletter called `main`. To add another, make a folder for it in `content/newsletters/`, named in lowercase letters, digits and hyphens:
