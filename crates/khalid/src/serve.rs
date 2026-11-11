@@ -75,6 +75,8 @@ pub(crate) struct Keys {
     pub(crate) mail: Option<Secret<String>>,
     /// The secret git mode's push hook checks, which opens the hook.
     pub(crate) git_hook: Option<Secret<String>>,
+    /// The secret the mail hook checks, which opens the hook.
+    pub(crate) mail_hook: Option<Secret<String>>,
     /// The Search Console follow-ups, signed in with the owner's Google
     /// secrets when the site opts in.
     pub(crate) follow_ups: SiteFollowUps,
@@ -100,6 +102,7 @@ impl Keys {
             bucket: env.s3_keys(),
             mail: mail_secret(env, config),
             git_hook: env.git_hook_secret(),
+            mail_hook: env.mail_hook_secret(),
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
             weekly: WeeklyEmail::new(folder, config, env, cli),
             ai: crate::serve_apis::ai_writer::desk(config, env, cli),
@@ -210,7 +213,7 @@ fn serve_with(
         (site, config, listen, every),
         (&search, runtime, &telling),
         &content,
-        (keys.mail, outbound),
+        ((keys.mail, keys.mail_hook), outbound),
     )?;
     let (mailer, panel) = (alerting.mailer.clone(), site_hosts::panel(among));
     let served = runtime.block_on(async {
