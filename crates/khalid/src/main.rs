@@ -252,56 +252,54 @@ fn main() -> ExitCode {
     exit.into()
 }
 
-/// Readies the process for serving the site in `folder` before anything is
-/// read: small memory pages only, and a look at the folder for the watch.
-fn serving(folder: &Path) -> FolderLook {
-    memory::small_pages_only();
-    FolderLook::take(folder)
-}
-
-/// For `serve --init`, makes the site before it is checked when the folder
-/// holds none, and returns the exit when that fails.
-fn first_start(cli: &Cli, environment: &Environment) -> Option<Exit> {
-    let (Some(Command::Serve(ServeArgs { init: true, .. })), Some(folder)) =
-        (&cli.command, cli.site.as_deref())
-    else {
-        return None;
+/// Runs `khalid serve`, which is `command`: every site in a sites folder,
+/// or the one site `--site` names. With `--init`, makes that site first
+/// when the folder holds none.
+fn serve_site(cli: &Cli, env: &Environment, command: &Command, args: &ServeArgs) -> Exit {
+    let root = cli.site.as_deref().unwrap_or(Path::new("."));
+    if site_list::file(root).is_file() {
+        return serve_sites::run(root, cli, args);
+    }
+    let Some(folder) = cli.site.as_deref() else {
+        return report::failure(cli.output, &needs_site(command), Exit::Usage);
     };
-    let made = init::first_start(folder, environment);
-    made.err()
-        .map(|message| report::failure(cli.output, &message, Exit::Failure))
+    if args.init
+        && let Err(message) = init::first_start(folder, env)
+    {
+        return report::failure(cli.output, &message, Exit::Failure);
+    }
+    // Small memory pages only, and the server's watch starts from a look
+    // taken before the content is read, so a post saved while the server
+    // starts still shows.
+    memory::small_pages_only();
+    let look = FolderLook::take(folder);
+    match check(folder, env, Bodies::ByTheCommand) {
+        // The server renders its first pages from the checked content, then
+        // drops it, so it takes the content rather than borrowing it.
+        Ok((config, routes, content, assets)) => {
+            let keys = serve::Keys::read(env, (folder, &config), cli);
+            let start = (content, assets, look);
+            serve_https::serve(cli, folder, (&config, &routes), start, (args, keys))
+        }
+        Err(message) => report::failure(cli.output, &message, Exit::Failure),
+    }
 }
 
 /// Runs the command the person asked for, after checking the site's settings
 /// and reading its content when `--site` names a folder.
 fn run(cli: &Cli) -> Exit {
     let env = Environment::from_process();
-    if let Some(exit) = run_unchecked(cli).or_else(|| first_start(cli, &env)) {
+    if let Some(exit) = run_unchecked(cli, &env) {
         return exit;
     }
-    // The server's watch starts from a look taken before the content is
-    // read, so a post saved while the server starts still shows.
-    let serves = matches!(cli.command, Some(Command::Serve(_)));
-    let look = cli.site.as_deref().filter(|_| serves).map(serving);
     let site = match cli.site.as_deref() {
-        Some(folder) => match check(folder, &env, Bodies::of(cli.command.as_ref())) {
+        Some(folder) => match check(folder, &env, Bodies::Now) {
             Ok((config, routes, content, assets)) => {
                 Some((folder, config, routes, (content, assets)))
             }
             Err(message) => return report::failure(cli.output, &message, Exit::Failure),
         },
         None => None,
-    };
-    // The server renders its first pages from the checked content, then
-    // drops it, so it takes the content rather than borrowing it.
-    let site = match (&cli.command, site) {
-        (Some(Command::Serve(args)), Some((folder, config, routes, (content, assets)))) => {
-            let look = look.unwrap_or_else(|| FolderLook::take(folder));
-            let (checked, start) = ((&config, &routes), (content, assets, look));
-            let keys = serve::Keys::read(&env, (folder, &config), cli);
-            return serve_https::serve(cli, folder, checked, start, (args, keys));
-        }
-        (_, site) => site,
     };
     match (&cli.command, &site) {
         (None, _) => report::text(&Cli::command().render_help().to_string(), Exit::Success),
@@ -351,9 +349,10 @@ fn run(cli: &Cli) -> Exit {
 /// Runs the commands that do not start from a checked site: `init`, which
 /// makes the site, `restore`, which makes one from a backup, `agents`,
 /// `completions` and `update`, which need none, `doctor`, which checks the
-/// site itself to list every problem instead of stopping at the first, and the commands
+/// site itself to list every problem instead of stopping at the first,
+/// `serve`, which checks its site beside its start, and the commands
 /// [`on_folder`] runs. Returns `None` for every other command.
-fn run_unchecked(cli: &Cli) -> Option<Exit> {
+fn run_unchecked(cli: &Cli, env: &Environment) -> Option<Exit> {
     match &cli.command {
         Some(Command::Init(args)) => {
             let folder = args
@@ -374,11 +373,7 @@ fn run_unchecked(cli: &Cli) -> Option<Exit> {
             let root = cli.site.as_deref().unwrap_or(Path::new("."));
             Some(sites::run(root, command, cli.output))
         }
-        Some(Command::Serve(args)) => {
-            let root = cli.site.as_deref().unwrap_or(Path::new("."));
-            let many = site_list::file(root).is_file();
-            many.then(|| serve_sites::run(root, cli, args))
-        }
+        Some(command @ Command::Serve(args)) => Some(serve_site(cli, env, command, args)),
         Some(Command::Update { target }) => Some(update::run(*target, cli)),
         Some(command @ Command::Doctor { network, test_mail }) => Some(match cli.site.as_deref() {
             Some(folder) => doctor::run(folder, (*network, *test_mail), cli),
@@ -411,16 +406,6 @@ enum Bodies {
     /// By the command itself: `khalid serve` checks them beside its start
     /// and still refuses to listen when one is broken.
     ByTheCommand,
-}
-
-impl Bodies {
-    /// When `command` has the bodies checked.
-    fn of(command: Option<&Command>) -> Self {
-        match command {
-            Some(Command::Serve(_)) => Self::ByTheCommand,
-            _ => Self::Now,
-        }
-    }
 }
 
 /// Checks the settings, the routes and the content of the `site` folder, and
