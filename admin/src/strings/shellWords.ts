@@ -15,6 +15,8 @@ export const shellWords = {
   accountMenu: "Your account menu",
   byEmail: "You signed in with your email.",
   byToken: "You signed in with a staff token.",
+  // Here, not in snippetWords, so the first download carries only the menu's word.
+  snippets: "Snippets",
   search: {
     open: "Search",
     label: "Search posts and screens",

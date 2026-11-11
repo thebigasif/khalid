@@ -3,7 +3,7 @@
 // gains them only when the G24 stack lands. Then these types become
 // `components["schemas"]` and the calls go through `createApi`.
 import { useQuery } from "@tanstack/react-query";
-import { call, type Reply } from "./call";
+import { call, nothing, type Reply, sending } from "./call";
 
 /** A snippet in one language, as the Admin API sends it. */
 export type Snippet = {
@@ -40,6 +40,22 @@ export function createSnippet(snippet: NewSnippet): Promise<Reply<Snippet[]>> {
     body: JSON.stringify({ snippets: [snippet] }),
   };
   return call("/snippets/", init, snippets);
+}
+
+/** A change to a snippet's name or blocks; only the fields sent change. */
+export type SnippetEdit = { title?: string; markdown?: string };
+
+/** Saves `edit` on the copy of `snippet` it was made on; a newer copy answers 409. */
+export function editSnippet(snippet: Snippet, edit: SnippetEdit): Promise<Reply<Snippet[]>> {
+  const body = { snippets: [{ ...edit, updated_at: snippet.updated_at }] };
+  return call(`/snippets/${encodeURIComponent(snippet.id)}/`, sending("PUT", body), snippets);
+}
+
+/** Deletes the copy of `snippet` it was read as; a newer copy answers 409. */
+export function deleteSnippet(snippet: Snippet): Promise<Reply<null>> {
+  const seen = new URLSearchParams({ updated_at: snippet.updated_at });
+  const path = `/snippets/${encodeURIComponent(snippet.id)}/?${seen}`;
+  return call(path, { method: "DELETE" }, nothing);
 }
 
 /** The site's snippets, once loaded. */
