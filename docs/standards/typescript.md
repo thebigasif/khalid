@@ -14,7 +14,7 @@ The admin is the one place JavaScript is allowed, because the editor needs it. E
 | Routing | TanStack Router |
 | Lint and format | Biome, `recommended` plus `a11y` rules as errors |
 | Tests | Vitest and Testing Library for components, Playwright for journeys, axe for accessibility |
-| Public-site enhancements | Plain TypeScript modules under `web/enhance/`, each under 5 KB compressed, each a progressive enhancement that does nothing when absent |
+| Public-site enhancements | Plain JavaScript files in `crates/khalid-render/assets/` (`reader.js`, `consent.js`), each under 5 KB gzipped as served, each a progressive enhancement that does nothing when absent. `crates/khalid-render/tests/script_size.rs` fails a change that crosses the limit |
 
 ## Rules
 
