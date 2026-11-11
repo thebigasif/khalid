@@ -2652,16 +2652,21 @@ export type Term = {
 
 /** The trash as the Admin API wraps it. */
 export type TrashList = {
-  /** The deleted posts, the most recently deleted first. */
+  /** The deleted posts and pages, the most recently deleted first. */
   trash: TrashedPost[];
 };
 
-/** A deleted post, as the Admin API shows it. */
+/** What a copy in the trash was before it was deleted. */
+export type TrashedKind = "post" | "page";
+
+/** A deleted post or page, as the Admin API shows it. */
 export type TrashedPost = {
   /** The post's identity when it was deleted. */
   id: string;
   /** Names this copy in the trash, for restoring or deleting it. */
   key: string;
+  /** Whether it was a post or a page. */
+  kind: TrashedKind;
   /** Its status when it was deleted. */
   status: PostStatus;
   /** Its title. */
@@ -4230,7 +4235,7 @@ export interface Operations {
     };
     output: TemplateList;
   };
-  /** Lists the deleted posts, the most recently deleted first. Needs `posts:write`. */
+  /** Lists the deleted posts and pages, the most recently deleted first. Needs `posts:write`. */
   list_trash: {
     input: {
       headers?: {
@@ -4240,11 +4245,11 @@ export interface Operations {
     };
     output: TrashList;
   };
-  /** Deletes a post in the trash for good. Needs `posts:publish`. */
+  /** Deletes a post or page in the trash for good. Needs `posts:publish`. */
   purge_trashed: {
     input: {
       path: {
-        /** The deleted post's key in the trash */
+        /** The deleted post's or page's key in the trash */
         key: string;
       };
       headers?: {
@@ -4254,11 +4259,11 @@ export interface Operations {
     };
     output: null;
   };
-  /** Puts a deleted post back where it was, in the status it had, and answers it as it is now. Needs `posts:write`, and `posts:publish` for a post that was live or scheduled. */
+  /** Puts a deleted post or page back where it was, in the status it had, and answers a post as it is now. Needs `posts:write`, and `posts:publish` for a page or a post that was live or scheduled. */
   restore_trashed: {
     input: {
       path: {
-        /** The deleted post's key in the trash */
+        /** The deleted post's or page's key in the trash */
         key: string;
       };
       headers?: {

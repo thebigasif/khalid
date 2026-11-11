@@ -1,22 +1,25 @@
-//! The trash of a running site (KH-EDT-6): a deleted post's file, or its
-//! folder, moves to `trash/<key>/` under the path it had, such as
-//! `trash/20261031T093000Z-en.hello/content/en/posts/hello.md`, so
-//! restoring moves it back. `trash/` sits beside `content/`, which is all
-//! a build reads, so nothing in it is served.
+//! The trash of a running site (KH-EDT-6): a deleted post's or page's
+//! file, or its folder, moves to `trash/<key>/` under the path it had,
+//! such as `trash/20261031T093000Z-en.hello/content/en/posts/hello.md`,
+//! so restoring moves it back. `trash/` sits beside `content/`, which is
+//! all a build reads, so nothing in it is served.
 
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::{Component, Path, PathBuf};
 use std::sync::PoisonError;
 
 use chrono::{NaiveDateTime, TimeDelta};
 use khalid_api::content_store::BoxFuture;
 use khalid_api::post_store::PostStoreError;
-use khalid_api::post_trash::{self, PostTrash, TrashError, Trashed};
-use khalid_api::resources::{AdminPost, PostStatus};
-use khalid_content::parse_post;
+use khalid_api::post_trash::{self, PostTrash, Restored, TrashError, Trashed, TrashedKind};
+use khalid_api::resources::{AdminPage, PostStatus};
+use khalid_content::{PageFront, parse_post};
 use khalid_core::SitePath;
 
 use super::{Site, SitePosts, blocking, failure};
+use crate::entry_files::front;
+use crate::post_text::PostText;
+use crate::site_entries::SiteEntries;
 use crate::site_pages::reload::LiveConfig;
 
 /// The trash folder at the top of a site.
@@ -90,9 +93,14 @@ impl Site {
             file.push("index.md");
         }
         let text = fs::read_to_string(&file).ok()?;
-        let post = parse_post(&rel, &text).ok()?;
-        let title = post.front.title.unwrap_or_default();
-        Some(Trashed::listed(key, id, &title, status, at.and_utc()))
+        let kind = kind_of(&rel);
+        let title = match kind {
+            TrashedKind::Page => front::<PageFront>(&PostText::parse(&text)?).ok()?.title,
+            _ => parse_post(&rel, &text).ok()?.front.title,
+        };
+        let title = title.unwrap_or_default();
+        let listed = Trashed::listed(key, id, &title, status, at.and_utc());
+        Some(listed.of_kind(kind))
     }
 
     fn trashed_now(&self) -> Result<Vec<Trashed>, PostStoreError> {
@@ -110,13 +118,22 @@ impl Site {
         Ok(keys.iter().filter_map(|key| self.listed(key)).collect())
     }
 
-    fn restore_now(&self, key: &str) -> Result<AdminPost, TrashError> {
+    /// Whether a post, or a page when `kind` says so, has identity `id`.
+    fn taken(&self, kind: TrashedKind, id: &str) -> Result<bool, PostStoreError> {
+        if kind != TrashedKind::Page {
+            return Ok(self.find(id)?.is_some());
+        }
+        let pages = SiteEntries::<AdminPage>::new(&self.folder, &self.config);
+        pages.has(id).map_err(PostStoreError::new)
+    }
+
+    fn restore_now(&self, key: &str) -> Result<Restored, TrashError> {
         let _writing = self.seen.lock().unwrap_or_else(PoisonError::into_inner);
         let trashed = self.listed(key).ok_or(TrashError::NotFound)?;
         let (rel, _) = self.trashed_from(key)?;
         let mut to = self.folder.clone();
         to.push(&rel);
-        if to.exists() || self.find(&trashed.id)?.is_some() {
+        if to.exists() || self.taken(trashed.kind, &trashed.id)? {
             return Err(TrashError::Taken { id: trashed.id });
         }
         if let Some(parent) = to.parent() {
@@ -126,8 +143,12 @@ impl Site {
         from.push(&rel);
         fs::rename(&from, &to).map_err(PostStoreError::new)?;
         fs::remove_dir_all(self.trashed_at(key)).map_err(PostStoreError::new)?;
+        if trashed.kind == TrashedKind::Page {
+            return Ok(Restored::Page);
+        }
         let restored = self.get_now(&trashed.id)?;
-        restored.ok_or_else(|| failure("a restored post cannot be read back").into())
+        let restored = restored.ok_or_else(|| failure("a restored post cannot be read back"))?;
+        Ok(Restored::Post(Box::new(restored)))
     }
 
     fn purge_now(&self, key: &str) -> Result<(), TrashError> {
@@ -157,10 +178,34 @@ impl Site {
     }
 }
 
+/// Whether the copy at `rel` in the trash was a page: its path is
+/// `content/<language>/pages/...`.
+fn kind_of(rel: &Path) -> TrashedKind {
+    let mut parts = rel.components().map(Component::as_os_str);
+    let content = parts.next().is_some_and(|part| part == "content");
+    let pages = parts.nth(1).is_some_and(|part| part == "pages");
+    if content && pages {
+        TrashedKind::Page
+    } else {
+        TrashedKind::Post
+    }
+}
+
 impl SitePosts {
     /// The site folder these posts are in.
     pub(crate) fn folder(&self) -> &Path {
         &self.0.folder
+    }
+
+    /// Moves `moved`, entry `id`'s file or folder inside the site, to the
+    /// trash these posts keep, keyed by now.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`PostStoreError`] when it lies outside the site or cannot
+    /// be moved.
+    pub(crate) fn keep(&self, moved: &Path, id: &str) -> Result<(), PostStoreError> {
+        self.0.keep(moved, id)
     }
 
     /// Deletes for good each post that has waited in the trash longer
@@ -180,7 +225,7 @@ impl PostTrash for SitePosts {
         Box::pin(blocking(&self.0, Site::trashed_now))
     }
 
-    fn restore<'a>(&'a self, key: &'a str) -> BoxFuture<'a, Result<AdminPost, TrashError>> {
+    fn restore<'a>(&'a self, key: &'a str) -> BoxFuture<'a, Result<Restored, TrashError>> {
         let key = key.to_owned();
         Box::pin(blocking(&self.0, move |site| site.restore_now(&key)))
     }
