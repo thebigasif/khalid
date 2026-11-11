@@ -249,6 +249,16 @@ fn the_environment_carries_the_git_hook_secret_hidden() {
 }
 
 #[test]
+fn the_environment_carries_the_mail_hook_secret_hidden() {
+    let made_for_this_test = "a1b2c3d4e5f60718293a4b5c6d7e8f90";
+    let env = Environment::from_pairs(&[(Environment::MAIL_HOOK_SECRET, made_for_this_test)]);
+    let secret = env.mail_hook_secret().unwrap();
+    assert_eq!(secret.expose(), made_for_this_test);
+    assert!(!format!("{env:?}").contains(made_for_this_test), "{env:?}");
+    assert!(Environment::empty().mail_hook_secret().is_none());
+}
+
+#[test]
 fn refuses_an_address_in_the_environment_that_is_not_a_url() {
     let env = Environment::from_pairs(&[("KHALID_ADDRESS", "blog.example.org")]);
     let error = Config::from_toml(Path::new("site.toml"), DEMO, &env).unwrap_err();
