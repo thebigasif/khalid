@@ -29,7 +29,7 @@ fn article(dates: &str) -> String {
 #[cfg(test)]
 async fn found(head: &str, body: &str, thresholds: Thresholds) -> Vec<(Check, String)> {
     let crawl = crawled(&[(HOME, page(head, body))]).await;
-    audit(&crawl, thresholds)
+    audit(&crawl, &thresholds)
         .iter()
         .filter(|issue| CHECKS.contains(&issue.check()))
         .map(|issue| (issue.check(), issue.detail().to_owned()))
@@ -74,7 +74,7 @@ async fn an_article_past_its_review_window_is_stale() {
     let body = r#"<p><time datetime="2025-10-30">then</time></p>"#;
     let thresholds = Thresholds::default().with_today(today());
     assert_eq!(
-        found(&head, body, thresholds).await,
+        found(&head, body, thresholds.clone()).await,
         [(Check::StalePage, "2025-10-30".to_owned())]
     );
     let longer = thresholds.with_stale_months(13);

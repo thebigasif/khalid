@@ -26,7 +26,7 @@ const CHECKS: [Check; 10] = [
 
 #[cfg(test)]
 fn found(crawl: &Crawl) -> Vec<(Check, String)> {
-    audit(crawl, Thresholds::default())
+    audit(crawl, &Thresholds::default())
         .iter()
         .filter(|issue| CHECKS.contains(&issue.check()))
         .map(|issue| (issue.check(), issue.url().as_str().to_owned()))

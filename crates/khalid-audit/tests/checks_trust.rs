@@ -9,7 +9,7 @@ use support::{HOME, Memory, crawled, html, page, url};
 /// Where the about check put its issue, if anywhere.
 #[cfg(test)]
 fn about_missing(crawl: &Crawl) -> Vec<String> {
-    audit(crawl, Thresholds::default())
+    audit(crawl, &Thresholds::default())
         .iter()
         .filter(|issue| issue.check() == Check::AboutMissing)
         .map(|issue| issue.url().as_str().to_owned())
@@ -83,7 +83,7 @@ async fn another_sites_about_page_or_a_broken_one_does_not_count() {
 /// Where the AI info page check put its issue, if anywhere.
 #[cfg(test)]
 fn ai_page_missing(crawl: &Crawl) -> Vec<String> {
-    audit(crawl, Thresholds::default())
+    audit(crawl, &Thresholds::default())
         .iter()
         .filter(|issue| issue.check() == Check::AiPageMissing)
         .map(|issue| issue.url().as_str().to_owned())

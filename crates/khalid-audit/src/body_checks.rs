@@ -19,7 +19,7 @@ const OPEN_GRAPH: [&str; 4] = ["og:title", "og:type", "og:image", "og:url"];
 pub(crate) fn body_issues(
     crawl: &Crawl,
     (visit, page): (&Visit, &Page),
-    thresholds: Thresholds,
+    thresholds: &Thresholds,
     found: &mut Found<'_>,
 ) {
     text(visit, page, found);
@@ -56,7 +56,7 @@ fn text(visit: &Visit, page: &Page, found: &mut Found<'_>) {
 }
 
 /// The page's links, its images and the files it loads.
-fn links(crawl: &Crawl, page: &Page, thresholds: Thresholds, found: &mut Found<'_>) {
+fn links(crawl: &Crawl, page: &Page, thresholds: &Thresholds, found: &mut Found<'_>) {
     let nofollow = page
         .links()
         .iter()
