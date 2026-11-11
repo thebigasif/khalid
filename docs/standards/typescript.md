@@ -19,6 +19,7 @@ The admin is the one place JavaScript is allowed, because the editor needs it. E
 ## Rules
 
 - No `any`, no `as unknown as`, no non-null assertions. Narrow with type guards.
+- Every client in `admin/src/api/` takes its types and request bodies from `components["schemas"]` in the generated `schema.d.ts`; a test fails a client that does not. Where the document leaves a field open, such as the `[seo]` table, the client narrows only that field with `Omit` and says why. A field the document marks optional is read as possibly missing, even when today's server always sends it.
 - Components under 200 lines, one component per file, named exports. Default exports only for route files.
 - Every interactive element is reachable by keyboard and has a visible focus ring. Every form field has a label. Every icon-only button has `aria-label`.
 - Every user-visible string lives in `admin/src/strings/en.ts`, so a second language is a file, not a refactor.
