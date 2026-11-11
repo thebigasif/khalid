@@ -44,6 +44,18 @@ describe("the addresses that found nothing", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("offers no page when the API leaves the nearest one out", async () => {
+    signedIn();
+    // The document lets `nearest` be left out as well as sent as null.
+    const { nearest: _, ...bare } = miss({ path: "/xmlrpc.php" });
+    logging([bare]);
+    renderAt("/redirects");
+    const table = await screen.findByRole("table", { name: en.redirects.misses.title });
+    const [, row] = within(table).getAllByRole("row");
+    expect(row).toHaveTextContent(en.redirects.misses.noneNear);
+    expect(within(row ?? table).queryByRole("button")).toBeNull();
+  });
+
   it("redirects one to the suggested page in one step", async () => {
     signedIn();
     const sent = logging([miss(), FAR]);

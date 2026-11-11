@@ -1,103 +1,68 @@
-// The settings routes of the Admin API. They are typed by hand, field for
-// field as `AdminSettings` and `SettingsChange` in the G24 stack, because
-// this document gains them only when that stack lands
-// (docs/decisions/2026-10-31-admin-screens.md). The answer wraps one
-// object, `{ "settings": AdminSettings }`, as G24's handlers write it.
+// The settings routes of the Admin API, typed from the OpenAPI document.
+// The answer wraps one object, `{ "settings": AdminSettings }`. The
+// document types `[seo]`, `[privacy]` and `[code]` as open tables, so they
+// keep the admin's own types for them, and the fields a server from before
+// their screen leaves out stay optional.
 import type { CodeEntry, PrivacyPart, PrivacyTable } from "../privacy/parts";
 import type { Part, SeoTable } from "../seo/parts";
 import { call, type Reply, sending } from "./call";
+import type { components } from "./schema";
 import type { TemplateSetting } from "./templates";
 
-/** A home section that names no list. */
-export type PlainSectionKind = "latest" | "featured" | "newsletter";
-/** A home section that shows one list, named by its slug. */
-export type ListSectionKind = "category" | "collection" | "channel" | "series";
+type Schemas = components["schemas"];
 
 /** One section of the home page, as `[reader] home_sections` holds it. */
-export type HomeSection = { kind: PlainSectionKind } | { kind: ListSectionKind; slug: string };
+export type HomeSection = Schemas["HomeSectionSetting"];
+/** A home section that shows one list, named by its slug. */
+export type ListSectionKind = Extract<HomeSection, { slug: string }>["kind"];
+/** A home section that names no list. */
+export type PlainSectionKind = Exclude<HomeSection["kind"], ListSectionKind>;
 
 /** One link in a menu, as `[[nav.primary]]` or `[[nav.footer]]` holds it. */
-export type MenuLink = {
-  label: string;
-  /** A path on the blog, such as `/blog/about/`, or a full `https` address. */
-  href: string;
-  /** The one language whose pages show it; every page when left out. */
-  language?: string;
-};
-
-/** Which menu: the header's main menu or the footer's. */
-export type MenuName = "primary" | "footer";
+export type MenuLink = Schemas["MenuLinkSetting"];
 
 /** The header and footer menus from `[nav]`. */
-export type SiteNav = Record<MenuName, MenuLink[]>;
+export type SiteNav = Schemas["NavSetting"];
+
+/** Which menu: the header's main menu or the footer's. */
+export type MenuName = keyof SiteNav;
 
 /** The site's one call to action, as `[template.cta]` holds it. */
-export type Cta = {
-  /** The words on the button, such as `Start a free trial`. */
-  label: string;
-  /** A path on the blog, such as `/blog/start/`, or a full `https` address. */
-  href: string;
-  /** One line beside the button; the button shows alone when left out. */
-  note?: string;
-};
+export type Cta = Schemas["CtaSetting"];
+
+type Settings = Schemas["AdminSettings"];
+
+/** Fields a server from before their screen sends none of. */
+type Later = "home_sections" | "nav" | "seo" | "cta";
 
 /** The site's core settings, as `site.toml` holds them. */
-export type SiteSettings = {
-  name: string;
-  /** The main site's address, such as `https://www.example.com`. */
-  address: string;
-  /** The path the blog lives under, such as `/blog/`. */
-  mount: string;
-  default_language: string;
-  languages: string[];
-  /** The template the blog uses and the options `site.toml` sets for it. */
-  template: TemplateSetting;
-  /**
-   * The call to action, or `null` when the site sets none. A server from
-   * before the Look screen edited it sends none.
-   */
-  cta?: Cta | null;
-  /**
-   * The `[seo]` table as `site.toml` writes it, one key per part such as
-   * `titles`. A server from before the SEO settings screen sends none.
-   */
-  seo?: SeoTable;
-  /** How the site reaches readers. A server from before the Privacy screen sends none. */
-  mode?: "server" | "static" | "headless";
-  /** The `[privacy]` table as `site.toml` writes it, one key per part such as `gpc`. */
-  privacy?: PrivacyTable;
-  /** The site's own code from `[code]`, one entry each, as written. */
-  code?: CodeEntry[];
-  /** The home page's sections, top first. A server from before them sends none. */
-  home_sections?: HomeSection[];
-  /** The header and footer menus. A server from before the Navigation screen sends none. */
-  nav?: SiteNav;
-  /** When `site.toml` last changed; a change sends it back. */
-  updated_at: string;
-  /** Whether the running server needs a restart to use what `site.toml` says. */
-  restart_needed: boolean;
-};
+export type SiteSettings = Omit<Settings, Later | "template" | "mode" | "privacy" | "code"> &
+  Partial<Pick<Settings, Later>> & {
+    /** The template the blog uses and the options `site.toml` sets for it. */
+    template: TemplateSetting;
+    /** The `[seo]` table, one key per part such as `titles`. */
+    seo?: SeoTable;
+    /** How the site reaches readers. */
+    mode?: "server" | "static" | "headless";
+    /** The `[privacy]` table, one key per part such as `gpc`. */
+    privacy?: PrivacyTable;
+    /** The site's own code from `[code]`, one entry each, as written. */
+    code?: CodeEntry[];
+  };
 
 /** A change: only the fields sent change. */
-export type SiteChange = {
-  updated_at: string;
-  name?: string | null;
-  address?: string | null;
-  mount?: string | null;
-  default_language?: string | null;
-  languages?: string[] | null;
+export type SiteChange = Omit<
+  Schemas["SettingsChange"],
+  "template" | "seo" | "privacy" | "code" | "nav"
+> & {
   /** A new template; it replaces the name and every option. */
   template?: TemplateSetting | null;
-  /** A new call to action in place of the old one; `null` removes it. */
-  cta?: Cta | null;
   /** New parts of `[seo]`, each replacing its part whole; `null` removes one. */
   seo?: Record<string, Part | null>;
   /** New parts of `[privacy]`, each replacing its part whole; `null` removes one. */
   privacy?: Record<string, PrivacyPart | null>;
   /** Every entry of `[code]`, in place of the old ones. */
   code?: CodeEntry[];
-  /** Every home section, top first, in place of the old ones. */
-  home_sections?: HomeSection[];
   /** New menus, each replacing its menu whole; a menu left out stays. */
   nav?: Partial<SiteNav>;
 };
@@ -114,5 +79,6 @@ export function readSite(): Promise<Reply<SiteSettings>> {
 
 /** Saves a change made on the copy that `change.updated_at` names. */
 export function changeSite(change: SiteChange): Promise<Reply<SiteSettings>> {
-  return call("/settings/", sending("PUT", { settings: change }), settings);
+  const body: Schemas["SettingsChanges"] = { settings: change };
+  return call("/settings/", sending("PUT", body), settings);
 }
