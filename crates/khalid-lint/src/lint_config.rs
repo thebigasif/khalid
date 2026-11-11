@@ -2,7 +2,7 @@
 
 use std::collections::BTreeMap;
 
-use khalid_core::Slug;
+use khalid_core::{Slug, UnclearWords};
 use serde::Deserialize;
 use toml::Spanned;
 
@@ -16,6 +16,9 @@ use crate::{Catalogue, LintError, RuleId, Severity, Thresholds};
 /// tunes the numbers behind the rules that measure (see [`Thresholds`]).
 /// The `[reviewers]` table names, in `required-in`, the categories whose
 /// posts must say who checked them, such as health or money posts.
+/// The `[words]` table adds a site's own `hedges` and `vague-openers`,
+/// such as words in its own language, to the built-in [`UnclearWords`]
+/// that the `plain-answer` rule and the audit both flag.
 ///
 /// # Examples
 ///
@@ -31,6 +34,7 @@ pub struct LintConfig {
     severities: BTreeMap<String, Severity>,
     thresholds: Thresholds,
     reviewers_required_in: Vec<Slug>,
+    unclear_words: UnclearWords,
 }
 
 /// The file as written, with the position of each rule name.
@@ -43,6 +47,18 @@ struct RawConfig {
     thresholds: Thresholds,
     #[serde(default)]
     reviewers: RawReviewers,
+    #[serde(default)]
+    words: RawWords,
+}
+
+/// The `[words]` table as written.
+#[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields, rename_all = "kebab-case")]
+struct RawWords {
+    #[serde(default)]
+    hedges: Vec<String>,
+    #[serde(default)]
+    vague_openers: Vec<String>,
 }
 
 /// The `[reviewers]` table as written.
@@ -88,6 +104,8 @@ impl LintConfig {
             severities,
             thresholds: raw.thresholds,
             reviewers_required_in: raw.reviewers.required_in,
+            unclear_words: UnclearWords::default()
+                .with_own(&raw.words.hedges, &raw.words.vague_openers),
         })
     }
 
@@ -107,6 +125,12 @@ impl LintConfig {
     /// when the file sets none, so no post needs one.
     pub fn reviewers_required_in(&self) -> &[Slug] {
         &self.reviewers_required_in
+    }
+
+    /// The hedge words and vague openers to flag: the built-in ones, then
+    /// the site's own from the `[words]` table.
+    pub fn unclear_words(&self) -> &UnclearWords {
+        &self.unclear_words
     }
 }
 
