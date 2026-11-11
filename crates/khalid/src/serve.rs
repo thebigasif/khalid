@@ -31,6 +31,7 @@ use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::outside_writes::Reloads;
 use crate::post_files::Assets;
+use crate::prune_rows::Pruning;
 use crate::scheduler::WeeklyEmail;
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
@@ -232,6 +233,7 @@ fn serve_with(
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
         let timed = (alerting, keys.weekly, forms);
         let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
+        let pruning = Pruning::start((database, id), every.clock);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
         let (desk, pages) =
@@ -259,7 +261,7 @@ fn serve_with(
         let stopping = stop_or_fail(failure, Arc::clone(&why));
         let stopped = front.answer(app, stopping).await;
         watching.stop().await;
-        tokio::join!(scheduling.stop(), alert_watching.stop());
+        tokio::join!(scheduling.stop(), alert_watching.stop(), pruning.stop());
         tokio::join!(announcing.stop(), counter.stop());
         ended(&why, stopped)
     });

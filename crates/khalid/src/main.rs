@@ -132,6 +132,7 @@ mod post_photos;
 mod post_text;
 mod preview;
 mod privacy_page;
+mod prune_rows;
 mod publish;
 mod pull;
 mod pull_message;
