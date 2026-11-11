@@ -167,6 +167,33 @@ fn with_mail_set_the_confirmation_leaves_and_its_link_confirms() {
 }
 
 #[test]
+fn one_address_signing_up_many_inboxes_is_stopped_after_three() {
+    let stub = StubSmtp::start().unwrap();
+    let site = demo_copy();
+    let mut settings = site.path().to_path_buf();
+    settings.push("site.toml");
+    let mut text = fs::read_to_string(&settings).unwrap();
+    text.push_str(&mail_settings(&stub));
+    fs::write(&settings, text).unwrap();
+    let server = start(site.path());
+    for name in ["ada", "grace", "linus"] {
+        let body = format!("email={name}%40example.com&homepage=");
+        let (status, page) = post_form(&server, "/blog/subscribe", &body);
+        assert_eq!(status, 200, "{name}: {page}");
+    }
+    let body = "email=margaret%40example.com&homepage=";
+    let (status, page) = post_form(&server, "/subscribe", body);
+    assert_eq!(status, 429, "{page}");
+    assert!(page.contains("<h1>Too many sign-ups</h1>"), "{page}");
+    assert!(page.contains("try again in 10 minutes"), "{page}");
+    assert_eq!(
+        stub.received().len(),
+        3,
+        "the refused sign-up sent an email"
+    );
+}
+
+#[test]
 fn a_form_joins_a_newsletter_with_a_folder_and_no_other() {
     let stub = StubSmtp::start().unwrap();
     let site = demo_copy();

@@ -41,7 +41,10 @@ async fn routes(mailer: &MemoryMailer) -> (tempfile::TempDir, Router) {
     let newsletter = Newsletter::new(store, mail, Arc::new(SystemClock), site())
         .unwrap()
         .with_lists(weekly);
-    (dir, router(Pages::new(site()).unwrap(), Some(newsletter)))
+    (
+        dir,
+        router(Pages::new(site()).unwrap(), Some(newsletter), None),
+    )
 }
 
 /// The status and page `router` answers.
@@ -185,7 +188,7 @@ async fn links_that_do_not_work_say_so() {
 
 #[tokio::test]
 async fn a_site_that_cannot_send_email_takes_no_sign_ups() {
-    let app = router(Pages::new(site()).unwrap(), None);
+    let app = router(Pages::new(site()).unwrap(), None, None);
     let (status, html) = ask(
         &app,
         Method::POST,

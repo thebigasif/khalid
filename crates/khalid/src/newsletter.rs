@@ -4,15 +4,19 @@
 //! nothing. With `[mail]`, subscribers are kept in the site's database and
 //! the confirmation leaves the way `[mail]` names.
 
+use std::net::IpAddr;
 use std::path::Path;
 use std::sync::Arc;
 
 use axum::Router;
+use axum::http::HeaderMap;
+use khalid_comments::{RateLimitError, RateLimits, reader_address};
 use khalid_core::{Config, MailTransport, Secret, SystemClock, UserMessage};
 use khalid_db::{Database, SiteId, SubscriberTable};
 use khalid_mail::{ApiMailer, Sender, Service, SmtpMailer};
 use khalid_newsletter::{
-    Mailer, Newsletter, NewsletterSite, Pages, PostalAddress, ReaderPass, SiteLinks, Welcomes,
+    Mailer, Newsletter, NewsletterSite, Pages, PostalAddress, ReaderPass, SignUpCheck,
+    SignUpLimits, SiteLinks, Welcomes,
 };
 use khalid_outbound::{Outbound, Resolver};
 use tokio::runtime::Runtime;
@@ -54,10 +58,32 @@ pub(crate) fn router(
         }
         None => None,
     };
+    let limits = SignUpRateLimits(RateLimits::new(SystemClock));
     Ok((
-        khalid_newsletter::router(pages, newsletter.clone()),
+        khalid_newsletter::router(pages, newsletter.clone(), Some(Box::new(limits))),
         newsletter,
     ))
+}
+
+/// The comment form's limits per network address, counting sign-ups
+/// instead (RULES.md BL-SEC-5): three in ten minutes and ten in a day, with
+/// the address kept only as a salted hash. Each sign-up sends an email
+/// from the site's account, so this stops one script mailing thousands of
+/// inboxes. The ten-minute wait per email address stays as well.
+#[derive(Debug)]
+struct SignUpRateLimits(RateLimits);
+
+impl SignUpLimits for SignUpRateLimits {
+    fn check(&self, peer: IpAddr, headers: &HeaderMap) -> SignUpCheck {
+        match self.0.check(reader_address(peer, headers)) {
+            Ok(()) => SignUpCheck::Allowed,
+            Err(RateLimitError::Limited { retry_after }) => SignUpCheck::Wait(retry_after),
+            Err(error) => {
+                tracing::warn!(%error, "the sign-up limits could not count a sign-up");
+                SignUpCheck::Unknown
+            }
+        }
+    }
 }
 
 /// The reader pass of the site with `config`, signed with its `key`.

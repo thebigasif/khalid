@@ -3,19 +3,20 @@
 //! `unsubscribe`, all under the mount path. A counted link in a newsletter
 //! email opens `subscribe/click` (G39).
 
+use std::net::SocketAddr;
 use std::sync::Arc;
 
-use axum::Router;
 use axum::body::Body;
 use axum::extract::rejection::FormRejection;
-use axum::extract::{DefaultBodyLimit, Form, Query, State};
-use axum::http::{HeaderName, HeaderValue, Response, StatusCode, header};
+use axum::extract::{ConnectInfo, DefaultBodyLimit, Form, Query, State};
+use axum::http::{HeaderMap, HeaderName, HeaderValue, Response, StatusCode, header};
 use axum::routing::{get, post};
+use axum::{Extension, Router};
 use serde::Deserialize;
 
 use crate::{
-    BackPath, Confirmed, EmailAddress, Newsletter, Page, Pages, ReaderPass, SendId,
-    SubscriberToken, Unsubscribed,
+    BackPath, Confirmed, EmailAddress, Newsletter, Page, Pages, ReaderPass, SendId, SignUpCheck,
+    SignUpLimits, SubscriberToken, Unsubscribed,
 };
 
 /// The largest form body read. An address and a token fit many times over.
@@ -50,6 +51,7 @@ const HEADERS: [(HeaderName, &str); 8] = [
 struct Shared {
     pages: Pages,
     newsletter: Option<Newsletter>,
+    limits: Option<Box<dyn SignUpLimits>>,
 }
 
 /// The fields of the sign-up form. `homepage` is the trap a person never
@@ -90,9 +92,21 @@ struct ClickLink {
 /// The routes of the newsletter, with `pages` in the site's language.
 /// The sign-up form of the `::newsletter` block posts to `/subscribe`, so
 /// on a site under a mount path that address answers too.
-pub fn router(pages: Pages, newsletter: Option<Newsletter>) -> Router {
+///
+/// With `limits`, each sign-up is counted against the reader's network
+/// address first, so serve the router with `ConnectInfo<SocketAddr>`; a
+/// sign-up whose address is not known then sends nothing.
+pub fn router(
+    pages: Pages,
+    newsletter: Option<Newsletter>,
+    limits: Option<Box<dyn SignUpLimits>>,
+) -> Router {
     let mount = pages.mount().to_owned();
-    let shared = Arc::new(Shared { pages, newsletter });
+    let shared = Arc::new(Shared {
+        pages,
+        newsletter,
+        limits,
+    });
     let mut router = Router::new()
         .route(&format!("{mount}subscribe"), post(sign_up))
         .route(
@@ -112,6 +126,8 @@ pub fn router(pages: Pages, newsletter: Option<Newsletter>) -> Router {
 
 async fn sign_up(
     State(shared): State<Arc<Shared>>,
+    peer: Option<Extension<ConnectInfo<SocketAddr>>>,
+    headers: HeaderMap,
     form: Result<Form<SignUpForm>, FormRejection>,
 ) -> Response<Body> {
     let Some(newsletter) = &shared.newsletter else {
@@ -130,6 +146,10 @@ async fn sign_up(
     let Some(list) = newsletter.lists().find(form.list.as_deref()) else {
         return page(&shared, StatusCode::NOT_FOUND, Page::NoSuchList);
     };
+    let peer = peer.map(|Extension(ConnectInfo(peer))| peer);
+    if let Some(refused) = shared.over_limit(peer, &headers) {
+        return refused;
+    }
     let signed = match shared.back(form.back.as_deref()) {
         Some(back) => newsletter.sign_up_to_read(email, list, &back).await,
         None => newsletter.sign_up(email, list).await,
@@ -266,6 +286,31 @@ impl Shared {
     /// `text` as a page on this blog to come back to, if it is one.
     fn back(&self, text: Option<&str>) -> Option<BackPath> {
         text.and_then(|text| BackPath::parse(self.pages.mount(), text))
+    }
+
+    /// The page that refuses a sign-up from `peer` over the limits: 429
+    /// with when to try again, or 503 when the limits cannot be checked.
+    /// `None` when the sign-up may go ahead.
+    fn over_limit(&self, peer: Option<SocketAddr>, headers: &HeaderMap) -> Option<Response<Body>> {
+        let limits = self.limits.as_ref()?;
+        let check = peer.map_or(SignUpCheck::Unknown, |peer| {
+            limits.check(peer.ip(), headers)
+        });
+        match check {
+            SignUpCheck::Allowed => None,
+            SignUpCheck::Wait(wait) => {
+                let minutes = wait.as_secs().div_ceil(60).max(1);
+                let refused = Page::TooMany { minutes };
+                let mut response = page(self, StatusCode::TOO_MANY_REQUESTS, refused);
+                let retry = HeaderValue::from(minutes.saturating_mul(60));
+                response.headers_mut().insert(header::RETRY_AFTER, retry);
+                Some(response)
+            }
+            SignUpCheck::Unknown => {
+                tracing::warn!("a sign-up could not be checked against the limits");
+                Some(page(self, StatusCode::SERVICE_UNAVAILABLE, Page::Failed))
+            }
+        }
     }
 }
 
