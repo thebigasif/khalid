@@ -42,9 +42,11 @@ cargo nextest run -p khalid-sdk
 
 `crates/khalid/tests/sdk_typescript.rs` starts `khalid serve` on the demo site and runs `test/demo-posts.test.js` with Node against it, so the SDK is proven to list the demo posts. Node 18 or later must be on the `PATH` for that test.
 
-Biome and the TypeScript compiler in strict mode check the hand-written files and the generated types:
+Biome and the TypeScript compiler in strict mode check the hand-written files and the generated types. `package-lock.json` pins both, and CI runs the same two commands on every pull request:
 
 ```sh
-npm install
+npm ci
 npm run check
 ```
+
+`crates/khalid-sdk/tests/sdk_lockfile.rs` fails when `package-lock.json` no longer matches `package.json`, so a version bump in one needs the same bump in the other.
