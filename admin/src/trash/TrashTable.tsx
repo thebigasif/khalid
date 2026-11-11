@@ -9,7 +9,7 @@ type Props = {
   onPurge: (post: TrashedPost) => void;
 };
 
-/** The deleted posts: title, what each was, when it went, and what to do with it. */
+/** The deleted posts and pages: title, what each was, when it went, and what to do with it. */
 export function TrashTable({ trash, onRestore, onPurge }: Props) {
   const words = en.trash;
   // Deleting for good cannot be undone, so it asks once more, in the post's own row.
@@ -31,7 +31,7 @@ export function TrashTable({ trash, onRestore, onPurge }: Props) {
               <td>{post.title}</td>
               <td data-label={words.was}>
                 <span className={post.status === "published" ? "pill ok" : "pill quiet"}>
-                  {words.status[post.status]}
+                  {post.kind === "page" ? words.page : words.status[post.status]}
                 </span>
               </td>
               <td data-label={words.deleted}>

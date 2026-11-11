@@ -15,6 +15,7 @@ use khalid_core::{Config, Locale, Slug};
 
 use crate::atomic;
 use crate::post_text::PostText;
+use crate::site_posts::SitePosts;
 
 /// How one kind of entry lives in a file.
 pub(crate) trait EntryFile: Entry {
@@ -47,6 +48,9 @@ pub(crate) trait EntryFile: Entry {
 #[derive(Debug, Clone)]
 pub(crate) struct SiteEntries<T> {
     site: Arc<Site>,
+    /// Where a deleted entry waits, or `None` when a delete removes it for
+    /// good.
+    trash: Option<SitePosts>,
     kind: PhantomData<fn() -> T>,
 }
 
@@ -77,8 +81,27 @@ impl<T: EntryFile> SiteEntries<T> {
         };
         Self {
             site: Arc::new(site),
+            trash: None,
             kind: PhantomData,
         }
+    }
+
+    /// The same entries, each deleted one moved to the trash `posts`
+    /// keep, so it can be put back (KH-EDT-6).
+    pub(crate) fn with_trash(self, posts: SitePosts) -> Self {
+        Self {
+            trash: Some(posts),
+            ..self
+        }
+    }
+
+    /// Whether an entry has the identity `id`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`EntryStoreError`] when the entries cannot be read.
+    pub(crate) fn has(&self, id: &str) -> Result<bool, EntryStoreError> {
+        Ok(self.find(id)?.is_some())
     }
 
     /// `content/<language>/<folder>/`.
@@ -202,12 +225,23 @@ impl<T: EntryFile> SiteEntries<T> {
         self.written(id)
     }
 
+    /// Moves entry `id` to the trash, or removes it when there is none,
+    /// when it has not changed since `seen`. An entry kept as a folder,
+    /// `index.md` with its files beside it, goes with the whole folder.
     fn delete_now(&self, id: &str, seen: DateTime<Utc>) -> Result<(), EntryError> {
         let _writing = self.lock();
         let found = self.current(id, seen)?;
-        let removed = match found.path.parent() {
-            Some(folder) if found.path.ends_with("index.md") => fs::remove_dir_all(folder),
-            _ => fs::remove_file(&found.path),
+        let folder = found
+            .path
+            .parent()
+            .filter(|_| found.path.ends_with("index.md"));
+        if let Some(trash) = &self.trash {
+            let moved = folder.unwrap_or(&found.path);
+            return Ok(trash.keep(moved, id).map_err(EntryStoreError::new)?);
+        }
+        let removed = match folder {
+            Some(folder) => fs::remove_dir_all(folder),
+            None => fs::remove_file(&found.path),
         };
         removed.map_err(EntryStoreError::new)?;
         Ok(())

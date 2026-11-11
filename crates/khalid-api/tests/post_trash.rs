@@ -5,7 +5,7 @@
 
 use chrono::{TimeZone, Utc};
 use khalid_api::post_store::{MemoryPostStore, PostStore};
-use khalid_api::post_trash::{self, PostTrash, TrashError};
+use khalid_api::post_trash::{self, PostTrash, Restored, TrashError};
 use khalid_api::resources::{AdminPost, PostDraft, PostStatus};
 use khalid_core::{FixedClock, Slug};
 
@@ -34,7 +34,9 @@ async fn a_deleted_post_waits_in_the_trash_until_restored_or_purged() {
     posts.create(draft, "test", None).await.unwrap();
     let taken = posts.restore(&keys[1]).await;
     assert!(matches!(taken, Err(TrashError::Taken { id }) if id == "hello"));
-    let back = posts.restore(&keys[0]).await.unwrap();
+    let Restored::Post(back) = posts.restore(&keys[0]).await.unwrap() else {
+        panic!("a post came back as something else");
+    };
     assert_eq!((back.id(), back.status()), ("links", PostStatus::Draft));
     assert!(posts.get("links").await.unwrap().is_some());
 

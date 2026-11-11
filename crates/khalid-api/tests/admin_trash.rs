@@ -85,9 +85,11 @@ async fn a_deleted_post_is_listed_newest_first_with_the_status_it_had() {
     assert_eq!(status, StatusCode::OK, "{json}");
     let listed = json!({"trash": [
         {"key": "20261020T083000Z-en.live", "id": "en.live",
-            "title": "A post", "status": "published", "trashed_at": LAST_CHANGE},
+            "title": "A post", "status": "published", "trashed_at": LAST_CHANGE,
+            "kind": "post"},
         {"key": "20261020T083000Z-en.draft", "id": "en.draft",
-            "title": "A post", "status": "draft", "trashed_at": LAST_CHANGE},
+            "title": "A post", "status": "draft", "trashed_at": LAST_CHANGE,
+            "kind": "post"},
     ]});
     assert_eq!(json, listed);
 }
