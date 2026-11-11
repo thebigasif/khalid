@@ -1,9 +1,10 @@
 //! The limits the audit's checks measure against.
 
 use chrono::NaiveDate;
+use khalid_core::UnclearWords;
 
 /// The limits a site may change for the audit.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Thresholds {
     pub(crate) most_links: usize,
     pub(crate) fewest_answer_words: usize,
@@ -11,6 +12,7 @@ pub struct Thresholds {
     pub(crate) most_paragraph_words: usize,
     pub(crate) stale_months: u32,
     pub(crate) today: Option<NaiveDate>,
+    pub(crate) unclear_words: UnclearWords,
 }
 
 impl Default for Thresholds {
@@ -18,7 +20,8 @@ impl Default for Thresholds {
     /// words under a question heading (decision D3). At most 225 words in
     /// a paragraph (task W2). An article is stale 12 months after its last
     /// date (decision D4). These three match the linter's. With no day to
-    /// measure from, nothing is stale.
+    /// measure from, nothing is stale. The hedge words and vague openers
+    /// are the built-in English ones.
     fn default() -> Self {
         Self {
             most_links: 3_000,
@@ -27,6 +30,7 @@ impl Default for Thresholds {
             most_paragraph_words: 225,
             stale_months: 12,
             today: None,
+            unclear_words: UnclearWords::default(),
         }
     }
 }
@@ -68,6 +72,16 @@ impl Thresholds {
     pub fn with_stale_months(self, months: u32) -> Self {
         Self {
             stale_months: months,
+            ..self
+        }
+    }
+
+    /// The same limits with `words` as the hedge words and vague openers
+    /// an answer should not use, as `lint.toml` may add to them.
+    #[must_use]
+    pub fn with_unclear_words(self, words: UnclearWords) -> Self {
+        Self {
+            unclear_words: words,
             ..self
         }
     }

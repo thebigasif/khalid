@@ -1,5 +1,12 @@
 //! `khalid watch` (C6): how fast and how reliably the blog answered at its
-//! public address, from the looks `khalid serve` kept.
+//! public address, from the looks `khalid serve` kept. The running server
+//! answers the same report under `/api/admin/v1/watch/` (KH-API-5).
+
+#[expect(
+    dead_code,
+    reason = "these tests send one Admin API request, so most helpers stay unused"
+)]
+mod common;
 
 use std::fs;
 use std::path::PathBuf;
@@ -100,4 +107,27 @@ async fn with_no_looks_it_says_when_the_watch_looks() {
     );
     let json: Value = serde_json::from_str(&watch(&site, &["--json"])).unwrap();
     assert_eq!(json["pages"], serde_json::json!([]));
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn the_admin_api_answers_what_khalid_watch_prints() {
+    let site = site_with(&[(10, Answer::Status(200), 100), (5, Answer::Status(503), 40)]).await;
+    let printed: Value = serde_json::from_str(&watch(&site, &["--json"])).unwrap();
+    let scope = ["--name", "Watch", "--scope", "settings:write"];
+    let key = common::new_key(site.path(), &scope);
+    let server = common::start(site.path(), &key);
+    let (status, answered) = server.admin("GET", "/api/admin/v1/watch/", None);
+    assert_eq!(status, 200, "{answered}");
+    let page = &answered["pages"][0];
+    assert_eq!(page["page"], HOME);
+    assert_eq!(page["last_day"]["answered"], 1);
+    assert_eq!(page["last_look"]["status"], 503);
+    // The gap to now grows while the test runs, so only the rest must match.
+    let without_gaps = |mut json: Value| {
+        for span in ["last_day", "last_30_days"] {
+            json["pages"][0][span]["longest_gap_minutes"] = Value::Null;
+        }
+        json
+    };
+    assert_eq!(without_gaps(answered), without_gaps(printed));
 }

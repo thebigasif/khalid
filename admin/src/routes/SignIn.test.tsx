@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { adminBlog, noContent } from "../../test/blog";
@@ -109,6 +109,43 @@ describe("signing in", () => {
     await openToken();
     expect(open).toHaveAttribute("aria-expanded", "true");
     expect(await axeViolations()).toEqual([]);
+  });
+
+  it("emails a sign-in link, and says the same whether or not the email has an account", async () => {
+    const sent = adminBlog({ "POST /session/link/": () => new Response(null, { status: 202 }) });
+    renderAt("/sign-in");
+    const open = await screen.findByRole("button", { name: en.signIn.byLink.open });
+    expect(open).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(open);
+    // The password form has an Email field too, so look inside the link form.
+    const form = screen.getByRole("form", { name: en.signIn.byLink.form });
+    const field = within(form).getByLabelText(en.signIn.byLink.label);
+    expect(field).toHaveFocus();
+    await userEvent.type(field, "lena@example.com");
+    await userEvent.click(screen.getByRole("button", { name: en.signIn.byLink.submit }));
+    const said = en.signIn.byLink.sent("lena@example.com");
+    expect(await screen.findByText(said)).toBeInTheDocument();
+    const asked = sent.filter((request) => request.method === "POST");
+    expect(await asked[0]?.json()).toEqual({ email: "lena@example.com" });
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("shows the API's words when the blog cannot send mail", async () => {
+    const noMail = {
+      type: "https://khalid.dev/problems/not-found",
+      title: "Nothing is at this address",
+      status: 404,
+      detail: "This site cannot send sign-in links yet. A link needs mail.",
+      fix: "Sign in with your password or a passkey, or ask the owner to set up mail.",
+    };
+    adminBlog({ "POST /session/link/": () => json(404, noMail) });
+    renderAt("/sign-in");
+    await userEvent.click(await screen.findByRole("button", { name: en.signIn.byLink.open }));
+    const form = screen.getByRole("form", { name: en.signIn.byLink.form });
+    await userEvent.type(within(form).getByLabelText(en.signIn.byLink.label), "lena@example.com");
+    await userEvent.click(screen.getByRole("button", { name: en.signIn.byLink.submit }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(noMail.fix);
+    expect(screen.queryByText(en.signIn.byLink.sent("lena@example.com"))).toBeNull();
   });
 
   it("ends an email sign-in on the server when signing out", async () => {

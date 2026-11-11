@@ -1,0 +1,11 @@
+---
+source: crates/khalid-render/tests/render/post.rs
+expression: "part(&page, r#\"<section class=\"updates\"\"#, \"</section>\")"
+---
+<section class="updates" aria-labelledby="post-updates">
+<h2 id="post-updates">Updates</h2>
+<ul>
+<li><time datetime="2026-10-20">20 October 2026</time>: Refreshed the &lt;2026&gt; numbers.</li>
+<li><time datetime="2026-10-02">2 October 2026</time>: Added the image sitemap part.</li>
+</ul>
+</section>

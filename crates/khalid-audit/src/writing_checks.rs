@@ -12,43 +12,10 @@ use crate::{Block, Check, Page, Paragraph, Thresholds};
 /// How many words of a paragraph a detail quotes.
 const QUOTED_WORDS: usize = 8;
 
-/// Hedge words, in lowercase, that a reader can delete without losing
-/// meaning. The same list as the linter's W3 rule.
-const HEDGES: &[&str] = &[
-    "arguably",
-    "perhaps",
-    "possibly",
-    "seemingly",
-    "somewhat",
-    "basically",
-    "generally",
-    "usually",
-    "probably",
-    "maybe",
-    "kind of",
-    "sort of",
-    "fairly",
-    "quite",
-    "rather",
-];
-
-/// Sentence openers, in lowercase, that promise nothing specific. The same
-/// list as the linter's W3 rule.
-const VAGUE_OPENERS: &[&str] = &[
-    "there are",
-    "there is",
-    "it is important",
-    "it is worth",
-    "it should be noted",
-    "needless to say",
-    "as we all know",
-    "everyone knows",
-];
-
 /// Runs the writing checks on one page that is an article, or does not
 /// say what it is. A list, a profile or the home page holds counts and
 /// links rather than answers, as its `og:type` says.
-pub(crate) fn writing_issues(page: &Page, thresholds: Thresholds, found: &mut Found<'_>) {
+pub(crate) fn writing_issues(page: &Page, thresholds: &Thresholds, found: &mut Found<'_>) {
     if page
         .social()
         .get("og:type")
@@ -74,7 +41,7 @@ pub(crate) fn writing_issues(page: &Page, thresholds: Thresholds, found: &mut Fo
 }
 
 /// The answer under the question `heading`, from the blocks after it.
-fn answers(heading: &str, after: Option<&[Block]>, thresholds: Thresholds, found: &mut Found<'_>) {
+fn answers(heading: &str, after: Option<&[Block]>, thresholds: &Thresholds, found: &mut Found<'_>) {
     let answer: Vec<&Paragraph> = after
         .unwrap_or_default()
         .iter()
@@ -95,19 +62,20 @@ fn answers(heading: &str, after: Option<&[Block]>, thresholds: Thresholds, found
             format!("{words} words under \"{heading}\""),
         );
     }
+    // The linter's plain-answer rule reads the same words the same way.
     for paragraph in answer {
-        let unsure = hedges(paragraph.text());
+        let unsure = thresholds.unclear_words.find(paragraph.text());
         if !unsure.is_empty() {
             found.add(
                 Check::HedgedAnswer,
-                format!("\"{heading}\": {}", unsure.join(", ")),
+                format!("\"{heading}\": {}", unsure.names().join(", ")),
             );
         }
     }
 }
 
 /// The checks every paragraph answers: its length and its numbers.
-fn paragraph_issues(paragraph: &Paragraph, thresholds: Thresholds, found: &mut Found<'_>) {
+fn paragraph_issues(paragraph: &Paragraph, thresholds: &Thresholds, found: &mut Found<'_>) {
     let text = paragraph.text();
     let words = text.split_whitespace().count();
     if words > thresholds.most_paragraph_words {
@@ -119,42 +87,6 @@ fn paragraph_issues(paragraph: &Paragraph, thresholds: Thresholds, found: &mut F
     if !paragraph.linked() && bare_number(text) {
         found.add(Check::UnsourcedNumber, quote(text));
     }
-}
-
-/// The hedge words, vague openers and chains of `which` in `text`, in that
-/// order. A word counts only whole, so "quiet" holds no "quite".
-fn hedges(text: &str) -> Vec<&'static str> {
-    let mut found: Vec<&'static str> = Vec::new();
-    let all = plain_words(text);
-    found.extend(HEDGES.iter().filter(|hedge| has_phrase(&all, hedge)));
-    for sentence in text.split(['.', '!', '?']) {
-        let words = plain_words(sentence);
-        found.extend(
-            VAGUE_OPENERS
-                .iter()
-                .filter(|opener| words.starts_with(&format!(" {opener} "))),
-        );
-        if sentence.to_lowercase().matches(", which").count() > 1 {
-            found.push("which ... which");
-        }
-    }
-    found
-}
-
-/// `text` in lowercase as its words with one space around each, so a
-/// phrase is found only whole.
-fn plain_words(text: &str) -> String {
-    let words: Vec<String> = text
-        .split(|c: char| !(c.is_alphanumeric() || c == '\''))
-        .filter(|word| !word.is_empty())
-        .map(str::to_lowercase)
-        .collect();
-    format!(" {} ", words.join(" "))
-}
-
-/// Whether `words`, made by [`plain_words`], holds `phrase` whole.
-fn has_phrase(words: &str, phrase: &str) -> bool {
-    words.contains(&format!(" {phrase} "))
 }
 
 /// Whether `text` holds a number with no year within two words of it, as

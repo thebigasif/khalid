@@ -4,7 +4,7 @@ import { visitors } from "../../test/analytics";
 import { axeViolations, json, renderAt, serve, signedIn } from "../../test/render";
 import { listing, row, rowsPage } from "../../test/rows";
 import type { PostRow } from "../api/rows";
-import type { SiteIssue } from "../api/seo";
+import type { SiteHealth, SiteIssue } from "../api/seo";
 import { dashboardWords as words } from "../strings/dashboardWords";
 import { en } from "../strings/en";
 
@@ -28,7 +28,14 @@ type Blog = {
   counts?: boolean;
   /** The site's lint issues; none when the blog cannot send them. */
   issues?: SiteIssue[];
+  /** The site's audits; none when the blog cannot send them. */
+  health?: SiteHealth;
 };
+
+/** An audit the blog kept, `score` out of 100, on `at`. */
+function audit(at: string, score: number, errors = 0) {
+  return { at, score, pages: 48, errors, warnings: 5, notices: 9 };
+}
 
 const ISSUE: SiteIssue = {
   rule: "missing-alt",
@@ -42,11 +49,14 @@ const ISSUE: SiteIssue = {
 
 /** A blog with five live posts and what `blog` says, which records every request. */
 function blog(given: Blog = {}) {
-  const { blocked = [], drafts = [DRAFT], scheduled = 0, waiting, counts, issues } = given;
+  const { blocked = [], drafts = [DRAFT], scheduled = 0, waiting, counts, issues, health } = given;
   const sent: Request[] = [];
   serve((request) => {
     sent.push(request);
     const path = new URL(request.url).pathname;
+    if (path === "/api/admin/v1/site/health/" && health !== undefined) {
+      return json(200, health);
+    }
     if (path === "/api/admin/v1/lint/issues/" && issues !== undefined) {
       return json(200, { issues });
     }
@@ -193,6 +203,37 @@ describe("the dashboard", () => {
     renderAt("/");
     await screen.findByText(en.dashboard.calm);
     expect(screen.queryByRole("region", { name: words.issues })).toBeNull();
+  });
+
+  it("shows the site health score, what the audit found and how the score moved", async () => {
+    signedIn();
+    const first = audit("2026-11-01T12:00:00Z", 90);
+    const last = audit("2026-11-02T12:00:00Z", 96, 2);
+    blog({ health: { last, trend: [first, last] } });
+    renderAt("/");
+    expect(await screen.findByText(words.healthScore(96))).toBeVisible();
+    const health = card(words.health);
+    expect(health).toHaveTextContent(words.healthWhat);
+    expect(health).toHaveTextContent("2 errors and 5 warnings on 48 pages.");
+    expect(health).toHaveTextContent("Up 6 since 1 November 2026.");
+    expect(health).toHaveClass("failing");
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("says when no audit has run yet", async () => {
+    signedIn();
+    blog({ health: { last: null, trend: [] } });
+    renderAt("/");
+    expect(await screen.findByText(words.healthNone)).toBeVisible();
+    expect(card(words.health)).not.toHaveClass("failing");
+  });
+
+  it("leaves the health card out when the blog cannot send it", async () => {
+    signedIn();
+    blog();
+    renderAt("/");
+    await screen.findByText(en.dashboard.calm);
+    expect(screen.queryByText(words.health)).toBeNull();
   });
 
   it("gives one next step when nothing needs you and there are no drafts", async () => {

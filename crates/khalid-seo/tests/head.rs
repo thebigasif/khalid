@@ -125,6 +125,22 @@ fn a_list_page_with_a_feed_links_each_format_that_is_on() {
 }
 
 #[test]
+fn a_served_post_names_its_oembed_card_and_nothing_else_does() {
+    let mut site = demo_site();
+    let post = internal_links_post_de();
+    let off = head_tags(&site, &post).unwrap().to_html();
+    assert!(!off.contains("oembed"), "{off}");
+    site.oembed = true;
+    let html = head_tags(&site, &post).unwrap().to_html();
+    let card = "https://www.example.com/blog/api/oembed?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fde%2Fwarum-interne-links-wichtig-sind%2F";
+    let link = format!(r#"<link rel="alternate" type="application/json+oembed" href="{card}">"#);
+    assert!(html.contains(&link), "{html}");
+    let home = SeoPage::new(PageKind::Home, locale("en"), UrlPath::root(), "");
+    let home = head_tags(&site, &home).unwrap().to_html();
+    assert!(!home.contains("oembed"), "{home}");
+}
+
+#[test]
 fn a_list_page_without_a_feed_links_none() {
     let tag = SeoPage::new(PageKind::Tag, locale("en"), path("/tag/links/"), "Links");
     let html = head_tags(&demo_site(), &tag).unwrap().to_html();

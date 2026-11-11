@@ -5,6 +5,7 @@ import { adminBlog, noContent } from "../../test/blog";
 import { axeViolations, json, renderAt, signedIn } from "../../test/render";
 import type { AdminComment, CommentStatus } from "../api/comments";
 import { en } from "../strings/en";
+import { spamWords } from "../strings/spamWords";
 
 /** A reader's comment waiting on the internal links post, unless `fields` say otherwise. */
 function comment(fields: Partial<AdminComment> = {}): AdminComment {
@@ -36,6 +37,8 @@ function blog(kept: AdminComment[]) {
       return json(200, { comments: list.filter((each) => each.status === status) });
     },
     "POST /comments/1/approve/": () => set(1, "approved"),
+    "POST /comments/1/spam/": () => set(1, "spam"),
+    "DELETE /comments/1/spam/": () => set(1, "pending"),
     "POST /comments/2/replies/": async (request) => {
       replies.push(await request.json());
       set(2, "approved");
@@ -87,6 +90,25 @@ describe("the Comments screen", () => {
     expect(await screen.findByText(en.comments.approved("Jonas"))).toBeVisible();
     await waitFor(() => expect(screen.queryByText(comment().text)).toBeNull());
     await userEvent.click(screen.getByRole("button", { name: en.comments.statuses.approved }));
+    expect(await screen.findByText(comment().text)).toBeVisible();
+  });
+
+  it("marks a comment as spam, and moves it back from Spam", async () => {
+    signedIn();
+    blog([comment(), PRIYA]);
+    renderAt("/comments");
+    await userEvent.click(
+      await screen.findByRole("button", { name: spamWords.spamLabel("Jonas") }),
+    );
+    expect(await screen.findByText(spamWords.marked("Jonas"))).toBeVisible();
+    await waitFor(() => expect(screen.queryByText(comment().text)).toBeNull());
+    await userEvent.click(screen.getByRole("button", { name: en.comments.statuses.spam }));
+    await userEvent.click(
+      await screen.findByRole("button", { name: spamWords.notSpamLabel("Jonas") }),
+    );
+    expect(await screen.findByText(spamWords.back("Jonas"))).toBeVisible();
+    await waitFor(() => expect(screen.queryByText(comment().text)).toBeNull());
+    await userEvent.click(screen.getByRole("button", { name: en.comments.statuses.pending }));
     expect(await screen.findByText(comment().text)).toBeVisible();
   });
 

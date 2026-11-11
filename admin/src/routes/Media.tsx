@@ -1,6 +1,7 @@
 import { getRouteApi } from "@tanstack/react-router";
 import { PageHeader } from "../components/PageHeader";
 import { AddFile } from "../media/AddFile";
+import { AltReplace } from "../media/AltReplace";
 import { Library } from "../media/Library";
 import { en } from "../strings/en";
 
@@ -14,6 +15,7 @@ export function Media() {
       <PageHeader title={en.media.title} lede={en.media.lede} />
       <AddFile />
       <Library search={search} />
+      <AltReplace />
     </>
   );
 }

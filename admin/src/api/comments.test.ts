@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 import { adminBlog, noContent } from "../../test/blog";
 import { json, signedIn } from "../../test/render";
 import { isData } from "./call";
-import { approveComment, deleteComment, listComments, replyToComment } from "./comments";
+import {
+  approveComment,
+  deleteComment,
+  listComments,
+  markSpam,
+  notSpam,
+  replyToComment,
+} from "./comments";
 
 const GONE = {
   type: "https://khalid.dev/problems/not-found",
@@ -36,6 +43,17 @@ describe("the comment routes", () => {
     });
     expect(isData(await deleteComment(7))).toBe(true);
     expect(await approveComment(8)).toEqual({ problem: GONE, status: 404 });
+  });
+
+  it("marks spam with POST and takes it back with DELETE on the same address", async () => {
+    signedIn();
+    const sent = adminBlog({
+      "POST /comments/7/spam/": () => json(200, { comments: [] }),
+      "DELETE /comments/7/spam/": () => json(200, { comments: [] }),
+    });
+    expect(await markSpam(7)).toEqual({ data: [] });
+    expect(await notSpam(7)).toEqual({ data: [] });
+    expect(sent.map((request) => request.method)).toEqual(["POST", "DELETE"]);
   });
 
   it("says the blog is unreachable when nothing answers", async () => {

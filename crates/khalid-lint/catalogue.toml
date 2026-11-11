@@ -283,6 +283,18 @@ why = "A check that has not happened hides the fact from the reminder to check i
 fix = "Change the fact's `checked` date in `facts.toml` to the day you last checked it."
 guide = "fact-registry"
 
+[case-study-incomplete]
+what = "This case study leaves out its client, its outcome or its date, as named below."
+why = "A study without them reads as a story, so readers and search engines take it as weaker proof."
+fix = "Add the missing `client:`, `outcome:` or `date:` line to the study's front matter."
+guide = "collections"
+
+[changelog-entry-undated]
+what = "This changelog entry has no date."
+why = "The changelog lists entries by month, so an undated entry drops to the end under no month."
+fix = "Add a `date:` line to the entry's front matter, such as `date: 2026-11-10`."
+guide = "collections"
+
 [near-duplicate]
 what = "This post shares most of its text with another post on your site."
 why = "Google shows only one of two near copies, so the two posts compete and both lose."

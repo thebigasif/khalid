@@ -1,10 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Fragment, useState } from "react";
 import type { PostRow } from "../api/rows";
+import type { PostNumbers } from "../api/searchConsole";
 import { lightOf } from "../editor/LintPanel";
-import { day } from "../strings/dates";
+import { count, day } from "../strings/dates";
 import { en } from "../strings/en";
 import { quickEditWords } from "../strings/quickEditWords";
+import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { seoEditorWords } from "../strings/seoEditorWords";
 import { CheckPills } from "./CheckPills";
 import { QuickEdit } from "./QuickEdit";
@@ -19,7 +21,20 @@ type Props = {
   authors: string[];
   /** Called with what to tell once a quick edit is saved or found nothing to save. */
   onSaid: (said: string) => void;
+  /** Each live post's Google numbers by identity; empty hides the column. */
+  searchNumbers?: Map<string, PostNumbers>;
 };
+
+/** A post's clicks and times shown in Google, or that Google has not shown it yet. */
+function SearchCell({ numbers }: { numbers: PostNumbers | undefined }) {
+  const words = searchConsoleWords.table;
+  if (numbers === undefined || numbers.impressions === 0) {
+    return <span className="muted">{words.notShown}</span>;
+  }
+  return (
+    <>{words.numbers(count(Math.round(numbers.clicks)), count(Math.round(numbers.impressions)))}</>
+  );
+}
 
 /** A score as its light, its number, and what the light means in words. */
 function ScoreCell({ value }: { value: number | undefined }) {
@@ -35,9 +50,13 @@ function ScoreCell({ value }: { value: number | undefined }) {
   );
 }
 
-/** One page of posts: tick box, title, author, checks, stage, index, scores, links, change. */
-export function PostTable({ rows, ticked, onTick, authors, onSaid }: Props) {
+/**
+ * One page of posts: tick box, title, author, checks, stage, index, scores, links, Google
+ * search when the blog is connected, and change.
+ */
+export function PostTable({ rows, ticked, onTick, authors, onSaid, searchNumbers }: Props) {
   const [open, setOpen] = useState<string | null>(null);
+  const searched = searchNumbers !== undefined && searchNumbers.size > 0;
   const close = (said: string | null) => {
     setOpen(null);
     if (said !== null) {
@@ -60,6 +79,7 @@ export function PostTable({ rows, ticked, onTick, authors, onSaid }: Props) {
             <th scope="col">{seoEditorWords.seo}</th>
             <th scope="col">{seoEditorWords.readability}</th>
             <th scope="col">{seoEditorWords.linksColumn}</th>
+            {searched ? <th scope="col">{searchConsoleWords.table.column}</th> : null}
             <th scope="col">{en.posts.changed}</th>
           </tr>
         </thead>
@@ -117,13 +137,18 @@ export function PostTable({ rows, ticked, onTick, authors, onSaid }: Props) {
                   <td className="link-count" data-label={seoEditorWords.linksColumn}>
                     {seoEditorWords.linksInOut(row.links.inbound, row.links.outbound)}
                   </td>
+                  {searched ? (
+                    <td data-label={searchConsoleWords.table.column}>
+                      <SearchCell numbers={searchNumbers?.get(row.id)} />
+                    </td>
+                  ) : null}
                   <td data-label={en.posts.changed}>
                     <time dateTime={row.updated_at}>{day(row.updated_at)}</time>
                   </td>
                 </tr>
                 {open === row.id ? (
                   <tr>
-                    <td colSpan={10}>
+                    <td colSpan={searched ? 11 : 10}>
                       <QuickEdit id={row.id} authors={authors} onClose={close} />
                     </td>
                   </tr>

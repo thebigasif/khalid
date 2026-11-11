@@ -57,12 +57,31 @@ const RECIPE = [
   "calories",
 ];
 
+const EVENT = [
+  "name",
+  "start",
+  "end",
+  "venue",
+  "street",
+  "locality",
+  "postcode",
+  "country",
+  "online",
+  "status",
+  "price",
+  "currency",
+  "image",
+  "performer",
+];
+
 /**
  * Every directive of plan section 4.6, with the attributes `khalid-content`
- * takes for it (`crates/khalid-content/src/directive.rs`).
+ * takes for it (`crates/khalid-content/src/directive.rs` and the files in
+ * `directive/`), in the order that crate lists them.
  */
 export const BLOCK_SPECS: readonly BlockSpec[] = [
   leaf("audio", ["src", "title"], "title"),
+  leaf("book", ["name", "author", "isbn", "href"], "name"),
   leaf("bookmark", ["href", "title", "description", "image"], "href"),
   leaf(
     "business",
@@ -71,9 +90,13 @@ export const BLOCK_SPECS: readonly BlockSpec[] = [
   ),
   leaf("button", ["href", "label"], "label"),
   box("callout", ["kind"], "kind"),
+  box("chart", ["type", "title", "unit", "src"], "title"),
   box("columns", [], null, "::::"),
+  box("course", ["name", "href"], "name"),
   leaf("cta", [], null),
-  leaf("embed", ["src", "title"], "title"),
+  box("dataset", ["name", "keywords", "license", "download"], "name"),
+  leaf("embed", ["src", "title", "height", "uploaded"], "title"),
+  box("event", EVENT, "name"),
   box("faq", [], null, "::::"),
   box("figure", ["src", "alt"], "alt"),
   leaf("file", ["src", "title"], "title"),
@@ -83,17 +106,25 @@ export const BLOCK_SPECS: readonly BlockSpec[] = [
   box("header", ["image", "alt"], null),
   box("howto", ["name", "time"], "name", "::::"),
   box("html", ["show"], "show"),
+  leaf("location", ["name"], "name"),
   box("maths", ["label"], "label"),
   leaf("newsletter", ["label", "button"], "label"),
+  leaf("privacy-facts", [], null),
   box("product", PRODUCT, "name"),
   box("proscons", ["pros", "cons"], "pros"),
   box("pullquote", ["by"], "by"),
   box("recipe", RECIPE, "name", "::::"),
   box("review", ["item", "type", "rating", "best", "average", "ratings", "author"], "item"),
   leaf("snippet", ["slug"], "slug"),
+  box("table", ["fold", "more"], "more"),
+  box("takeaways", ["title"], "title"),
   leaf("toc", [], null),
   box("toggle", ["summary"], "summary"),
-  leaf("video", ["src", "title", "poster", "description", "duration"], "title"),
+  leaf(
+    "video",
+    ["src", "title", "poster", "description", "duration", "thumbnail", "uploaded"],
+    "title",
+  ),
 ];
 
 /** The names of blocks written inside another block, such as `:::question`. */

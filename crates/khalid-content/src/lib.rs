@@ -22,6 +22,7 @@ mod layout;
 mod maths;
 mod post;
 mod post_fields;
+mod post_updates;
 mod render;
 mod schema_cards;
 mod schemas;
@@ -55,6 +56,7 @@ pub use post_fields::{
     LeadImage, MAX_FACT_LABEL, MAX_FACT_VALUE, MAX_FACTS, PostFact, PostSeries, ReviewState,
     ShareCard, ShareCards, Sitemap, TopicCluster, TopicRole,
 };
+pub use post_updates::PostUpdate;
 pub use render::{
     CTA_MARK, ENGINE_TEXT, Gated, Heading, Image, LOCATION_MARK, Link, PRIVACY_FACTS_MARK,
     Rendered, render, render_framed, render_gated, render_linked,

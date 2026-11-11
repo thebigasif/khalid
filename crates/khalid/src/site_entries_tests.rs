@@ -1,6 +1,6 @@
-//! Pages kept as files in a small site folder.
+//! Pages and glossary terms kept as files in a small site folder.
 
-use khalid_api::resources::{AdminPage, NewPage, PageEdit};
+use khalid_api::resources::{AdminPage, AdminTerm, NewPage, NewTerm, PageEdit, TermEdit};
 use khalid_core::Environment;
 use serde_json::json;
 
@@ -121,6 +121,37 @@ fn a_copy_older_than_the_file_is_stale_even_after_a_hand_edit() {
     let refused = pages.delete_now("en.about", seen).unwrap_err();
     assert!(matches!(refused, EntryError::Stale { .. }));
     assert_eq!(fs::read_to_string(&path).unwrap(), ABOUT);
+}
+
+#[test]
+fn a_glossary_term_is_written_in_the_shape_the_site_reads() {
+    let (site, _) = site();
+    let toml = within(site.path(), &["site.toml"]);
+    let config = Config::from_toml(&toml, SITE_TOML, &Environment::empty()).unwrap();
+    let glossary = SiteEntries::<AdminTerm>::new(site.path(), &config);
+    let new = json!({"slug": "anchor-text", "term": "Anchor text", "translation": "anchor", "markdown": "The words a link sits on."});
+    let made = glossary
+        .create_now(&serde_json::from_value::<NewTerm>(new).unwrap())
+        .unwrap();
+    let path = within(
+        site.path(),
+        &["content", "en", "glossary", "anchor-text.md"],
+    );
+    assert_eq!(
+        fs::read_to_string(&path).unwrap(),
+        "---\nterm: \"Anchor text\"\nslug: anchor-text\ntranslation: \"anchor\"\n---\n\nThe words a link sits on.\n"
+    );
+    let change = json!({"term": "Anchor", "translation": "", "updated_at": made.updated_at()});
+    let change: TermEdit = serde_json::from_value(change).unwrap();
+    glossary.update_now("en.anchor-text", &change).unwrap();
+    let file = fs::read_to_string(&path).unwrap();
+    assert_eq!(
+        file,
+        "---\nterm: \"Anchor\"\nslug: anchor-text\n---\n\nThe words a link sits on.\n"
+    );
+    let text = PostText::parse(&file).unwrap();
+    let front: khalid_content::GlossaryFront = crate::entry_files::front(&text).unwrap();
+    assert_eq!(front.term.as_deref(), Some("Anchor"), "the site reads it");
 }
 
 #[test]

@@ -23,6 +23,8 @@ On Linux or a Mac, one line installs the newest release:
 curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sh
 ```
 
+If you use Homebrew, run `brew install thebigasif/khalid/khalid` instead, and `brew upgrade` brings each new release.
+
 On Windows, download the `.exe` from the [releases page](https://github.com/thebigasif/khalid/releases). To build it from source instead, follow [CONTRIBUTING.md](../CONTRIBUTING.md#build-khalid-from-source). Building the admin needs Node.js; without it you get a working blog but no admin screens.
 
 Check that it runs with `khalid --version`.

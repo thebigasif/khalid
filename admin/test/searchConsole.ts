@@ -1,4 +1,4 @@
-import type { FollowUp, FollowUps, SearchReport } from "../src/api/searchConsole";
+import type { FollowUp, FollowUps, SearchPosts, SearchReport } from "../src/api/searchConsole";
 import type { Answers } from "./redirects";
 import { json, serve } from "./render";
 
@@ -111,6 +111,12 @@ export function report(fields: Partial<SearchReport> = {}): SearchReport {
   };
 }
 
+/** Each post's numbers for the same month, as the posts table reads them. */
+export function searchPosts(): SearchPosts {
+  const { property, first, last, posts } = report();
+  return { property, first, last, posts };
+}
+
 /** What a blog that did not opt in to Search Console answers. */
 export const NOT_SET_UP = {
   type: "https://khalid.dev/problems/not-set-up",
@@ -126,6 +132,7 @@ export const NOT_SET_UP = {
 const MONTH: Answers = {
   "GET /search-console/follow-ups/": () => json(200, followUps()),
   "GET /search-console/report/": () => json(200, report()),
+  "GET /search-console/posts/": () => json(200, searchPosts()),
 };
 
 /** A blog that answers the Search Console route from `answers`, and the requests it was sent. */

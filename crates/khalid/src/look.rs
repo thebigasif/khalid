@@ -105,13 +105,17 @@ pub(crate) fn pack_tokens(site: &Path, env: &Environment) -> PackTokens {
         let config = fs::read_to_string(&path)
             .ok()
             .and_then(|text| Config::from_toml(&path, &text, &env).ok());
-        config
-            .and_then(|config| Look::choose(config.template()).ok())
-            .map_or_else(
-                || khalid_theme::classic().tokens(),
-                |look| look.pack().tokens(),
-            )
+        config.map_or_else(|| khalid_theme::classic().tokens(), |c| pack_text(&c))
     })
+}
+
+/// The tokens of the template `config` chooses, in the form of
+/// `theme/tokens.toml`. Classic's when the choice does not read.
+pub(crate) fn pack_text(config: &Config) -> &'static str {
+    Look::choose(config.template()).map_or_else(
+        |_| khalid_theme::classic().tokens(),
+        |look| look.pack().tokens(),
+    )
 }
 
 /// Every built-in template as the Admin API lists it, read from the

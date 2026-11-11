@@ -29,7 +29,8 @@ pub(super) type Posted = (Router, Option<Arc<FormRetry>>);
 /// `[mail]` with its `secret` and `outbound`. The routes are the
 /// newsletter's and the form block's (G4), whose answers are emailed and
 /// told to `telling` (G40), as is each confirmed subscriber; both keep
-/// what they receive in the database `site` reads. The alert checks and
+/// what they receive in the database `site` reads, and the newsletter
+/// reads the clock `every` carries. The alert checks and
 /// the speed and uptime watch run `every` so often. The form emails that
 /// fail are tried again by the retry it returns beside the routes.
 pub(super) fn mail_and_alerts(
@@ -43,7 +44,7 @@ pub(super) fn mail_and_alerts(
     let mailer = newsletter::mailer(config, secret, outbound).map_err(internal)?;
     let (newsletters, welcomes) = newsletter::router(
         (folder, config),
-        (database, id),
+        (database, id, every.clock),
         (runtime, telling),
         mailer.clone(),
     )

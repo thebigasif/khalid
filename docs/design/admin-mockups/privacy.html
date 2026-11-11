@@ -82,6 +82,7 @@ form{max-width:40rem}
     <a href="#scripts">Scripts</a>
     <a href="#text">Text</a>
     <a href="#contact">Contact</a>
+    <a href="#imprint">Imprint</a>
     <a href="#proof">Proof</a>
   </nav>
   <p class="careful">Some saved settings wait for a restart. Until Khalid restarts, the blog keeps the ones it started with.</p>
@@ -157,6 +158,21 @@ form{max-width:40rem}
     </form>
   </section>
 
+  <section class="panel" id="imprint" aria-labelledby="h-imprint">
+    <h2 id="h-imprint">Imprint</h2>
+    <form action="privacy.html" method="post">
+      <p class="careful"><b>The imprint needs a name, a postal address and an email.</b> German law asks for all three. Add them on the Contact tab, then save here.</p>
+      <p class="hint">An imprint, the Impressum German law asks for, says who runs the site and how to reach them. Turned on, Khalid adds an Imprint page in each language at impressum/ and links it from every page's footer.</p>
+      <label class="choice"><input type="checkbox" checked><span><b>Add an imprint page</b><span class="hint">Sites run from Germany or Austria need one. It shows the name, postal address and email from the Contact tab, and the lines below.</span></span></label>
+      <div class="field"><label for="i-phone">Phone</label><span class="hint" id="i-phone-hint">A second quick way to reach you. Leave it empty to show none.</span><input id="i-phone" type="tel" value="+49 30 1234567" aria-describedby="i-phone-hint"></div>
+      <div class="field"><label for="i-register">Trade register entry</label><span class="hint" id="i-register-hint">For a company, the court and number, such as Amtsgericht Berlin, HRB 12345.</span><input id="i-register" aria-describedby="i-register-hint"></div>
+      <div class="field"><label for="i-vat">VAT number</label><span class="hint" id="i-vat-hint">Your VAT identification number, such as DE123456789, if you have one.</span><input id="i-vat" aria-describedby="i-vat-hint"></div>
+      <div class="field"><label for="i-responsible">Responsible for the articles</label><span class="hint" id="i-responsible-hint">Who answers for what the blog publishes, with their address, if it is not you.</span><textarea id="i-responsible" rows="2" aria-describedby="i-responsible-hint"></textarea></div>
+      <p class="muted">Switched off, only the switch shows and saving removes the imprint page.</p>
+      <button class="btn primary" type="submit">Save this part</button>
+    </form>
+  </section>
+
   <section class="panel" id="proof" aria-labelledby="h-proof">
     <h2 id="h-proof">Proof</h2>
     <p>What readers were shown and what they chose, to show a regulator. Khalid keeps daily totals only, with no address and no reader ID.</p>
@@ -185,7 +201,7 @@ form{max-width:40rem}
     </table>
   </section>
 
-  <p class="note">Mockup for the founder's review, built without waiting for a yes. Nothing on this page saves. The admin shows one part at a time; here all five sit on one page so you can see them together. <a href="index.html">All mockups</a></p>
+  <p class="note">Mockup for the founder's review, built without waiting for a yes. Nothing on this page saves. The admin shows one part at a time; here all six sit on one page so you can see them together. <a href="index.html">All mockups</a></p>
 </main>
 </div>
 </body>

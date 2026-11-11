@@ -50,7 +50,8 @@ const hints: Record<string, string> = en.blockHints;
 /** The block a directive item adds, with no details yet. */
 function directive(spec: BlockSpec): SlashItem {
   return {
-    id: spec.name,
+    // The folding table's directive shares its name with the grid table's item.
+    id: spec.name === TABLE_ITEM ? "folding-table" : spec.name,
     name: names[spec.name] ?? spec.name,
     hint: hints[spec.name] ?? "",
     spec,

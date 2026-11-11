@@ -4,7 +4,7 @@ use std::fmt;
 
 use serde::Serialize;
 
-use crate::{LintPost, Severity, SiteView};
+use crate::{LintEntry, LintPost, Severity, SiteView};
 
 /// The stable name of a rule, such as `no-author`.
 ///
@@ -122,4 +122,18 @@ pub trait SiteRule: fmt::Debug + Send + Sync {
 
     /// The problems this rule finds, each with the post it is about.
     fn check<'site>(&self, site: &'site dyn SiteView) -> Vec<(&'site LintPost, Hit)>;
+}
+
+/// A check the linter runs on every case study and changelog entry, such
+/// as a case study with no client. It runs with the site rules.
+pub trait EntryRule: fmt::Debug + Send + Sync {
+    /// The rule's stable name.
+    fn id(&self) -> RuleId;
+
+    /// The severity when `lint.toml` does not set one.
+    fn default_severity(&self) -> Severity;
+
+    /// The problems this rule finds in `entry`. An empty list means the
+    /// entry passes.
+    fn check(&self, entry: &LintEntry) -> Vec<Hit>;
 }

@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 
 use chrono::{DateTime, TimeZone, Utc};
 use khalid_api::resources::{
-    AdminSettings, NavSetting, SettingsChange, TemplateSetting, TemplateValue,
+    AdminSettings, CtaSetting, NavSetting, SettingsChange, TemplateSetting, TemplateValue,
 };
 use khalid_api::settings_store::{MemorySettings, SettingsError, SettingsStore};
 use khalid_core::FixedClock;
@@ -29,6 +29,7 @@ fn demo() -> MemorySettings {
             name: "classic".to_owned(),
             options: BTreeMap::new(),
         },
+        cta: None,
         seo: serde_json::Map::new(),
         privacy: serde_json::Map::new(),
         code: Vec::new(),
@@ -53,7 +54,8 @@ async fn the_settings_are_sent_in_api_shape() {
         json!({
             "name": "Field Notes on SEO", "address": "https://www.example.com",
             "mount": "/blog/", "default_language": "en", "languages": ["en", "de"],
-            "mode": "server", "template": {"name": "classic", "options": {}}, "seo": {},
+            "mode": "server", "template": {"name": "classic", "options": {}}, "cta": null,
+            "seo": {},
             "privacy": {}, "code": [], "home_sections": [],
             "nav": {"primary": [], "footer": []},
             "updated_at": "2026-10-20T09:00:00Z", "restart_needed": false,
@@ -83,6 +85,29 @@ async fn a_template_change_reads_each_kind_of_value_and_replaces_every_option() 
         "updated_at": "2026-10-27T09:00:00Z"});
     let refused = serde_json::from_value::<SettingsChange>(nested);
     assert!(refused.is_err(), "an option is never a table");
+}
+
+#[tokio::test]
+async fn the_call_to_action_is_set_kept_when_left_out_and_removed_by_null() {
+    let store = demo();
+    let sent = json!({"cta": {"label": "Start a free trial", "href": "/blog/start/",
+        "note": "No card needed."}, "updated_at": "2026-10-20T09:00:00Z"});
+    let saved = store.change(change(sent)).await.unwrap();
+    let trial = CtaSetting {
+        label: "Start a free trial".to_owned(),
+        href: "/blog/start/".to_owned(),
+        note: Some("No card needed.".to_owned()),
+    };
+    assert_eq!(saved.cta.as_ref(), Some(&trial));
+    let renamed = json!({"name": "Field Notes", "updated_at": "2026-10-27T09:00:00Z"});
+    let saved = store.change(change(renamed)).await.unwrap();
+    assert_eq!(saved.cta, Some(trial), "a change without cta keeps it");
+    let removed = json!({"cta": null, "updated_at": "2026-10-27T09:00:00Z"});
+    let saved = store.change(change(removed)).await.unwrap();
+    assert_eq!(saved.cta, None);
+    let unknown = json!({"cta": {"label": "Go", "href": "/", "colour": "red"},
+        "updated_at": "2026-10-27T09:00:00Z"});
+    assert!(serde_json::from_value::<SettingsChange>(unknown).is_err());
 }
 
 #[tokio::test]

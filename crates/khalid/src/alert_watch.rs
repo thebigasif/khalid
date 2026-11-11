@@ -37,14 +37,14 @@ use crate::site_watch::{self, SiteWatch};
 const EVERY: Duration = Duration::from_hours(1);
 
 /// How often the checks run, and the speed and uptime watch looks, with
-/// the clock the scheduler and preview links read.
+/// the clock the scheduler, preview links and the newsletter read.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct Every {
     /// The alert checks.
     pub(crate) checks: Duration,
     /// The watch, or `None` when it does not look.
     pub(crate) watch: Option<Duration>,
-    /// When a schedule or a preview link falls due: the computer's own
+    /// When a schedule, a preview link or a welcome step falls due: the computer's own
     /// clock, ahead only in a test build.
     pub(crate) clock: ServeClock,
 }

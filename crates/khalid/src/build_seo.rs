@@ -4,7 +4,7 @@
 
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use khalid_content::{PostFront, Sitemap};
-use khalid_core::{ArticleSchemaType, Config, Locale, UserMessage};
+use khalid_core::{ArticleSchemaType, Config, Locale, Mode, UserMessage};
 use khalid_lint::StructuredDataGap;
 use khalid_render::{HeadHtml, PostCard, builtin_strings};
 use khalid_seo::{
@@ -42,10 +42,13 @@ pub(crate) fn site(config: &Config) -> Result<SeoSite, UserMessage> {
 }
 
 /// The site for the pages made on `today`, which the `{currentyear}` and
-/// `{currentmonth}` title variables read.
+/// `{currentmonth}` title variables read. A server site's post pages name
+/// the card `/api/oembed` makes of them, in `khalid serve` and `khalid
+/// build` alike; a static site has no server to answer it.
 pub(crate) fn site_on(config: &Config, today: NaiveDate) -> Result<SeoSite, UserMessage> {
     let mut site = site(config)?;
     site.today = Some(today);
+    site.oembed = config.mode() == Mode::Server;
     Ok(site)
 }
 
@@ -164,9 +167,10 @@ pub(crate) fn post(
     let mut seo = page(PageKind::Post, locale, rest, title)?;
     seo.excerpt = front.description.clone().unwrap_or_default();
     seo.published = Some(midnight(date));
-    // The updated date, when the writer set one, is the day the page last
-    // changed in a way a reader would notice (F1).
-    seo.modified = front.updated.map(midnight);
+    // The updated date or the newest entry in the Updates list, when the
+    // writer set one, is the day the page last changed in a way a reader
+    // would notice (F1).
+    seo.modified = front.last_updated().map(midnight);
     from_front(&mut seo, front)?;
     Ok(seo)
 }

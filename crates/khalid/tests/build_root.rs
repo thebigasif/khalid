@@ -101,6 +101,23 @@ fn a_blog_at_the_root_has_no_root_folder() {
 }
 
 #[test]
+fn the_bluesky_did_sits_at_the_root_of_the_host() {
+    let did = "did:plc:z72i7hdynmk6r22z27h6tvur";
+    let extra = format!("\n[seo.verification]\nbluesky = \"{did}\"\n");
+    for (mount, file) in [
+        ("/", "public/.well-known/atproto-did"),
+        ("/blog/", "public/_root/.well-known/atproto-did"),
+    ] {
+        let site = site(mount, &extra);
+        build(&site);
+        assert_eq!(fs::read_to_string(at(site.path(), file)).unwrap(), did);
+    }
+    let without = site("/", "");
+    build(&without);
+    assert!(!at(without.path(), "public/.well-known/atproto-did").exists());
+}
+
+#[test]
 fn a_site_without_indexnow_has_no_key_file() {
     let site = site("/blog/", "");
     build(&site);

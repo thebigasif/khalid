@@ -19,6 +19,11 @@ export const webhookWords = {
   },
   others: {
     "tag.added": "A tag is added",
+    "tag.renamed": "A tag is renamed",
+    "tag.removed": "A tag is removed from every post",
+    "category.added": "A category is added",
+    "category.renamed": "A category is renamed",
+    "category.deleted": "A category is deleted",
     "comment.added": "A reader writes a comment",
     "subscriber.added": "Someone subscribes",
     "form.submitted": "Someone sends a form",
@@ -27,7 +32,12 @@ export const webhookWords = {
     "site.changed": "The settings change",
     "alert.raised": "An alert is raised",
   },
-  groups: { content: "Posts and pages", readers: "Readers", site: "The site" },
+  groups: {
+    content: "Posts and pages",
+    readers: "Readers",
+    groups: "Tags and categories",
+    site: "The site",
+  },
   add: {
     title: "Add a webhook",
     event: "When",

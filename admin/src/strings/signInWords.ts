@@ -16,6 +16,16 @@ export const signInWords = {
     submit: "Sign in",
     checking: "Checking your email and password",
   },
+  byLink: {
+    open: "Email me a sign-in link",
+    form: "Email me a sign-in link",
+    label: "Email",
+    hint: "The address you sign in with. Khalid emails you a link that signs you in, with no password.",
+    submit: "Send the link",
+    sending: "Sending the link",
+    sent: (email: string) =>
+      `If ${email} is on this blog's staff, a sign-in link is on its way. It works once, within 15 minutes.`,
+  },
   token: {
     open: "Sign in with a staff token",
     label: "Staff token",

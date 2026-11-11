@@ -18,7 +18,7 @@ impl Report {
     ///
     /// The pages are the addresses the crawl read as HTML pages and the
     /// linked addresses that were broken. A healthy page has no error.
-    pub fn of(crawl: &Crawl, thresholds: Thresholds) -> Self {
+    pub fn of(crawl: &Crawl, thresholds: &Thresholds) -> Self {
         let issues = audit(crawl, thresholds);
         let broken = [Check::Page4xx, Check::Page5xx, Check::PageUnreached];
         let pages = crawl

@@ -13,6 +13,7 @@ expression: "head(&built(), \"why-internal-links-matter/index.html\")"
 <link rel="alternate" hreflang="en" href="https://www.example.com/blog/why-internal-links-matter/">
 <link rel="alternate" hreflang="de" href="https://www.example.com/blog/de/warum-interne-links-wichtig-sind/">
 <link rel="alternate" hreflang="x-default" href="https://www.example.com/blog/why-internal-links-matter/">
+<link rel="alternate" type="application/json+oembed" href="https://www.example.com/blog/api/oembed?url=https%3A%2F%2Fwww.example.com%2Fblog%2Fwhy-internal-links-matter%2F">
 <meta property="og:site_name" content="Field Notes on SEO">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Why internal links matter">

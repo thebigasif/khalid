@@ -4,6 +4,7 @@ import { isData } from "../api/call";
 import { listComments } from "../api/comments";
 import { problemMessage } from "../api/posts";
 import { isFailure, isPage, useRows } from "../api/rows";
+import { readSiteHealth } from "../api/seo";
 import { blogName } from "../auth/blog";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
@@ -28,6 +29,7 @@ export function Dashboard() {
     queryFn: () => listComments("pending"),
   }).data;
   const visits = useQuery({ queryKey: ["visitors", 28], queryFn: () => readVisitors(28) }).data;
+  const health = useQuery({ queryKey: ["site-health"], queryFn: readSiteHealth }).data;
 
   const title = words.greeting(blogName());
   const failed = [blocked, drafts, live, scheduled].find(isFailure);
@@ -60,6 +62,7 @@ export function Dashboard() {
         drafts={drafts.pagination.total}
         failing={stuck}
         visits={isData(visits) ? visits.data : null}
+        health={isData(health) ? health.data : null}
       />
       <div className="board">
         <NeedsAttention

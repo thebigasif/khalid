@@ -104,6 +104,28 @@ export async function deleteMedia(id: string, updatedAt: string): Promise<Reply<
   }
 }
 
+/** One file's alt text before and after a find-and-replace. */
+export type AltChange = components["schemas"]["AltChangeBody"];
+
+/**
+ * Finds `find` in the alt text of every file and puts `replace` in its
+ * place. Without `apply` it only lists what would change.
+ */
+export async function replaceAlt(
+  find: string,
+  replace: string,
+  apply: boolean,
+): Promise<Reply<AltChange[]>> {
+  try {
+    const { data, error, response } = await api.POST("/api/admin/v1/media/alt-text/", {
+      body: { find, replace, apply },
+    });
+    return data === undefined ? failed(error, response) : { data: data.changes };
+  } catch {
+    return failed(null, undefined);
+  }
+}
+
 /** The names of the library's folders, such as `guides/2026`, in order. */
 export async function listFolders(): Promise<Reply<string[]>> {
   try {

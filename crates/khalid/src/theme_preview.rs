@@ -217,6 +217,7 @@ fn sample_post(author: &str, locale: &Locale) -> RenderPost {
         date: NaiveDate::from_ymd_opt(2026, 10, 26).unwrap_or_default(),
         updated: None,
         updated_note: None,
+        updates: Vec::new(),
         dek: None,
         facts: Vec::new(),
         reading_time: ReadingTime::of(&body, locale),

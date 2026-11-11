@@ -31,7 +31,7 @@ use crate::media_library::PictureKeys;
 use crate::memory::HandBack;
 use crate::outside_writes::Reloads;
 use crate::post_files::Assets;
-use crate::scheduler::WeeklyEmail;
+use crate::scheduler::{NightlyAudit, WeeklyEmail};
 use crate::search_console_finder::SiteFollowUps;
 use crate::serve_check::BodyCheck;
 use crate::serve_https::{Listen, ServeClock};
@@ -84,6 +84,8 @@ pub(crate) struct Keys {
     pub(crate) pictures: PictureKeys,
     /// The writer of the editor's suggestions, asked with `KHALID_AI_KEY`.
     pub(crate) ai: khalid_api::ai::AiDesk,
+    /// What fetches a page to copy its JSON-LD, through the outbound guard.
+    pub(crate) copier: Option<crate::serve_apis::schema_copier::PageCopier>,
     /// The whole environment, which `site.toml` is read with again when it
     /// changes, and when the Admin API reads or saves its settings.
     pub(crate) settings: Environment,
@@ -100,6 +102,7 @@ impl Keys {
             follow_ups: SiteFollowUps::new(folder, config, env, cli),
             weekly: WeeklyEmail::new(folder, config, env, cli),
             ai: crate::serve_apis::ai_writer::desk(config, env, cli),
+            copier: crate::serve_apis::schema_copier::copier(cli),
             settings: env.clone(),
             pictures: PictureKeys {
                 unsplash: env.unsplash_key(),
@@ -224,13 +227,14 @@ fn serve_with(
         let ((comments, moderation, rereading), (door, posts), (media, files, library), unlocked) =
             tokio::try_join!(
                 async { Ok(commenting.await) },
-                publish_door((site, config), (database, id, every.clock), telling),
+                publish_door((site, config), (database, id, every.clock), telling.clone()),
                 media_library::open(site, config, (keys.bucket, keys.pictures), outbound),
                 unlocking((site, config), (database, id), &source, shown_pages),
             )?;
         posts.follow(source.live_config());
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
-        let timed = (alerting, keys.weekly, forms);
+        let nightly = NightlyAudit::new(site, config, routes);
+        let timed = (alerting, keys.weekly, forms, nightly);
         let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());
         let pages = (unlocked, live, config.mount());
@@ -244,11 +248,12 @@ fn serve_with(
             (files, previews, search_route::router(config, search)),
             (comments, posted, pages),
         );
+        let helpers = (keys.ai, keys.copier);
         let apis = (
             (content, door, posts),
-            (moderation, media, desk, keys.follow_ups, keys.ai),
+            (moderation, media, desk, keys.follow_ups, helpers),
             (database, id, (site, config, &keys.settings)),
-            (panel, mailer),
+            (panel, mailer, telling),
         );
         let app = serve_apis::with_apis(app, apis, push_hook::router(site, keys.git_hook, &rest));
         // The rest renders once the routes are ready, so it does not slow

@@ -98,6 +98,16 @@ impl CommentModeration for OneComment {
             }
         })
     }
+
+    fn mark_spam(&self, id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>> {
+        let found = (id == 1).then(|| comment(1, CommentStatus::Spam));
+        Box::pin(async move { found.ok_or(ModerationError::NotFound) })
+    }
+
+    fn not_spam(&self, id: i64) -> BoxFuture<'_, Result<AdminComment, ModerationError>> {
+        let found = (id == 1).then(|| comment(1, CommentStatus::Pending));
+        Box::pin(async move { found.ok_or(ModerationError::NotFound) })
+    }
 }
 
 #[cfg(test)]
@@ -176,6 +186,25 @@ async fn approving_and_deleting_answer_with_the_comment_or_nothing() {
         assert_eq!(status, StatusCode::NOT_FOUND, "{method} {uri}");
         assert_eq!(body["instance"], uri);
     }
+}
+
+#[tokio::test]
+async fn spam_is_marked_with_post_and_taken_back_with_delete() {
+    let spam = "/api/admin/v1/comments/1/spam/";
+    let (status, body) = call(Arc::default(), ("POST", spam), (WRITER, None)).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["comments"][0]["status"], "spam");
+    let (status, body) = call(Arc::default(), ("DELETE", spam), (WRITER, None)).await;
+    assert_eq!(status, StatusCode::OK);
+    assert_eq!(body["comments"][0]["status"], "pending");
+    for method in ["POST", "DELETE"] {
+        let uri = "/api/admin/v1/comments/9/spam/";
+        let (status, body) = call(Arc::default(), (method, uri), (WRITER, None)).await;
+        assert_eq!(status, StatusCode::NOT_FOUND, "{method}");
+        assert_eq!(body["instance"], uri);
+    }
+    let (status, _) = call(Arc::default(), ("POST", spam), (UPLOADER, None)).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
 }
 
 #[tokio::test]

@@ -1,6 +1,7 @@
 //! Search Console follow-ups through the Admin API (GEO M3): the long
-//! searches that showed each post, and the heading that answers each.
-//! Needs `settings:write`.
+//! searches that showed each post, and the heading that answers each,
+//! the report, each post's month for the posts table, and the site's
+//! totals. Needs `settings:write`.
 
 mod common;
 
@@ -16,8 +17,8 @@ use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
 use khalid_api::search_report::{
-    FallingPage, LostPage, LostReason, Mover, PostNumbers, SearchNumbers, SearchReport,
-    SearchTotals,
+    FallingPage, LostPage, LostReason, Mover, PostNumbers, SearchNumbers, SearchPosts,
+    SearchReport, SearchTotals,
 };
 use khalid_core::UserMessage;
 use serde_json::{Value, json};
@@ -32,6 +33,7 @@ const POSTS_ONLY: &str =
 const FOLLOW_UPS: &str = "/api/admin/v1/search-console/follow-ups/";
 const REPORT: &str = "/api/admin/v1/search-console/report/";
 const TOTALS: &str = "/api/admin/v1/search-console/totals/";
+const POSTS: &str = "/api/admin/v1/search-console/posts/";
 
 /// What the finder in a test answers.
 #[derive(Clone, Copy)]
@@ -45,19 +47,7 @@ struct Finder(Answer);
 
 impl FollowUpFinder for Finder {
     fn follow_ups(&self) -> BoxFuture<'_, Result<FollowUps, FollowUpError>> {
-        let answer = match self.0 {
-            Answer::Found => Ok(found()),
-            Answer::NotConnected => Err(FollowUpError::NotConnected(UserMessage::new(
-                "This site is not connected to Google Search Console.",
-                "Khalid asks Google nothing until the owner opts in.",
-                "Follow the steps in docs/deploy.md.",
-            ))),
-            Answer::GoogleRefused => Err(FollowUpError::Google(UserMessage::new(
-                "Google's quota for these requests is spent for now.",
-                "Google allows a set number of requests a day.",
-                "Wait until tomorrow.",
-            ))),
-        };
+        let answer = self.answered(found);
         Box::pin(async move { answer })
     }
 
@@ -74,8 +64,35 @@ impl FollowUpFinder for Finder {
     }
 
     fn totals(&self, days: u32) -> BoxFuture<'_, Result<SearchTotals, FollowUpError>> {
-        let answer = match self.0 {
-            Answer::Found => Ok(totals(days)),
+        let answer = self.answered(|| totals(days));
+        Box::pin(async move { answer })
+    }
+
+    fn posts(&self) -> BoxFuture<'_, Result<SearchPosts, FollowUpError>> {
+        let answer = self.answered(|| {
+            let SearchReport {
+                property,
+                first,
+                last,
+                posts,
+                ..
+            } = report();
+            SearchPosts {
+                property,
+                first,
+                last,
+                posts,
+            }
+        });
+        Box::pin(async move { answer })
+    }
+}
+
+impl Finder {
+    /// What `found` makes, or the refusal the test asked for.
+    fn answered<T>(&self, found: impl FnOnce() -> T) -> Result<T, FollowUpError> {
+        match self.0 {
+            Answer::Found => Ok(found()),
             Answer::NotConnected => Err(FollowUpError::NotConnected(UserMessage::new(
                 "This site is not connected to Google Search Console.",
                 "Khalid asks Google nothing until the owner opts in.",
@@ -86,8 +103,7 @@ impl FollowUpFinder for Finder {
                 "Google allows a set number of requests a day.",
                 "Wait until tomorrow.",
             ))),
-        };
-        Box::pin(async move { answer })
+        }
     }
 }
 
@@ -301,6 +317,7 @@ async fn the_document_lists_the_route() {
     let served: Value = serde_json::from_slice(&bytes.unwrap()).unwrap();
     assert!(served["paths"][FOLLOW_UPS]["get"].is_object());
     assert!(served["paths"][REPORT]["get"].is_object());
+    assert!(served["paths"][POSTS]["get"].is_object());
     let days = &served["paths"][TOTALS]["get"]["parameters"][0];
     assert_eq!(
         (&days["name"], &days["in"]),
@@ -383,5 +400,29 @@ async fn the_report_answers_502_when_google_refuses_and_needs_settings_write() {
     assert_eq!(status, StatusCode::BAD_GATEWAY, "{json}");
     assert_eq!(json["fix"], "Wait a few minutes, then try again.");
     let (status, _) = get_at(REPORT, Answer::Found, POSTS_ONLY).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
+}
+
+#[tokio::test]
+async fn each_posts_month_comes_alone_for_the_posts_table() {
+    let (status, json) = get_at(POSTS, Answer::Found, SETTINGS).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json["posts"], json!(report().posts), "{json}");
+    assert_eq!(
+        (&json["first"], &json["last"]),
+        (&json!("2026-10-01"), &json!("2026-10-28"))
+    );
+    assert_eq!(json["week_clicks"], Value::Null, "only the month: {json}");
+}
+
+#[tokio::test]
+async fn each_posts_month_says_how_to_connect_or_why_google_failed_and_needs_settings_write() {
+    let (status, json) = get_at(POSTS, Answer::NotConnected, SETTINGS).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    assert_eq!(json["type"], "https://khalid.dev/problems/not-set-up");
+    let (status, json) = get_at(POSTS, Answer::GoogleRefused, SETTINGS).await;
+    assert_eq!(status, StatusCode::BAD_GATEWAY, "{json}");
+    assert_eq!(json["fix"], "Wait until tomorrow.");
+    let (status, _) = get_at(POSTS, Answer::Found, POSTS_ONLY).await;
     assert_eq!(status, StatusCode::FORBIDDEN);
 }

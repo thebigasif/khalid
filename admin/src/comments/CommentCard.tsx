@@ -1,6 +1,7 @@
 import type { AdminComment } from "../api/comments";
 import { day } from "../strings/dates";
 import { en } from "../strings/en";
+import { spamWords } from "../strings/spamWords";
 import { postName } from "./postName";
 import { ReplyForm } from "./ReplyForm";
 
@@ -11,10 +12,42 @@ type Props = {
   onApprove: (comment: AdminComment) => void;
   onDelete: (comment: AdminComment) => void;
   onReply: (comment: AdminComment, name: string, text: string) => Promise<boolean>;
+  onSpam: (comment: AdminComment) => void;
+  onNotSpam: (comment: AdminComment) => void;
 };
 
+type SpamProps = Pick<Props, "comment" | "onSpam" | "onNotSpam">;
+
+/** Marks a reader's comment as spam, or, under Spam, moves it back to the waiting ones. */
+function SpamButton({ comment, onSpam, onNotSpam }: SpamProps) {
+  const name = comment.author_name;
+  if (comment.status === "spam") {
+    return (
+      <button
+        type="button"
+        className="btn"
+        aria-label={spamWords.notSpamLabel(name)}
+        onClick={() => onNotSpam(comment)}
+      >
+        {spamWords.notSpam}
+      </button>
+    );
+  }
+  return (
+    <button
+      type="button"
+      className="btn"
+      aria-label={spamWords.spamLabel(name)}
+      onClick={() => onSpam(comment)}
+    >
+      {spamWords.spam}
+    </button>
+  );
+}
+
 /** One comment: who wrote it on which post, what it says, and what to do with it. */
-export function CommentCard({ comment, first, onApprove, onDelete, onReply }: Props) {
+export function CommentCard(props: Props) {
+  const { comment, first, onApprove, onDelete, onReply, onSpam, onNotSpam } = props;
   const words = en.comments;
   const name = comment.author_name;
   const byStaff = comment.author_kind === "staff";
@@ -36,6 +69,9 @@ export function CommentCard({ comment, first, onApprove, onDelete, onReply }: Pr
           >
             {words.approve}
           </button>
+        )}
+        {byStaff || comment.status === "trash" ? null : (
+          <SpamButton comment={comment} onSpam={onSpam} onNotSpam={onNotSpam} />
         )}
         <button
           type="button"

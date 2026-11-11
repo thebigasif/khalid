@@ -1,6 +1,7 @@
 import { Editor, type JSONContent } from "@tiptap/core";
 import { describe, expect, it } from "vitest";
 import { extensions, fitsRichText, throughRichText } from "../richText";
+import { nodeName } from "./directiveNode";
 import { BLOCK_SPECS } from "./specs";
 
 // One sample per plan 4.6 block beyond the starter kit, written the way
@@ -8,6 +9,7 @@ import { BLOCK_SPECS } from "./specs";
 // and saving a post with any block changes nothing in its file.
 const BLOCKS: Record<string, string> = {
   audio: '::audio{src="/media/episode-12.mp3" title="Episode 12: internal links"}',
+  book: '::book{name="Clear Writing" author="Maren Okafor" isbn="978-0-00-000000-2" href="https://www.example.com/clear-writing/"}',
   bookmark:
     '::bookmark{href="https://web.dev/articles/vitals" title="Web Vitals" description="Quality signals for a good experience." image="https://web.dev/vitals.png"}',
   business:
@@ -15,10 +17,19 @@ const BLOCKS: Record<string, string> = {
   button: '::button{href="/pricing/" label="See prices"}',
   callout:
     ":::callout{kind=tip}\nLink from new posts to old ones, then go back the other way.\n:::",
+  chart:
+    ':::chart{type=line title="Visits by month" unit=visits}\nMonth, Visits\nJan, 120\nFeb, 140\n:::',
+  course:
+    ':::course{name="Links that rank" href="/courses/links/"}\nSix short lessons on internal links.\n:::',
+  dataset:
+    ':::dataset{name="Link audit 2026" keywords="links, audit" license="https://creativecommons.org/licenses/by/4.0/" download="/media/link-audit.csv"}\nEvery link on 400 blogs, gathered in May.\n:::',
+  event:
+    ':::event{name="Writing night" start="2026-11-12T18:00+00:00" end="2026-11-12T20:00+00:00" online="https://www.example.com/live/" status=scheduled}\nAn evening of writing together.\n:::',
   columns:
     '::::columns\n:::column{title="Before"}\nOne link at the end.\n:::\n:::column{title="After"}\nThree links in the text.\n:::\n::::',
   cta: "::cta",
-  embed: '::embed{src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" title="How search works"}',
+  embed:
+    '::embed{src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" title="How search works" height=480 uploaded=2024-05-16}',
   faq: '::::faq\n:::question{text="Does it work offline?"}\nYes, every page works with scripts off.\n:::\n::::',
   figure:
     ':::figure{src="shelf.jpg" alt="A bakery shelf of sourdough loaves"}\nThe morning bake.\n:::',
@@ -32,8 +43,10 @@ const BLOCKS: Record<string, string> = {
   howto:
     '::::howto{name="Add a link" time="2:00"}\n:::step{name="Open the post"}\nFind it in Posts.\n:::\n::::',
   html: ':::html{show="visitors"}\n<p>Sign in to comment.</p>\n:::',
+  location: '::location{name="Leeds office"}',
   maths: ':::maths{label="Compound growth"}\nA = P(1 + r)^t\n:::',
   newsletter: '::newsletter{label="Your email address" button="Get the weekly links"}',
+  "privacy-facts": "::privacy-facts",
   product:
     ':::product{name="Kit" image="/media/kit.jpg" price="49.00" currency="USD" rating="4.5" average="4.6" ratings="52" href="/kit/" button="Buy the kit"}\nEverything to start.\n:::',
   proscons: ':::proscons{pros="What works" cons="What does not"}\n+ Fast\n- No team settings\n:::',
@@ -43,11 +56,15 @@ const BLOCKS: Record<string, string> = {
   review:
     ':::review{item="A book" type="Book" rating="4" average="4.2" ratings="310" author="Asif"}\nClear and short.\n:::',
   snippet: '::snippet{slug="affiliate-disclosure"}',
+  table:
+    ':::table{fold=2 more="Show every plan"}\n| Plan | Price |\n| --- | --- |\n| Solo | 9 |\n| Team | 29 |\n| Agency | 99 |\n:::',
+  takeaways:
+    ':::takeaways{title="In short"}\n- Link new posts to old ones.\n- Check links each month.\n:::',
   toc: "::toc",
   toggle: ':::toggle{summary="Why does this matter?"}\nSearch engines read it.\n:::',
   video:
-    '::video{src="/media/site-tour.mp4" title="A tour of the site" poster="/media/site-tour.jpg" description="Where posts, pages and settings live." duration="2:05"}',
-  table: "| Block | Form |\n| --- | --- |\n| toc | leaf |",
+    '::video{src="/media/site-tour.mp4" title="A tour of the site" poster="/media/site-tour.jpg" description="Where posts, pages and settings live." duration="2:05" thumbnail="/media/site-tour-card.jpg" uploaded=2024-05-16}',
+  markdownTable: "| Block | Form |\n| --- | --- |\n| toc | leaf |",
   footnote: "Links help readers.[^1]\n\n[^1]: And search engines.",
   longFootnote: "One.[^long]\n\n[^long]: A note on\n    two lines.",
 };
@@ -85,7 +102,7 @@ describe("the editor's blocks", () => {
   for (const spec of BLOCK_SPECS) {
     it(`reads a ${spec.name} as its own node`, () => {
       const first = read(BLOCKS[spec.name] ?? "").content?.[0];
-      expect(first?.type).toBe(`${spec.name}Block`);
+      expect(first?.type).toBe(nodeName(spec));
     });
   }
 
@@ -114,8 +131,47 @@ describe("the editor's blocks", () => {
     );
   });
 
+  it("names a block with a hyphen as one word, as Tiptap needs", () => {
+    expect(read(BLOCKS["privacy-facts"] ?? "").content?.[0]?.type).toBe("privacyFactsBlock");
+  });
+
+  it("reads a folding table's markdown table as its text, not as a table of its own", () => {
+    const table = read(BLOCKS.table ?? "").content?.[0];
+    expect(table?.attrs).toMatchObject({ fold: "2", more: "Show every plan" });
+    expect(table?.attrs?.body).toBe(
+      "| Plan | Price |\n| --- | --- |\n| Solo | 9 |\n| Team | 29 |\n| Agency | 99 |",
+    );
+  });
+
+  it("reads a video's thumbnail and upload date, and an embed's height", () => {
+    expect(read(BLOCKS.video ?? "").content?.[0]?.attrs).toMatchObject({
+      thumbnail: "/media/site-tour-card.jpg",
+      uploaded: "2024-05-16",
+    });
+    expect(read(BLOCKS.embed ?? "").content?.[0]?.attrs).toMatchObject({
+      height: "480",
+      uploaded: "2024-05-16",
+    });
+  });
+
+  it("writes a new event and a new chart from their details", () => {
+    const event = { name: "Writing night", start: "2026-11-12T18:00+00:00", online: "/live/" };
+    const chart = { type: "bar", title: "Visits", body: "Month, Visits\nJan, 3" };
+    const doc = {
+      type: "doc",
+      content: [
+        { type: "eventBlock", attrs: { ...event, body: "Come along." } },
+        { type: "chartBlock", attrs: chart },
+      ],
+    };
+    const opening = ':::event{name="Writing night" start="2026-11-12T18:00+00:00" online="/live/"}';
+    expect(write(doc)).toBe(
+      `${opening}\nCome along.\n:::\n\n:::chart{type=bar title=Visits}\nMonth, Visits\nJan, 3\n:::`,
+    );
+  });
+
   it("reads a table and a footnote as their own nodes", () => {
-    expect(read(BLOCKS.table ?? "").content?.[0]?.type).toBe("markdownTable");
+    expect(read(BLOCKS.markdownTable ?? "").content?.[0]?.type).toBe("markdownTable");
     const [text, note] = read(BLOCKS.footnote ?? "").content ?? [];
     expect(text?.content?.at(-1)).toMatchObject({ type: "footnoteMark", attrs: { label: "1" } });
     expect(note?.type).toBe("footnoteText");

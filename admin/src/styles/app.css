@@ -402,6 +402,7 @@
   .sign-or::before,.sign-or::after{content:"";flex:1;border-top:1px solid var(--color-border)}
   .sign-token{margin:1.5rem 0 0;padding:.75rem 0 0;border-top:1px solid var(--color-border);text-align:center}
   .sign-token form{text-align:left;margin:.5rem 0 0}
+  .sign-token+.sign-token{margin:0;padding:0;border-top:0}
   .quiet-link{min-height:44px;padding:.5rem;border:0;background:none;color:var(--color-link);text-decoration:underline;font:inherit;font-size:.9375rem;cursor:pointer}
   .sign-new{margin:1rem 0 0;color:var(--color-muted);font-size:.9375rem;text-align:center}
   @media (max-width:22em){.sign-in{padding:1rem .5rem}.sign-card{padding:1.5rem 1rem}}

@@ -1,3 +1,5 @@
+import { altReplaceWords } from "./altReplaceWords";
+import { blockWords } from "./blockWords";
 import { lookWords } from "./lookWords";
 import { passkeys } from "./passkeys";
 import { realUpdateWords } from "./realUpdateWords";
@@ -111,6 +113,7 @@ export const en = {
       action: "Action",
       edit: (name: string) => `Edit details of ${name}`,
       editText: "Edit details",
+      replace: altReplaceWords,
     },
     details: {
       back: "Back to media",
@@ -431,7 +434,7 @@ export const en = {
   },
   comments: {
     title: "Comments",
-    lede: "Readers' comments wait here until you approve them, so nothing appears under a post without your yes. Approve the good ones, answer questions, and delete spam.",
+    lede: "Readers' comments wait here until you approve them, so nothing appears under a post without your yes. Approve the good ones, answer questions, and mark spam so it stays hidden.",
     which: "Which comments",
     statuses: { pending: "Waiting", approved: "Shown", spam: "Spam", trash: "Bin" },
     loading: "Reading the comments",
@@ -775,8 +778,8 @@ export const en = {
     toc: "Table of contents",
     toggle: "Toggle",
     video: "Video",
-    table: "Table",
     footnote: "Footnote",
+    ...blockWords.names,
   },
   // What each block is for, in the slash menu under its name.
   blockHints: {
@@ -808,6 +811,7 @@ export const en = {
     toc: "A list of this post's headings",
     toggle: "A heading readers open to see the text under it",
     video: "A video file readers can play on the page",
+    ...blockWords.hints,
   },
   // The label of each detail a block's form asks for, by attribute name.
   fields: {
@@ -854,7 +858,10 @@ export const en = {
     time: "Time it takes, such as 2:00",
     title: "Title",
     type: "Schema type, the name Google reads, such as Book",
+    ...blockWords.fields,
   },
+  // Labels that say more than a detail's usual label, by block, then attribute.
+  blockFields: blockWords.blockFields,
   choices: {
     note: "Note",
     tip: "Tip",
@@ -862,6 +869,7 @@ export const en = {
     everyone: "Everyone",
     visitors: "Visitors who are not signed in",
     members: "Signed-in members only",
+    ...blockWords.choices,
   },
   details: {
     add: "Add the block",

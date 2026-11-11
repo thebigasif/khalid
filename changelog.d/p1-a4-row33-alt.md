@@ -1,0 +1,2 @@
+Added
+- Media has a find-and-replace for alt text. Type the words to find, such as an old company name, and what to put in their place: Khalid lists every file whose alt text would change, before and after, and saves only when you press Change. Letter case counts, so nothing changes that the list did not show. Scripts and integrations use `POST /api/admin/v1/media/alt-text/`, which only lists the changes unless the body says `"apply": true`.

@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use khalid_webhooks::Event;
 
 /// The catalogue as `docs/standards/api.md` and plan section 5.12 list it.
-const DOCUMENTED: [&str; 33] = [
+const DOCUMENTED: [&str; 38] = [
     "post.published",
     "post.published.edited",
     "post.unpublished",
@@ -33,6 +33,11 @@ const DOCUMENTED: [&str; 33] = [
     "changelog-entry.scheduled",
     "changelog-entry.deleted",
     "tag.added",
+    "tag.renamed",
+    "tag.removed",
+    "category.added",
+    "category.renamed",
+    "category.deleted",
     "form.submitted",
     "subscriber.added",
     "comment.added",

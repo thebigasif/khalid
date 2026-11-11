@@ -9,7 +9,7 @@ use support::{HOME, crawled, page};
 /// The audit's issues, leaving out the sitemap and `llms.txt` checks,
 /// since these test sites have no such files.
 #[cfg(test)]
-fn audit(crawl: &Crawl, thresholds: Thresholds) -> Vec<Issue> {
+fn audit(crawl: &Crawl, thresholds: &Thresholds) -> Vec<Issue> {
     khalid_audit::audit(crawl, thresholds)
         .into_iter()
         .filter(|issue| {
@@ -46,7 +46,7 @@ async fn found(head: &str, body: &str, thresholds: Thresholds) -> Vec<(Check, St
         Check::ImageBroken,
         Check::ResourceBroken,
     ];
-    audit(&crawl, thresholds)
+    audit(&crawl, &thresholds)
         .iter()
         .map(|issue| (issue.check(), issue.detail().to_owned()))
         .filter(|(check, _)| !left_out.contains(check))
@@ -56,7 +56,7 @@ async fn found(head: &str, body: &str, thresholds: Thresholds) -> Vec<(Check, St
 #[tokio::test]
 async fn a_full_page_has_no_issues() {
     let crawl = crawled(&[(HOME, page(HEAD, &words(400)))]).await;
-    assert_eq!(audit(&crawl, Thresholds::default()), []);
+    assert_eq!(audit(&crawl, &Thresholds::default()), []);
 }
 
 #[tokio::test]
@@ -76,7 +76,7 @@ async fn a_thin_page_is_named_unless_it_is_kept_out_of_search() {
 async fn markup_with_little_text_is_a_low_ratio() {
     let body = format!("{}<div>{}</div>", words(400), "<span></span>".repeat(2000));
     let crawl = crawled(&[(HOME, page(HEAD, &body))]).await;
-    let checks: Vec<Check> = audit(&crawl, Thresholds::default())
+    let checks: Vec<Check> = audit(&crawl, &Thresholds::default())
         .iter()
         .map(khalid_audit::Issue::check)
         .collect();

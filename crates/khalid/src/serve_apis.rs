@@ -18,7 +18,8 @@ use khalid_api::keys::KeyStore;
 use khalid_api::media_api::MediaLibrary;
 use khalid_api::publish_door::PublishDoor;
 use khalid_api::redirect_desk::RedirectDesk;
-use khalid_api::resources::{AdminAuthor, AdminPage, AdminSnippet};
+use khalid_api::resources::{AdminAuthor, AdminPage, AdminSnippet, AdminTerm};
+use khalid_api::schema_copy::SchemaCopier;
 use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
 use khalid_core::{Config, Environment, SystemClock};
@@ -28,7 +29,9 @@ use khalid_db::{
 };
 use khalid_newsletter::Mailer;
 
+use self::taxonomy_events::{AnnouncedCategories, AnnouncedTags};
 use crate::account_author::SiteAuthorProfiles;
+use crate::announce::SiteAnnounce;
 use crate::search_console_finder::SiteFollowUps;
 use crate::site_categories::SiteCategories;
 use crate::site_content::LiveContent;
@@ -37,20 +40,24 @@ use crate::site_posts::SitePosts;
 use crate::site_schema_templates::SiteSchemaTemplates;
 use crate::site_settings::SiteSettings;
 use crate::site_tags::SiteTags;
+use crate::watch_report::SiteUptime;
 use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
 pub(crate) mod ai_writer;
+pub(crate) mod schema_copier;
 mod subscribers;
+mod taxonomy_events;
 
 /// The desks `khalid serve` keeps in memory for the Admin API: comment
 /// moderation, the media library, stored redirects and the Search Console
-/// follow-ups and the writer of the editor's suggestions.
+/// follow-ups, the writer of the editor's suggestions and the page fetcher
+/// that copies schema from a URL.
 pub(crate) type Desks = (
     Arc<dyn CommentModeration>,
     MediaLibrary,
     RedirectDesk,
     SiteFollowUps,
-    AiDesk,
+    (AiDesk, Option<schema_copier::PageCopier>),
 );
 
 /// What [`api_router`] is built from: its four argument groups.
@@ -62,28 +69,42 @@ pub(crate) type ApiParts<'a> = (
         SiteId,
         (&'a Path, &'a Config, &'a Environment),
     ),
-    (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
+    (
+        Arc<dyn SiteDirectory>,
+        Option<Arc<dyn Mailer>>,
+        SiteAnnounce,
+    ),
 );
 
 /// The Content API and the Admin API as `khalid serve` runs them, with the
 /// comment moderation, media library, stored redirects, Search Console
-/// follow-ups, webhooks, form answers, `SerpDad` connection and staff accounts of site
-/// `id`, the post checks, schema templates, pages, snippets, authors, tags,
+/// follow-ups, webhooks, form answers, `SerpDad` connection, watch looks and staff
+/// accounts of site `id`, the post checks, schema templates, pages, snippets, authors, tags,
 /// categories and settings of the site in `site`, the super-admin routes
 /// over `panel`, and comments on drafts and newsletters emailed through
-/// `mailer` when the site sends mail. The settings and schema templates
-/// read `site.toml` with `env`, the environment the server started with.
+/// `mailer` when the site sends mail. Tag and category changes fire their
+/// webhooks through `telling`. The settings and schema templates read
+/// `site.toml` with `env`, the environment the server started with.
 pub(crate) fn api_router(
     (content, door, posts): (LiveContent, Arc<PublishDoor>, SitePosts),
-    (comments, media, redirects, follow_ups, ai): Desks,
+    (comments, media, redirects, follow_ups, (ai, schema_copier)): Desks,
     (database, id, (site, config, env)): (&Database, SiteId, (&Path, &Config, &Environment)),
-    (panel, mailer): (Arc<dyn SiteDirectory>, Option<Arc<dyn Mailer>>),
+    (panel, mailer, telling): (
+        Arc<dyn SiteDirectory>,
+        Option<Arc<dyn Mailer>>,
+        SiteAnnounce,
+    ),
 ) -> Router {
+    let tags = Arc::new(SiteTags::new(site, config));
+    let tags = AnnouncedTags::new(tags, telling.clone());
+    let categories = Arc::new(SiteCategories::new(site, config));
+    let categories = AnnouncedCategories::new(categories, telling);
     let table = SubscriberTable::new(database.clone(), id);
     let readers =
         subscribers::SiteSubscribers::new(table, (site, config), posts.clone(), mailer.clone());
     let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
-    let accounts = staff::accounts(database, id, config).with_author_profiles(profiles);
+    let accounts =
+        staff::accounts(database, id, config, mailer.clone()).with_author_profiles(profiles);
     let sessions: Arc<dyn SessionCheck> = Arc::new(accounts.clone());
     let routes = khalid_auth::staff_routes(accounts.clone());
     let staff = (khalid_auth::with_sites(routes, accounts, panel), sessions);
@@ -104,11 +125,13 @@ pub(crate) fn api_router(
         // The same posts the door publishes, judged with the live settings.
         checks: Some(Arc::new(posts)),
         schema_templates: Some(Arc::new(SiteSchemaTemplates::new(site, config, env))),
+        schema_copier: schema_copier.map(|copier| -> Arc<dyn SchemaCopier> { Arc::new(copier) }),
         pages: Some(Arc::new(SiteEntries::<AdminPage>::new(site, config))),
         snippets: Some(Arc::new(SiteEntries::<AdminSnippet>::new(site, config))),
+        glossary: Some(Arc::new(SiteEntries::<AdminTerm>::new(site, config))),
         authors: Some(Arc::new(SiteEntries::<AdminAuthor>::new(site, config))),
-        tags: Some(Arc::new(SiteTags::new(site, config))),
-        categories: Some(Arc::new(SiteCategories::new(site, config))),
+        tags: Some(Arc::new(tags)),
+        categories: Some(Arc::new(categories)),
         settings: Some(Arc::new(SiteSettings::new(site, config, env))),
         design: Some(DesignDesk::new(site, look::pack_tokens(site, env))),
         templates: Some(Arc::from(look::admin_templates())),
@@ -128,6 +151,11 @@ pub(crate) fn api_router(
         ai,
         limits: *config.limits(),
         subscribers: Some(Arc::new(readers)),
+        uptime: Some(Arc::new(SiteUptime::new(
+            database,
+            id,
+            Arc::new(SystemClock),
+        ))),
     };
     let keys: Arc<dyn KeyStore> = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
     let content: Arc<dyn ContentStore> = Arc::new(content);

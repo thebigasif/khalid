@@ -99,6 +99,17 @@ events! {
     ChangelogEntryDeleted => "changelog-entry.deleted",
     /// A tag was created.
     TagAdded => "tag.added",
+    /// A tag was renamed in every post that has it, or merged into
+    /// another.
+    TagRenamed => "tag.renamed",
+    /// A tag was taken off every post that had it.
+    TagRemoved => "tag.removed",
+    /// A category was created.
+    CategoryAdded => "category.added",
+    /// A category was given new names.
+    CategoryRenamed => "category.renamed",
+    /// A category no post was in was deleted.
+    CategoryDeleted => "category.deleted",
     /// A visitor sent a form.
     FormSubmitted => "form.submitted",
     /// Someone subscribed.

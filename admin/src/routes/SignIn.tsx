@@ -1,12 +1,13 @@
 import { blogName } from "../auth/blog";
 import { EmailSignIn } from "../components/EmailSignIn";
+import { LinkRequest } from "../components/LinkRequest";
 import { PasskeySignIn } from "../components/PasskeySignIn";
 import { SignInCard } from "../components/SignInCard";
 import { TokenSignIn } from "../components/TokenSignIn";
 import { canUsePasskeys } from "../passkeys/webauthn";
 import { en } from "../strings/en";
 
-/** Whose admin this is, then the ways in: a passkey, an email, or a staff token. */
+/** Whose admin this is, then the ways in: a passkey, an email, a mailed link, or a staff token. */
 export function SignIn() {
   const words = en.signIn;
   const passkeys = canUsePasskeys();
@@ -15,6 +16,7 @@ export function SignIn() {
       {passkeys ? <PasskeySignIn /> : null}
       {passkeys ? <p className="sign-or">{words.or}</p> : null}
       <EmailSignIn primary={!passkeys} />
+      <LinkRequest />
       <TokenSignIn />
       <p className="sign-new">
         {words.newHere} {words.owners} <code>{words.ownerCommand}</code>.

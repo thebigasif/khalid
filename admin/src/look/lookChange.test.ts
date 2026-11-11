@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { SiteSettings } from "../api/site";
 import type { Template } from "../api/templates";
+import { ctaLines, ctaOf, showsCta } from "./cta";
 import { lookChange, setOnly, startOf, turns, valuesOf, wordsOf } from "./lookChange";
 
 const LEDGER: Template = {
@@ -57,6 +58,33 @@ describe("the Look screen's options", () => {
     });
     expect(startOf([classic, LEDGER], SITE)).toBe(LEDGER);
     expect(startOf([classic], SITE)).toBe(classic);
+  });
+
+  it("send the call to action only when it changes, and null when emptied", () => {
+    const saved = { ...SITE, cta: { label: "Try it", href: "/blog/start/" } };
+    const same = valuesOf(LEDGER, { count: 6 });
+    expect(lookChange(saved, LEDGER, same)).toBeNull();
+    const spaced = { label: " Try it ", href: "/blog/start/", note: "" };
+    expect(lookChange(saved, LEDGER, same, spaced)).toBeNull();
+    expect(
+      lookChange(saved, LEDGER, same, { label: "Try it", href: "/blog/start/", note: " Free. " }),
+    ).toEqual({
+      updated_at: SITE.updated_at,
+      cta: { label: "Try it", href: "/blog/start/", note: "Free." },
+    });
+    expect(lookChange(saved, LEDGER, same, { label: "", href: " ", note: "" })).toEqual({
+      updated_at: SITE.updated_at,
+      cta: null,
+    });
+    expect(lookChange(SITE, LEDGER, same, ctaLines(undefined))).toBeNull();
+    expect(ctaOf(ctaLines(null))).toBeNull();
+  });
+
+  it("say whether a template shows the call to action itself", () => {
+    expect(showsCta(LEDGER)).toBe(false);
+    const takes = { kind: "switch" as const, default: false };
+    const band = { key: "cta_band", help: "Band.", takes };
+    expect(showsCta({ ...LEDGER, options: [band] })).toBe(true);
   });
 
   it("say what a template turns on and off, in words", () => {

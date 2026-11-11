@@ -121,7 +121,12 @@ fn sample_demo() -> (TempDir, TempDir) {
         .unwrap();
     assert!(brand.status.success(), "{brand:?}");
     let toml = within(site.path(), "site.toml");
+    // GitHub Pages serves files only, so scripts/pages.sh publishes every
+    // demo in static mode, with no link to a server route such as
+    // /api/oembed.
     let text = fs::read_to_string(&toml).unwrap();
+    let text = text.replacen("mode = \"server\"", "mode = \"static\"", 1);
+    assert!(text.contains("mode = \"static\""), "{text}");
     fs::write(
         &toml,
         format!("{text}\n[template]\nname = \"{TEMPLATE}\"\n"),

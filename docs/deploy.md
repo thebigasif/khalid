@@ -46,6 +46,22 @@ For example, to install and set up the service on a server:
 curl -fsSL https://raw.githubusercontent.com/thebigasif/khalid/main/scripts/install.sh | sudo sh -s -- --systemd
 ```
 
+## Install with Homebrew
+
+Homebrew is a package manager for macOS and Linux: it installs programs and updates them with one command. Khalid has its own tap, a list of programs Homebrew can install, in the repository `thebigasif/homebrew-khalid`. This line adds the tap and installs Khalid, its manual pages and Tab completion for bash, zsh and fish:
+
+```sh
+brew install thebigasif/khalid/khalid
+```
+
+`brew upgrade khalid` installs a newer release. Homebrew downloads the same files as the one-line script, checks each against its checksum, and builds nothing on your machine.
+
+Each published release updates the tap by itself: the Homebrew workflow writes the formula, the recipe `brew` follows, with `scripts/homebrew-formula.sh`, installs it with `brew` on macOS and Linux, and only then puts it in the tap. A prerelease is left out. To write the formula for a release by hand, download its `SHA256SUMS` and run:
+
+```sh
+scripts/homebrew-formula.sh v1.9.0 SHA256SUMS > khalid.rb
+```
+
 ## Signing in to the admin the first time
 
 The admin is at `admin/` in the blog's folder: `/admin/` for a blog that is the whole site, and `/blog/admin/` for one under `/blog/`.
@@ -65,6 +81,8 @@ khalid --site blog staff owner --email you@example.com --name "Your Name"
 ```
 
 This is the only time Khalid shows the sign-in link. The link works once, within 15 minutes. It is shown on two addresses: the site's own, and `localhost`, for a site that is not online yet. Open the `localhost` one while `khalid serve` runs on the same computer. If `khalid serve` listens somewhere other than `127.0.0.1:8080`, pass the same `--listen` to `staff owner`. Once signed in, choose a password or add a passkey.
+
+Once `[mail]` is set up, as "Sending email" below shows, anyone on the staff can choose "Email me a sign-in link" on the admin's sign-in page and type their email. It works once, within 15 minutes, and opens the admin signed in. The page gives the same answer for an email with no account and sends nothing, so nobody learns who is on the staff. Without `[mail]`, staff sign in with a password or a passkey.
 
 ## systemd on a Linux machine
 
@@ -325,6 +343,12 @@ With systemd, run `sudo systemctl edit khalid` and add `Environment=KHALID_SMTP_
 
 To check mail before you start the server, run `khalid --site <folder> doctor` in the same environment. Its Mail line says which way mail leaves and whether the variable is set, without showing it. Add `--send-test-mail` to send one email to the address form answers go to, through the same server or service `khalid serve` uses. If it fails, doctor says why, such as a refused password or a server that did not answer.
 
+## Nightly site audit
+
+`khalid serve` audits the blog once a day, the way `khalid audit --offline` does: it builds the site into `data/audit/site/`, reads every page as a search engine's crawler would, and keeps the health score in `data/audit/runs.jsonl`. The health score is the share of pages with no error, out of 100. The first audit runs an hour after the server starts, so it never slows the start, and the next one a day after the last audit, whether the server or you ran it. The issues and their fixes are in `data/audit/issues.csv`.
+
+The dashboard shows the score from `GET /api/admin/v1/site/health/`, which sends the last audit and up to the last 30 as the trend. Before the first audit, `last` is `null`.
+
 ## Alerts
 
 `khalid serve` tells you when something on the blog needs you. Once an hour it checks for a burst of visits ending on missing pages (404s), an HTTPS certificate with under two weeks left, and live posts that have not changed in a year. It also tells you when a scheduled post did not go live because the linter refused it, and `khalid audit` tells you about broken links. Each problem is sent once while it lasts, and again if it clears and comes back.
@@ -357,6 +381,8 @@ khalid --site /srv/blog watch
 ```
 
 It shows, for the last day and the last 30 days, how many looks answered, how fast, and the longest gap between looks. A long gap means the server itself was off, since a stopped server cannot look. To be told about that too, have a second machine or an outside monitor watch the address.
+
+The running `khalid serve` answers the same report, in the shape `khalid watch --json` prints, at `GET /api/admin/v1/watch/` for a key with `settings:write`. Agents reach it through `khalid mcp` as the `uptime_report` tool.
 
 ## The visitor log
 
@@ -537,6 +563,8 @@ Then, all with `--json` when a program reads the answer:
 The weekly email goes out when a week has passed since the last one, and the first soon after `khalid serve` starts. Khalid keeps the day it last went out in `data/search-console-email.txt`, and the command writes it too, so a restart or a run by hand never sends the email twice in a week. If Google or the mail service fails, the server tries again an hour later.
 
 `khalid serve` reads the connection and the two secrets once, at start, so restart it after setting them. It then answers the same follow-ups at `GET /api/admin/v1/search-console/follow-ups/`, and the same report at `GET /api/admin/v1/search-console/report/`, for a key with `settings:write`. The admin shows both under Search Console, with a link from each post to its editor. The posts are read on each request, so a heading you just added counts.
+
+The Posts screen adds a "Google search, last 28 days" column beside each post: its clicks and the times Google showed it. It reads them from `GET /api/admin/v1/search-console/posts/`, which asks Google once, where the full report asks six times. A blog that is not connected, or a key without `settings:write`, sees the same table without that column.
 
 The Analytics screen also shows Google's numbers for all your pages together: clicks, times shown, the share clicked and the average position, for the same 7, 28 or 90 days as the page views, against the days before. It reads them from `GET /api/admin/v1/search-console/totals/?days=`, from 1 to 90 days, 28 when left out. Google needs about three days to make a day's numbers final, so these days end three days earlier than the page views. A blog that is not connected sees a link to the Search Console screen in their place, and Google is not asked.
 

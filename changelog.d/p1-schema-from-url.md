@@ -1,0 +1,2 @@
+Added
+- Copy schema from a URL. `POST /api/admin/v1/schema/copies/` fetches any public page and answers with its JSON-LD, ready to edit in a post's `schema` field. The other site's `@id`s are left out, the answer names each node's type, and it says when the `schema` field would refuse the copy as it is. The page is fetched through the one outbound client, so an address inside the server's network is refused.

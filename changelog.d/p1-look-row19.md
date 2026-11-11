@@ -1,0 +1,2 @@
+Added
+- The admin's Look screen edits your call to action: the words on the button, where it goes, and a line beside it. It says whether the chosen template shows it on every post or only where a post has a `::cta` line. Empty the three lines to remove it. The Admin API's settings answer and take `cta`, with `label`, `href` and an optional `note`; `"cta": null` removes it, and a change that leaves it out keeps it.

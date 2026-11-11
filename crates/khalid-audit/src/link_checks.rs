@@ -1,5 +1,5 @@
 //! The checks that need the whole crawl: broken pages and links,
-//! redirects, broken files, click depth and inbound links.
+//! redirects, broken files, heavy images, click depth and inbound links.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -11,6 +11,9 @@ use crate::{Check, Crawl, Issue, Outcome, Page, Visit};
 const MOST_CLICKS: u32 = 3;
 /// A redirect chain longer than this is followed no further.
 const MOST_HOPS: usize = 20;
+/// An image file over this many bytes is too heavy: 100 KB, as Ahrefs
+/// counts it.
+const MOST_IMAGE_BYTES: usize = 100_000;
 
 /// Runs every whole-crawl check.
 pub(crate) fn link_issues(crawl: &Crawl, issues: &mut Vec<Issue>) {
@@ -109,8 +112,8 @@ fn hops(crawl: &Crawl, visit: &Visit) -> Hops {
     Hops::Loop
 }
 
-/// The page's links, images and files that are broken or redirect, once
-/// each.
+/// The page's links, images and files that are broken or redirect, and
+/// its images that are too heavy, once each.
 fn targets(crawl: &Crawl, visit: &Visit, page: &Page, issues: &mut Vec<Issue>) {
     let images: BTreeSet<&AbsoluteUrl> = page.images().iter().map(crate::Image::src).collect();
     let links = page.links().iter().map(|link| (link.to(), Kind::Link));
@@ -132,6 +135,12 @@ fn targets(crawl: &Crawl, visit: &Visit, page: &Page, issues: &mut Vec<Issue>) {
         }
         let check = match (kind, target.outcome()) {
             (Kind::Link, Outcome::Redirect { .. }) => Check::LinksToRedirect,
+            (Kind::Image, outcome) if outcome.is_ok() && target.bytes() > MOST_IMAGE_BYTES => {
+                let size = target.bytes().div_ceil(1_000);
+                let detail = format!("{to} is {size} KB");
+                issues.push(Issue::new(Check::ImageTooLarge, visit.url(), detail));
+                continue;
+            }
             (_, outcome) if !outcome.is_broken() => continue,
             (Kind::Link, _) => Check::BrokenLink,
             (Kind::Image, _) => Check::ImageBroken,

@@ -24,6 +24,25 @@ pub(crate) fn of(error: &LintError) -> UserMessage {
             why,
             format!("Change line {line} to the name of a rule, or remove it."),
         ),
+        LintError::UnknownCategory {
+            category,
+            line,
+            known,
+        } => UserMessage::new(
+            format!(
+                "lint.toml asks for a reviewer in a category the site does not have, `{category}`, on line {line}."
+            ),
+            "No post is in that category, so the reviewer rule would check nothing.",
+            match known.as_slice() {
+                [] => format!(
+                    "Add the category to categories.toml, or remove `{category}` from line {line} of lint.toml."
+                ),
+                known => format!(
+                    "Change `{category}` on line {line} of lint.toml to one of the site's categories: {}.",
+                    known.join(", ")
+                ),
+            },
+        ),
         _ => UserMessage::new(
             "The linter could not start because its built-in messages are broken.",
             "This is a fault inside Khalid, not in your site.",
