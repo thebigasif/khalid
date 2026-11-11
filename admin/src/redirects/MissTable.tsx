@@ -23,7 +23,7 @@ export function MissTable({ misses, onSend }: Props) {
         </thead>
         <tbody>
           {misses.map((miss) => {
-            const to = miss.nearest;
+            const to = miss.nearest ?? null;
             return (
               <tr key={miss.path}>
                 <td data-label={words.path}>

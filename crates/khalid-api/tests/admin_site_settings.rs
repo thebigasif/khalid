@@ -177,6 +177,30 @@ async fn the_home_sections_are_saved_and_read_back_in_order() {
     assert!(status.is_client_error(), "{status}: {json}");
 }
 
+/// The admin types its settings screens from the document, so the answer
+/// it documents must be the one the routes send: one `AdminSettings`, not
+/// the Content API's list of the same name.
+#[tokio::test]
+async fn the_document_names_the_settings_the_routes_send() {
+    let request = Request::get("/api/openapi.json").body(Body::empty());
+    let response = demo().oneshot(request.unwrap()).await.unwrap();
+    let bytes = to_bytes(response.into_body(), 4 * 1024 * 1024)
+        .await
+        .unwrap();
+    let document: Value = serde_json::from_slice(&bytes).unwrap();
+    let path = &document["paths"][SETTINGS];
+    for method in ["get", "put"] {
+        let answer = &path[method]["responses"]["200"]["content"]["application/json"]["schema"];
+        let name = answer["$ref"].as_str().unwrap_or_default();
+        let wrapper = name.trim_start_matches("#/components/schemas/");
+        let settings = &document["components"]["schemas"][wrapper]["properties"]["settings"];
+        assert_eq!(
+            settings["$ref"], "#/components/schemas/AdminSettings",
+            "{method} answers {wrapper}: {settings}"
+        );
+    }
+}
+
 #[tokio::test]
 async fn a_menu_sent_replaces_that_menu_and_leaves_the_other() {
     let router = demo();

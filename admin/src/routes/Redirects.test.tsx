@@ -47,6 +47,19 @@ describe("the redirects Khalid keeps", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("reads a redirect the way the API document allows it to come", async () => {
+    signedIn();
+    // The document lets `to` be left out and `origin` be any word.
+    const { to: _, ...bare } = kept({ status: 451, origin: "sync" });
+    keeping([bare]);
+    renderAt("/redirects");
+    const table = await screen.findByRole("table", { name: en.redirects.kept.title });
+    const [, row] = within(table).getAllByRole("row");
+    expect(row).toHaveTextContent(en.redirects.kept.nothing);
+    expect(row).toHaveTextContent("sync");
+    expect(row).not.toHaveTextContent("undefined");
+  });
+
   it("removes one and lists the rest again", async () => {
     signedIn();
     const sent = keeping([kept(), PATTERN]);
