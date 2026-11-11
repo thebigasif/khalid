@@ -22,7 +22,7 @@ paragraph-max-words = 225
 
 ## The focus keyword
 
-The focus keyword is the phrase you want a post to be found for, set with `focus_keyword:` in the header. Khalid finds it in any word form: "internal links" counts for "internal link" and "Interne Links" for "interner Link", in English and German. Other languages compare the words as written.
+The focus keyword is the phrase you want a post to be found for, set with `focus_keyword:` in the header. Khalid finds it in any word form: "internal links" counts for "internal link" and "Interne Links" for "interner Link". This works in English, German, French, Spanish, Italian, Portuguese and Dutch. Other languages compare the words as written.
 
 Synonyms count as the keyword. List them in the header:
 

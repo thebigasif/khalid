@@ -1,5 +1,6 @@
 //! Word forms: the stems that let "links" match "link" and "Links" match
-//! "Link", from the Snowball stemmers for English and German.
+//! "Link", from the Snowball stemmers for English, German, French,
+//! Spanish, Italian, Portuguese and Dutch.
 //!
 //! A stem is the part of a word its forms share, such as "link" for
 //! "link", "links" and "linking". The focus checks compare stems, so a
@@ -28,6 +29,11 @@ impl WordForms {
         let algorithm = match language {
             "en" => Some(Algorithm::English),
             "de" => Some(Algorithm::German),
+            "fr" => Some(Algorithm::French),
+            "es" => Some(Algorithm::Spanish),
+            "it" => Some(Algorithm::Italian),
+            "pt" => Some(Algorithm::Portuguese),
+            "nl" => Some(Algorithm::Dutch),
             _ => None,
         };
         Self(algorithm.map(Stemmer::create))
@@ -79,13 +85,16 @@ impl WordForms {
     }
 }
 
-/// The letter as the German stemmer leaves it at the start of a stem,
-/// without its umlaut, so "über" and its stem "uber" start alike.
+/// The vowel without its accent or umlaut, as some stemmers leave it at
+/// the start of a stem, so "über" and its German stem "uber", or
+/// "árboles" and its Spanish stem "arbol", start alike.
 fn plain_letter(letter: char) -> char {
     match letter {
-        'ä' => 'a',
-        'ö' => 'o',
-        'ü' => 'u',
+        'à' | 'á' | 'â' | 'ä' => 'a',
+        'è' | 'é' | 'ê' | 'ë' => 'e',
+        'ì' | 'í' | 'î' | 'ï' => 'i',
+        'ò' | 'ó' | 'ô' | 'ö' => 'o',
+        'ù' | 'ú' | 'û' | 'ü' => 'u',
         other => other,
     }
 }
@@ -117,11 +126,38 @@ mod tests {
     }
 
     #[test]
+    fn french_spanish_italian_portuguese_and_dutch_word_forms_share_a_stem() {
+        let cases = [
+            ("fr", "lien interne", "Des liens internes"),
+            ("es", "enlace interno", "Los enlaces internos"),
+            ("it", "collegamento interno", "Due collegamenti interni"),
+            ("pt", "artigo novo", "Dois artigos novos"),
+            ("nl", "interne link", "Twee interne links"),
+        ];
+        for (language, keyword, text) in cases {
+            let forms = WordForms::of(language);
+            let phrase = forms.phrase(keyword);
+            assert!(forms.holds(&words(text), &phrase), "{language}: {text}");
+            assert!(!forms.holds(&words("bonjour"), &phrase), "{language}");
+        }
+    }
+
+    #[test]
+    fn a_stem_that_drops_the_first_accent_still_matches() {
+        let forms = WordForms::of("es");
+        let phrase = forms.phrase("árbol");
+        assert!(forms.holds(&words("Dos árboles altos"), &phrase));
+        let forms = WordForms::of("nl");
+        let phrase = forms.phrase("één");
+        assert!(forms.holds(&words("Nog één keer"), &phrase));
+    }
+
+    #[test]
     fn a_language_without_a_stemmer_matches_words_as_written() {
-        let forms = WordForms::of("fr");
-        let phrase = forms.phrase("lien interne");
-        assert!(forms.holds(&words("un lien interne"), &phrase));
-        assert!(!forms.holds(&words("des liens internes"), &phrase));
-        assert_eq!(forms.uses(&words("lien"), &[]), 0);
+        let forms = WordForms::of("pl");
+        let phrase = forms.phrase("link wewnętrzny");
+        assert!(forms.holds(&words("jeden link wewnętrzny"), &phrase));
+        assert!(!forms.holds(&words("linki wewnętrzne"), &phrase));
+        assert_eq!(forms.uses(&words("link"), &[]), 0);
     }
 }
