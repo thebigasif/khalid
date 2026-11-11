@@ -18,7 +18,7 @@ export function Imprint({ site, onSave }: PrivacyProps) {
   });
   // An empty `[privacy.imprint]` still adds the page, so on with no lines saves `{}`.
   const save = () =>
-    onSave({ privacy: { imprint: on ? cleaned({ ...imprint, ...texts }) ?? {} : null } });
+    onSave({ privacy: { imprint: on ? (cleaned({ ...imprint, ...texts }) ?? {}) : null } });
 
   return (
     <>

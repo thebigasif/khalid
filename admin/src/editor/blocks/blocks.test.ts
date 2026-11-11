@@ -58,7 +58,8 @@ const BLOCKS: Record<string, string> = {
   snippet: '::snippet{slug="affiliate-disclosure"}',
   table:
     ':::table{fold=2 more="Show every plan"}\n| Plan | Price |\n| --- | --- |\n| Solo | 9 |\n| Team | 29 |\n| Agency | 99 |\n:::',
-  takeaways: ':::takeaways{title="In short"}\n- Link new posts to old ones.\n- Check links each month.\n:::',
+  takeaways:
+    ':::takeaways{title="In short"}\n- Link new posts to old ones.\n- Check links each month.\n:::',
   toc: "::toc",
   toggle: ':::toggle{summary="Why does this matter?"}\nSearch engines read it.\n:::',
   video:

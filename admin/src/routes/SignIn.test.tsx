@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { adminBlog, noContent } from "../../test/blog";
@@ -117,7 +117,9 @@ describe("signing in", () => {
     const open = await screen.findByRole("button", { name: en.signIn.byLink.open });
     expect(open).toHaveAttribute("aria-expanded", "false");
     await userEvent.click(open);
-    const field = screen.getByLabelText(en.signIn.byLink.label);
+    // The password form has an Email field too, so look inside the link form.
+    const form = screen.getByRole("form", { name: en.signIn.byLink.form });
+    const field = within(form).getByLabelText(en.signIn.byLink.label);
     expect(field).toHaveFocus();
     await userEvent.type(field, "lena@example.com");
     await userEvent.click(screen.getByRole("button", { name: en.signIn.byLink.submit }));
@@ -139,7 +141,8 @@ describe("signing in", () => {
     adminBlog({ "POST /session/link/": () => json(404, noMail) });
     renderAt("/sign-in");
     await userEvent.click(await screen.findByRole("button", { name: en.signIn.byLink.open }));
-    await userEvent.type(screen.getByLabelText(en.signIn.byLink.label), "lena@example.com");
+    const form = screen.getByRole("form", { name: en.signIn.byLink.form });
+    await userEvent.type(within(form).getByLabelText(en.signIn.byLink.label), "lena@example.com");
     await userEvent.click(screen.getByRole("button", { name: en.signIn.byLink.submit }));
     expect(await screen.findByRole("alert")).toHaveTextContent(noMail.fix);
     expect(screen.queryByText(en.signIn.byLink.sent("lena@example.com"))).toBeNull();

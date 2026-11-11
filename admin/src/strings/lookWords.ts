@@ -27,7 +27,8 @@ export const lookWords = {
     label: "Words on the button",
     labelHint: "A few words, such as Start a free trial.",
     href: "Where the button goes",
-    hrefHint: "A full address, such as https://example.com/signup, or a path on your blog, such as /blog/start/.",
+    hrefHint:
+      "A full address, such as https://example.com/signup, or a path on your blog, such as /blog/start/.",
     note: "Line beside the button",
     noteHint: "Optional. One short line, such as No card needed.",
   },
