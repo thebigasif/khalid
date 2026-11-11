@@ -230,14 +230,13 @@ use std::process::ExitCode;
 
 use clap::{CommandFactory, Parser};
 use khalid_content::{ContentTree, SiteContent, check_bodies, read_content};
-use khalid_core::{Config, Environment, SystemClock, UserMessage};
+use khalid_core::{Config, Environment, UserMessage};
 use khalid_routes::Routes;
 use khalid_server::FolderLook;
 
 use crate::cli::{Cli, Command, Output, ServeArgs};
-use crate::dispatch::{access, needs_site, not_built, on_content, on_folder, on_settings, outside};
+use crate::dispatch::needs_site;
 use crate::exit::Exit;
-use crate::lint::Mode;
 use crate::post_files::Assets;
 
 #[global_allocator]
@@ -250,6 +249,15 @@ fn main() -> ExitCode {
         Err(error) => cli_parse::parse_failure(&error, Output::requested_in(&args)),
     };
     exit.into()
+}
+
+/// Runs the command the person asked for, or prints the help when they
+/// asked for none.
+fn run(cli: &Cli) -> Exit {
+    match &cli.command {
+        None => report::text(&Cli::command().render_help().to_string(), Exit::Success),
+        Some(command) => dispatch::run(cli, &Environment::from_process(), command),
+    }
 }
 
 /// Runs `khalid serve`, which is `command`: every site in a sites folder,
@@ -282,115 +290,6 @@ fn serve_site(cli: &Cli, env: &Environment, command: &Command, args: &ServeArgs)
             serve_https::serve(cli, folder, (&config, &routes), start, (args, keys))
         }
         Err(message) => report::failure(cli.output, &message, Exit::Failure),
-    }
-}
-
-/// Runs the command the person asked for, after checking the site's settings
-/// and reading its content when `--site` names a folder.
-fn run(cli: &Cli) -> Exit {
-    let env = Environment::from_process();
-    if let Some(exit) = run_unchecked(cli, &env) {
-        return exit;
-    }
-    let site = match cli.site.as_deref() {
-        Some(folder) => match check(folder, &env, Bodies::Now) {
-            Ok((config, routes, content, assets)) => {
-                Some((folder, config, routes, (content, assets)))
-            }
-            Err(message) => return report::failure(cli.output, &message, Exit::Failure),
-        },
-        None => None,
-    };
-    match (&cli.command, &site) {
-        (None, _) => report::text(&Cli::command().render_help().to_string(), Exit::Success),
-        (Some(Command::Db { command }), Some((folder, config, ..))) => {
-            db::run((folder, config), command.clone(), cli.output)
-        }
-        (Some(Command::Watch), Some((folder, ..))) => {
-            watch_report::run(folder, &SystemClock, cli.output)
-        }
-        (Some(Command::Lint { path, fix }), Some((folder, ..))) => {
-            let mode = if *fix { Mode::Fix } else { Mode::Check };
-            lint::run(folder, path.as_deref(), mode, cli.output)
-        }
-        (
-            Some(asked @ (Command::Build { .. } | Command::Export | Command::Audit { .. })),
-            Some((folder, config, routes, (content, _))),
-        ) => on_content(folder, (config, routes, content), asked, (cli, &env)),
-        (
-            Some(command @ (Command::Keys { .. } | Command::Staff { .. })),
-            Some((folder, config, ..)),
-        ) => access(folder, config, command, cli.output),
-        (Some(Command::Mcp), Some((folder, config, ..))) => mcp::run(folder, config, (&env, cli)),
-        (
-            Some(command @ (Command::Bing { .. } | Command::SearchConsole { .. })),
-            Some((folder, config, _, (content, _))),
-        ) => outside((folder, config, content), &env, command, cli),
-        (
-            Some(
-                command @ (Command::Theme { .. }
-                | Command::Publish { .. }
-                | Command::Plan { .. }
-                | Command::Newsletter { .. }
-                | Command::New(_)),
-            ),
-            Some((folder, config, ..)),
-        ) => on_settings(folder, config, command, cli),
-        (Some(Command::Import(args)), Some((folder, config, routes, _))) => {
-            import::run(folder, (config, routes), args, cli)
-        }
-        // Every command that works without a site returned in
-        // `run_unchecked`, so each one left needs `--site`.
-        (Some(command), None) => report::failure(cli.output, &needs_site(command), Exit::Usage),
-        (Some(command), _) => report::failure(cli.output, &not_built(command), Exit::Internal),
-    }
-}
-
-/// Runs the commands that do not start from a checked site: `init`, which
-/// makes the site, `restore`, which makes one from a backup, `agents`,
-/// `completions` and `update`, which need none, `doctor`, which checks the
-/// site itself to list every problem instead of stopping at the first,
-/// `serve`, which checks its site beside its start, and the commands
-/// [`on_folder`] runs. Returns `None` for every other command.
-fn run_unchecked(cli: &Cli, env: &Environment) -> Option<Exit> {
-    match &cli.command {
-        Some(Command::Init(args)) => {
-            let folder = args
-                .folder
-                .as_deref()
-                .or(cli.site.as_deref())
-                .unwrap_or(Path::new("."));
-            Some(init::run(folder, args, cli.output))
-        }
-        Some(Command::Agents) => Some(agents::run(cli.output)),
-        Some(Command::Completions(args)) => Some(completions::run(args, cli.output)),
-        #[cfg(feature = "man")]
-        Some(Command::Man(args)) => Some(man::run(args, cli.output)),
-        Some(Command::Restore { archive, folder }) => {
-            Some(restore::run(archive, folder, cli.output))
-        }
-        Some(Command::Sites { command }) => {
-            let root = cli.site.as_deref().unwrap_or(Path::new("."));
-            Some(sites::run(root, command, cli.output))
-        }
-        Some(command @ Command::Serve(args)) => Some(serve_site(cli, env, command, args)),
-        Some(Command::Update { target }) => Some(update::run(*target, cli)),
-        Some(command @ Command::Doctor { network, test_mail }) => Some(match cli.site.as_deref() {
-            Some(folder) => doctor::run(folder, (*network, *test_mail), cli),
-            None => report::failure(cli.output, &needs_site(command), Exit::Usage),
-        }),
-        Some(
-            asked @ (Command::Redirects { .. }
-            | Command::Webhooks { .. }
-            | Command::Analytics { .. }
-            | Command::Backup { .. }
-            | Command::Pull
-            | Command::Crawl { .. }),
-        ) => Some(match cli.site.as_deref() {
-            Some(folder) => on_folder(folder, asked, cli.output),
-            None => report::failure(cli.output, &needs_site(asked), Exit::Usage),
-        }),
-        _ => None,
     }
 }
 

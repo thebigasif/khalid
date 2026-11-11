@@ -121,10 +121,6 @@ pub(crate) enum Output {
 
 /// Every command in `docs/plan.md` section 4.1.
 #[derive(Debug, Subcommand)]
-#[expect(
-    dead_code,
-    reason = "the arguments are read once each command is built, in later phases"
-)]
 pub(crate) enum Command {
     /// Set up a site: address, mount, languages, mode
     Init(InitArgs),
