@@ -227,24 +227,28 @@ async fn a_reader_comment_fires_comment_added_without_their_email() {
     );
 }
 
+/// Adds a webhook for `event` sending to `receiver` at `/<event>` with
+/// `khalid webhooks add`, and returns its secret.
+#[cfg(test)]
+fn add_webhook(site: &Path, receiver: &MockServer, event: Event) -> Secret<String> {
+    let url = format!("http://hooks.test:{}/{event}", receiver.address().port());
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .args(["--site", site.to_str().unwrap(), "webhooks", "add"])
+        .args(["--event", event.as_str(), "--url", &url, "--json"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    let added: Value = serde_json::from_slice(&output.stdout).unwrap();
+    Secret::new(added["secret"].as_str().unwrap().to_owned())
+}
+
 #[tokio::test(flavor = "multi_thread")]
 async fn a_webhook_added_with_the_command_fires_on_the_running_site() {
     let receiver = receiver().await;
     let (site, _) = demo_site(&receiver, Event::PostDeleted).await;
     let server = start(site.path());
 
-    let url = format!(
-        "http://hooks.test:{}/comment.added",
-        receiver.address().port()
-    );
-    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
-        .args(["--site", site.path().to_str().unwrap(), "webhooks", "add"])
-        .args(["--event", "comment.added", "--url", &url, "--json"])
-        .output()
-        .unwrap();
-    assert_eq!(output.status.code(), Some(0));
-    let added: Value = serde_json::from_slice(&output.stdout).unwrap();
-    let secret = Secret::new(added["secret"].as_str().unwrap().to_owned());
+    let secret = add_webhook(site.path(), &receiver, Event::CommentAdded);
     assert_eq!(leave_comment(&server).await, 303);
     let body = the_delivery(&receiver, Event::CommentAdded, &secret).await;
     assert_eq!(body["comment"]["text"], "Very clear, thanks.", "{body}");
@@ -465,4 +469,74 @@ async fn a_draft_taken_off_its_schedule_fires_post_scheduled_with_no_time() {
     let later = json!("2099-01-05T09:00:00Z");
     assert_eq!(times, [&later, &Value::Null], "{bodies:?}");
     assert_eq!(bodies[1]["post"]["status"], "draft", "{bodies:?}");
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_tag_renamed_then_removed_through_the_api_fires_tag_renamed_and_tag_removed() {
+    let receiver = receiver().await;
+    let (site, renamed_secret) = demo_site(&receiver, Event::TagRenamed).await;
+    let removed_secret = add_webhook(site.path(), &receiver, Event::TagRemoved);
+    let mut post = site.path().to_path_buf();
+    post.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
+    let text = fs::read_to_string(&post).unwrap();
+    let tagged = text.replacen("\nslug: ", "\ntags: [\"crawling\"]\nslug: ", 1);
+    fs::write(&post, tagged).unwrap();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+
+    let (status, listed) = api(&server, &key, ("GET", "/api/admin/v1/tags/"), &Value::Null);
+    assert_eq!(status, 200, "{listed}");
+    let route = ("PUT", "/api/admin/v1/tags/en.crawling/");
+    let stale = json!({"tags": [{"name": "Crawl", "updated_at": "2020-01-01T00:00:00Z"}]});
+    let (status, refused) = api(&server, &key, route, &stale);
+    assert_eq!(status, 409, "a refused rename fires nothing: {refused}");
+    let rename = json!({"tags": [{"name": "Crawling and indexing",
+        "updated_at": listed["tags"][0]["updated_at"]}]});
+    let (status, renamed) = api(&server, &key, route, &rename);
+    assert_eq!(status, 200, "{renamed}");
+    let body = the_delivery(&receiver, Event::TagRenamed, &renamed_secret).await;
+    assert_eq!(body["tag"]["id"], "en.crawling-and-indexing", "{body}");
+    assert_eq!(body["tag"]["name"], "Crawling and indexing", "{body}");
+    assert_eq!(body["previous"]["id"], "en.crawling", "{body}");
+    assert_eq!(body["previous"]["name"], "crawling", "{body}");
+
+    let seen = renamed["tags"][0]["updated_at"].as_str().unwrap();
+    let removal = format!("/api/admin/v1/tags/en.crawling-and-indexing/?updated_at={seen}");
+    let (status, answer) = api(&server, &key, ("DELETE", &removal), &Value::Null);
+    assert_eq!(status, 204, "{answer}");
+    let body = the_delivery(&receiver, Event::TagRemoved, &removed_secret).await;
+    assert_eq!(body["tag"]["id"], "en.crawling-and-indexing", "{body}");
+    assert_eq!(body["tag"]["posts"], 1, "the tag as it was: {body}");
+}
+
+#[tokio::test(flavor = "multi_thread")]
+async fn a_category_added_renamed_and_deleted_through_the_api_fires_its_three_events() {
+    let receiver = receiver().await;
+    let (site, added_secret) = demo_site(&receiver, Event::CategoryAdded).await;
+    let renamed_secret = add_webhook(site.path(), &receiver, Event::CategoryRenamed);
+    let deleted_secret = add_webhook(site.path(), &receiver, Event::CategoryDeleted);
+    let key = writer_key(site.path());
+    let server = start(site.path());
+
+    let new = json!({"categories": [{"slug": "link-building", "names": {"en": "Link building"}}]});
+    let (status, made) = api(&server, &key, ("POST", "/api/admin/v1/categories/"), &new);
+    assert_eq!(status, 201, "{made}");
+    let body = the_delivery(&receiver, Event::CategoryAdded, &added_secret).await;
+    assert_eq!(body["category"]["id"], "link-building", "{body}");
+
+    let route = "/api/admin/v1/categories/link-building/";
+    let edit = json!({"categories": [{"names": {"en": "Earning links"},
+        "updated_at": made["categories"][0]["updated_at"]}]});
+    let (status, saved) = api(&server, &key, ("PUT", route), &edit);
+    assert_eq!(status, 200, "{saved}");
+    let body = the_delivery(&receiver, Event::CategoryRenamed, &renamed_secret).await;
+    assert_eq!(body["category"]["names"]["en"], "Earning links", "{body}");
+    assert_eq!(body["previous"]["names"]["en"], "Link building", "{body}");
+
+    let seen = saved["categories"][0]["updated_at"].as_str().unwrap();
+    let gone = format!("{route}?updated_at={seen}");
+    let (status, answer) = api(&server, &key, ("DELETE", &gone), &Value::Null);
+    assert_eq!(status, 204, "{answer}");
+    let body = the_delivery(&receiver, Event::CategoryDeleted, &deleted_secret).await;
+    assert_eq!(body["category"]["names"]["en"], "Earning links", "{body}");
 }
