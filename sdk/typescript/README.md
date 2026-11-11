@@ -23,11 +23,11 @@ Content API calls send `contentKey` as `Authorization: Khalid-Content <key>`. Ad
 
 ## What is generated
 
-| File | What it holds | Written by |
-|---|---|---|
-| `openapi.json` | The document a Khalid server answers at `/api/openapi.json` | `crates/khalid-auth/tests/sdk_document.rs` |
-| `src/schema.d.ts` | One type per schema, and what each operation takes and answers | `crates/khalid-sdk` |
-| `src/operations.js` | Where each operation is sent and which key signs it | `crates/khalid-sdk` |
+| File                | What it holds                                                  | Written by                                 |
+| ------------------- | -------------------------------------------------------------- | ------------------------------------------ |
+| `openapi.json`      | The document a Khalid server answers at `/api/openapi.json`    | `crates/khalid-auth/tests/sdk_document.rs` |
+| `src/schema.d.ts`   | One type per schema, and what each operation takes and answers | `crates/khalid-sdk`                        |
+| `src/operations.js` | Where each operation is sent and which key signs it            | `crates/khalid-sdk`                        |
 
 `src/client.js`, `src/index.js` and `src/index.d.ts` are written by hand and hold no API type.
 
