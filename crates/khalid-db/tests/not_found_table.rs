@@ -1,6 +1,6 @@
 //! The 404 log on SQLite: hits are counted and kept after the database is
-//! opened again, the log stops growing when full, and each site sees only
-//! its own (KH-SEO-8).
+//! opened again, a full log makes room for a new address, and each site
+//! sees only its own (KH-SEO-8).
 
 use std::path::{Path, PathBuf};
 
@@ -54,20 +54,24 @@ async fn hits_are_counted_most_first_and_outlast_closing_the_database() {
 }
 
 #[tokio::test]
-async fn a_full_log_counts_known_addresses_and_drops_new_ones() {
+async fn a_full_log_makes_room_by_dropping_the_least_hit_oldest_address() {
     let dir = tempfile::tempdir().unwrap();
     let (db, log) = table(&file(&dir), "main").await;
-    for n in 0..MAX_MISSES {
+    log.record("/blog/old-post/", at(8)).await.unwrap();
+    log.record("/blog/old-post/", at(8)).await.unwrap();
+    log.record("/blog/stale-probe/", at(7)).await.unwrap();
+    for n in 2..MAX_MISSES {
         log.record(&format!("/blog/probe-{n}/"), at(9))
             .await
             .unwrap();
     }
-    log.record("/blog/one-more/", at(10)).await.unwrap();
-    log.record("/blog/probe-7/", at(10)).await.unwrap();
+    log.record("/blog/one-more/", at(11)).await.unwrap();
     let misses = log.misses(u32::MAX).await.unwrap();
     assert_eq!(misses.len(), MAX_MISSES);
-    assert_eq!(misses[0].path, "/blog/probe-7/");
-    assert!(misses.iter().all(|m| m.path != "/blog/one-more/"));
+    let paths: Vec<&str> = misses.iter().map(|m| m.path.as_str()).collect();
+    assert!(paths.contains(&"/blog/one-more/"));
+    assert!(paths.contains(&"/blog/old-post/"));
+    assert!(!paths.contains(&"/blog/stale-probe/"));
     db.close().await;
 }
 

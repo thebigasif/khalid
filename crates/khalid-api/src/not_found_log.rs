@@ -7,9 +7,10 @@ use chrono::{DateTime, Utc};
 
 use crate::content_store::BoxFuture;
 
-/// The most addresses the log holds. Once full, addresses already in it
-/// are still counted and new ones are dropped, so a scanner trying random
-/// addresses cannot grow the database without end.
+/// The most addresses the log holds, so a scanner trying random addresses
+/// cannot grow the database without end. Once full, a new address takes
+/// the place of the one hit least, and of those the one seen longest ago,
+/// so real 404s are still recorded after a scanner has filled the log.
 pub const MAX_MISSES: usize = 10_000;
 
 /// An address that answered 404, with how often and when.
@@ -42,7 +43,8 @@ impl Miss {
 /// `MemoryNotFoundLog`, from the `test-util` feature, keeps it in memory
 /// for tests.
 pub trait NotFoundLog: Send + Sync {
-    /// Counts one 404 for `path` at `at`, up to [`MAX_MISSES`] addresses.
+    /// Counts one 404 for `path` at `at`, keeping at most [`MAX_MISSES`]
+    /// addresses.
     ///
     /// # Errors
     ///
@@ -104,17 +106,23 @@ mod memory {
     impl MemoryNotFoundLog {
         fn record_now(&self, path: &str, at: DateTime<Utc>) {
             let mut misses = self.0.lock().unwrap_or_else(PoisonError::into_inner);
-            let full = misses.len() >= MAX_MISSES;
-            match misses.get_mut(path) {
-                Some(miss) => {
-                    miss.hits += 1;
-                    miss.last_seen = at;
-                }
-                None if full => {}
-                None => {
-                    misses.insert(path.to_owned(), Miss::new(path, 1, at, at));
+            if let Some(miss) = misses.get_mut(path) {
+                miss.hits += 1;
+                miss.last_seen = at;
+                return;
+            }
+            if misses.len() >= MAX_MISSES {
+                let least = misses
+                    .values()
+                    .min_by(|a, b| {
+                        (a.hits, a.last_seen, &a.path).cmp(&(b.hits, b.last_seen, &b.path))
+                    })
+                    .map(|miss| miss.path.clone());
+                if let Some(least) = least {
+                    misses.remove(&least);
                 }
             }
+            misses.insert(path.to_owned(), Miss::new(path, 1, at, at));
         }
 
         fn misses_now(&self, limit: u32) -> Vec<Miss> {
@@ -145,6 +153,34 @@ mod memory {
             let mut misses = self.0.lock().unwrap_or_else(PoisonError::into_inner);
             let forgotten = misses.remove(path).is_some();
             Box::pin(std::future::ready(Ok(forgotten)))
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use chrono::TimeZone as _;
+
+        use super::*;
+
+        #[tokio::test]
+        async fn a_full_log_drops_the_least_hit_oldest_address_for_a_new_one() {
+            let at = |hour| Utc.with_ymd_and_hms(2026, 11, 3, hour, 0, 0).unwrap();
+            let log = MemoryNotFoundLog::default();
+            log.record("/blog/old-post/", at(8)).await.unwrap();
+            log.record("/blog/old-post/", at(8)).await.unwrap();
+            log.record("/blog/stale-probe/", at(7)).await.unwrap();
+            for n in 2..MAX_MISSES {
+                log.record(&format!("/blog/probe-{n}/"), at(9))
+                    .await
+                    .unwrap();
+            }
+            log.record("/blog/one-more/", at(11)).await.unwrap();
+            let misses = log.misses(u32::MAX).await.unwrap();
+            assert_eq!(misses.len(), MAX_MISSES);
+            let paths: Vec<&str> = misses.iter().map(|m| m.path.as_str()).collect();
+            assert!(paths.contains(&"/blog/one-more/"));
+            assert!(paths.contains(&"/blog/old-post/"));
+            assert!(!paths.contains(&"/blog/stale-probe/"));
         }
     }
 }
