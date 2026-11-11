@@ -71,7 +71,7 @@ pub use address::flags_slug_part;
 pub use analysis::{Analysis, ProminentWord};
 pub use catalogue::{Catalogue, Message};
 pub use entries::{EntryKind, LintEntry};
-pub use finding::{Finding, Location};
+pub use finding::{Finding, Location, LocationKind};
 pub use gate::{PublishGate, Verdict};
 pub use lint_config::LintConfig;
 pub use lint_error::LintError;

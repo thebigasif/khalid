@@ -3,18 +3,45 @@
 use khalid_core::{Locale, Slug};
 use serde::{Serialize, Serializer};
 
-use crate::{Message, RuleId, Severity};
+use crate::{EntryKind, Message, RuleId, Severity};
 
-/// Where a problem is: the post, and the thing in it when there is one.
+/// Where a problem is: the post or entry, and the thing in it when there is
+/// one.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct Location {
+    /// Whether the problem is in a post, a case study or a changelog entry,
+    /// which may share a slug with a post.
+    pub kind: LocationKind,
     /// The post's language.
     pub locale: Locale,
     /// The post's address.
     pub slug: Slug,
     /// The link, image or phrase the problem is about, if not the whole post.
     pub subject: Option<String>,
+}
+
+/// What kind of page a [`Location`] is in. Only findings in a post count
+/// towards a post's score.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum LocationKind {
+    /// A blog post.
+    Post,
+    /// A case study, in `case-studies/`.
+    CaseStudy,
+    /// A changelog entry, in `changelog/`.
+    Changelog,
+}
+
+impl LocationKind {
+    /// The kind of page `entry` is.
+    pub(crate) fn of(entry: &EntryKind) -> Self {
+        match entry {
+            EntryKind::CaseStudy { .. } => Self::CaseStudy,
+            EntryKind::Changelog { .. } => Self::Changelog,
+        }
+    }
 }
 
 /// A rule's finding with its severity and its message.

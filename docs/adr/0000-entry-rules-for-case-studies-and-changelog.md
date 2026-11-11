@@ -17,6 +17,6 @@ Plan 5.13 gives each of the three extra collections lint rules: a case study nee
 ## Consequences
 
 - `khalid lint` exits 1 on a site with an incomplete case study or an undated changelog entry. Every sample site already passes.
-- `khalid build` and the publish door still judge posts only, so a blocked entry is reported but still published. Holding entries back at the gate is left for later.
-- An entry and a post with the same slug in one language share a score key in `Report::scores`, so an entry's finding would cost that post points. Case studies and changelog entries live at their own addresses, so the slugs rarely meet; giving `Location` a kind would end it.
+- `khalid build` and `khalid serve` leave out an entry these rules block, as they leave out a blocked post (gap audit 5, row 4). `PublishGate::entry_verdict` gives the decision. The publish door in `khalid-api` has no entry routes yet, so it has nothing to hold back; a future entry route calls the same verdict.
+- `Location` has a kind: a post, a case study or a changelog entry. Only findings in a post count towards a post's score, so an entry that shares a slug with a post never costs that post points.
 - The third item of the row, a glossary term with no inbound link, is not built here.
