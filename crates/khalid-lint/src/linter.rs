@@ -46,7 +46,8 @@ impl Linter {
             .map(|message| message.terms().to_vec())
             .unwrap_or_default();
         let reviewed = config.reviewers_required_in().to_vec();
-        let rules = builtin::rules(thresholds, terms, reviewed);
+        let words = config.unclear_words().clone();
+        let rules = builtin::rules(thresholds, terms, reviewed, words);
         Self::with_catalogue(catalogue, config, rules)?
             .with_site_rules(config, builtin::site_rules(thresholds, today))?
             .with_entry_rules(config, builtin::entry_rules())

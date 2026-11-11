@@ -72,7 +72,7 @@ pub(crate) fn run(
         };
         runtime.block_on(crawl(&source, &home, Limit::default()))
     };
-    let mut audit = Report::of(&crawled, thresholds);
+    let mut audit = Report::of(&crawled, &thresholds);
     if network == Network::Fetch {
         let Ok(public) = outbound::client(cli) else {
             return report::failure(output, &audit_message::internal(), Exit::Internal);
@@ -170,14 +170,17 @@ fn emptied(built: &Path) -> Result<(), UserMessage> {
 }
 
 /// The audit's limits, measured on today's date from `clock`. The answer
-/// length, the paragraph length and the stale window come from the site's
-/// `lint.toml`, so the linter and the audit judge a post alike.
+/// length, the paragraph length, the stale window and the site's own
+/// hedge words and vague openers come from the site's `lint.toml`, so the
+/// linter and the audit judge a post alike.
 fn thresholds(site: &Path, clock: &dyn Clock) -> Result<Thresholds, UserMessage> {
-    let lint = lint::lint_settings(site)?.thresholds();
+    let settings = lint::lint_settings(site)?;
+    let lint = settings.thresholds();
     Ok(Thresholds::default()
         .with_answer_words(lint.answer_min_words, lint.answer_max_words)
         .with_paragraph_words(lint.paragraph_max_words)
         .with_stale_months(lint.stale_months)
+        .with_unclear_words(settings.unclear_words().clone())
         .with_today(clock.now().date_naive()))
 }
 

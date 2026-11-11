@@ -8,8 +8,8 @@
 //! share, and a post's [`PostAccess`], [`TemplateName`], [`PasswordHash`]
 //! and checked [`HeadCode`], which front matter, the Admin API and the
 //! server share, the site's own [`SiteCode`], each entry tagged with a
-//! [`CodeCategory`], and the [`PrivacySettings`] that decide how readers
-//! are asked. It must not know about HTTP or SQL. It depends on no other Khalid crate, and its only
+//! [`CodeCategory`], the [`PrivacySettings`] that decide how readers
+//! are asked, and the [`UnclearWords`] the linter and the audit both flag. It must not know about HTTP or SQL. It depends on no other Khalid crate, and its only
 //! I/O is reading the system clock and resolving a [`SitePath`] on disk.
 
 mod absolute_url;
@@ -50,6 +50,7 @@ mod slug_from_title;
 mod template_choice;
 mod term_seo;
 pub mod toml_location;
+mod unclear_words;
 mod user_message;
 mod visitor_log_settings;
 
@@ -109,5 +110,6 @@ pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
 pub use template_choice::{CallToAction, OptionValue, PackName, SourcePlace, TemplateChoice};
 pub use term_seo::TermSeo;
+pub use unclear_words::{Unclear, UnclearWords, WHICH_CHAIN};
 pub use user_message::UserMessage;
 pub use visitor_log_settings::VisitorLogSettings;

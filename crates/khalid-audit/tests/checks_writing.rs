@@ -5,6 +5,7 @@
 pub mod support;
 
 use khalid_audit::{Check, Severity, Thresholds, audit};
+use khalid_core::UnclearWords;
 use support::{HOME, crawled, page};
 
 /// The checks this file is about.
@@ -25,7 +26,7 @@ fn words(count: usize) -> String {
 #[cfg(test)]
 async fn found(body: &str, thresholds: Thresholds) -> Vec<(Check, String)> {
     let crawl = crawled(&[(HOME, page("<title>Rye</title>", body))]).await;
-    audit(&crawl, thresholds)
+    audit(&crawl, &thresholds)
         .iter()
         .filter(|issue| CHECKS.contains(&issue.check()))
         .map(|issue| (issue.check(), issue.detail().to_owned()))
@@ -56,7 +57,7 @@ async fn only_articles_and_pages_that_do_not_say_are_judged() {
         let body = body.clone();
         async move {
             let crawl = crawled(&[(HOME, page(head, &body))]).await;
-            audit(&crawl, Thresholds::default())
+            audit(&crawl, &Thresholds::default())
                 .iter()
                 .filter(|issue| CHECKS.contains(&issue.check()))
                 .count()
@@ -150,6 +151,30 @@ async fn hedges_and_vague_openers_in_an_answer_are_named() {
             ),
         ],
         "quiet holds no hedge, and text under a plain heading is not an answer"
+    );
+}
+
+#[tokio::test]
+async fn a_sites_own_hedge_words_reach_the_audit() {
+    let body = format!(
+        "<h2>Wird Brot schwer?</h2><p>Es gibt Mehl. Brot wird eher nicht schwer, {}.</p>",
+        words(40)
+    );
+    assert_eq!(found(&body, Thresholds::default()).await, []);
+    let own = |words: &[&str]| {
+        words
+            .iter()
+            .map(|word| (*word).to_owned())
+            .collect::<Vec<_>>()
+    };
+    let words = UnclearWords::default().with_own(&own(&["eher nicht"]), &own(&["es gibt"]));
+    assert_eq!(
+        found(&body, Thresholds::default().with_unclear_words(words)).await,
+        [(
+            Check::HedgedAnswer,
+            "\"Wird Brot schwer?\": eher nicht, es gibt".to_owned()
+        )],
+        "the words lint.toml adds are the words the audit flags"
     );
 }
 

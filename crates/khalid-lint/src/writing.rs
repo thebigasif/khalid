@@ -5,8 +5,8 @@
 //! answer before any detail. W2: a paragraph past 150 words buries
 //! its ideas; the target is 75 to 150 words, one idea each. W3: hedge
 //! words, vague openers and trailing which-chains make an answer harder
-//! to trust and to lift; the word lists live in the catalogue so a site
-//! can read and change them. W4: a number a reader cannot check, with no
+//! to trust and to lift; the word lists live in `khalid-core`, and a site
+//! adds its own in the `[words]` table of `lint.toml`. W4: a number a reader cannot check, with no
 //! source and no year, teaches doubt; the fix is a link or a date. W4
 //! lives in `statistics.rs`.
 //!
@@ -15,6 +15,8 @@
 //! guidance gives no exact word counts, the counts come from the
 //! maintainer's brief: 40 to 60 words for the capsule (decision D3),
 //! 150 for a paragraph, as Yoast sets it.
+
+use khalid_core::UnclearWords;
 
 use crate::{Hit, LintPost, Rule, RuleId, Severity, SiteView};
 
@@ -157,49 +159,17 @@ pub(crate) fn is_heading_line(post: &LintPost, line: &str) -> bool {
         .any(|heading| heading.text == line.trim())
 }
 
-/// The hedge words, vague openers and vague closers W3 flags, in
-/// lowercase, kept here so a site can read and change them. Each word is
-/// one a reader can delete without losing meaning.
-pub(crate) const HEDGE_WORDS: &[&str] = &[
-    "arguably",
-    "perhaps",
-    "possibly",
-    "seemingly",
-    "somewhat",
-    "basically",
-    "generally",
-    "usually",
-    "probably",
-    "maybe",
-    "kind of",
-    "sort of",
-    "fairly",
-    "quite",
-    "rather",
-];
-
-/// Openers that promise nothing specific, in lowercase, at the start of a
-/// sentence.
-pub(crate) const VAGUE_OPENERS: &[&str] = &[
-    "there are",
-    "there is",
-    "it is important",
-    "it is worth",
-    "it should be noted",
-    "needless to say",
-    "as we all know",
-    "everyone knows",
-];
-
 /// **W3: plain sentences in answer paragraphs.**
 ///
 /// Hedge words, vague openers and trailing which-chains are flagged in
 /// the paragraphs that answer a question-style heading, where an answer
-/// engine lifts the text. Each kind found brings its own plain fix.
+/// engine lifts the text. Each kind found brings its own plain fix. The
+/// words are the shared [`UnclearWords`] with the site's own from the
+/// `[words]` table of `lint.toml`, the list the audit's `hedged-answer`
+/// check reads too.
 #[derive(Debug)]
 pub(crate) struct PlainAnswer {
-    pub(crate) hedges: Vec<&'static str>,
-    pub(crate) openers: Vec<&'static str>,
+    pub(crate) words: UnclearWords,
 }
 
 impl Rule for PlainAnswer {
@@ -233,60 +203,28 @@ impl Rule for PlainAnswer {
 }
 
 impl PlainAnswer {
-    /// The hedge words, vague openers and which-chains in `paragraph`, in
-    /// that order, and one plain fix for each kind found. A word counts
-    /// only whole, so "unusually" holds no "usually"; an opener counts at
-    /// the start of any sentence; two `, which` in one sentence are a
-    /// chain. The audit's `hedged-answer` check reads a paragraph the same
-    /// way.
-    fn unclear(&self, paragraph: &str) -> (Vec<&'static str>, Vec<String>) {
-        let mut found = Vec::new();
+    /// The hedge words, vague openers and which-chains in `paragraph`, as
+    /// [`UnclearWords::find`] reads them, and one plain fix for each kind
+    /// found.
+    fn unclear(&self, paragraph: &str) -> (Vec<String>, Vec<String>) {
+        let found = self.words.find(paragraph);
         let mut fixes = Vec::new();
-        let all = plain_words(paragraph);
-        let hedges = self.hedges.iter().filter(|hedge| has_phrase(&all, hedge));
-        found.extend(hedges);
-        if !found.is_empty() {
+        if !found.hedges.is_empty() {
             fixes.push("say the claim outright and drop the hedge".to_owned());
         }
-        let sentences: Vec<&str> = paragraph.split(['.', '!', '?']).collect();
-        let words: Vec<String> = sentences
-            .iter()
-            .map(|sentence| plain_words(sentence))
-            .collect();
-        for opener in &self.openers {
-            let start = format!(" {opener} ");
-            if words.iter().any(|sentence| sentence.starts_with(&start)) {
-                found.push(*opener);
-                fixes.push(format!(
-                    "start the sentence with its point, not with \"{opener}\""
-                ));
-            }
+        for opener in &found.openers {
+            fixes.push(format!(
+                "start the sentence with its point, not with \"{opener}\""
+            ));
         }
-        let chained = |sentence: &&str| sentence.to_lowercase().matches(", which").count() > 1;
-        if sentences.iter().any(chained) {
-            found.push("which ... which");
+        if found.which_chain {
             fixes.push(
                 "end the sentence before the second \", which\" and start a new one".to_owned(),
             );
         }
-        (found, fixes)
+        let names = found.names().into_iter().map(str::to_owned).collect();
+        (names, fixes)
     }
-}
-
-/// `text` in lowercase as its words with one space around each, so a
-/// phrase is found only whole.
-fn plain_words(text: &str) -> String {
-    let words: Vec<String> = text
-        .split(|c: char| !(c.is_alphanumeric() || c == '\''))
-        .filter(|word| !word.is_empty())
-        .map(str::to_lowercase)
-        .collect();
-    format!(" {} ", words.join(" "))
-}
-
-/// Whether `words`, made by [`plain_words`], holds `phrase` whole.
-fn has_phrase(words: &str, phrase: &str) -> bool {
-    words.contains(&format!(" {phrase} "))
 }
 
 /// The paragraph lines that answer the heading `text`, until the next
@@ -373,8 +311,7 @@ mod tests {
     /// as its subject and its fixes.
     fn plain_hits(answer: &str) -> Vec<(String, Vec<String>)> {
         let rule = PlainAnswer {
-            hedges: HEDGE_WORDS.to_vec(),
-            openers: VAGUE_OPENERS.to_vec(),
+            words: UnclearWords::default(),
         };
         rule.check(&answered(&[answer.to_owned()]), &LintSite::default())
             .iter()

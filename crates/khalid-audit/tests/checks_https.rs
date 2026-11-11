@@ -22,7 +22,7 @@ async fn hsts(pages: &[(&str, Answer)]) -> Vec<String> {
     let site = Served(Memory::new(pages));
     let crawl = crawl(&site, &url(HOME), Limit::default()).await;
     assert_eq!(crawl.headers(), Headers::Sent);
-    audit(&crawl, Thresholds::default())
+    audit(&crawl, &Thresholds::default())
         .iter()
         .filter(|issue| issue.check() == Check::HstsMissing)
         .map(|issue| issue.url().as_str().to_owned())
@@ -40,7 +40,7 @@ async fn an_https_page_a_server_sends_without_hsts_is_named() {
 async fn a_folder_sends_no_headers_so_hsts_is_not_checked() {
     let crawl = crawled(&[(HOME, html(""))]).await;
     assert_eq!(crawl.headers(), Headers::Absent);
-    let checks: Vec<Check> = audit(&crawl, Thresholds::default())
+    let checks: Vec<Check> = audit(&crawl, &Thresholds::default())
         .iter()
         .map(khalid_audit::Issue::check)
         .collect();

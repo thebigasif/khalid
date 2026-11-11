@@ -9,7 +9,7 @@ use support::{HOME, crawled, html};
 /// The issues of `checks` in `crawl`, as check, address and detail.
 #[cfg(test)]
 fn only(crawl: &Crawl, checks: &[Check]) -> Vec<(Check, String, String)> {
-    audit(crawl, Thresholds::default())
+    audit(crawl, &Thresholds::default())
         .iter()
         .filter(|issue| checks.contains(&issue.check()))
         .map(|issue| {

@@ -418,3 +418,17 @@ reviewed_by: [lena-vogt]
 Each reviewer is the slug of an author profile. To warn instead of block, add `no-reviewer = "warn"` under `[rules]`. A site that lists no category never sees the finding.
 
 A name in `required-in` must be a category the site has: one in `categories.toml`, or one a post already uses. A slip such as `heath` would check no post at all, so `khalid lint`, `khalid build` and publishing all stop instead, and the message names the line and the site's real categories.
+
+## Your own hedge words
+
+A hedge word, such as "perhaps" or "basically", is a word a reader can delete without losing meaning. In the answer under a question heading it makes the answer sound unsure. The linter's `plain-answer` rule and the audit's `hedged-answer` check flag the same English list of hedge words and vague sentence openers, such as "there is".
+
+To add words of your own, for example in your blog's language, list them in `lint.toml`:
+
+```toml
+[words]
+hedges = ["vielleicht", "eher nicht"]
+vague-openers = ["es gibt"]
+```
+
+Your words are added to the built-in ones. Each counts only as whole words and in any case, so "eher nicht" also matches "Eher nicht". `khalid lint`, the publish check and `khalid audit` all read the same list.
