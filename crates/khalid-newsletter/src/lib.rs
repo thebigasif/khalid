@@ -41,7 +41,8 @@ pub use reader_pass::{BackPath, PASS_DAYS, ReaderPass};
 pub use routes::router;
 pub use segment::{Labelled, Member, Recipient, Segment};
 pub use store::{
-    BoxFuture, Confirmed, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, Unsubscribed,
+    BoxFuture, Confirmed, SignUp, SignedUp, Stop, StoreError, SubscriberId, SubscriberStore,
+    Unsubscribed,
 };
 pub use token::{GenerateTokenError, ParseTokenError, SubscriberToken, TokenHash};
 pub use welcome::{LAST_DAY, Welcome, WelcomeFiles, Welcomes};
