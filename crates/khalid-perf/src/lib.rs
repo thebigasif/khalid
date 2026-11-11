@@ -6,6 +6,8 @@
 //! whole site folder, the same bytes on every machine, and `scripts/perf.sh`
 //! measures Khalid against it.
 
+mod audit_error;
+mod audit_times;
 mod fixture;
 mod fixture_error;
 mod idle_memory;
@@ -22,6 +24,8 @@ mod size_error;
 mod sizes;
 mod words;
 
+pub use audit_error::AuditError;
+pub use audit_times::{AuditTimes, crawled_pages};
 pub use fixture::Fixture;
 pub use fixture_error::FixtureError;
 pub use idle_memory::{AT_MOST, FLOOR, IdleMemory, MemorySplit, READINGS, STABLE, is_settled};

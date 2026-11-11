@@ -8,6 +8,7 @@
 //! khalid-perf requests target/release/khalid 1000 target/perf/site-1k target/perf/requests.json
 //! khalid-perf sizes target/perf/build-10k admin/dist target/perf/sizes.json
 //! khalid-perf serve target/release/khalid 1000 target/perf/site-1k target/perf/serve-1k.json
+//! khalid-perf audit target/release/khalid 1000 target/perf/site-1k target/perf/audit.json
 //! ```
 
 use std::fs;
@@ -18,7 +19,8 @@ use std::time::Duration;
 use khalid_core::SystemClock;
 use khalid_lint::{LintConfig, Linter};
 use khalid_perf::{
-    Fixture, FixtureError, LintTimes, Prepared, RenderTimes, RequestRate, ServeTimes, Served, Sizes,
+    AuditTimes, Fixture, FixtureError, LintTimes, Prepared, RenderTimes, RequestRate, ServeTimes,
+    Served, Sizes,
 };
 use khalid_render::Renderer;
 
@@ -27,7 +29,8 @@ const USAGE: &str = "Usage: khalid-perf fixture POSTS FOLDER\n       \
                      khalid-perf lint SITE OUT.json\n       \
                      khalid-perf requests KHALID POSTS SITE OUT.json\n       \
                      khalid-perf sizes BUILD ADMIN_DIST OUT.json\n       \
-                     khalid-perf serve KHALID POSTS SITE OUT.json";
+                     khalid-perf serve KHALID POSTS SITE OUT.json\n       \
+                     khalid-perf audit KHALID POSTS SITE OUT.json";
 
 /// Rounds over every page: one to warm up, then enough samples that the
 /// 99th percentile of a 1,000-post site rests on 40 renders.
@@ -49,6 +52,9 @@ const THP_MODE: &str = "/sys/kernel/mm/transparent_hugepage/enabled";
 /// Starts of `khalid serve`, and edits to one post, behind each median.
 const SERVE_ROUNDS: usize = 5;
 
+/// Full audits behind the audit's median, as many as full rebuilds.
+const AUDIT_RUNS: usize = 3;
+
 #[expect(
     clippy::print_stderr,
     reason = "a developer tool says what went wrong on standard error"
@@ -66,6 +72,9 @@ fn main() -> ExitCode {
         }
         ["serve", khalid, posts, site, out] => {
             serve(Path::new(khalid), posts, Path::new(site), Path::new(out))
+        }
+        ["audit", khalid, posts, site, out] => {
+            audit(Path::new(khalid), posts, Path::new(site), Path::new(out))
         }
         _ => Err(USAGE.to_owned()),
     };
@@ -203,6 +212,28 @@ fn serve(khalid: &Path, posts: &str, site: &Path, out: &Path) -> Result<(), Stri
     if let Ok(mode) = fs::read_to_string(THP_MODE) {
         println!("Transparent huge pages on this system: {}", mode.trim());
     }
+    fs::write(out, times.to_json())
+        .map_err(|error| explain(format!("{} could not be written: {error}.", out.display())))
+}
+
+fn audit(khalid: &Path, posts: &str, site: &Path, out: &Path) -> Result<(), String> {
+    let explain = |what: String| {
+        format!(
+            "{what}\nWithout it, the time of a full site audit cannot be measured.\n\
+             Build khalid with `cargo build --release -p khalid`, write the site \
+             again with `khalid-perf fixture`, and run this once more."
+        )
+    };
+    let posts = posts
+        .parse()
+        .ok()
+        .and_then(Fixture::new)
+        .map(Fixture::posts)
+        .ok_or_else(|| {
+            format!("{USAGE}\nPOSTS is the number of posts the site was written with.")
+        })?;
+    let times = AuditTimes::measure(khalid, (site, posts), AUDIT_RUNS, &SystemClock)
+        .map_err(|error| explain(format!("Auditing {} failed: {error}.", site.display())))?;
     fs::write(out, times.to_json())
         .map_err(|error| explain(format!("{} could not be written: {error}.", out.display())))
 }
