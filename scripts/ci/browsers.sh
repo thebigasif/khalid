@@ -81,6 +81,13 @@ DPkg::Lock::Timeout "300";
 APT::Keep-Downloaded-Packages "true";
 Dir::Cache::Archives "$debs/";
 EOF
+  # The runner's mirror list starts with azure.archive.ubuntu.com. When that
+  # name does not resolve, every package fails at once (2026-11-11), so
+  # the list is cut down to archive.ubuntu.com for this run.
+  if [ -f /etc/apt/apt-mirrors.txt ] && ! getent hosts azure.archive.ubuntu.com > /dev/null; then
+    echo "azure.archive.ubuntu.com does not resolve; using archive.ubuntu.com."
+    printf 'http://archive.ubuntu.com/ubuntu/\tpriority:1\n' | sudo tee /etc/apt/apt-mirrors.txt > /dev/null
+  fi
 }
 
 # One apt-get run, stopped after its limit. A stopped run can leave dpkg
