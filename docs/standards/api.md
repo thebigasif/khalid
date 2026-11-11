@@ -20,6 +20,7 @@ On a blog under a mount such as `/blog/`, each base path starts with it, such as
 - A response wraps the resource in an array under its name and adds `meta`: `{"posts": [...], "meta": {"pagination": {"page": 1, "limit": 15, "pages": 4, "total": 52, "next": 2, "prev": null}}}`.
 - Lists accept `filter`, `include`, `fields`, `formats`, `limit`, `page`, `order`. The `filter` grammar is Ghost's: `tag:news+featured:true`, `tag:[seo,links]`, `tag:-draft`, `published_at:>'2026-01-01'`. One crate parses it, with its own tests (BL-API-5).
 - `formats` on posts selects `html`, `markdown`, `plaintext`, any combination.
+- `fields` on a Content API list keeps only the top-level fields named, such as `fields=title,url`. The names are the ones in the resource's `OpenAPI` schema; any other name is a 400 that lists them. A body field is sent only when `formats` asks for it too. `include` is still refused with a 400, because posts already name their tags and authors.
 - Writes accept and return the same shape. A `POST /posts/?source=html` accepts an HTML body and converts it to markdown and blocks.
 - Edits send `updated_at`. A stale value returns 409 with a problem detail that names who changed it and when (BL-API-7).
 - Errors are RFC 9457: `{"type": "https://khalid.dev/problems/lint-blocked", "title": "The post cannot be published", "status": 422, "detail": "This post has no author.", "fix": "Add author: to the header.", "rule": "no-author", "instance": "/api/admin/v1/posts/abc"}`.
