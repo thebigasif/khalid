@@ -4,7 +4,7 @@
 use serde::Serialize;
 
 use crate::analysis::is_readability;
-use crate::{Finding, LintPost, RuleId, Severity};
+use crate::{Finding, LintPost, LocationKind, RuleId, Severity};
 
 /// What a rule set to block costs, once, however often it fires.
 const BLOCK_POINTS: u8 = 30;
@@ -72,7 +72,10 @@ impl Score {
         let mut refused = false;
         let own = findings.into_iter().filter(|finding| {
             let at = finding.location();
-            at.locale == post.locale && at.slug == post.slug && counts(finding.rule())
+            at.kind == LocationKind::Post
+                && at.locale == post.locale
+                && at.slug == post.slug
+                && counts(finding.rule())
         });
         for finding in own {
             let points = match finding.severity() {

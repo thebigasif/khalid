@@ -50,6 +50,11 @@ impl Environment {
     /// opens `khalid serve`'s push hook; unset, the hook is not there.
     pub const GIT_HOOK_SECRET: &str = "KHALID_GIT_HOOK_SECRET";
 
+    /// The secret Resend signs its bounce and complaint events with, or the
+    /// password in the address Postmark sends them to. Set, it opens
+    /// `khalid serve`'s mail hook; unset, the hook is not there.
+    pub const MAIL_HOOK_SECRET: &str = "KHALID_MAIL_HOOK_SECRET";
+
     /// The access key of an Unsplash app, made at unsplash.com/developers,
     /// that photo search in the editor asks with.
     pub const UNSPLASH_ACCESS_KEY: &str = "KHALID_UNSPLASH_ACCESS_KEY";
@@ -63,7 +68,7 @@ impl Environment {
     pub const AI_KEY: &str = "KHALID_AI_KEY";
 
     /// Every variable Khalid reads.
-    const ALL: [&str; 14] = [
+    const ALL: [&str; 15] = [
         Self::ADDRESS,
         Self::KEY,
         Self::S3_ACCESS_KEY_ID,
@@ -75,13 +80,14 @@ impl Environment {
         Self::GOOGLE_CLIENT_SECRET,
         Self::GOOGLE_REFRESH_TOKEN,
         Self::GIT_HOOK_SECRET,
+        Self::MAIL_HOOK_SECRET,
         Self::UNSPLASH_ACCESS_KEY,
         Self::GIPHY_API_KEY,
         Self::AI_KEY,
     ];
 
     /// Variables whose values `Debug` hides.
-    const HIDDEN: [&str; 12] = [
+    const HIDDEN: [&str; 13] = [
         Self::KEY,
         Self::S3_SECRET_ACCESS_KEY,
         Self::SMTP_PASSWORD,
@@ -91,6 +97,7 @@ impl Environment {
         Self::GOOGLE_CLIENT_SECRET,
         Self::GOOGLE_REFRESH_TOKEN,
         Self::GIT_HOOK_SECRET,
+        Self::MAIL_HOOK_SECRET,
         Self::UNSPLASH_ACCESS_KEY,
         Self::GIPHY_API_KEY,
         Self::AI_KEY,
@@ -190,6 +197,12 @@ impl Environment {
     /// is unset or blank.
     pub fn git_hook_secret(&self) -> Option<Secret<String>> {
         self.secret(Self::GIT_HOOK_SECRET)
+    }
+
+    /// The secret in [`Environment::MAIL_HOOK_SECRET`], or `None` when it
+    /// is unset or blank.
+    pub fn mail_hook_secret(&self) -> Option<Secret<String>> {
+        self.secret(Self::MAIL_HOOK_SECRET)
     }
 
     /// The key in [`Environment::UNSPLASH_ACCESS_KEY`], or `None` when it is

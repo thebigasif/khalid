@@ -10,7 +10,7 @@ use crate::clicks::{self, Piece};
 use crate::{
     BackPath, ConfirmationLinks, Confirmed, EmailAddress, GenerateTokenError, Issue, Lists, Mail,
     MailError, Mailer, Member, NewsletterWords, PostalAddress, ReaderPass, Recipient, Segment,
-    SendId, SendTotals, Sent, SignUp, SignedUp, SiteLinks, StoreError, SubscriberId,
+    SendId, SendTotals, Sent, SignUp, SignedUp, SiteLinks, Stop, StoreError, SubscriberId,
     SubscriberStore, SubscriberToken, Unsubscribed, Welcome, Welcomes, WordsError,
 };
 
@@ -308,6 +308,17 @@ impl Newsletter {
             .store
             .unsubscribe(&token.hash(), self.clock.now())
             .await?)
+    }
+
+    /// Sends `email` no more newsletters, as the mail service asked because
+    /// of `why`, and keeps the sign-up form from mailing it again. Returns
+    /// whether the address was a subscriber's.
+    ///
+    /// # Errors
+    ///
+    /// [`NewsletterError::Store`] when the store fails.
+    pub async fn stop(&self, email: &EmailAddress, why: Stop) -> Result<bool, NewsletterError> {
+        Ok(self.store.stop(email, why, self.clock.now()).await?)
     }
 }
 

@@ -1,0 +1,3 @@
+Fixed
+- The API document gave the Admin API's settings routes the Content API's answer, a list of settings, because two answers shared the name `SiteSettings`. It now names the right one, `AdminSiteSettings`, which holds one `settings` object. The TypeScript SDK changed to match.
+- The admin's redirects, snippets, settings, keys, authors, templates and Design clients now take their types from the API document instead of from types written by hand, so a change to a route shows up as a type error in the admin. The Redirects screen also copes with a redirect that leaves out where it leads or names a maker it does not know.

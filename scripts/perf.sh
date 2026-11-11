@@ -14,7 +14,10 @@
 # 1,000-post site, each linted against the whole site. Requests per second
 # is one cached post page of the 1,000-post site, asked for over 50
 # keep-alive connections for 30 seconds, as `oha` would by default. The
-# public CSS is the Brotli copy of each stylesheet the built home page
+# full site audit is the median of three `khalid audit --offline` runs on
+# the 1,000-post site, each building, crawling and scoring it; it runs
+# after the server measures, because it writes its files in the site's
+# data/audit/. The public CSS is the Brotli copy of each stylesheet the built home page
 # links. The admin's initial JavaScript is each script admin/dist's
 # index.html loads at once, gzipped at level 9 as
 # admin/scripts/size-budget.mjs counts; it is measured only when
@@ -68,6 +71,7 @@ for run in $(seq "${PERF_SERVE_RUNS:-1}"); do
 done
 "$perf" serve "$bin" 10000 "$work/site-10k" "$work/serve-10k.json"
 "$perf" requests "$bin" 1000 "$work/site-1k" "$work/requests.json"
+"$perf" audit "$bin" 1000 "$work/site-1k" "$work/audit.json"
 
 python3 - "$bin" "$perf" "$root" "$work" perf/current.json <<'PY'
 import json
@@ -124,6 +128,7 @@ measures = {
     "full_rebuild_10k_s": round(statistics.median(build_runs), 2),
     **read("lint.json"),
     **read("requests.json"),
+    **read("audit.json"),
     **read("sizes.json"),
     **serve,
 }

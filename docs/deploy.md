@@ -341,11 +341,22 @@ The password, API key or token never goes in `site.toml`. Set it in the server's
 
 With systemd, run `sudo systemctl edit khalid` and add `Environment=KHALID_SMTP_PASSWORD=...` under `[Service]`, or keep it in a file only root can read and name it with `EnvironmentFile=`. With Compose, put it in the `.env` file and pass it on under `environment:` in `compose.yaml`, as `KHALID_SMTP_PASSWORD: ${KHALID_SMTP_PASSWORD}`. Khalid refuses to start, and says which variable is missing, when the way you picked needs one that is not set.
 
+### Bounces and spam complaints
+
+A bounce is an email that comes back because the address does not exist or refuses mail. A spam complaint is a reader clicking "Report spam" on your email. Mail services watch both, and an account that keeps mailing such addresses has its mail sent to spam or is closed. With Resend or Postmark, Khalid can hear about both and stop mailing the address:
+
+1. Make a long random secret, for example with `openssl rand -hex 32`, or for Resend use the signing secret Resend shows (it starts with `whsec_`). Set it as `KHALID_MAIL_HOOK_SECRET` in the server's environment, the same way as the mail secrets above.
+2. In Resend, under Webhooks, add `https://<your-blog>/api/hooks/mail` with the events `email.bounced` and `email.complained`. In Postmark, under the message stream's Webhooks, add `https://khalid:<secret>@<your-blog>/api/hooks/mail` with Bounce and Spam Complaint ticked.
+
+When the service reports a bounce that is for good, or a complaint, the reader is unsubscribed from every newsletter, and the sign-up form never emails that address again. A bounce that may pass, such as a full mailbox, changes nothing. An event without the secret gets a 401 and changes nothing. Without `KHALID_MAIL_HOOK_SECRET`, or with SMTP, the address does not exist.
+
 To check mail before you start the server, run `khalid --site <folder> doctor` in the same environment. Its Mail line says which way mail leaves and whether the variable is set, without showing it. Add `--send-test-mail` to send one email to the address form answers go to, through the same server or service `khalid serve` uses. If it fails, doctor says why, such as a refused password or a server that did not answer.
 
 ## Nightly site audit
 
 `khalid serve` audits the blog once a day, the way `khalid audit --offline` does: it builds the site into `data/audit/site/`, reads every page as a search engine's crawler would, and keeps the health score in `data/audit/runs.jsonl`. The health score is the share of pages with no error, out of 100. The first audit runs an hour after the server starts, so it never slows the start, and the next one a day after the last audit, whether the server or you ran it. The issues and their fixes are in `data/audit/issues.csv`.
+
+Only one audit of a site runs at a time. While one runs, it keeps the file `data/audit/running`. A `khalid audit` started then stops at once and says so, and the server's audit tries again an hour later. If an audit stopped without removing the file, the next audit takes it over once it is six hours old, or you can delete it.
 
 The dashboard shows the score from `GET /api/admin/v1/site/health/`, which sends the last audit and up to the last 30 as the trend. Before the first audit, `last` is `null`.
 
@@ -440,7 +451,9 @@ khalid serve --https --accept-terms
 
 `--accept-terms` is your yes to Let's Encrypt's subscriber agreement, asked once for the whole folder. Without it, Khalid asks at the terminal. One Let's Encrypt account serves every site, kept in `data/https/` of the sites folder, and each site keeps its own certificate in its own `sites/<domain>/data/https/`, so it moves with the site. A site a super admin adds while the server runs gets its certificate within a minute, once its DNS leads here. A site whose domain does not lead here yet is tried again every hour, and the others are served meanwhile. Plain HTTP on port 80 moves each visitor to HTTPS on their own site. `--domain` is for a single site, and a sites folder refuses it.
 
-To keep a proxy such as Caddy in front instead, serve with `--listen 127.0.0.1:8080` and let the proxy get the certificates.
+When Khalid holds the certificate itself, with `--https` or `--domain`, every page also carries `Strict-Transport-Security: max-age=31536000`. HSTS (HTTP Strict Transport Security) tells a browser to use only HTTPS for this domain for a year, so `khalid audit` no longer notes "No HSTS support". It leaves out subdomains, because Khalid only knows its own.
+
+To keep a proxy such as Caddy in front instead, serve with `--listen 127.0.0.1:8080` and let the proxy get the certificates. Plain HTTP sends no HSTS, so set that header in the proxy.
 
 ## Backing up and restoring
 
@@ -474,7 +487,7 @@ body = "<script src='https://chat.example.com/widget.js' defer></script>"
 
 `head` goes at the end of every page's head and may hold `script`, `style`, `meta` and `link`. `body` goes at the end of every page's body and may hold only `script`. Khalid checks both when it starts and says what to change if something does not belong.
 
-By default this code waits for each reader's consent, which means their yes. Every page then ends with a short note and two buttons, Allow and Do not allow. The buttons are a plain form, so they work with scripts turned off. The code runs only for a reader who pressed Allow, and a post's own head code waits too. A reader's choice is kept in a cookie for 180 days, and a small form at the bottom of each page lets them change it.
+By default this code waits for each reader's consent, which means their yes. Every page then starts with a short note and three choices: Accept all, Reject all and Choose. Accept all and Reject all are a plain form, so they work with scripts turned off. Choose opens the `privacy-choices/` page, which has one switch per kind of consent. Each piece of code runs only for a reader who allowed its kind, and a post's own head code waits too, as `marketing`. A reader's choice is kept in a cookie for as long as `[privacy]` says, six months unless you change it. After that, a short line on each page links to the choices page, so the reader can change their mind.
 
 For code that sets no cookie and tracks no one, add `consent = "not-needed"` to `[code]`. The code then runs for every reader and no note is shown.
 
@@ -488,7 +501,7 @@ vendor = "Example Stats"
 policy = "https://stats.example.net/privacy"
 ```
 
-The old single `[code]` table still works: `consent = "ask"` reads as one `marketing` entry and `consent = "not-needed"` as one `no-tracking` entry. For now, when any entry waits for consent, all of the site's code waits together; the banner with a switch per kind of consent comes in a later release.
+The old single `[code]` table still works: `consent = "ask"` reads as one `marketing` entry and `consent = "not-needed"` as one `no-tracking` entry. Each entry waits for its own kind: a reader who allows only `analytics` gets the `analytics` entries and none of the `marketing` ones.
 
 The `[privacy]` table sets how consent is asked. Every key may be left out:
 

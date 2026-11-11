@@ -123,10 +123,13 @@ pub(crate) fn api_router(
             SystemClock,
         )),
         // The same posts the door publishes, judged with the live settings.
-        checks: Some(Arc::new(posts)),
+        checks: Some(Arc::new(posts.clone())),
         schema_templates: Some(Arc::new(SiteSchemaTemplates::new(site, config, env))),
         schema_copier: schema_copier.map(|copier| -> Arc<dyn SchemaCopier> { Arc::new(copier) }),
-        pages: Some(Arc::new(SiteEntries::<AdminPage>::new(site, config))),
+        // A deleted page waits in the posts' trash, so it can come back.
+        pages: Some(Arc::new(
+            SiteEntries::<AdminPage>::new(site, config).with_trash(posts),
+        )),
         snippets: Some(Arc::new(SiteEntries::<AdminSnippet>::new(site, config))),
         glossary: Some(Arc::new(SiteEntries::<AdminTerm>::new(site, config))),
         authors: Some(Arc::new(SiteEntries::<AdminAuthor>::new(site, config))),

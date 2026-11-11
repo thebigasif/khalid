@@ -128,7 +128,7 @@ async fn a_counted_link_leads_on_and_counts_against_the_email() {
     );
     let theirs = copies.last().unwrap().split("\n--\n").next().unwrap();
     assert_eq!(theirs, body, "every reader's copy has the same links");
-    let app = router(Pages::new(site()).unwrap(), Some(flow));
+    let app = router(Pages::new(site()).unwrap(), Some(flow), None);
     let (status, location) = open(&app, "/blog/subscribe/click?send=1&link=2").await;
     assert_eq!(status, StatusCode::FOUND);
     let guide = "https://developers.google.com/search/docs";

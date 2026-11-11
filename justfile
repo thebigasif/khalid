@@ -51,7 +51,7 @@ demo-check:
     ./scripts/demo-check.sh
 
 # The showcase in every template pack, in Chromium, Firefox and WebKit at
-# 390, 768, 1440 and 2000 px: text over text or a picture, markers over
+# 320, 390, 768, 1440 and 2000 px: text over text or a picture, markers over
 # text, sideways scroll, crushed table columns, broken pictures, a frame
 # narrower than the template's brief, post text too small or lines too
 # short or long, and stylesheets of 20 KB or more. Pass options on, such
@@ -59,7 +59,8 @@ demo-check:
 layout-check *options:
     ./scripts/layout-check.sh {{options}}
 
-# Proves the layout check's frame, reading and stylesheet checks on small
+# Proves the layout check's frame, reading, stylesheet and sideways checks,
+# and that its default widths start at 320 px, on small
 # sites with a planted fault each, in Chromium.
 layout-selftest:
     node scripts/demo-check/layout-selftest.mjs

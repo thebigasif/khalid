@@ -8,7 +8,7 @@ import { pagesWords } from "../strings/pagesWords";
 
 type Props = { page: AdminPage };
 
-/** Deletes a page's file, after saying what happens to links to it. */
+/** Moves a page to the trash, after saying what happens to links to it. */
 export function DeletePage({ page }: Props) {
   const words = pagesWords.edit.remove;
   const navigate = useNavigate();

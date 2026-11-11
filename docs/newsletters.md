@@ -7,6 +7,8 @@ order: 80
 
 Readers sign up with a plain form, confirm with one click in an email, and leave with one click in any email after that. Sending needs mail settings, see "Sending email" in `docs/deploy.md`.
 
+Each sign-up sends an email from your mail account, so `khalid serve` limits how often one network address can use the form: three sign-ups in ten minutes and ten in a day, the same limits as comments. A reader over the limit sees a page saying when to try again, and no email is sent. This stops one script from mailing thousands of inboxes in your name. Khalid keeps only a salted hash of the address, and forgets it at the end of the day. Behind a proxy on the same machine or network, the address comes from the proxy's `X-Forwarded-For` header.
+
 ## Several newsletters
 
 Every site has one newsletter called `main`. To add another, make a folder for it in `content/newsletters/`, named in lowercase letters, digits and hyphens:
@@ -115,6 +117,8 @@ khalid --site <folder> newsletter numbers
 ```
 
 lists each email that went out, newest first, with its totals: copies sent, copies the mail server refused, readers who unsubscribed with a link from that email, and clicks on its links. Numbers are totals per email, never per person. Khalid does not count opens: that needs a hidden image in every email, which tells you who read what, so it is off.
+
+Copies the mail server refused include addresses that do not exist. With Resend or Postmark, Khalid can stop mailing those, and readers who mark your email as spam: see "Bounces and spam complaints" in `docs/deploy.md`.
 
 Clicks are counted only when you ask, with `count_clicks = true` under `[mail]` in `site.toml`. Each link in an email you send after that leads through your blog first, such as `https://www.example.com/blog/subscribe/click?send=4&link=2`, which counts the click and sends the reader on. Every reader's copy has the same links, so a click tells you which link was popular, never who clicked. Some mail programs open links to check them for safety, so a few clicks may come from them. Welcome emails are not counted.
 

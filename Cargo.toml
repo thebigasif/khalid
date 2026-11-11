@@ -317,7 +317,25 @@ opt-level = "z"
 opt-level = "z"
 [profile.release.package.tar]
 opt-level = "z"
-
+# Integration 34 (subscriber limits, page trash, row pruning, the mail hook)
+# pushed the binary over budget again. The Design screen's file writer runs
+# when the admin saves a look, the completions generator for one command,
+# and the admin crate only hands out its built files. Addresses and dates
+# are read and written a few times per page, never in a hot loop. The
+# folder watcher and the certificate checker grew the binary at "z" and
+# stay at "s".
+[profile.release.package.toml_edit]
+opt-level = "z"
+[profile.release.package.clap_complete]
+opt-level = "z"
+[profile.release.package.khalid-admin]
+opt-level = "z"
+[profile.release.package.url]
+opt-level = "z"
+[profile.release.package.idna]
+opt-level = "z"
+[profile.release.package.chrono]
+opt-level = "z"
 [profile.dev]
 debug = "line-tables-only"
 

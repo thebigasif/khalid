@@ -357,7 +357,7 @@ Add `--templates harbor` to check one template, and `--widths 390,2560@2` to pic
 
 ## Checking that nothing covers anything
 
-`just layout-check` builds the showcase site once with every template, and once more with the contents list in a side column for each template that puts it elsewhere. It opens a home page, a post with a lead picture, a contents list and pros and cons, a page with a folded table, a category, a tag, an author, search and a glossary page, in Chromium, Firefox and WebKit at 390, 768, 1440 and 2000 pixels. Each template wears its sample brand from `fixtures/showcase-brands/<name>/theme/` when it has one, as its demo on GitHub Pages does. It scrolls each page to the end and fails when:
+`just layout-check` builds the showcase site once with every template, and once more with the contents list in a side column for each template that puts it elsewhere. It opens a home page, a post with a lead picture, a contents list and pros and cons, a page with a folded table, a category, a tag, an author, search and a glossary page, in Chromium, Firefox and WebKit at 320, 390, 768, 1440 and 2000 pixels. 320 pixels is the smallest phone a page must fit, and what a 1280 pixel window shows at 400% zoom, where WCAG 2.2 asks that nothing scrolls sideways. Each template wears its sample brand from `fixtures/showcase-brands/<name>/theme/` when it has one, as its demo on GitHub Pages does. It scrolls each page to the end and fails when:
 
 - the letters of one piece of text cover other text or a picture by more than 4 pixels;
 - a list marker covers the first letter of its item, or other text;
@@ -377,7 +377,7 @@ npx --prefix scripts/demo-check playwright install --with-deps chromium firefox 
 just layout-check --browsers chromium,firefox --packs keystone
 ```
 
-`--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`. `--frames <file>` reads the minimum frames from another file, to try a stricter one. `just layout-selftest` proves the frame, reading and stylesheet checks on two small sites with a planted fault each.
+`--packs` picks templates and `--widths` picks widths. A screenshot of each failing page goes to `target/layout-check/shots`, and every failure to `target/layout-check/report.json`. `--frames <file>` reads the minimum frames from another file, to try a stricter one. `just layout-selftest` proves the frame, reading, stylesheet and sideways checks on two small sites with a planted fault each, one of them a strip that only a 320 pixel window is too narrow for.
 
 A template whose demo has a ready publication of its own, in `fixtures/showcase-publications/<name>/`, is checked a second time with that publication in place of the showcase's posts, on the pages its `check-pages.txt` names. The showcase pass stays as it is for every template, so its long tables, glossary and long lists remain the floor. `just publication-selftest` proves the publication step and the second pass on a small sample publication, with no browser. `fixtures/showcase-publications/README.md` sets out what a publication holds.
 

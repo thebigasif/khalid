@@ -5,13 +5,43 @@ use std::process::{Command, Output};
 
 use serde_json::Value;
 
-/// Commands from docs/plan.md section 4.1 that work on one site folder,
-/// with the arguments they need.
+/// Every command that works on one site folder, with the arguments it
+/// needs: one for each place `main` sends a command to, so each place
+/// still asks for the folder.
 const COMMANDS: &[&[&str]] = &[
+    &["serve"],
+    &["new", "Why internal links matter"],
+    &["build"],
+    &["lint"],
     &["publish", "why-internal-links-matter"],
+    &["plan"],
+    &["theme", "check"],
+    &["import", "markdown", "posts"],
     &["export"],
+    &["mcp"],
+    &["doctor"],
     &["backup"],
+    &["audit"],
     &["pull"],
+    &["keys", "revoke", "0123456789abcdef"],
+    &[
+        "staff",
+        "owner",
+        "--email",
+        "owner@example.com",
+        "--name",
+        "Sam",
+    ],
+    &["db", "migrate"],
+    &["redirects", "export"],
+    &["webhooks", "list"],
+    &["newsletter", "label", "reader@example.com", "paid"],
+    &["bing", "sitemap"],
+    &["search-console", "check"],
+    &["crawl", "health"],
+    &["watch"],
+    &["analytics", "ai"],
+    &["analytics", "uncited"],
 ];
 
 /// Runs the binary cargo built for this test.

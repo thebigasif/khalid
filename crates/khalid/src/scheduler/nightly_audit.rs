@@ -158,6 +158,27 @@ mod tests {
         assert_eq!(site_audit::runs(site.path()).len(), 2);
     }
 
+    #[test]
+    fn the_nightly_audit_waits_while_khalid_audit_runs() {
+        let site = demo_copy();
+        let config = Config::load(site.path(), &Environment::empty()).unwrap();
+        let routes = Routes::load(site.path()).unwrap();
+        let audit = NightlyAudit::new(site.path(), &config, &routes).unwrap();
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .unwrap();
+        let mut lock = site.path().to_path_buf();
+        lock.push("data/audit");
+        fs::create_dir_all(&lock).unwrap();
+        lock.push("running");
+        fs::write(&lock, noon().to_rfc3339()).unwrap();
+
+        audit.run_if_due(&FixedClock::new(noon()), runtime.handle());
+        assert_eq!(site_audit::runs(site.path()).len(), 0, "no audit ran");
+        assert!(lock.exists(), "the other audit keeps its lock");
+    }
+
     /// The demo site in a folder of its own, so the audit's `data/` stays
     /// out of the fixture.
     fn demo_copy() -> tempfile::TempDir {

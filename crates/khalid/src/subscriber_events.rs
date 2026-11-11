@@ -8,7 +8,7 @@ use chrono::{DateTime, Utc};
 use khalid_core::{AbsoluteUrl, Slug};
 use khalid_newsletter::{
     BoxFuture, Confirmed, EmailAddress, Labelled, Member, Recipient, Segment, SendId, SendNumbers,
-    SendTotals, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, TokenHash,
+    SendTotals, SignUp, SignedUp, Stop, StoreError, SubscriberId, SubscriberStore, TokenHash,
     Unsubscribed,
 };
 use khalid_webhooks::Event;
@@ -84,6 +84,15 @@ impl SubscriberStore for AnnouncedSubscribers {
         at: DateTime<Utc>,
     ) -> BoxFuture<'a, Result<Unsubscribed, StoreError>> {
         self.store.unsubscribe(token, at)
+    }
+
+    fn stop<'a>(
+        &'a self,
+        email: &'a EmailAddress,
+        why: Stop,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>> {
+        self.store.stop(email, why, at)
     }
 
     fn label<'a>(

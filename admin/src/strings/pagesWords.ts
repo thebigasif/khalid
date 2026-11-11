@@ -52,7 +52,7 @@ export const pagesWords = {
     remove: {
       title: "Delete this page",
       lede: (title: string) =>
-        `Deleting removes ${title}'s file, and its address stops working. A link to it from a post or the menu then leads nowhere, so change those first.`,
+        `Deleting moves ${title} to the trash, and its address stops working until you put it back. A link to it from a post or the menu leads nowhere meanwhile, so change those first.`,
       submit: (title: string) => `Delete ${title}`,
     },
   },

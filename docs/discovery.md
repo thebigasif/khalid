@@ -36,7 +36,7 @@ description: One topic cluster on sourdough, every post linked to it.
 ---
 ```
 
-A changelog entry needs a `date` and a `title` or a `version`. `khalid lint` holds both collections to this: a case study with no `client`, `outcome` or `date` blocks under `case-study-incomplete`, which names the field to add, and a changelog entry with no `date` blocks under `changelog-entry-undated`, since the date also gives the month the entry is listed under. Lower either in `lint.toml` if your site does without. Each folder may hold an `_index.md` with a title, a description and an intro, as the glossary does. Search engines read each list as an `ItemList` (a schema.org list of pages in order).
+A changelog entry needs a `date` and a `title` or a `version`. `khalid lint` holds both collections to this: a case study with no `client`, `outcome` or `date` blocks under `case-study-incomplete`, which names the field to add, and a changelog entry with no `date` blocks under `changelog-entry-undated`, since the date also gives the month the entry is listed under. `khalid build` and `khalid serve` leave a blocked entry off the site until you add what it lacks, and say which rule held it back. Lower either in `lint.toml` if your site does without. Each folder may hold an `_index.md` with a title, a description and an intro, as the glossary does. Search engines read each list as an `ItemList` (a schema.org list of pages in order).
 
 ## Series
 

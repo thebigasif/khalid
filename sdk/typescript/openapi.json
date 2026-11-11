@@ -10740,7 +10740,7 @@
         "tags": [
           "admin trash"
         ],
-        "summary": "Lists the deleted posts, the most recently deleted first. Needs\n`posts:write`.",
+        "summary": "Lists the deleted posts and pages, the most recently deleted first.\nNeeds `posts:write`.",
         "operationId": "list_trash",
         "parameters": [
           {
@@ -10755,7 +10755,7 @@
         ],
         "responses": {
           "200": {
-            "description": "The deleted posts",
+            "description": "The deleted posts and pages",
             "content": {
               "application/json": {
                 "schema": {
@@ -10800,13 +10800,13 @@
         "tags": [
           "admin trash"
         ],
-        "summary": "Deletes a post in the trash for good. Needs `posts:publish`.",
+        "summary": "Deletes a post or page in the trash for good. Needs `posts:publish`.",
         "operationId": "purge_trashed",
         "parameters": [
           {
             "name": "key",
             "in": "path",
-            "description": "The deleted post's key in the trash",
+            "description": "The deleted post's or page's key in the trash",
             "required": true,
             "schema": {
               "type": "string"
@@ -10824,7 +10824,7 @@
         ],
         "responses": {
           "204": {
-            "description": "The post is gone for good"
+            "description": "The post or page is gone for good"
           },
           "401": {
             "description": "No valid integration key or staff token",
@@ -10872,13 +10872,13 @@
         "tags": [
           "admin trash"
         ],
-        "summary": "Puts a deleted post back where it was, in the status it had, and\nanswers it as it is now. Needs `posts:write`, and `posts:publish` for a\npost that was live or scheduled.",
+        "summary": "Puts a deleted post or page back where it was, in the status it had,\nand answers a post as it is now. Needs `posts:write`, and\n`posts:publish` for a page or a post that was live or scheduled.",
         "operationId": "restore_trashed",
         "parameters": [
           {
             "name": "key",
             "in": "path",
-            "description": "The deleted post's key in the trash",
+            "description": "The deleted post's or page's key in the trash",
             "required": true,
             "schema": {
               "type": "string"
@@ -10905,6 +10905,9 @@
               }
             }
           },
+          "204": {
+            "description": "The page is back, and the page routes read it"
+          },
           "401": {
             "description": "No valid integration key or staff token",
             "content": {
@@ -10916,7 +10919,7 @@
             }
           },
           "403": {
-            "description": "The key lacks posts:write, or posts:publish for a post that was live or scheduled",
+            "description": "The key lacks posts:write, or posts:publish for a page or a post that was live or scheduled",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -10936,7 +10939,7 @@
             }
           },
           "409": {
-            "description": "Another post has the address the restored one would take",
+            "description": "Another post or page has the address the restored one would take",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -22845,19 +22848,28 @@
             "items": {
               "$ref": "#/components/schemas/TrashedPost"
             },
-            "description": "The deleted posts, the most recently deleted first."
+            "description": "The deleted posts and pages, the most recently deleted first."
           }
         }
       },
+      "TrashedKind": {
+        "type": "string",
+        "description": "What a copy in the trash was before it was deleted.",
+        "enum": [
+          "post",
+          "page"
+        ]
+      },
       "TrashedPost": {
         "type": "object",
-        "description": "A deleted post, as the Admin API shows it.",
+        "description": "A deleted post or page, as the Admin API shows it.",
         "required": [
           "key",
           "id",
           "title",
           "status",
-          "trashed_at"
+          "trashed_at",
+          "kind"
         ],
         "properties": {
           "id": {
@@ -22869,6 +22881,10 @@
             "type": "string",
             "description": "Names this copy in the trash, for restoring or deleting it.",
             "example": "20261031T093000Z-en.internal-links"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/TrashedKind",
+            "description": "Whether it was a post or a page."
           },
           "status": {
             "$ref": "#/components/schemas/PostStatus",

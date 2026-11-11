@@ -86,6 +86,11 @@ if ls crates/*/Cargo.toml >/dev/null 2>&1; then
   step "File size (BL-SIZE-1): hand-written Rust files under 600 lines"
   over=$(git ls-files 'crates/*/src/*.rs' 'crates/*/src/**/*.rs' | grep -v '/generated/' | xargs -I{} awk 'END{ if (NR>600) print FILENAME": "NR" lines" }' {} || true)
   if [ -n "$over" ]; then echo "$over"; echo "Split the file (BL-SIZE-1)."; exit 1; fi
+
+  ./scripts/check-gates.sh
+
+  step "Source searches proven to fire"
+  ./scripts/prove-check-gates.sh
 else
   echo "No crates yet. Rust checks start with the first crate (Phase 0)."
 fi
@@ -99,6 +104,13 @@ if [ -f admin/package.json ]; then
   else
     echo "admin/node_modules is missing, so the admin checks are left to CI. Run npm ci in admin/ to run them here."
   fi
+fi
+
+step "TypeScript SDK: Biome and TypeScript (G27)"
+if [ -d sdk/typescript/node_modules ]; then
+  (cd sdk/typescript && npm exec --no -- biome ci . && npm exec --no -- tsc)
+else
+  echo "sdk/typescript/node_modules is missing, so the SDK checks are left to CI. Run npm ci in sdk/typescript/ to run them here."
 fi
 
 printf '\nAll checks passed.\n'

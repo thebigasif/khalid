@@ -93,6 +93,13 @@ trash_days = 90
 
 `trash_days = 0` keeps every deleted post until you delete it yourself.
 
+A deleted page, such as About, goes to the same trash and waits the same
+number of days. Its file, or its folder with the pictures beside it, moves
+to `trash/` and its address answers 404 until you put it back. Put back
+fails when another page took the address meanwhile: change that page's
+slug first. Deleting a page asks nothing about its old address yet, so add
+a redirect under Redirects when readers should land somewhere else.
+
 ## Bulk SEO
 
 One table edits the SEO title, the description and the focus keyword of

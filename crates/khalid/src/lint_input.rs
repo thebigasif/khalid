@@ -424,6 +424,16 @@ fn topic_group(front: &PostFront) -> Option<Cluster> {
 /// `khalid build` gives its page: a changelog entry with no title is named
 /// after its version.
 fn entries(content: &SiteContent, config: &Config) -> Vec<LintEntry> {
+    let files = entry_files(content, config).into_iter();
+    files.map(|(entry, _)| entry).collect()
+}
+
+/// Every case study and changelog entry, as [`entries`] gives them, each
+/// with its file, so the publish gate can leave the file out of the site.
+pub(crate) fn entry_files<'c>(
+    content: &'c SiteContent,
+    config: &Config,
+) -> Vec<(LintEntry, &'c Path)> {
     let studies = content.case_studies.iter().filter_map(|doc| {
         let front = &doc.front;
         let named = (front.slug.as_ref(), front.title.as_deref());
@@ -432,7 +442,8 @@ fn entries(content: &SiteContent, config: &Config) -> Vec<LintEntry> {
             client: front.client.clone(),
             outcome: front.outcome.clone(),
         };
-        Some(LintEntry::new(doc.locale.clone(), slug, front.date, kind))
+        let entry = LintEntry::new(doc.locale.clone(), slug, front.date, kind);
+        Some((entry, doc.path.as_path()))
     });
     let changes = content.changelog.iter().filter_map(|doc| {
         let front = &doc.front;
@@ -441,7 +452,8 @@ fn entries(content: &SiteContent, config: &Config) -> Vec<LintEntry> {
         let kind = EntryKind::Changelog {
             version: front.version.clone(),
         };
-        Some(LintEntry::new(doc.locale.clone(), slug, front.date, kind))
+        let entry = LintEntry::new(doc.locale.clone(), slug, front.date, kind);
+        Some((entry, doc.path.as_path()))
     });
     studies.chain(changes).collect()
 }
