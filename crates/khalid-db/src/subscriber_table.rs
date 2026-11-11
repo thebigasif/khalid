@@ -4,7 +4,7 @@ use chrono::{DateTime, SecondsFormat, Utc};
 use khalid_core::{AbsoluteUrl, Slug};
 use khalid_newsletter::{
     BoxFuture, Confirmed, EmailAddress, Labelled, Member, Recipient, Segment, SendId, SendNumbers,
-    SendTotals, SignUp, SignedUp, StoreError, SubscriberId, SubscriberStore, TokenHash,
+    SendTotals, SignUp, SignedUp, Stop, StoreError, SubscriberId, SubscriberStore, TokenHash,
     Unsubscribed,
 };
 use sqlx::{Sqlite, Transaction};
@@ -28,14 +28,21 @@ impl SubscriberTable {
     async fn sign_up_now(&self, sign_up: &SignUp) -> Result<SignedUp, DbError> {
         let at = stamp(sign_up.at);
         let mut tx = self.db.writer.begin().await?;
-        let found: Option<(i64, String)> =
-            sqlx::query_as("SELECT id, status FROM subscribers WHERE site_id = ?1 AND email = ?2")
-                .bind(self.site.as_row())
-                .bind(sign_up.email.as_str())
-                .fetch_optional(&mut *tx)
-                .await?;
-        let (row, status) = if let Some(found) = found {
-            found
+        let found: Option<(i64, String, bool)> = sqlx::query_as(
+            "SELECT id, status, stopped_because IS NOT NULL FROM subscribers \
+             WHERE site_id = ?1 AND email = ?2",
+        )
+        .bind(self.site.as_row())
+        .bind(sign_up.email.as_str())
+        .fetch_optional(&mut *tx)
+        .await?;
+        let (row, status) = if let Some((row, status, stopped)) = found {
+            // The mail service said this address bounces or complained, so
+            // a form, which anyone can send, never mails it again.
+            if stopped {
+                return Ok(SignedUp::Stopped);
+            }
+            (row, status)
         } else {
             let row = sqlx::query_scalar(
                 "INSERT INTO subscribers (site_id, email, status, created_at) \
@@ -233,6 +240,39 @@ impl SubscriberTable {
         tx.commit().await?;
         Ok(Unsubscribed::Done)
     }
+
+    async fn stop_now(
+        &self,
+        email: &EmailAddress,
+        why: Stop,
+        at: DateTime<Utc>,
+    ) -> Result<bool, DbError> {
+        let mut tx = self.db.writer.begin().await?;
+        let row: Option<i64> = sqlx::query_scalar(
+            "UPDATE subscribers SET status = 'unsubscribed', stopped_because = ?3, \
+             unsubscribed_at = coalesce(unsubscribed_at, ?4) \
+             WHERE site_id = ?1 AND email = ?2 RETURNING id",
+        )
+        .bind(self.site.as_row())
+        .bind(email.as_str())
+        .bind(why.as_str())
+        .bind(stamp(at))
+        .fetch_optional(&mut *tx)
+        .await?;
+        let Some(row) = row else {
+            return Ok(false);
+        };
+        let steps = [
+            "DELETE FROM subscriber_lists WHERE subscriber_id = ?1",
+            "DELETE FROM subscriber_tokens \
+             WHERE subscriber_id = ?1 AND purpose = 'confirm' AND used_at IS NULL",
+        ];
+        for step in steps {
+            sqlx::query(step).bind(row).execute(&mut *tx).await?;
+        }
+        tx.commit().await?;
+        Ok(true)
+    }
 }
 
 impl SubscriberStore for SubscriberTable {
@@ -271,6 +311,15 @@ impl SubscriberStore for SubscriberTable {
                 .await
                 .map_err(StoreError::new)
         })
+    }
+
+    fn stop<'a>(
+        &'a self,
+        email: &'a EmailAddress,
+        why: Stop,
+        at: DateTime<Utc>,
+    ) -> BoxFuture<'a, Result<bool, StoreError>> {
+        Box::pin(async move { self.stop_now(email, why, at).await.map_err(StoreError::new) })
     }
 
     fn label<'a>(
