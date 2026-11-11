@@ -3,8 +3,8 @@
 use chrono::{NaiveDate, TimeZone, Utc};
 use khalid_core::{FixedClock, Locale, Slug};
 use khalid_lint::{
-    LinkKind, LintConfig, LintLink, LintPost, LintSite, Linter, PublishGate, StructuredDataGap,
-    Verdict,
+    EntryKind, LinkKind, LintConfig, LintEntry, LintLink, LintPost, LintSite, Linter, LocationKind,
+    PublishGate, StructuredDataGap, Verdict,
 };
 
 #[cfg(test)]
@@ -121,6 +121,56 @@ fn lint_toml_can_open_the_gate() {
     let site = site_with_post(None);
     let verdict = linter("[rules]\nno-date = \"warn\"\n").gate(&site.posts[0], &site);
     assert!(verdict.allows_publishing());
+}
+
+/// The client and outcome of a complete case study.
+const BAKERY: Option<(&str, &str)> = Some(("Northfield Bakery", "Search visits doubled."));
+
+/// A case study at `slug`, with the client and outcome in `fields`.
+#[cfg(test)]
+fn study(slug: &str, fields: Option<(&str, &str)>) -> LintEntry {
+    let (client, outcome) = fields.map(|(c, o)| (c.to_owned(), o.to_owned())).unzip();
+    let kind = EntryKind::CaseStudy { client, outcome };
+    let (locale, slug) = (Locale::try_new("en").unwrap(), Slug::try_new(slug).unwrap());
+    LintEntry::new(locale, slug, NaiveDate::from_ymd_opt(2026, 10, 1), kind)
+}
+
+#[test]
+fn the_gate_refuses_an_entry_its_rules_block_and_publishes_a_complete_one() {
+    let linter = linter("");
+    let gate: &dyn PublishGate = &linter;
+    let verdict = gate.entry_verdict(&study("bakery", None));
+    assert!(!verdict.allows_publishing(), "{verdict:?}");
+    let first = verdict.report().findings().first().unwrap();
+    assert_eq!(first.rule().as_str(), "case-study-incomplete");
+    assert_eq!(first.location().kind, LocationKind::CaseStudy);
+    assert!(
+        gate.entry_verdict(&study("bakery", BAKERY))
+            .allows_publishing()
+    );
+    let warned = self::linter("[rules]\ncase-study-incomplete = \"warn\"\n");
+    assert!(
+        warned
+            .entry_gate(&study("bakery", None))
+            .allows_publishing()
+    );
+}
+
+#[test]
+fn an_entry_with_a_posts_slug_does_not_cost_the_post_points() {
+    let mut site = site_with_post(NaiveDate::from_ymd_opt(2026, 10, 1));
+    let linter = linter("");
+    let alone = linter.lint_site(&site).score(&site.posts[0]);
+    site.entries.push(study("why-internal-links-matter", None));
+    let report = linter.lint_site(&site);
+    assert!(
+        report
+            .findings()
+            .iter()
+            .any(|f| f.rule().as_str() == "case-study-incomplete")
+    );
+    assert_eq!(report.scores(&site.posts)[0].1, alone);
+    assert_eq!(report.score(&site.posts[0]), alone);
 }
 
 #[test]
