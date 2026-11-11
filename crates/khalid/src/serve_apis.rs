@@ -37,6 +37,7 @@ use crate::site_posts::SitePosts;
 use crate::site_schema_templates::SiteSchemaTemplates;
 use crate::site_settings::SiteSettings;
 use crate::site_tags::SiteTags;
+use crate::watch_report::SiteUptime;
 use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
 pub(crate) mod ai_writer;
@@ -67,8 +68,8 @@ pub(crate) type ApiParts<'a> = (
 
 /// The Content API and the Admin API as `khalid serve` runs them, with the
 /// comment moderation, media library, stored redirects, Search Console
-/// follow-ups, webhooks, form answers, `SerpDad` connection and staff accounts of site
-/// `id`, the post checks, schema templates, pages, snippets, authors, tags,
+/// follow-ups, webhooks, form answers, `SerpDad` connection, watch looks and staff
+/// accounts of site `id`, the post checks, schema templates, pages, snippets, authors, tags,
 /// categories and settings of the site in `site`, the super-admin routes
 /// over `panel`, and comments on drafts and newsletters emailed through
 /// `mailer` when the site sends mail. The settings and schema templates
@@ -128,6 +129,11 @@ pub(crate) fn api_router(
         ai,
         limits: *config.limits(),
         subscribers: Some(Arc::new(readers)),
+        uptime: Some(Arc::new(SiteUptime::new(
+            database,
+            id,
+            Arc::new(SystemClock),
+        ))),
     };
     let keys: Arc<dyn KeyStore> = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
     let content: Arc<dyn ContentStore> = Arc::new(content);

@@ -10095,6 +10095,76 @@
         ]
       }
     },
+    "/api/admin/v1/watch/": {
+      "get": {
+        "tags": [
+          "admin watch"
+        ],
+        "summary": "Reports how fast and how reliably the blog answered at its public\naddress over the last 24 hours and the last 30 days, from the looks\n`khalid serve` takes every few minutes, as `khalid watch` does. The\nlist is empty until the server has looked once. Needs `settings:write`.",
+        "operationId": "uptime_report",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Each watched page's looks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UptimeReport"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no looks",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/webhooks/": {
       "get": {
         "tags": [
@@ -21387,6 +21457,22 @@
           }
         }
       },
+      "UptimeReport": {
+        "type": "object",
+        "description": "Every page the watch looked at. The list is empty until `khalid serve`\nhas looked once, which it does only when it answers more than its own\ncomputer.",
+        "required": [
+          "pages"
+        ],
+        "properties": {
+          "pages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WatchedPage"
+            },
+            "description": "Each watched page, in the order of its address."
+          }
+        }
+      },
       "UsedPhoto": {
         "type": "object",
         "description": "A photo from Unsplash that went into a post.",
@@ -21400,6 +21486,122 @@
           }
         },
         "additionalProperties": false
+      },
+      "WatchLook": {
+        "type": "object",
+        "description": "One look at the page.",
+        "required": [
+          "at",
+          "millis"
+        ],
+        "properties": {
+          "at": {
+            "type": "string",
+            "description": "When the look started, in UTC.",
+            "example": "2026-11-10T09:30:00Z"
+          },
+          "millis": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How long it took, in milliseconds.",
+            "example": 120,
+            "minimum": 0
+          },
+          "status": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The HTTP status it got, or `null` when nothing answered in time.",
+            "example": 200,
+            "minimum": 0
+          }
+        }
+      },
+      "WatchSpan": {
+        "type": "object",
+        "description": "The looks of one span of time.",
+        "required": [
+          "looks",
+          "answered",
+          "longest_gap_minutes"
+        ],
+        "properties": {
+          "answered": {
+            "type": "integer",
+            "description": "How many of them got the page: a status from 200 to 399.",
+            "example": 287,
+            "minimum": 0
+          },
+          "longest_gap_minutes": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The longest time between two looks, or from the last look to now,\nin minutes. A long gap is time nobody watched, as when the server\nitself was down.",
+            "example": 5
+          },
+          "looks": {
+            "type": "integer",
+            "description": "How many looks the watch took.",
+            "example": 288,
+            "minimum": 0
+          },
+          "middle_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The middle answer time of the looks that got the page, in\nmilliseconds, or `null` when none did.",
+            "example": 120,
+            "minimum": 0
+          },
+          "slowest_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The slowest of them, in milliseconds, or `null` when none did.",
+            "example": 900,
+            "minimum": 0
+          }
+        }
+      },
+      "WatchedPage": {
+        "type": "object",
+        "description": "One page's looks, over two spans.",
+        "required": [
+          "page",
+          "last_day",
+          "last_30_days"
+        ],
+        "properties": {
+          "last_30_days": {
+            "$ref": "#/components/schemas/WatchSpan",
+            "description": "The looks of the last 30 days, all the watch keeps."
+          },
+          "last_day": {
+            "$ref": "#/components/schemas/WatchSpan",
+            "description": "The looks of the last 24 hours."
+          },
+          "last_look": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WatchLook",
+                "description": "The newest look, or `null` when there is none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "page": {
+            "type": "string",
+            "description": "The page's full address: the blog's home page.",
+            "example": "https://example.com/blog/"
+          }
+        }
       }
     },
     "responses": {

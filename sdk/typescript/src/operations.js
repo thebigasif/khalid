@@ -124,6 +124,7 @@ export const operations = {
   list_trash: { method: "GET", path: "/api/admin/v1/trash/", key: "admin", body: null },
   purge_trashed: { method: "DELETE", path: "/api/admin/v1/trash/{key}/", key: "admin", body: null },
   restore_trashed: { method: "POST", path: "/api/admin/v1/trash/{key}/restore/", key: "admin", body: null },
+  uptime_report: { method: "GET", path: "/api/admin/v1/watch/", key: "admin", body: null },
   list_webhooks: { method: "GET", path: "/api/admin/v1/webhooks/", key: "admin", body: null },
   add_webhook: { method: "POST", path: "/api/admin/v1/webhooks/", key: "admin", body: "application/json" },
   remove_webhook: { method: "DELETE", path: "/api/admin/v1/webhooks/{id}/", key: "admin", body: null },

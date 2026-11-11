@@ -2694,10 +2694,51 @@ export type TrashedPost = {
   trashed_at: string;
 };
 
+/** Every page the watch looked at. The list is empty until `khalid serve` has looked once, which it does only when it answers more than its own computer. */
+export type UptimeReport = {
+  /** Each watched page, in the order of its address. */
+  pages: WatchedPage[];
+};
+
 /** A photo from Unsplash that went into a post. */
 export type UsedPhoto = {
   /** The photo's identity at Unsplash, as the search gave it. */
   id: string;
+};
+
+/** One look at the page. */
+export type WatchLook = {
+  /** When the look started, in UTC. */
+  at: string;
+  /** How long it took, in milliseconds. */
+  millis: number;
+  /** The HTTP status it got, or `null` when nothing answered in time. */
+  status?: number | null;
+};
+
+/** The looks of one span of time. */
+export type WatchSpan = {
+  /** How many of them got the page: a status from 200 to 399. */
+  answered: number;
+  /** The longest time between two looks, or from the last look to now, in minutes. A long gap is time nobody watched, as when the server itself was down. */
+  longest_gap_minutes: number;
+  /** How many looks the watch took. */
+  looks: number;
+  /** The middle answer time of the looks that got the page, in milliseconds, or `null` when none did. */
+  middle_ms?: number | null;
+  /** The slowest of them, in milliseconds, or `null` when none did. */
+  slowest_ms?: number | null;
+};
+
+/** One page's looks, over two spans. */
+export type WatchedPage = {
+  /** The looks of the last 30 days, all the watch keeps. */
+  last_30_days: WatchSpan;
+  /** The looks of the last 24 hours. */
+  last_day: WatchSpan;
+  last_look?: WatchLook | null;
+  /** The page's full address: the blog's home page. */
+  page: string;
 };
 
 /** What each operation takes and what it answers on success. */
@@ -4301,6 +4342,16 @@ export interface Operations {
       };
     };
     output: AdminPosts;
+  };
+  /** Reports how fast and how reliably the blog answered at its public address over the last 24 hours and the last 30 days, from the looks `khalid serve` takes every few minutes, as `khalid watch` does. The list is empty until the server has looked once. Needs `settings:write`. */
+  uptime_report: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: UptimeReport;
   };
   /** Lists every webhook that is switched on, oldest first, without their secrets. Needs `webhooks:manage`. */
   list_webhooks: {
