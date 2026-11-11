@@ -5,8 +5,9 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
-use khalid_content::{ContentTree, read_content};
-use khalid_core::{Environment, SitePath, SystemClock, UserMessage};
+use khalid_content::{ContentTree, SiteContent, read_content};
+use khalid_core::{Environment, SitePath, Slug, SystemClock, UserMessage};
+use khalid_db::IndexedTerm;
 use khalid_lint::{Finding, LintConfig, LintPost, Linter, Report, Score, Severity};
 use khalid_routes::Routes;
 use serde::Serialize;
@@ -90,6 +91,7 @@ fn check(site: &Path, post: Option<&Path>, mode: Mode) -> Result<Outcome, (UserM
     let routes = Routes::load(site).map_err(|error| (routes_message::of(&error), Exit::Failure))?;
     let briefs = site_briefs::load(site).map_err(|message| (message, Exit::Failure))?;
     let named = categories::of(site).map_err(|message| (message, Exit::Failure))?;
+    reviewed_categories(&settings, &named, &content).map_err(|message| (message, Exit::Failure))?;
     let input = LintInput::new(&content, &config, routes)
         .with_briefs(briefs)
         .with_categories(named);
@@ -151,6 +153,23 @@ pub(crate) fn lint_settings(site: &Path) -> Result<LintConfig, UserMessage> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(LintConfig::default()),
         Err(_) => Err(lint_message::unreadable()),
     }
+}
+
+/// Refuses a category in the `[reviewers]` table of `settings` that is
+/// neither in `categories.toml`, read as `named`, nor on a post in
+/// `content`, since a slip there would switch the reviewer rule off.
+///
+/// # Errors
+///
+/// What, why and fix naming the category, its line and the real ones.
+pub(crate) fn reviewed_categories(
+    settings: &LintConfig,
+    named: &[IndexedTerm],
+    content: &SiteContent,
+) -> Result<(), UserMessage> {
+    let on_posts = (content.posts.iter()).filter_map(|post| post.front.category.as_ref());
+    let known = named.iter().map(|term| &term.slug).chain(on_posts);
+    (settings.check_categories(known.map(Slug::as_str))).map_err(|error| lint_message::of(&error))
 }
 
 /// The message for a post path that matches no post file.

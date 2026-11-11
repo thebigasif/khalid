@@ -142,6 +142,35 @@ fn build_leaves_out_the_post_with_no_reviewer() {
 }
 
 #[test]
+fn a_misspelt_reviewer_category_stops_lint_and_build() {
+    let site = site();
+    let rules = "[reviewers]\nrequired-in = [\"heath\"]\n";
+    fs::write(within(site.path(), "lint.toml"), rules).unwrap();
+    for command in ["lint", "build"] {
+        let output = khalid(site.path(), &[command]);
+        let said = text(&output.stderr);
+        assert_eq!(output.status.code(), Some(1), "{command}: {said}");
+        assert!(said.contains("`heath`, on line 2"), "{command}: {said}");
+        assert!(
+            said.contains("one of the site's categories: health"),
+            "{said}"
+        );
+    }
+}
+
+#[test]
+fn a_reviewer_category_only_a_post_names_is_known() {
+    let site = site();
+    fs::remove_file(within(site.path(), "categories.toml")).unwrap();
+    let rules = "[reviewers]\nrequired-in = [\"health\"]\n";
+    fs::write(within(site.path(), "lint.toml"), rules).unwrap();
+    let output = khalid(site.path(), &["lint", "--json"]);
+    let said = text(&output.stdout);
+    let json: Value = serde_json::from_str(&said).unwrap();
+    assert_eq!(found(&json, "no-reviewer").len(), 1, "{json}");
+}
+
+#[test]
 fn the_publish_door_refuses_a_health_draft_with_no_reviewer() {
     let site = site();
     let rules = "[reviewers]\nrequired-in = [\"health\"]\n";

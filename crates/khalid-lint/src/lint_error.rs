@@ -1,5 +1,7 @@
 //! The one error type of this crate (BL-ERR-1).
 
+use khalid_core::Slug;
+
 use crate::RuleId;
 
 /// Something that stops the linter from starting.
@@ -30,6 +32,16 @@ pub enum LintError {
         line: usize,
         /// The column of the rule name.
         column: usize,
+    },
+    /// `lint.toml` asks for a reviewer in a category the site does not have.
+    #[error("lint.toml line {line}: there is no category called {category}")]
+    UnknownCategory {
+        /// The category, as written.
+        category: Slug,
+        /// The line of the category.
+        line: usize,
+        /// The slugs of the site's categories, sorted.
+        known: Vec<String>,
     },
     /// A rule has no message in the catalogue.
     #[error("the rule {rule} has no message in the catalogue")]

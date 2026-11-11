@@ -405,3 +405,5 @@ reviewed_by: [lena-vogt]
 ```
 
 Each reviewer is the slug of an author profile. To warn instead of block, add `no-reviewer = "warn"` under `[rules]`. A site that lists no category never sees the finding.
+
+A name in `required-in` must be a category the site has: one in `categories.toml`, or one a post already uses. A slip such as `heath` would check no post at all, so `khalid lint`, `khalid build` and publishing all stop instead, and the message names the line and the site's real categories.
