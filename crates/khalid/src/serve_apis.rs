@@ -18,7 +18,7 @@ use khalid_api::keys::KeyStore;
 use khalid_api::media_api::MediaLibrary;
 use khalid_api::publish_door::PublishDoor;
 use khalid_api::redirect_desk::RedirectDesk;
-use khalid_api::resources::{AdminAuthor, AdminPage, AdminSnippet};
+use khalid_api::resources::{AdminAuthor, AdminPage, AdminSnippet, AdminTerm};
 use khalid_api::schema_copy::SchemaCopier;
 use khalid_api::session_check::SessionCheck;
 use khalid_auth::SiteDirectory;
@@ -111,6 +111,7 @@ pub(crate) fn api_router(
         schema_copier: schema_copier.map(|copier| -> Arc<dyn SchemaCopier> { Arc::new(copier) }),
         pages: Some(Arc::new(SiteEntries::<AdminPage>::new(site, config))),
         snippets: Some(Arc::new(SiteEntries::<AdminSnippet>::new(site, config))),
+        glossary: Some(Arc::new(SiteEntries::<AdminTerm>::new(site, config))),
         authors: Some(Arc::new(SiteEntries::<AdminAuthor>::new(site, config))),
         tags: Some(Arc::new(SiteTags::new(site, config))),
         categories: Some(Arc::new(SiteCategories::new(site, config))),

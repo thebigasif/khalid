@@ -2611,6 +2611,459 @@
         ]
       }
     },
+    "/api/admin/v1/glossary/": {
+      "get": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Lists every glossary term in every language. A site has tens, so the\nlist comes whole. Needs `posts:write`.",
+        "operationId": "list_terms",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Every glossary term",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Creates a glossary term in the language it names or the site's\ndefault. Needs `posts:publish`.",
+        "operationId": "create_term",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTerms"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The new glossary term",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "This server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another term in that language has the slug",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, the term or definition is empty, or the site has no such language",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/glossary/{id}/": {
+      "get": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Reads one glossary term. Needs `posts:write`.",
+        "operationId": "read_term",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The language and slug, such as en.topical-authority",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The glossary term",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No term has this identity, or this server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Edits one glossary term: only the fields sent change. The edit carries\nthe `updated_at` of the copy it was made on; when the term changed\nsince, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.",
+        "operationId": "edit_term",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The language and slug, such as en.topical-authority",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TermEdits"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The glossary term as saved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminGlossary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No term has this identity, or this server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The term changed after the copy the edit was made on",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, or the term or definition is empty",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "admin glossary"
+        ],
+        "summary": "Deletes one glossary term. A post that still links to it keeps the\nwikilink, and the linter names it as broken. The request names the\n`updated_at` of the copy it was made on; when the term changed since,\nthe answer is a 409. Needs `posts:publish`.",
+        "operationId": "delete_term",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The language and slug, such as en.topical-authority",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updated_at",
+            "in": "query",
+            "description": "The `updated_at` as last read, such as `2026-10-20T08:30:00Z`.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "The glossary term is gone"
+          },
+          "400": {
+            "description": "updated_at is missing or is not a time",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:publish",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No term has this identity, or this server keeps no glossary terms",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The term changed after the copy the delete was made on",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/keys/": {
       "get": {
         "tags": [
@@ -14105,6 +14558,22 @@
           }
         }
       },
+      "AdminGlossary": {
+        "type": "object",
+        "description": "Glossary terms as the Admin API wraps them.",
+        "required": [
+          "glossary"
+        ],
+        "properties": {
+          "glossary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTerm"
+            },
+            "description": "The term or terms."
+          }
+        }
+      },
       "AdminIssues": {
         "type": "object",
         "description": "Issues as the Admin API wraps them.",
@@ -15157,6 +15626,54 @@
           "summary": {
             "type": "string",
             "description": "One plain sentence on what the template is for."
+          }
+        }
+      },
+      "AdminTerm": {
+        "type": "object",
+        "description": "A glossary term in one language, such as \"topical authority\", in Admin\nAPI shape. A post links to it with a wikilink to its slug, and the term\ngets its own page under the glossary.",
+        "required": [
+          "id",
+          "slug",
+          "language",
+          "term",
+          "markdown",
+          "updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The language and the slug, such as `en.topical-authority`."
+          },
+          "language": {
+            "type": "string",
+            "description": "The language, such as `en`.",
+            "example": "en"
+          },
+          "markdown": {
+            "type": "string",
+            "description": "The definition, in markdown."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The slug a wikilink names the term by, such as `topical-authority`.",
+            "example": "topical-authority"
+          },
+          "term": {
+            "type": "string",
+            "description": "The term as it is written."
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key shared by the term in other languages, if any."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the term last changed. An edit or delete sends it back."
           }
         }
       },
@@ -18083,6 +18600,63 @@
               "$ref": "#/components/schemas/NewSnippet"
             },
             "description": "The one new snippet."
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewTerm": {
+        "type": "object",
+        "description": "A new glossary term, as a create request sends it.",
+        "required": [
+          "slug",
+          "term",
+          "markdown"
+        ],
+        "properties": {
+          "language": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The language, such as `de`; the site's default when left out.",
+            "example": "en"
+          },
+          "markdown": {
+            "type": "string",
+            "description": "The definition, in markdown."
+          },
+          "slug": {
+            "type": "string",
+            "description": "The slug a wikilink will name it by, such as `topical-authority`.",
+            "example": "topical-authority"
+          },
+          "term": {
+            "type": "string",
+            "description": "The term as it is written."
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key shared by the term in other languages, if any."
+          }
+        },
+        "additionalProperties": false
+      },
+      "NewTerms": {
+        "type": "object",
+        "description": "A new term, wrapped the way the Admin API wraps the glossary: exactly one.",
+        "required": [
+          "glossary"
+        ],
+        "properties": {
+          "glossary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewTerm"
+            },
+            "description": "The one new term."
           }
         },
         "additionalProperties": false
@@ -21551,6 +22125,59 @@
             "example": "on-page-seo"
           }
         }
+      },
+      "TermEdit": {
+        "type": "object",
+        "description": "A change to a glossary term: only the fields sent change. An empty\n`translation` removes it.",
+        "required": [
+          "updated_at"
+        ],
+        "properties": {
+          "markdown": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new definition, in markdown."
+          },
+          "term": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The term as it is now written."
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new translation key, or `\"\"` to remove it."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The `updated_at` of the copy this edit was made on."
+          }
+        },
+        "additionalProperties": false
+      },
+      "TermEdits": {
+        "type": "object",
+        "description": "An edit, wrapped the way the Admin API wraps the glossary: exactly one.",
+        "required": [
+          "glossary"
+        ],
+        "properties": {
+          "glossary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TermEdit"
+            },
+            "description": "The one edit."
+          }
+        },
+        "additionalProperties": false
       },
       "TrashList": {
         "type": "object",

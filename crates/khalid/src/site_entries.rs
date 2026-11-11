@@ -1,4 +1,4 @@
-//! The Admin API's pages, snippets and authors as files in
+//! The Admin API's pages, snippets, glossary terms and authors as files in
 //! `content/<language>/<folder>/`, written atomically (RULES.md BL-RUN-9).
 //! Each last changed when its file did, so a hand edit makes a copy stale.
 

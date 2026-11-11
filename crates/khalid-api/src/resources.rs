@@ -11,6 +11,7 @@ mod admin_settings;
 mod admin_snippet;
 mod admin_tag;
 mod admin_template;
+mod admin_term;
 mod author;
 mod collection;
 mod comment;
@@ -45,6 +46,7 @@ pub use admin_template::{
     AdminTemplate, CtaSetting, OptionTakes, ReaderDefault, TemplateOptionSpec, TemplateSetting,
     TemplateValue,
 };
+pub use admin_term::{AdminTerm, NewTerm, TermEdit};
 pub use author::Author;
 pub use collection::Collection;
 pub use comment::{AdminComment, CommentReply, CommentStatus, CommentWriter};

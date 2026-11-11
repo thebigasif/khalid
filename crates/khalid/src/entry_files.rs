@@ -1,12 +1,13 @@
-//! How pages, snippets and authors are written in their files, for `SiteEntries`.
+//! How pages, snippets, glossary terms and authors are written in their
+//! files, for `SiteEntries`.
 
 use chrono::{DateTime, Utc};
 use khalid_api::entry_store::EntryStoreError;
 use khalid_api::resources::{
-    AdminAuthor, AdminPage, AdminSnippet, AuthorEdit, AuthorFile, NewAuthor, NewPage, NewSnippet,
-    PageEdit, SnippetEdit,
+    AdminAuthor, AdminPage, AdminSnippet, AdminTerm, AuthorEdit, AuthorFile, NewAuthor, NewPage,
+    NewSnippet, NewTerm, PageEdit, SnippetEdit, TermEdit,
 };
-use khalid_content::{AuthorFront, PageFront, SnippetFront};
+use khalid_content::{AuthorFront, GlossaryFront, PageFront, SnippetFront};
 use khalid_core::{AbsoluteUrl, Locale, Slug};
 use serde::de::DeserializeOwned;
 
@@ -95,6 +96,52 @@ impl EntryFile for AdminSnippet {
     fn edit(text: &mut PostText, edit: &SnippetEdit) {
         if let Some(title) = edit.title() {
             text.set("title", &quoted(title));
+        }
+        if let Some(markdown) = edit.markdown() {
+            text.set_body(markdown);
+        }
+    }
+}
+
+impl EntryFile for AdminTerm {
+    const FOLDER: &'static str = "glossary";
+
+    fn read(
+        key: (Locale, Slug),
+        text: &PostText,
+        changed: DateTime<Utc>,
+    ) -> Result<Self, EntryStoreError> {
+        let front: GlossaryFront = front(text)?;
+        let term = front.term.unwrap_or_default();
+        let made = Self::new(key, &term, text.markdown(), changed);
+        Ok(made.with_translation(front.translation.as_deref()))
+    }
+
+    fn slug_in(text: &PostText) -> Result<Option<Slug>, EntryStoreError> {
+        Ok(front::<GlossaryFront>(text)?.slug)
+    }
+
+    fn slug(new: &NewTerm) -> &Slug {
+        new.slug()
+    }
+
+    fn text(new: &NewTerm) -> PostText {
+        let mut text = PostText::empty();
+        text.set("term", &quoted(new.term()));
+        text.set("slug", new.slug().as_str());
+        put(&mut text, "translation", new.translation().map(quoted));
+        text.set_body(new.markdown());
+        text
+    }
+
+    fn edit(text: &mut PostText, edit: &TermEdit) {
+        if let Some(term) = edit.term() {
+            text.set("term", &quoted(term));
+        }
+        match edit.translation() {
+            Some("") => put(text, "translation", None),
+            Some(translation) => text.set("translation", &quoted(translation)),
+            None => {}
         }
         if let Some(markdown) = edit.markdown() {
             text.set_body(markdown);

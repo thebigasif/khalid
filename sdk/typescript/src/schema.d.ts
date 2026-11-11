@@ -271,6 +271,12 @@ export type AdminForms = {
   forms: FormSummary[];
 };
 
+/** Glossary terms as the Admin API wraps them. */
+export type AdminGlossary = {
+  /** The term or terms. */
+  glossary: AdminTerm[];
+};
+
 /** Issues as the Admin API wraps them. */
 export type AdminIssues = {
   /** Up to ten problems, those that stop posts going live first. */
@@ -628,6 +634,24 @@ export type AdminTemplate = {
   reader: ReaderDefault[];
   /** One plain sentence on what the template is for. */
   summary: string;
+};
+
+/** A glossary term in one language, such as "topical authority", in Admin API shape. A post links to it with a wikilink to its slug, and the term gets its own page under the glossary. */
+export type AdminTerm = {
+  /** The language and the slug, such as `en.topical-authority`. */
+  id: string;
+  /** The language, such as `en`. */
+  language: string;
+  /** The definition, in markdown. */
+  markdown: string;
+  /** The slug a wikilink names the term by, such as `topical-authority`. */
+  slug: string;
+  /** The term as it is written. */
+  term: string;
+  /** The key shared by the term in other languages, if any. */
+  translation?: string | null;
+  /** When the term last changed. An edit or delete sends it back. */
+  updated_at: string;
 };
 
 /** What one AI assistant's bots read, and the readers it sent. */
@@ -1597,6 +1621,26 @@ export type NewSnippet = {
 export type NewSnippets = {
   /** The one new snippet. */
   snippets: NewSnippet[];
+};
+
+/** A new glossary term, as a create request sends it. */
+export type NewTerm = {
+  /** The language, such as `de`; the site's default when left out. */
+  language?: string | null;
+  /** The definition, in markdown. */
+  markdown: string;
+  /** The slug a wikilink will name it by, such as `topical-authority`. */
+  slug: string;
+  /** The term as it is written. */
+  term: string;
+  /** The key shared by the term in other languages, if any. */
+  translation?: string | null;
+};
+
+/** A new term, wrapped the way the Admin API wraps the glossary: exactly one. */
+export type NewTerms = {
+  /** The one new term. */
+  glossary: NewTerm[];
 };
 
 /** One new webhook. */
@@ -2690,6 +2734,24 @@ export type Term = {
   slug: string;
 };
 
+/** A change to a glossary term: only the fields sent change. An empty `translation` removes it. */
+export type TermEdit = {
+  /** A new definition, in markdown. */
+  markdown?: string | null;
+  /** The term as it is now written. */
+  term?: string | null;
+  /** A new translation key, or `""` to remove it. */
+  translation?: string | null;
+  /** The `updated_at` of the copy this edit was made on. */
+  updated_at: string;
+};
+
+/** An edit, wrapped the way the Admin API wraps the glossary: exactly one. */
+export type TermEdits = {
+  /** The one edit. */
+  glossary: TermEdit[];
+};
+
 /** The trash as the Admin API wraps it. */
 export type TrashList = {
   /** The deleted posts, the most recently deleted first. */
@@ -3160,6 +3222,74 @@ export interface Operations {
         id: string;
         /** The answer's identity */
         answer: number;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: null;
+  };
+  /** Lists every glossary term in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  list_terms: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminGlossary;
+  };
+  /** Creates a glossary term in the language it names or the site's default. Needs `posts:publish`. */
+  create_term: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: NewTerms;
+    };
+    output: AdminGlossary;
+  };
+  /** Reads one glossary term. Needs `posts:write`. */
+  read_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AdminGlossary;
+  };
+  /** Edits one glossary term: only the fields sent change. The edit carries the `updated_at` of the copy it was made on; when the term changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
+  edit_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: TermEdits;
+    };
+    output: AdminGlossary;
+  };
+  /** Deletes one glossary term. A post that still links to it keeps the wikilink, and the linter names it as broken. The request names the `updated_at` of the copy it was made on; when the term changed since, the answer is a 409. Needs `posts:publish`. */
+  delete_term: {
+    input: {
+      path: {
+        /** The language and slug, such as en.topical-authority */
+        id: string;
+      };
+      query: {
+        /** The `updated_at` as last read, such as `2026-10-20T08:30:00Z`. */
+        updated_at: string;
       };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
