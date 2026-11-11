@@ -129,7 +129,7 @@ fn api_router(
     let content = FreshContent::new(site, config.clone());
     let door = Arc::new(PublishDoor::new(Arc::new(posts), Arc::new(Silent)));
     let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
-    let accounts = staff::accounts(database, id, config).with_author_profiles(profiles);
+    let accounts = staff::accounts(database, id, config, None).with_author_profiles(profiles);
     let sessions: Arc<dyn SessionCheck> = Arc::new(accounts.clone());
     let staff = (khalid_auth::staff_routes(accounts), sessions);
     let webhooks = WebhookTable::new(database.clone(), id, SystemClock);

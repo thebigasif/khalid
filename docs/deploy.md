@@ -66,6 +66,8 @@ khalid --site blog staff owner --email you@example.com --name "Your Name"
 
 This is the only time Khalid shows the sign-in link. The link works once, within 15 minutes. It is shown on two addresses: the site's own, and `localhost`, for a site that is not online yet. Open the `localhost` one while `khalid serve` runs on the same computer. If `khalid serve` listens somewhere other than `127.0.0.1:8080`, pass the same `--listen` to `staff owner`. Once signed in, choose a password or add a passkey.
 
+Once `[mail]` is set up, as "Sending email" below shows, anyone on the staff can ask the sign-in page to email them a link. It works once, within 15 minutes, and opens the admin signed in. The page gives the same answer for an email with no account and sends nothing, so nobody learns who is on the staff. Without `[mail]`, staff sign in with a password or a passkey.
+
 ## systemd on a Linux machine
 
 systemd is the program most Linux systems use to start services at boot. Khalid ships a unit file for it, `packaging/systemd/khalid.service`, and a user file, `packaging/systemd/khalid.sysusers`.

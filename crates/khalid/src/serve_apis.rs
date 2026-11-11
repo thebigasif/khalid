@@ -83,7 +83,8 @@ pub(crate) fn api_router(
     let readers =
         subscribers::SiteSubscribers::new(table, (site, config), posts.clone(), mailer.clone());
     let profiles = Arc::new(SiteAuthorProfiles::new(site, config));
-    let accounts = staff::accounts(database, id, config).with_author_profiles(profiles);
+    let accounts =
+        staff::accounts(database, id, config, mailer.clone()).with_author_profiles(profiles);
     let sessions: Arc<dyn SessionCheck> = Arc::new(accounts.clone());
     let routes = khalid_auth::staff_routes(accounts.clone());
     let staff = (khalid_auth::with_sites(routes, accounts, panel), sessions);
