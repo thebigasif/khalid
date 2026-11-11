@@ -38,6 +38,8 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
 .sign-or::before,.sign-or::after{content:"";flex:1;border-top:1px solid var(--border)}
 .sign-token{margin:1.5rem 0 0;padding:.75rem 0 0;border-top:1px solid var(--border);text-align:center}
 .quiet-link{min-height:44px;padding:.5rem;border:0;background:none;color:var(--link);text-decoration:underline;font:inherit;font-size:.9375rem;cursor:pointer}
+.sign-token+.sign-token{margin:0;padding:0;border-top:0}
+.sign-token form{text-align:left;margin:.5rem 0 0}
 .sign-new{margin:1rem 0 0;color:var(--muted);font-size:.875rem;text-align:center}
 hr{border:0;border-top:1px solid var(--border);margin:3rem 0}
 .note{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.9375rem}
@@ -62,8 +64,27 @@ hr{border:0;border-top:1px solid var(--border);margin:3rem 0}
         <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password"></div>
         <button class="btn" type="button">Sign in</button>
       </form>
+      <div class="sign-token"><button class="quiet-link" type="button" aria-expanded="false">Email me a sign-in link</button></div>
       <div class="sign-token"><button class="quiet-link" type="button" aria-expanded="false">Sign in with a staff token</button></div>
       <p class="sign-new">No account yet? Ask the blog's owner to add you. Owners get their first sign-in link from <code>khalid staff owner</code>.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="sign-in">
+    <div class="sign-card">
+      <span class="sign-initial" aria-hidden="true">F</span>
+      <h1>Sign in to Field notes</h1>
+      <div class="sign-token">
+        <button class="quiet-link" type="button" aria-expanded="true">Email me a sign-in link</button>
+        <form aria-label="Email me a sign-in link">
+          <p role="status">If lena@example.com is on this blog's staff, a sign-in link is on its way. It works once, within 15 minutes.</p>
+          <div class="field"><label for="link-email">Email</label><span class="hint" id="link-email-hint">The address you sign in with. Khalid emails you a link that signs you in, with no password.</span><input id="link-email" type="email" autocomplete="username" aria-describedby="link-email-hint" value="lena@example.com"></div>
+          <button class="btn" type="button">Send the link</button>
+        </form>
+      </div>
+      <div class="sign-token"><button class="quiet-link" type="button" aria-expanded="false">Sign in with a staff token</button></div>
     </div>
   </div>
 
@@ -81,7 +102,7 @@ hr{border:0;border-top:1px solid var(--border);margin:3rem 0}
     <button class="btn primary" type="button">Start writing</button>
   </form>
 
-  <p class="note">Mockup for the founder's review. Nothing on this page saves. Two screens the admin needs before the Dashboard: signing in, shown for a blog called Field notes with no logo and the message a wrong password gets, and the first screen after it, until the Dashboard can list posts. A blog with a logo shows the logo where the F badge is. <a href="index.html">All mockups</a></p>
+  <p class="note">Mockup for the founder's review. Nothing on this page saves. Two screens the admin needs before the Dashboard: signing in, shown for a blog called Field notes with no logo and the message a wrong password gets, the foot of the same card with "Email me a sign-in link" opened after a link was asked for (the passkey and password parts above it are left out), and the first screen after it, until the Dashboard can list posts. A blog with a logo shows the logo where the F badge is. <a href="index.html">All mockups</a></p>
 </main>
 </body>
 </html>
