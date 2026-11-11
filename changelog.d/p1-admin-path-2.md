@@ -1,2 +1,0 @@
-Added
-- The admin can live in another folder. `admin_folder = "studio"` in `site.toml` serves it at `/studio/`, or `/blog/studio/` under a mount, and leaves `/admin/` to the blog's pages. Sign-in links, the staff toolbar, the link `khalid staff owner` prints and each `admin_path` in the Admin API name the new folder. A folder name with a slash, `api`, `ghost` or one of the site's language codes is refused with the line to fix.

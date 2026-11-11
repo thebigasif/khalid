@@ -1,2 +1,0 @@
-Added
-- An imprint page, the Impressum German law asks for. Add a `[privacy.imprint]` table to `site.toml` and Khalid writes `<mount>impressum/` in each language, from the name, postal address and email in `[privacy.contact]` plus an optional phone number, register entry, VAT ID and the person who answers for the articles, and links it from the footer of every page. An owner page with the slug `impressum` replaces it. A table without a name, address or email is refused with the field to fill in.

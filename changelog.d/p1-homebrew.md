@@ -1,2 +1,0 @@
-Added
-- Khalid can be installed with Homebrew on a Mac or on Linux: `brew install thebigasif/khalid/khalid` installs the binary, its manual pages and Tab completion, and `brew upgrade` brings each new release. `scripts/homebrew-formula.sh` writes the formula from a release's `SHA256SUMS` and refuses a prerelease or a file with no checksum. `docs/deploy.md` says how the tap is kept up to date (KH-INS-1).

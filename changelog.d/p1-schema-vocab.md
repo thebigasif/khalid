@@ -1,2 +1,0 @@
-Fixed
-- A slip in a type or property name in hand-written JSON-LD, such as `Eevnt` for `Event`, `startdate` for `startDate` or `Organisation` for `Organization`, no longer passes in silence. The post's `schema` field, the site's custom JSON-LD and the same field in the admin and the API now refuse it and name the place and the right name, such as "startdate is not a schema.org name; did you mean startDate?". Search engines skip a name they do not know, so the structured data would have been lost.

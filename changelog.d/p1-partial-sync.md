@@ -1,2 +1,0 @@
-Fixed
-- `khalid theme sync` and `khalid theme check` now work on a `theme/tokens.toml` that sets only some values, such as the file the admin's Design screen writes. Before, both stopped with "missing field `background`". The commands read the file as the pages do, with the template's values under it, and a sync changes only the values the main site changed, in place, so comments stay and the file stays short.

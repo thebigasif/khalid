@@ -1,2 +1,0 @@
-Added
-- The Analytics screen shows what each AI assistant's bots read: for ChatGPT, Claude, Perplexity and the others, how often their bots read your pages, how many pages, which bots, and how many page views the assistant sent in the same days. Bots of no assistant Khalid names, such as CCBot, sit together in the last row. Programs read the same counts from `GET /api/admin/v1/analytics/ai-bots/?days=30`.

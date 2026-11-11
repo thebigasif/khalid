@@ -1,2 +1,0 @@
-Changed
-- The admin now names people instead of showing a 16-digit code. The editor says "Maria Lopez is editing this post", earlier versions say who saved them, the audit log lists who made each change, and the message for an edit made on an old copy says who changed the post. A key shows the name it was made with; a key revoked since shows its code. The Admin API adds `name` to presence, `saved_by_name` to versions and `by_name` to audit log entries, beside the identities it already sent.
