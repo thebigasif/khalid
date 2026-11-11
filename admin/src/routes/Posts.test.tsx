@@ -3,8 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { axeViolations, json, renderAt, serve, signedIn } from "../../test/render";
 import { listing, row, rowsPage } from "../../test/rows";
+import { searchPosts } from "../../test/searchConsole";
 import type { PostRow } from "../api/rows";
 import { en } from "../strings/en";
+import { searchConsoleWords } from "../strings/searchConsoleWords";
 import { seoEditorWords } from "../strings/seoEditorWords";
 
 const ROWS = [
@@ -112,6 +114,35 @@ describe("the posts screen", () => {
     await userEvent.selectOptions(seo, "orphan");
     await userEvent.click(within(form).getByRole("button", { name: en.filters.show }));
     await waitFor(() => expect(queries.at(-1)?.get("filter")).toBe("orphan:true"));
+  });
+
+  it("shows each post's Google clicks and times shown when the blog is connected", async () => {
+    signedIn();
+    const [seenId, unseenId] = searchPosts().posts.map((post) => post.id);
+    const rows = [row({ id: seenId ?? "" }), row({ id: unseenId ?? "", title: "A sitemap" })];
+    serve((request) => {
+      if (new URL(request.url).pathname === "/api/admin/v1/search-console/posts/") {
+        return json(200, searchPosts());
+      }
+      return listing(request) === null ? json(404, {}) : rowsPage(rows);
+    });
+    renderAt("/posts");
+    const words = searchConsoleWords.table;
+    const header = await screen.findByRole("columnheader", { name: words.column });
+    expect(header).toBeVisible();
+    const [, seen, unseen] = within(screen.getByRole("table")).getAllByRole("row");
+    expect(seen).toHaveTextContent(words.numbers("120", "2,400"));
+    expect(unseen).toHaveTextContent(words.notShown);
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("leaves the Google column out when the blog is not connected", async () => {
+    signedIn();
+    blog();
+    renderAt("/posts");
+    await screen.findByRole("table");
+    expect(screen.getAllByRole("columnheader")).toHaveLength(10);
+    expect(screen.queryByText(searchConsoleWords.table.column)).toBeNull();
   });
 
   it("says when no post matches", async () => {

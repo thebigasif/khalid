@@ -2201,6 +2201,18 @@ export type SearchNumbers = {
   position?: number | null;
 };
 
+/** Each published post's numbers for the month and nothing else, which the posts table shows beside each post. One request to Google finds them, where the whole report needs six. */
+export type SearchPosts = {
+  /** The first day of the month looked at. */
+  first: string;
+  /** The last day looked at: the last day whose numbers are final. */
+  last: string;
+  /** Every published post, the one with the most clicks first. */
+  posts: PostNumbers[];
+  /** The Search Console property the numbers come from. */
+  property: string;
+};
+
 /** A site's Search Console numbers. */
 export type SearchReport = {
   /** Pages whose clicks fell three 28-day months in a row. */
@@ -3723,6 +3735,16 @@ export interface Operations {
       };
     };
     output: FollowUps;
+  };
+  /** Lists each published post's clicks, impressions, click-through rate and average position for the last 28 days whose numbers are final, and nothing else, for the posts table. One request to Google finds them, where the whole report needs six. Needs `settings:write`. */
+  search_posts: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SearchPosts;
   };
   /** Lists each published post's clicks, impressions, click-through rate and average position for the last 28 days whose numbers are final, the pages whose clicks fell three months in a row, pages that answer 404 or `noindex` but still get search traffic, and this week's winners and losers against last week. Google is asked on each request, so the answer can take some seconds. Needs `settings:write`. */
   search_report: {
