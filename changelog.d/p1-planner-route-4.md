@@ -1,2 +1,0 @@
-Added
-- The admin calendar now shows the publishing planner's suggested days. Each draft that passes its checks appears as a dashed "Suggested" chip on the day `khalid plan` would pick, at your usual pace, with each topic's main post first. A "Suggested days" panel explains the pace, shows any warning, such as a pace that dropped, and has one button that schedules every suggested draft at 12:00 on its day. Nothing changes until you press it. The Admin API answers the same plan at `GET /api/admin/v1/calendar/plan/`, with `per_week` to ask for another pace.

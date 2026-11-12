@@ -1,2 +1,0 @@
-Added
-- `khalid lint` now checks case studies and changelog entries, not only posts (plan 5.13, KH-LNT-2, KH-LNT-3). A case study with no `client`, no `outcome` or no `date` blocks under `case-study-incomplete`, one finding per missing field. A changelog entry with no `date` blocks under `changelog-entry-undated`; the date also gives the month the changelog lists it under, so a version is optional. Both rules can be lowered in `lint.toml`. `khalid build` still publishes these entries: its gate judges posts only.

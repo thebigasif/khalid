@@ -1,2 +1,0 @@
-Added
-- With Resend or Postmark and `KHALID_MAIL_HOOK_SECRET` set, `khalid serve` answers `/api/hooks/mail`. When the service reports that an address bounced for good, or that its reader marked an email as spam, that reader is unsubscribed from every newsletter and the sign-up form never emails the address again. This keeps the sending account from being flagged for mailing dead addresses. See "Bounces and spam complaints" in `docs/deploy.md`.

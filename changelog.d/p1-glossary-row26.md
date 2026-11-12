@@ -1,2 +1,0 @@
-Added
-- The Admin API now reads and writes glossary terms under `/api/admin/v1/glossary/`: list, read, create, edit and delete, each term one file in `content/<language>/glossary/`. A term made or changed this way shows on its glossary page on a running `khalid serve` without a restart. Edits and deletes carry `updated_at`, so a stale copy is refused with a 409 rather than undoing someone's change.
