@@ -23,7 +23,7 @@ thiserror.workspace = true
 toml = "1.1"
 toml_edit = "0.25"
 url = "2"
-read-fonts = "0.46"
+read-fonts = "0.47"
 
 [build-dependencies]
 # Compresses each pack's stylesheet for the binary; the same crate reads it
