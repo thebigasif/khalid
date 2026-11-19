@@ -8,6 +8,7 @@
 use std::fs::{self, OpenOptions};
 use std::io::{ErrorKind, Write as _};
 use std::path::{Path, PathBuf};
+use std::sync::{Mutex, MutexGuard, PoisonError};
 
 use chrono::{DateTime, TimeDelta, Utc};
 use khalid_core::{Clock, UserMessage};
@@ -66,6 +67,69 @@ impl Drop for AuditLock {
     }
 }
 
+/// The lock of the nightly audit in `khalid serve`, which the server can
+/// let go of while the audit still runs. Stopping the server does not wait
+/// for a build that can take minutes, and the thread left running ends
+/// with the process, so without this the lock would stay for six hours.
+#[derive(Debug, Default)]
+pub(crate) struct AuditHold(Mutex<Hold>);
+
+#[derive(Debug, Default)]
+struct Hold {
+    lock: Option<AuditLock>,
+    stopped: bool,
+}
+
+/// The nightly audit's turn with an [`AuditHold`]. Dropping it lets go of
+/// the lock, unless the server already did.
+#[derive(Debug)]
+pub(crate) struct Holding<'h>(&'h AuditHold);
+
+impl AuditHold {
+    /// Takes the lock in the audit's `folder` at the time `clock` gives,
+    /// for as long as the returned [`Holding`] lives.
+    ///
+    /// # Errors
+    ///
+    /// Returns the stopped message once the server is stopping, and the
+    /// messages of [`AuditLock::take`].
+    pub(crate) fn take(
+        &self,
+        folder: &Path,
+        clock: &dyn Clock,
+    ) -> Result<Holding<'_>, UserMessage> {
+        let mut hold = self.hold();
+        if hold.stopped {
+            return Err(audit_message::stopped());
+        }
+        hold.lock = Some(AuditLock::take(folder, clock)?);
+        Ok(Holding(self))
+    }
+
+    /// Lets go of the lock and refuses every later turn, as the server
+    /// stops.
+    pub(crate) fn stop(&self) {
+        let mut hold = self.hold();
+        hold.stopped = true;
+        hold.lock = None;
+    }
+
+    /// Whether the server is stopping, so the audit should end early.
+    pub(crate) fn stopped(&self) -> bool {
+        self.hold().stopped
+    }
+
+    fn hold(&self) -> MutexGuard<'_, Hold> {
+        self.0.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+}
+
+impl Drop for Holding<'_> {
+    fn drop(&mut self) {
+        self.0.hold().lock = None;
+    }
+}
+
 /// Creates the lock `file` holding `now`, failing with `AlreadyExists`
 /// when another audit holds it.
 fn place(file: &Path, now: DateTime<Utc>) -> std::io::Result<()> {
@@ -93,7 +157,7 @@ mod tests {
     use chrono::{DateTime, TimeDelta, Utc};
     use khalid_core::FixedClock;
 
-    use super::AuditLock;
+    use super::{AuditHold, AuditLock};
 
     /// A fixed moment, since tests never read the computer's clock.
     fn noon() -> DateTime<Utc> {
@@ -135,6 +199,35 @@ mod tests {
         let held = fs::read_to_string(lock_file(folder.path())).unwrap();
         assert_eq!(held, (noon() + TimeDelta::hours(6)).to_rfc3339());
         drop(taken);
+    }
+
+    #[test]
+    fn stopping_the_server_lets_go_of_the_nightly_lock_while_its_audit_runs() {
+        let folder = tempfile::tempdir().unwrap();
+        let hold = AuditHold::default();
+        let holding = hold.take(folder.path(), &at(0)).unwrap();
+        assert!(lock_file(folder.path()).exists());
+        hold.stop();
+        assert!(hold.stopped());
+        assert!(!lock_file(folder.path()).exists(), "the lock went at stop");
+        assert!(
+            AuditLock::take(folder.path(), &at(0)).is_ok(),
+            "khalid audit can start"
+        );
+        drop(holding);
+        assert!(
+            hold.take(folder.path(), &at(1)).is_err(),
+            "no audit after stop"
+        );
+    }
+
+    #[test]
+    fn a_hold_lets_go_when_its_audit_ends() {
+        let folder = tempfile::tempdir().unwrap();
+        let hold = AuditHold::default();
+        drop(hold.take(folder.path(), &at(0)).unwrap());
+        assert!(!lock_file(folder.path()).exists());
+        assert!(!hold.stopped());
     }
 
     #[test]
