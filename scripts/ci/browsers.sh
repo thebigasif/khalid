@@ -59,15 +59,26 @@ key() {
   fi
 }
 
-# The packages Playwright would install, read from its dry run, whose one
-# command line ends `apt-get install -y --no-install-recommends <packages>`.
+# The packages Playwright would install, read from its dry run. Since 1.64
+# the dry run asks apt and prints either "All system dependencies are
+# installed." or "Missing system dependencies (N):" and one package per
+# indented line, then exits 1. Before, it printed one command line ending
+# `apt-get install -y --no-install-recommends <packages>`. Prints "none"
+# when nothing is missing, and nothing when it reads neither way.
 wanted_packages() {
-  npx --prefix "$tools" playwright install-deps --dry-run "$@" \
-    | sed -n 's/.*--no-install-recommends//p' \
-    | tr -d "\"'" \
-    | tr ' ' '\n' \
-    | sed '/^$/d' \
-    | sort -u
+  local report
+  report="$(npx --prefix "$tools" playwright install-deps --dry-run "$@" 2> /dev/null || true)"
+  if grep -q '^All system dependencies are installed' <<< "$report"; then
+    echo none
+  elif grep -q '^Missing system dependencies' <<< "$report"; then
+    sed -n '/^Missing system dependencies/,$ s/^  *\([^ ][^ ]*\) *$/\1/p' <<< "$report" | sort -u
+  else
+    sed -n 's/.*--no-install-recommends//p' <<< "$report" \
+      | tr -d "\"'" \
+      | tr ' ' '\n' \
+      | sed '/^$/d' \
+      | sort -u
+  fi
 }
 
 # Settings for every apt-get below, and for Playwright's own if it runs.
@@ -116,12 +127,22 @@ install_browsers() {
 install_packages() {
   local wanted missing=() package
   wanted="$(wanted_packages "$@" || true)"
+  if [ "$wanted" = none ]; then
+    echo "The runner already has every package the browsers need."
+    return 0
+  fi
   if [ -z "$wanted" ]; then
     # Playwright changed how its dry run reads. Let it install the packages
-    # itself; the apt settings above still apply.
+    # itself; the apt settings above still apply. Its install refreshes the
+    # package lists first, which can pull an update from a slow mirror, so
+    # a failed try gets one more.
     echo "Could not read Playwright's package list, so Playwright installs the packages."
-    timeout -k 20 600 npx --prefix "$tools" playwright install-deps "$@"
-    return
+    timeout -k 20 600 npx --prefix "$tools" playwright install-deps "$@" && return 0
+    sudo dpkg --configure -a || true
+    echo "Playwright's package install failed (try 1 of 2)."
+    timeout -k 20 600 npx --prefix "$tools" playwright install-deps "$@" \
+      || stop "The browsers' packages did not install. An Ubuntu mirror may be down; run the job again later."
+    return 0
   fi
   for package in $wanted; do
     dpkg-query -W -f='${db:Status-Abbrev}' "$package" 2> /dev/null | grep -q '^ii' || missing+=("$package")

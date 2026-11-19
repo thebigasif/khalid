@@ -29,6 +29,14 @@ ignore = [
   # unmaintained, not vulnerable (ADR "AVIF images are made with ravif").
   # Review again 2027-05-02, or when rav1e moves to pastey.
   { id = "RUSTSEC-2024-0436", reason = "paste: a macro run at compile time inside rav1e; it reads no input of ours and is not in the binary" },
+  # chrono lost its maintainers in November 2026. It is flagged unmaintained,
+  # not vulnerable, and no fixed release exists. Every crate that stores a
+  # time uses it, and so does sqlx, so moving to jiff or time is its own task
+  # (ADR "chrono stays until the move to jiff"). humantime is flagged only
+  # because it wraps chrono, and arrives only through trycmd in the CLI's
+  # tests. Review again 2027-02-19, or at once if a vulnerability is filed.
+  { id = "RUSTSEC-2026-0543", reason = "chrono: unmaintained, not vulnerable; dates come from our own content, the database and the Clock, and parsing stays inside our error types" },
+  { id = "RUSTSEC-2026-0542", reason = "humantime: unmaintained only because it wraps chrono; reached only through trycmd, a test-only dependency of the CLI" },
 ]
 
 [licenses]
