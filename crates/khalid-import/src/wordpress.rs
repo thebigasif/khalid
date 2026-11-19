@@ -1,6 +1,7 @@
 //! `WordPress`: the WXR export file that Tools, Export writes, or a live
 //! site's public REST API.
 
+mod comments;
 mod export;
 mod item;
 mod item_file;
@@ -19,6 +20,7 @@ mod site_files;
 mod wxr;
 mod wxr_error;
 
+pub use comments::{CommentLeftReason, ImportedComment, LeftComment};
 pub use export::{Author, Export, Site, Term};
 pub use item::{Comment, CommentState, Item, ItemKind, ItemStatus, Meta};
 pub use plan::{

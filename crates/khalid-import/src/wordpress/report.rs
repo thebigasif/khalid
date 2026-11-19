@@ -5,7 +5,7 @@ use std::fmt;
 
 use crate::redirects::keeps_path;
 use crate::sentences::{count, list};
-use crate::wordpress::{Held, LeftReason, MapSource, Plan, SkipReason};
+use crate::wordpress::{CommentLeftReason, Held, LeftReason, MapSource, Plan, SkipReason};
 use crate::{Place, SlugOrigin};
 
 /// What a plan would do, counted, with the plan's lists for the details.
@@ -113,6 +113,7 @@ impl fmt::Display for Report<'_> {
             .collect();
         list(f, "Items that could not come in", &failed)?;
         list(f, "Items left behind", &grouped(plan))?;
+        comments(f, plan)?;
         let rules: Vec<String> = plan
             .skipped_rules
             .iter()
@@ -155,6 +156,45 @@ fn grouped(plan: &Plan) -> Vec<String> {
             )
         })
         .collect()
+}
+
+/// How many comments come in and how many wait for approval, then those
+/// left behind, one entry per reason in the order reasons first appear.
+/// An export with no comments says nothing about them.
+fn comments(f: &mut fmt::Formatter<'_>, plan: &Plan) -> fmt::Result {
+    if plan.comments.is_empty() && plan.left_comments.is_empty() {
+        return Ok(());
+    }
+    let waiting = plan.comments.iter().filter(|c| !c.approved).count();
+    writeln!(
+        f,
+        "Comments coming in: {}, of which {waiting} wait for approval.",
+        plan.comments.len()
+    )?;
+    let mut left: Vec<(&CommentLeftReason, usize)> = Vec::new();
+    for comment in &plan.left_comments {
+        match left
+            .iter_mut()
+            .find(|(reason, _)| **reason == comment.reason)
+        {
+            Some((_, n)) => *n = n.saturating_add(1),
+            None => left.push((&comment.reason, 1)),
+        }
+    }
+    let left: Vec<String> = left
+        .into_iter()
+        .map(|(reason, n)| {
+            let why = match reason {
+                CommentLeftReason::Spam => "spam",
+                CommentLeftReason::Removed => "in the bin",
+                CommentLeftReason::Ping => "pingbacks and trackbacks from other sites",
+                CommentLeftReason::NotOnPost => "under a page or a draft, which have no comments",
+                CommentLeftReason::Empty => "with no text or no date",
+            };
+            format!("{why} ({n})")
+        })
+        .collect();
+    list(f, "Comments left behind", &left)
 }
 
 /// The name of a field an item holds back, as the report lists it.
