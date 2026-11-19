@@ -77,8 +77,10 @@ fn the_typescript_sdk_lists_the_demo_posts_from_khalid_serve() {
     let base = address.trim_end_matches("/blog/");
 
     let test = repository("sdk/typescript/test/demo-posts.test.js");
+    // Newer Node prints the "spec" report even into a pipe, where Node 18 and
+    // 20 printed TAP. Ask for TAP by name, so `# pass 3` reads the same on all.
     let output = Command::new("node")
-        .args(["--test", test.to_str().unwrap()])
+        .args(["--test", "--test-reporter=tap", test.to_str().unwrap()])
         .env("KHALID_URL", base)
         .env("KHALID_CONTENT_KEY", &key)
         .output()
