@@ -17,7 +17,7 @@ mod entries;
 mod nightly_audit;
 mod weekly_email;
 
-pub(crate) use nightly_audit::NightlyAudit;
+pub(crate) use nightly_audit::{Finished, NightlyAudit};
 pub(crate) use weekly_email::WeeklyEmail;
 
 use std::sync::Arc;
@@ -94,7 +94,16 @@ pub(crate) fn start(
         let mut auditing: Option<JoinHandle<()>> = None;
         loop {
             tokio::select! {
-                _ = &mut stopped => return,
+                _ = &mut stopped => {
+                    // An audit can take minutes, so stopping never waits for it.
+                    if let Some(nightly) = &nightly {
+                        nightly.stop();
+                    }
+                    if auditing.as_ref().is_some_and(|task| !task.is_finished()) {
+                        tracing::info!("the nightly site audit was left unfinished because the server stopped");
+                    }
+                    return;
+                }
                 _ = ticks.tick() => {}
             }
             if rounds.is_multiple_of(HOURLY) {
@@ -134,8 +143,10 @@ pub(crate) fn start(
             if let Some(nightly) = nightly.as_ref().filter(|_| after_the_first_hour)
                 && auditing.as_ref().is_none_or(JoinHandle::is_finished)
             {
-                let nightly = Arc::clone(nightly);
-                auditing = Some(tokio::spawn(async move { nightly.round(clock).await }));
+                let (nightly, alerting) = (Arc::clone(nightly), Arc::clone(&alerting));
+                auditing = Some(tokio::spawn(async move {
+                    nightly.round(clock, &alerting).await;
+                }));
             }
             rounds = rounds.wrapping_add(1);
         }

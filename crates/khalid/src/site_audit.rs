@@ -28,6 +28,7 @@ use khalid_outbound::{Limits, Outbound, Resolver};
 use khalid_routes::Routes;
 use tokio::runtime::Handle;
 
+pub(crate) use self::lock::AuditHold;
 use self::lock::AuditLock;
 use crate::cli::{Cli, Network, Output};
 use crate::exit::Exit;
@@ -136,32 +137,43 @@ fn built(
 
 /// Audits the site in `site` as `khalid audit` does offline, printing
 /// nothing: builds it into `data/audit/site/`, crawls it on `handle`,
-/// writes the CSV files and adds the run to the trend, which it returns.
-/// The scheduler in `khalid serve` calls it once a day on a blocking
-/// thread (plan 5.10).
+/// writes the CSV files and adds the run to the trend. It returns the run
+/// and the report, for the server to raise and announce. The scheduler in
+/// `khalid serve` calls it once a day on a blocking thread (plan 5.10),
+/// holding the lock through `hold`, and stops after the step in progress
+/// once the server lets go of it.
 ///
 /// # Errors
 ///
-/// Returns the message of the first read, build or write that fails.
+/// Returns the message of the first read, build or write that fails, or
+/// the stopped message when the server stops first.
 pub(crate) fn nightly(
     site: &Path,
     checked: (&Config, &Routes, &SiteContent),
-    clock: &dyn Clock,
-    handle: &Handle,
-) -> Result<Run, UserMessage> {
+    (clock, handle): (&dyn Clock, &Handle),
+    hold: &AuditHold,
+) -> Result<(Run, Report), UserMessage> {
     let folder = within(site, FOLDER);
     let thresholds = thresholds(site, clock)?;
     let home = home(checked.0).map_err(|()| audit_message::internal())?;
-    let _held = AuditLock::take(&folder, clock)?;
+    let _held = hold.take(&folder, clock)?;
+    let going_on = || {
+        (!hold.stopped())
+            .then_some(())
+            .ok_or_else(audit_message::stopped)
+    };
     let built = within(&folder, "site");
     emptied(&built)?;
     build::quietly(site, checked, &built, clock)?;
+    going_on()?;
     let source = Folder::open(&built, &home).map_err(|error| audit_message::of(&error))?;
     let crawled = handle.block_on(crawl(&source, &home, Limit::default()));
+    going_on()?;
     let audit = Report::of(&crawled, &thresholds);
     let reports = (&LinkReport::of(&crawled), &WeightReport::of(&crawled));
     let trend = keep(&folder, &audit, reports, clock)?;
-    trend.last().copied().ok_or_else(audit_message::internal)
+    let run = trend.last().copied().ok_or_else(audit_message::internal)?;
+    Ok((run, audit))
 }
 
 /// Every audit the site in `site` has kept, oldest first, or none when no

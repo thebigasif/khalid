@@ -43,9 +43,9 @@ use crate::site_pages::SitePages;
 use crate::site_posts::SitePosts;
 use crate::tag_events::Tags;
 use crate::{
-    admin_blog, announce, assets, comment_pages, consent_route, db, db_message, media_library,
-    newsletter, page_counts, preview, push_hook, redirect_route, report, scheduler, search_route,
-    serve_apis, serve_message, share_images, site_config, staff_toolbar, unlock,
+    admin_blog, announce, assets, audit_events, comment_pages, consent_route, db, db_message,
+    media_library, newsletter, page_counts, preview, push_hook, redirect_route, report, scheduler,
+    search_route, serve_apis, serve_message, share_images, site_config, staff_toolbar, unlock,
 };
 
 #[path = "serve_mail.rs"]
@@ -55,6 +55,9 @@ use mail::mail_and_alerts;
 /// How often the site folder is looked at for a saved edit where the system
 /// has no file events for it (ADR "the server watches files with events").
 const WATCH_EVERY: Duration = Duration::from_millis(500);
+
+/// How long a blocking thread may run on once the server has stopped.
+const LEFT_RUNNING: Duration = Duration::from_secs(2);
 
 /// How long requests in flight may take to finish after a stop signal
 /// before their connections are closed (RULES.md BL-RUN-10).
@@ -153,7 +156,9 @@ pub(crate) fn run(
         return report::failure(output, &serve_message::internal(), Exit::Internal);
     };
     let to = (listen, &outbound, (output, alert_every), keys);
-    match serve_site(&runtime, (site, config, routes), start, to, None) {
+    let served = serve_site(&runtime, (site, config, routes), start, to, None);
+    wind_down(runtime);
+    match served {
         Ok(()) if output == Output::Human => report::text("Stopped.\n", Exit::Success),
         Ok(()) => Exit::Success,
         Err((message, exit)) => report::failure(output, &message, exit),
@@ -237,7 +242,7 @@ fn serve_with(
             )?;
         posts.follow(source.live_config());
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
-        let nightly = NightlyAudit::new(site, config, routes);
+        let nightly = NightlyAudit::new(site, (config, routes), audit_events::to(&telling));
         let timed = (alerting, keys.weekly, forms, nightly);
         let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
         let pruning = Pruning::start((database, id), every.clock);
@@ -552,6 +557,15 @@ pub(crate) fn announce(output: Output, config: &Config, address: &str) {
         ),
         Output::Json => report::json(&ServeBody { address }, Exit::Success),
     };
+}
+
+/// Stops `runtime` once the server has stopped, leaving work still on its
+/// blocking threads to end with the process after `LEFT_RUNNING`. Every
+/// part the server waits for has finished by then. What is left is the
+/// nightly audit's build, which can take minutes and has already let go of
+/// its lock, so a stop never waits for it.
+pub(crate) fn wind_down(runtime: Runtime) {
+    runtime.shutdown_timeout(LEFT_RUNNING);
 }
 
 /// Completes on Ctrl+C or, on Unix, the stop signal a service manager sends.

@@ -11,12 +11,13 @@ use khalid_webhooks::Event;
 use serde::Serialize;
 use tokio::runtime::Runtime;
 
+use crate::announce::SiteAnnounce;
 use crate::cli::Cli;
-use crate::{announce, db, outbound, serve};
+use crate::{announce, db, outbound, scheduler, serve};
 
 /// The resource an `audit.finished` delivery carries.
 #[derive(Debug, Serialize)]
-struct Finished {
+pub(crate) struct Finished {
     audit: Summary,
 }
 
@@ -29,6 +30,27 @@ struct Summary {
     errors: usize,
     warnings: usize,
     notices: usize,
+}
+
+/// What an `audit.finished` delivery about `audit` carries. The nightly
+/// audit in `khalid serve` fires the same through the server's announcer.
+pub(crate) fn finished(audit: &Report) -> Finished {
+    Finished {
+        audit: Summary {
+            score: audit.score(),
+            pages: audit.pages(),
+            errors: audit.count(Severity::Error),
+            warnings: audit.count(Severity::Warning),
+            notices: audit.count(Severity::Notice),
+        },
+    }
+}
+
+/// The nightly audit's `audit.finished`, fired through `telling`, the
+/// running server's announcer.
+pub(crate) fn to(telling: &SiteAnnounce) -> scheduler::Finished {
+    let telling = telling.clone();
+    Box::new(move |audit: &Report| telling.fire(Event::AuditFinished, finished(audit)))
 }
 
 /// Fires `audit.finished` about `audit` to the webhooks of the site in
@@ -56,19 +78,10 @@ pub(crate) fn fire(
             return;
         }
     };
-    let finished = Finished {
-        audit: Summary {
-            score: audit.score(),
-            pages: audit.pages(),
-            errors: audit.count(Severity::Error),
-            warnings: audit.count(Severity::Warning),
-            notices: audit.count(Severity::Notice),
-        },
-    };
     runtime.block_on(async {
         match announce::once(config, (&database, site), &outbound) {
             Ok((telling, announcing)) => {
-                telling.fire(Event::AuditFinished, finished);
+                telling.fire(Event::AuditFinished, finished(audit));
                 announcing.stop().await;
             }
             Err(message) => tracing::warn!(%message, "audit.finished was not sent"),
