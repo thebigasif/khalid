@@ -45,8 +45,10 @@ pub(crate) fn raise(
     runtime.block_on(database.close());
 }
 
-/// One finding for each link on the blog to a page that is broken.
-fn findings(audit: &Report) -> Vec<Finding> {
+/// One finding for each link on the blog to a page that is broken. The
+/// nightly audit in `khalid serve` raises the same through the server's
+/// alerting.
+pub(crate) fn findings(audit: &Report) -> Vec<Finding> {
     audit
         .issues()
         .iter()

@@ -358,6 +358,10 @@ To check mail before you start the server, run `khalid --site <folder> doctor` i
 
 Only one audit of a site runs at a time. While one runs, it keeps the file `data/audit/running`. A `khalid audit` started then stops at once and says so, and the server's audit tries again an hour later. If an audit stopped without removing the file, the next audit takes it over once it is six hours old, or you can delete it.
 
+Like `khalid audit`, the server's audit then fires the `audit.finished` webhook with the score and the counts, and raises the blog's broken links to you as an `alert.raised` webhook and by `[alerts] email`. A link already raised is not raised again while it stays broken.
+
+Stopping the server does not wait for an audit, which can take minutes on a large site. The server lets go of `data/audit/running` at once, so you can run `khalid audit` straight away. The audit left unfinished keeps no score and sends nothing, and the next one runs an hour after the server starts again.
+
 The dashboard shows the score from `GET /api/admin/v1/site/health/`, which sends the last audit and up to the last 30 as the trend. Before the first audit, `last` is `null`.
 
 ## Alerts

@@ -273,6 +273,15 @@ pub(crate) fn busy(file: &Path) -> UserMessage {
     )
 }
 
+/// The message for a nightly audit left unfinished as the server stops.
+pub(crate) fn stopped() -> UserMessage {
+    UserMessage::new(
+        "The nightly audit stopped early because the server is stopping.",
+        "Stopping the server does not wait for an audit, which can take minutes.",
+        "Nothing to do: the next audit runs an hour after the server starts again.",
+    )
+}
+
 /// The message for a fault inside Khalid.
 pub(crate) fn internal() -> UserMessage {
     UserMessage::new(

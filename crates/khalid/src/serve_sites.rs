@@ -97,7 +97,10 @@ pub(crate) fn run(root: &Path, cli: &Cli, args: &ServeArgs) -> Exit {
         output,
         args,
     };
-    match serve_all(&shared, &list, starts) {
+    let served = serve_all(&shared, &list, starts);
+    drop(shared);
+    serve::wind_down(runtime);
+    match served {
         Ok(()) if output == Output::Human => report::text("Stopped.\n", Exit::Success),
         Ok(()) => Exit::Success,
         Err((message, exit)) => report::failure(output, &message, exit),
