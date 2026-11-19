@@ -20,7 +20,7 @@ mod wxr;
 mod wxr_error;
 
 pub use export::{Author, Export, Site, Term};
-pub use item::{Item, ItemKind, ItemStatus, Meta};
+pub use item::{Comment, CommentState, Item, ItemKind, ItemStatus, Meta};
 pub use plan::{
     FailedItem, Held, ImportedItem, ItemError, LeftItem, LeftReason, Plan, REDIRECTS_CSV, plan,
 };
