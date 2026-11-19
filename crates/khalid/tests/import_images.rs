@@ -206,7 +206,11 @@ async fn an_image_at_a_private_address_is_refused_and_keeps_its_link() {
     );
     let post = fs::read_to_string(post).unwrap();
     assert!(post.contains(&format!("({private}{JAR})")), "{post}");
-    assert!(!post.contains("image:"), "{post}");
+    let lead = format!("image:\n  src: \"{private}{JAR}\"\n");
+    assert!(
+        post.contains(&lead),
+        "the lead image keeps its old address: {post}"
+    );
 }
 
 #[tokio::test(flavor = "multi_thread")]

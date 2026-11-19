@@ -18,7 +18,7 @@ pub struct Report<'plan> {
     pub drafts: usize,
     /// Published pages.
     pub pages: usize,
-    /// Public tags, whose archives are not mapped until posts hold tags.
+    /// Public tags, whose archives are not mapped yet.
     pub tags: usize,
     plan: &'plan Plan,
 }
@@ -63,7 +63,7 @@ impl fmt::Display for Report<'_> {
         )?;
         writeln!(
             f,
-            "Tag archives not mapped until posts can hold tags: {}.",
+            "Tag archives not mapped to the new tag pages yet: {}.",
             self.tags
         )?;
         let held: Vec<String> = plan
@@ -179,7 +179,6 @@ fn cards(plan: &Plan) -> Vec<String> {
 fn field(held: &Held) -> &'static str {
     match held {
         Held::SearchTitle(_) => "search title",
-        Held::MoreAuthors(_) => "more authors",
         Held::Tags(_) => "tags",
         Held::FeatureImage(_) => "feature image",
         Held::OpenGraph(_) => "Open Graph card",
