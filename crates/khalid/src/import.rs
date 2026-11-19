@@ -3,6 +3,7 @@
 //! redirect map in `data/site.db` through the redirect desk (plan section
 //! 5.7, KH-API-7, KH-SEO-8).
 
+mod comments;
 mod images;
 
 use std::collections::BTreeMap;
@@ -143,6 +144,14 @@ impl Plan {
     }
 
     /// The redirect map's file, from the site folder.
+    /// The comments that come in. Only `WordPress` exports bring any.
+    fn comments(&self) -> &[wordpress::ImportedComment] {
+        match self {
+            Self::Wordpress(plan) => &plan.comments,
+            Self::Ghost(_) | Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => &[],
+        }
+    }
+
     fn map_file(&self) -> &'static str {
         match self {
             Self::Wordpress(_) => wordpress::REDIRECTS_CSV,
@@ -225,6 +234,9 @@ fn import(
     let held = import_held::hold(site, (config, routes), &written, &mut entries)
         .map_err(|message| (message, Exit::Failure))?;
     let stored = store(site, entries).map_err(|(why, exit)| not_stored(why, exit))?;
+    let none = BTreeMap::new();
+    let moved = images.map_or(&none, |images| &images.moved);
+    let kept = comments::store(site, plan.comments(), moved)?;
     // The report's first sentence is for a dry run only.
     let said = plan.report();
     let mut said = said
@@ -234,7 +246,28 @@ fn import(
     if let Some(images) = images {
         said.push_str(&images_text(images));
     }
+    said.push_str(&comments_text(&kept));
     Ok(answer(&said, Some((site, &written, stored, &held)), output))
+}
+
+/// How many comments were stored, in plain sentences, or nothing when the
+/// export brought none.
+fn comments_text(kept: &comments::Stored) -> String {
+    let mut text = String::new();
+    // Writing to a String cannot fail.
+    if kept.stored > 0 {
+        let stored = counted(kept.stored, "comment");
+        let _ = writeln!(text, "Stored {stored} under their posts.");
+    }
+    if kept.too_long > 0 {
+        let _ = writeln!(
+            text,
+            "Comments longer than {} letters, which Khalid does not keep: {}.",
+            khalid_comments::CommentText::MAX,
+            kept.too_long
+        );
+    }
+    text
 }
 
 /// What became of the images the posts show, in plain sentences.

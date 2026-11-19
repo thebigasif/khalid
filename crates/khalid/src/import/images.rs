@@ -27,6 +27,9 @@ pub(crate) struct Images {
     /// The files of the entries whose feature image became their lead
     /// image, as the plan named them.
     pub(crate) leads: Vec<PathBuf>,
+    /// Each entry that moved into its own folder: the file the plan named,
+    /// and the `index.md` it became.
+    pub(crate) moved: BTreeMap<PathBuf, PathBuf>,
     /// The images to write, from the site folder, with their bytes.
     files: Vec<(PathBuf, Vec<u8>)>,
 }
@@ -161,8 +164,9 @@ pub(crate) fn bring_in(
             images.files.push((path, bytes.clone()));
             names.push(name);
         }
-        planned.path = folder;
+        let was = std::mem::replace(&mut planned.path, folder);
         planned.path.push("index.md");
+        images.moved.insert(was, planned.path.clone());
     }
     Ok(images)
 }
