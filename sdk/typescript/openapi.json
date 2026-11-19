@@ -15344,6 +15344,14 @@
             "type": "string",
             "description": "The body, in markdown."
           },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Where readers find it on the site, such as a redirect leads from\nonce the page is deleted.",
+            "example": "/blog/about/"
+          },
           "slug": {
             "type": "string",
             "description": "The last part of the page's address.",

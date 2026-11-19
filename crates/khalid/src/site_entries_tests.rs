@@ -55,6 +55,12 @@ fn pages_are_read_from_their_files_and_the_index_is_left_out() {
     let json = serde_json::to_value(listed.first().unwrap()).unwrap();
     assert_eq!(json["title"], "About");
     assert_eq!(json["markdown"], "Who writes here.");
+    assert_eq!(
+        json["path"], "/about/",
+        "the default language has no prefix"
+    );
+    let german = serde_json::to_value(listed.get(1).unwrap()).unwrap();
+    assert_eq!(german["path"], "/de/ueber-uns/");
     assert!(pages.find("de.about").unwrap().is_none());
     assert!(pages.find("fr.about").unwrap().is_none());
 }

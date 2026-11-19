@@ -52,8 +52,24 @@ export const pagesWords = {
     remove: {
       title: "Delete this page",
       lede: (title: string) =>
-        `Deleting moves ${title} to the trash, and its address stops working until you put it back. A link to it from a post or the menu leads nowhere meanwhile, so change those first.`,
+        `Deleting moves ${title} to the trash, where you can put it back. Links to it from posts, the menu and other sites then get the answer you choose below, so you do not have to change them by hand.`,
       submit: (title: string) => `Delete ${title}`,
+      farewell: "What should the page's old address do?",
+      farewellHint:
+        "Readers and search engines may still follow links to this page. Tell them what happened.",
+      gone: "Say the page is gone for good",
+      goneHint: "Search engines drop the address quickly. This is a 410 answer.",
+      moved: "Send readers to another page or post",
+      movedHint:
+        "Search engines move the old address's standing to the new one. This is a 301 redirect.",
+      target: "Page or post to send readers to",
+      targetHint: "Pick the one closest to what this page covered.",
+      noTarget: "There is no other live page or post to send readers to.",
+      noFarewell: (title: string, from: string, why: string) => ({
+        what: `${title} is in the trash, but ${from} was not redirected.`,
+        why,
+        fix: "Add the redirect under Redirects, or put the page back from the trash.",
+      }),
     },
   },
 };
