@@ -355,6 +355,33 @@ The cap alone leaves the binary 133,720 bytes over. The SQLite options in the la
 
 Repair 2 dropped `tracing-subscriber`, `sharded-slab`, `thread_local` and `tracing-serde` for about 110 lines in `server_log.rs` that write the same plain or JSON line: 66,432 bytes. Spans are not kept, as Khalid opens none. That leaves the binary 67,288 bytes over here without the SQLite options, and 232,000 under with them. Measured and not kept: a `warn` cap saves 30,464 more but drops every `info` line; `rustls` at "z" saves 13,824 on the TLS path; `clap_builder`, `toml`, `chrono`, `url` and `notify` at "z" grow the binary by 11,008. With every `tracing` line left out the binary is 31,291,480, so the `warn` and `error` lines of Khalid and its dependencies cost about 200 KB, which no writer can save.
 
+### Room for the dependency updates (2026-11-19)
+
+PR 1251 (minijinja 3.0.5 to 3.1.0, read-fonts 0.46 to 0.47, notify 8.2.1 to 8.2.2, rustls-pki-types 1.15.1 to 1.16.0) built 31,525,816 bytes in CI, 68,536 over the budget. Main (95b37315) built 31,433,816 bytes on this server. CI builds about 20,800 bytes bigger than this server: PR 1251's tree built 31,504,984 here. Each step below is `cargo build --release -p khalid` on this server, on main with the updates:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Main (95b37315) | 31,433,816 | |
+| Plus minijinja 3.1.0 | 31,460,440 | 26,624 more |
+| Plus read-fonts 0.47 | 31,464,792 | 4,352 more |
+| Plus notify 8.2.2 and rustls-pki-types 1.16.0 (PR 1251 on main) | 31,511,000 | 46,208 more |
+| `khalid-routes`, `rustls-webpki`, `toml-parser`, `image-webp`, `png` and `rust-stemmers` at `"z"` | 31,555,288 | none, 44,288 more |
+| SQLite without FTS3, FTS5, R-tree, `dbstat`, `soundex` and STAT4 (`LIBSQLITE3_FLAGS`, through `--config`) | 31,220,088 | 290,912 |
+| `minijinja` at `"z"` | 31,417,176 | 93,824 |
+| `minijinja` at `"z"` in `Cargo.toml`, plus brotli 9.1.3 (kept) | 31,415,512 | 95,488 |
+
+Kept: 31,415,512 bytes here, 41,768 under the budget, and about 21,000 under in CI. `cargo bloat` puts 29,120 bytes of the growth in minijinja's own code, so the engine that grew is the one made smaller. The SQLite options are still the next lever. They need an `[env]` table in `.cargo/config.toml`, which this change could not write; that file is handed over with the pull request.
+
+Speed, on this server at load 2 to 5, `khalid-perf` and `khalid build` built from the same tree:
+
+| Measure | minijinja at `"s"` | minijinja at `"z"` |
+|---|---|---|
+| Post page render p50, 1,000 posts | 0.1364, 0.1212 ms | 0.1507, 0.1414 ms |
+| Post page render p99 | 0.1472, 0.1397 ms | 0.1978, 0.1622 ms |
+| Full rebuild, 10,000 posts | 17.64, 17.26 s | 17.24, 17.02 s |
+
+A post renders about 0.015 ms slower, far inside the 1 ms budget, and the full rebuild, which renders every page, is no slower.
+
 ## Page weight
 
 Pictures are most of what a reader downloads. Every picture is offered in several widths (`srcset`), and its `sizes` tells the browser how wide the page draws it, so the browser fetches the smallest file that fills the slot. A `sizes` wider than the slot fetches a bigger file than it draws. One narrower makes the picture blurry.
