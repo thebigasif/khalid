@@ -49,6 +49,22 @@ impl FrontMatter {
         self
     }
 
+    /// Adds `key` as a map of quoted text, leaving out every part without a
+    /// value and the key when nothing is left.
+    pub(crate) fn map(&mut self, key: &str, parts: &[(&str, Option<String>)]) -> &mut Self {
+        let mut yaml = String::new();
+        for (name, value) in parts {
+            if let Some(value) = value {
+                // Writing to a String cannot fail.
+                let _ = writeln!(yaml, "  {name}: {}", quoted(value));
+            }
+        }
+        if !yaml.is_empty() {
+            let _ = write!(self.yaml, "{key}:\n{yaml}");
+        }
+        self
+    }
+
     /// Adds `key` as a map of `groups`, each a map of quoted text, leaving
     /// out every part without a value and the key when nothing is left.
     pub(crate) fn groups(&mut self, key: &str, groups: &[(&str, Parts)]) -> &mut Self {
@@ -85,6 +101,20 @@ impl FrontMatter {
     pub(crate) fn file(&self, body: &str) -> String {
         format!("---\n{}---\n\n{body}", self.yaml)
     }
+}
+
+/// The tags in `names` as front matter takes them: each with a word in
+/// it, once, whatever its case, in the order first named.
+pub(crate) fn tag_list(names: impl IntoIterator<Item = String>) -> Vec<String> {
+    let mut tags: Vec<String> = Vec::new();
+    for name in names {
+        let name = name.trim();
+        let key = name.to_lowercase();
+        if !name.is_empty() && !tags.iter().any(|tag| tag.to_lowercase() == key) {
+            tags.push(name.to_owned());
+        }
+    }
+    tags
 }
 
 /// `value` in double quotes, with every character YAML could misread

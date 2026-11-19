@@ -80,17 +80,16 @@ impl Plan {
         }
     }
 
-    /// The feature image of each post that has one, by the post's file.
-    /// Only `WordPress` and Ghost exports name one.
+    /// The lead image of each post that has one, at its old address, by
+    /// the post's file. Only `WordPress` and Ghost exports name one; a
+    /// Ghost post still holds its feature image back.
     fn leads(&self) -> BTreeMap<PathBuf, String> {
         let mut leads = BTreeMap::new();
         match self {
             Self::Wordpress(plan) => {
                 for item in &plan.items {
-                    for held in &item.held {
-                        if let wordpress::Held::FeatureImage(image) = held {
-                            leads.insert(item.path.clone(), image.as_str().to_owned());
-                        }
+                    if let Some(image) = &item.image {
+                        leads.insert(item.path.clone(), image.as_str().to_owned());
                     }
                 }
             }
@@ -113,21 +112,13 @@ impl Plan {
     fn download_images(&mut self, site: &Path, cli: &Cli) -> Result<Images, (UserMessage, Exit)> {
         let leads = self.leads();
         let images = images::bring_in(self.files_mut(), &leads, site, cli)?;
-        let taken = |path: &PathBuf| images.leads.contains(path);
-        match self {
-            Self::Wordpress(plan) => {
-                for item in plan.items.iter_mut().filter(|item| taken(&item.path)) {
-                    item.held
-                        .retain(|held| !matches!(held, wordpress::Held::FeatureImage(_)));
-                }
-            }
-            Self::Ghost(plan) => {
-                for post in plan.posts.iter_mut().filter(|post| taken(&post.path)) {
+        if let Self::Ghost(plan) = self {
+            for post in &mut plan.posts {
+                if images.leads.contains(&post.path) {
                     post.held
                         .retain(|held| !matches!(held, ghost::Held::FeatureImage(_)));
                 }
             }
-            Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => {}
         }
         Ok(images)
     }

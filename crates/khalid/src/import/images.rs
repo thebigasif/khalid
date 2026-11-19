@@ -290,13 +290,16 @@ fn unique(name: &str, taken: &[String]) -> String {
     candidate
 }
 
-/// `markdown` with each image link and figure that names `address` naming
-/// the file `name` instead.
-fn relinked(markdown: &str, address: &str, name: &str) -> String {
-    markdown
-        .replace(&format!("]({address})"), &format!("]({name})"))
+/// `file` with each image link and figure that names `address`, and the
+/// lead image in its front matter, naming the file `name` instead.
+fn relinked(file: &str, address: &str, name: &str) -> String {
+    file.replace(&format!("]({address})"), &format!("]({name})"))
         .replace(&format!("]({address} "), &format!("]({name} "))
         .replace(&format!("src=\"{address}\""), &format!("src=\"{name}\""))
+        .replace(
+            &format!("\n  src: \"{address}\"\n"),
+            &format!("\n  src: \"{name}\"\n"),
+        )
 }
 
 /// `file` with `image` set to the file `name`, described by the entry's
@@ -354,6 +357,15 @@ mod tests {
             None
         );
         assert_eq!(picture_kind(b"<html>"), None);
+    }
+
+    #[test]
+    fn the_lead_image_names_the_file_beside_the_post() {
+        let file = "---\ntitle: \"Rye\"\nimage:\n  src: \"https://x.example/rye.jpg\"\n  alt: \"Rye\"\n---\nBody\n";
+        assert_eq!(
+            relinked(file, "https://x.example/rye.jpg", "rye.png"),
+            "---\ntitle: \"Rye\"\nimage:\n  src: \"rye.png\"\n  alt: \"Rye\"\n---\nBody\n"
+        );
     }
 
     #[test]
