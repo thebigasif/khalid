@@ -199,3 +199,35 @@ fn a_deleted_page_waits_in_the_trash_and_comes_back_when_restored() {
     let (_, trash) = server.admin("GET", "/api/admin/v1/trash/", None);
     assert_eq!(trash["trash"], Value::Array(Vec::new()), "{trash}");
 }
+
+#[test]
+fn a_deleted_page_names_its_address_so_a_redirect_sends_readers_on() {
+    let site = demo_copy();
+    let key = new_key(site.path(), &["--name", "Owner", "--scope", "admin:all"]);
+    let server = start(site.path(), &key);
+    let (status, page) = server.admin("GET", "/api/admin/v1/pages/en.about/", None);
+    assert_eq!(status, 200, "{page}");
+    assert_eq!(page["pages"][0]["path"], ABOUT, "{page}");
+    let seen = page["pages"][0]["updated_at"].as_str().unwrap();
+    let path = format!("/api/admin/v1/pages/en.about/?updated_at={seen}");
+    let (status, body) = server.admin("DELETE", &path, None);
+    assert_eq!(status, 204, "{body}");
+
+    let moved = json!({"redirects": [{"from": ABOUT, "to": PAGE, "status": 301}]});
+    let (status, body) = server.admin("POST", "/api/admin/v1/redirects/", Some(&moved));
+    assert_eq!(status, 201, "{body}");
+    assert!(
+        server.answers(ABOUT, 301),
+        "the deleted page's address does not send readers on"
+    );
+
+    let (_, trash) = server.admin("GET", "/api/admin/v1/trash/", None);
+    let trashed = trash["trash"][0]["key"].as_str().unwrap();
+    let restore = format!("/api/admin/v1/trash/{trashed}/restore/");
+    let (status, body) = server.admin("POST", &restore, None);
+    assert_eq!(status, 204, "{body}");
+    assert!(
+        server.answers(ABOUT, 200),
+        "the put-back page loses to its old redirect"
+    );
+}

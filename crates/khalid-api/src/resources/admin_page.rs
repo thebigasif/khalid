@@ -24,6 +24,10 @@ pub struct AdminPage {
     language: Locale,
     /// The title readers see.
     title: String,
+    /// Where readers find it on the site, such as a redirect leads from
+    /// once the page is deleted.
+    #[schema(example = "/blog/about/")]
+    path: Option<String>,
     /// The text search engines show under the title, if set.
     description: Option<String>,
     /// The body, in markdown.
@@ -45,9 +49,19 @@ impl AdminPage {
             slug,
             language,
             title: title.to_owned(),
+            path: None,
             description: None,
             markdown: markdown.to_owned(),
             updated_at,
+        }
+    }
+
+    /// The same page found at `path` on the site, such as `/blog/about/`.
+    #[must_use]
+    pub fn with_path(self, path: String) -> Self {
+        Self {
+            path: Some(path),
+            ..self
         }
     }
 

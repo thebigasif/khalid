@@ -14,6 +14,7 @@ use khalid_api::entry_store::{Entry, EntryError, EntryStore, EntryStoreError};
 use khalid_core::{Config, Locale, Slug};
 
 use crate::atomic;
+use crate::build_pages::path_of;
 use crate::post_text::PostText;
 use crate::site_posts::SitePosts;
 
@@ -42,6 +43,13 @@ pub(crate) trait EntryFile: Entry {
 
     /// Writes `edit` into the file, leaving every other line as it was.
     fn edit(text: &mut PostText, edit: &Self::Edit);
+
+    /// The same entry, told the `path` readers would find it at, such as
+    /// `/blog/about/`. Only an entry with its own address keeps it.
+    fn at(self, path: String) -> Self {
+        let _ = path;
+        self
+    }
 }
 
 /// The entries of one kind in a site folder. Cloning shares it.
@@ -57,8 +65,8 @@ pub(crate) struct SiteEntries<T> {
 #[derive(Debug)]
 struct Site {
     folder: PathBuf,
-    languages: Vec<Locale>,
-    default_language: Locale,
+    /// The site's settings, for its languages and its addresses.
+    config: Config,
     /// Held while a change is checked and written, so two never interleave.
     writing: Mutex<()>,
 }
@@ -75,8 +83,7 @@ impl<T: EntryFile> SiteEntries<T> {
     pub(crate) fn new(folder: &Path, config: &Config) -> Self {
         let site = Site {
             folder: folder.to_path_buf(),
-            languages: config.languages().to_vec(),
-            default_language: config.default_language().clone(),
+            config: config.clone(),
             writing: Mutex::new(()),
         };
         Self {
@@ -123,7 +130,7 @@ impl<T: EntryFile> SiteEntries<T> {
         for item in listed {
             let path = item.map_err(EntryStoreError::new)?.path();
             if let Some((path, stem)) = entry_file(path) {
-                found.push(Self::read_file(language, path, &stem)?);
+                found.push(self.read_file(language, path, &stem)?);
             }
         }
         found.sort_by(|a, b| a.entry.id().cmp(b.entry.id()));
@@ -131,6 +138,7 @@ impl<T: EntryFile> SiteEntries<T> {
     }
 
     fn read_file(
+        &self,
         language: &Locale,
         path: PathBuf,
         stem: &str,
@@ -142,13 +150,14 @@ impl<T: EntryFile> SiteEntries<T> {
             .map_err(EntryStoreError::new)?;
         let from_stem = || Slug::try_new_unicode(stem).map_err(|_| unreadable(&path));
         let slug = T::slug_in(&text)?.map_or_else(from_stem, Ok)?;
-        let entry = T::read((language.clone(), slug), &text, changed.into())?;
+        let address = path_of(&self.site.config, language, &format!("{slug}/"));
+        let entry = T::read((language.clone(), slug), &text, changed.into())?.at(address);
         Ok(Found { path, entry })
     }
 
     fn list_now(&self) -> Result<Vec<T>, EntryStoreError> {
         let mut entries = Vec::new();
-        for language in &self.site.languages {
+        for language in self.site.config.languages() {
             entries.extend(self.read_language(language)?.into_iter().map(|f| f.entry));
         }
         Ok(entries)
@@ -157,7 +166,7 @@ impl<T: EntryFile> SiteEntries<T> {
     /// The entry with identity `<language>.<slug>`, or `None`.
     fn find(&self, id: &str) -> Result<Option<Found<T>>, EntryStoreError> {
         let named = id.split_once('.').map(|(language, _)| language);
-        let languages = &self.site.languages;
+        let languages = self.site.config.languages();
         let Some(language) = languages.iter().find(|l| Some(l.as_str()) == named) else {
             return Ok(None);
         };
@@ -166,8 +175,9 @@ impl<T: EntryFile> SiteEntries<T> {
     }
 
     fn create_now(&self, new: &T::New) -> Result<T, EntryError> {
-        let language = T::language(new).unwrap_or(&self.site.default_language);
-        if !self.site.languages.contains(language) {
+        let config = &self.site.config;
+        let language = T::language(new).unwrap_or(config.default_language());
+        if !config.languages().contains(language) {
             return Err(EntryError::Unsupported {
                 field: "language",
                 why: "The site is not written in that language, so the entry would never be shown.",

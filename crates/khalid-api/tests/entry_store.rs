@@ -28,12 +28,13 @@ fn about() -> AdminPage {
 #[test]
 fn a_page_is_sent_in_api_shape() {
     assert_eq!(
-        serde_json::to_value(about()).unwrap(),
+        serde_json::to_value(about().with_path("/blog/about/".to_owned())).unwrap(),
         json!({
             "id": "en.about",
             "slug": "about",
             "language": "en",
             "title": "About Field Notes",
+            "path": "/blog/about/",
             "description": "Who writes Field Notes.",
             "markdown": "Who writes here.",
             "updated_at": "2026-10-20T09:00:00Z",

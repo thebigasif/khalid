@@ -401,6 +401,8 @@ export type AdminPage = {
   language: string;
   /** The body, in markdown. */
   markdown: string;
+  /** Where readers find it on the site, such as a redirect leads from once the page is deleted. */
+  path?: string | null;
   /** The last part of the page's address. */
   slug: string;
   /** The title readers see. */

@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { type Answers, adminBlog, noContent } from "../../test/blog";
@@ -11,16 +11,26 @@ const UEBER: AdminPage = {
   slug: "ueber-uns",
   language: "de",
   title: "Über Field Notes",
+  path: "/blog/de/ueber-uns/",
   description: "Who writes Field Notes.",
   markdown: "Field Notes is a small blog.\n",
   updated_at: "2026-10-30T09:00:00Z",
+};
+
+const KONTAKT: AdminPage = {
+  ...UEBER,
+  id: "de.kontakt",
+  slug: "kontakt",
+  title: "Kontakt",
+  path: "/blog/de/kontakt/",
 };
 
 /** A blog with the German About page that records every edit, then answers with `more`. */
 function blog(more: Answers = {}) {
   const edits: PageEdit[] = [];
   const sent = adminBlog({
-    "GET /pages/": () => json(200, { pages: [UEBER] }),
+    "GET /pages/": () => json(200, { pages: [UEBER, KONTAKT] }),
+    "POST /redirects/": () => json(201, { redirects: [] }),
     "GET /pages/de.ueber-uns/": () => json(200, { pages: [UEBER] }),
     "PUT /pages/de.ueber-uns/": async (request) => {
       const body: { pages: PageEdit[] } = await request.json();
@@ -84,7 +94,7 @@ describe("a page's own screen", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(stale.title);
   });
 
-  it("deletes the page with the copy's time, and goes back to the list", async () => {
+  it("deletes the page with the copy's time, says its address is gone, and goes back", async () => {
     signedIn();
     const { sent } = blog({ "DELETE /pages/de.ueber-uns/": noContent });
     renderAt("/pages/de.ueber-uns");
@@ -93,5 +103,49 @@ describe("a page's own screen", () => {
     expect(await screen.findByRole("heading", { level: 1, name: pagesWords.title })).toBeVisible();
     const deleted = sent.find((request) => request.method === "DELETE");
     expect(deleted?.url).toContain("updated_at=2026-10-30T09%3A00%3A00Z");
+    const stored = sent.find((request) => request.method === "POST");
+    expect(await stored?.json()).toEqual({
+      redirects: [{ from: "/blog/de/ueber-uns/", status: 410 }],
+    });
+  });
+
+  it("sends a deleted page's readers to the page picked instead", async () => {
+    signedIn();
+    const { sent } = blog({ "DELETE /pages/de.ueber-uns/": noContent });
+    renderAt("/pages/de.ueber-uns");
+    await userEvent.click(
+      await screen.findByRole("radio", { name: new RegExp(EDIT.remove.moved) }),
+    );
+    const target = screen.getByLabelText(EDIT.remove.target);
+    expect(target).toHaveValue("/blog/de/kontakt/");
+    expect(within(target).queryByText(UEBER.title)).toBeNull();
+    expect(await axeViolations()).toEqual([]);
+    await userEvent.click(screen.getByRole("button", { name: EDIT.remove.submit(UEBER.title) }));
+    expect(await screen.findByRole("heading", { level: 1, name: pagesWords.title })).toBeVisible();
+    const stored = sent.find((request) => request.method === "POST");
+    expect(await stored?.json()).toEqual({
+      redirects: [{ from: "/blog/de/ueber-uns/", to: "/blog/de/kontakt/", status: 301 }],
+    });
+  });
+
+  it("says what to do when the page is in the trash but its redirect was refused", async () => {
+    signedIn();
+    const refused = {
+      type: "https://khalid.dev/problems/conflict",
+      title: "A redirect from this address exists already.",
+      status: 409,
+      detail: "Two redirects from one address cannot both answer.",
+      fix: "Change the one under Redirects instead.",
+    };
+    blog({
+      "DELETE /pages/de.ueber-uns/": noContent,
+      "POST /redirects/": () => json(409, refused),
+    });
+    renderAt("/pages/de.ueber-uns");
+    const remove = EDIT.remove.submit(UEBER.title);
+    await userEvent.click(await screen.findByRole("button", { name: remove }));
+    const said = EDIT.remove.noFarewell(UEBER.title, "/blog/de/ueber-uns/", refused.title);
+    expect(await screen.findByRole("alert")).toHaveTextContent(said.what);
+    expect(screen.queryByRole("button", { name: remove })).toBeNull();
   });
 });

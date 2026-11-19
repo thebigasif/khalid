@@ -47,6 +47,10 @@ impl EntryFile for AdminPage {
         new.slug()
     }
 
+    fn at(self, path: String) -> Self {
+        self.with_path(path)
+    }
+
     fn text(new: &NewPage) -> PostText {
         let mut text = PostText::draft(new.title(), new.slug(), None, new.markdown());
         put(&mut text, "description", new.description().map(quoted));

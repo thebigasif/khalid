@@ -95,10 +95,16 @@ trash_days = 90
 
 A deleted page, such as About, goes to the same trash and waits the same
 number of days. Its file, or its folder with the pictures beside it, moves
-to `trash/` and its address answers 404 until you put it back. Put back
-fails when another page took the address meanwhile: change that page's
-slug first. Deleting a page asks nothing about its old address yet, so add
-a redirect under Redirects when readers should land somewhere else.
+to `trash/`. Put back fails when another page took the address meanwhile:
+change that page's slug first.
+
+Deleting a page in the admin asks what its old address should do, as a
+bulk post delete does: say the page is gone for good (a 410), or send
+readers to another page or post (a 301). The admin stores the answer as a
+redirect under Redirects, so links to the page need no change by hand. A
+page you put back is served again at once, because pages answer before
+stored redirects. Through the Admin API, each page names its address in
+`path`; post a redirect from it to `/redirects/` after the delete.
 
 ## Bulk SEO
 
