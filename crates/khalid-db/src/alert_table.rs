@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 
 use chrono::{DateTime, SecondsFormat, Utc};
-use khalid_alerts::{BoxFuture, Kind, Raised, RaisedError};
+use khalid_alerts::{BoxFuture, Finding, Held, Kind, Raised, RaisedError};
 
 use crate::{Database, DbError, SiteId};
 
@@ -34,22 +34,48 @@ impl AlertTable {
         Ok(keys.into_iter().collect())
     }
 
-    async fn remember_now(&self, keys: &[String], at: DateTime<Utc>) -> Result<(), DbError> {
+    async fn remember_now(&self, findings: &[Finding], at: DateTime<Utc>) -> Result<(), DbError> {
         let at = text(at);
         let mut transaction = self.db.writer.begin().await?;
-        for key in keys {
+        for finding in findings {
             sqlx::query(
-                "INSERT INTO alerts_raised (site_id, key, raised_at) VALUES (?1, ?2, ?3) \
-                 ON CONFLICT (site_id, key) DO UPDATE SET raised_at = excluded.raised_at",
+                "INSERT INTO alerts_raised (site_id, key, raised_at, line) VALUES (?1, ?2, ?3, ?4) \
+                 ON CONFLICT (site_id, key) DO UPDATE \
+                 SET raised_at = excluded.raised_at, line = excluded.line",
             )
             .bind(self.site.as_row())
-            .bind(key)
+            .bind(&finding.key)
             .bind(&at)
+            .bind(&finding.line)
             .execute(&mut *transaction)
             .await?;
         }
         transaction.commit().await?;
         Ok(())
+    }
+
+    async fn held_now(&self) -> Result<Vec<Held>, DbError> {
+        let rows: Vec<(String, String, String)> = sqlx::query_as(
+            "SELECT key, line, raised_at FROM alerts_raised WHERE site_id = ?1 ORDER BY key",
+        )
+        .bind(self.site.as_row())
+        .fetch_all(&self.db.readers)
+        .await?;
+        let mut held = Vec::with_capacity(rows.len());
+        for (key, line, at) in rows {
+            let raised_at = DateTime::parse_from_rfc3339(&at)
+                .map(|at| at.with_timezone(&Utc))
+                .map_err(|_| DbError::Unreadable {
+                    column: "alerts_raised.raised_at",
+                    value: at.clone(),
+                })?;
+            held.push(Held {
+                key,
+                line,
+                raised_at,
+            });
+        }
+        Ok(held)
     }
 
     async fn forget_now(&self, keys: &[String]) -> Result<(), DbError> {
@@ -82,10 +108,18 @@ impl Raised for AlertTable {
 
     fn remember<'a>(
         &'a self,
-        keys: &'a [String],
+        findings: &'a [Finding],
         at: DateTime<Utc>,
     ) -> BoxFuture<'a, Result<(), RaisedError>> {
-        Box::pin(async move { self.remember_now(keys, at).await.map_err(RaisedError::new) })
+        Box::pin(async move {
+            self.remember_now(findings, at)
+                .await
+                .map_err(RaisedError::new)
+        })
+    }
+
+    fn held(&self) -> BoxFuture<'_, Result<Vec<Held>, RaisedError>> {
+        Box::pin(async move { self.held_now().await.map_err(RaisedError::new) })
     }
 
     fn forget<'a>(&'a self, keys: &'a [String]) -> BoxFuture<'a, Result<(), RaisedError>> {

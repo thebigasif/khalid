@@ -10116,6 +10116,265 @@
             "admin_key": []
           }
         ]
+      },
+      "post": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Adds a reader with the status given, such as one who signed up on\npaper. No email goes out to them. Needs `subscribers:write`.",
+        "operationId": "add_subscriber",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewSubscriber"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "The reader, added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminSubscribers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The site has a subscriber at this address already",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The body could not be read, the address cannot take mail, or a newsletter does not exist",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/export/": {
+      "get": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Every reader as Khalid's CSV export, oldest first, to keep or to bring\ninto another site. Needs `subscribers:write`.",
+        "operationId": "export_subscribers",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The readers, header first: email,status,created_at,lists,labels",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
+    "/api/admin/v1/subscribers/import/": {
+      "post": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Brings in a list of readers from Khalid, Substack or Ghost. Each keeps\nthe status the file gave them, and no email goes out. An address the\nsite has is left as it is. Needs `subscribers:write`.",
+        "operationId": "import_subscribers",
+        "parameters": [
+          {
+            "name": "list",
+            "in": "query",
+            "description": "The newsletter readers join when the file names none, such as\n`weekly`. Left out, they join main.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Khalid's export (email,status,created_at,lists,labels), Substack's email_list file, or Ghost's members export",
+          "content": {
+            "text/csv": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "email,status,created_at,lists,labels\nlena@example.com,confirmed,2026-11-01T09:00:00Z,main,paid\n"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "What came in, what was there already, and each row left out",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriberImport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The newsletter in the query is not a slug",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The site keeps no subscribers",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The file is no reader list, or a newsletter does not exist",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
       }
     },
     "/api/admin/v1/subscribers/{id}/": {
@@ -19251,6 +19510,54 @@
         },
         "additionalProperties": false
       },
+      "NewSubscriber": {
+        "type": "object",
+        "description": "A reader added by staff or brought in from a file. They keep the status\ngiven here, and no email goes out to them.\n\nExhaustive on purpose: the route and the importer fill it in.",
+        "required": [
+          "email",
+          "status"
+        ],
+        "properties": {
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When they first signed up, if known; now when left out."
+          },
+          "email": {
+            "type": "string",
+            "description": "Where their email goes.",
+            "example": "lena@example.com"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Their labels, such as `paid`.",
+            "example": [
+              "paid"
+            ]
+          },
+          "lists": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The newsletters they get. Left out, they get main.",
+            "example": [
+              "main"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/SubscriberStatus",
+            "description": "Where they stand. A confirmed reader gets the next newsletter."
+          }
+        },
+        "additionalProperties": false
+      },
       "NewTerm": {
         "type": "object",
         "description": "A new glossary term, as a create request sends it.",
@@ -21116,6 +21423,15 @@
           }
         }
       },
+      "ReaderFile": {
+        "type": "string",
+        "description": "Which system wrote a file of readers.",
+        "enum": [
+          "khalid",
+          "substack",
+          "ghost"
+        ]
+      },
       "RealUpdate": {
         "type": "object",
         "description": "An edit's claim that it is a real update: it changes what a live post\nsays, and `note` tells readers what. Only then does the post's\nupdated date become today. Title, description and settings edits\nalone never move it.",
@@ -22352,6 +22668,26 @@
           }
         }
       },
+      "SkippedReader": {
+        "type": "object",
+        "description": "One row of a reader file that was left out.",
+        "required": [
+          "line",
+          "why"
+        ],
+        "properties": {
+          "line": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The line it starts on, from 1 for the header.",
+            "minimum": 0
+          },
+          "why": {
+            "type": "string",
+            "description": "Why, such as `its status \"gone\" is not pending, confirmed or\nunsubscribed`. It never repeats the address."
+          }
+        }
+      },
       "Snippet": {
         "type": "object",
         "description": "The lines of a search result: the title, the address and the\ndescription, as the page's head gives them.",
@@ -22555,6 +22891,41 @@
           "unsplash",
           "gifs"
         ]
+      },
+      "SubscriberImport": {
+        "type": "object",
+        "description": "What an import of readers did.",
+        "required": [
+          "source",
+          "added",
+          "already",
+          "skipped"
+        ],
+        "properties": {
+          "added": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The readers added, each with the status the file gave them.",
+            "minimum": 0
+          },
+          "already": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The readers left as they were, because the site already had their\naddress.",
+            "minimum": 0
+          },
+          "skipped": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SkippedReader"
+            },
+            "description": "Each row left out, with why."
+          },
+          "source": {
+            "$ref": "#/components/schemas/ReaderFile",
+            "description": "Which system wrote the file."
+          }
+        }
       },
       "SubscriberList": {
         "type": "object",

@@ -1711,6 +1711,20 @@ export type NewSnippets = {
   snippets: NewSnippet[];
 };
 
+/** A reader added by staff or brought in from a file. They keep the status given here, and no email goes out to them. Exhaustive on purpose: the route and the importer fill it in. */
+export type NewSubscriber = {
+  /** When they first signed up, if known; now when left out. */
+  created_at?: string | null;
+  /** Where their email goes. */
+  email: string;
+  /** Their labels, such as `paid`. */
+  labels?: string[];
+  /** The newsletters they get. Left out, they get main. */
+  lists?: string[];
+  /** Where they stand. A confirmed reader gets the next newsletter. */
+  status: SubscriberStatus;
+};
+
 /** A new glossary term, as a create request sends it. */
 export type NewTerm = {
   /** The language, such as `de`; the site's default when left out. */
@@ -2285,6 +2299,9 @@ export type ReaderDefault = {
   on: boolean;
 };
 
+/** Which system wrote a file of readers. */
+export type ReaderFile = "khalid" | "substack" | "ghost";
+
 /** An edit's claim that it is a real update: it changes what a live post says, and `note` tells readers what. Only then does the post's updated date become today. Title, description and settings edits alone never move it. */
 export type RealUpdate = {
   /** What changed, in one short sentence, such as "Refreshed the 2024 numbers." Shown beside the updated date. At most 160 characters. */
@@ -2666,6 +2683,14 @@ export type SiteSettings = {
   settings: Settings[];
 };
 
+/** One row of a reader file that was left out. */
+export type SkippedReader = {
+  /** The line it starts on, from 1 for the header. */
+  line: number;
+  /** Why, such as `its status "gone" is not pending, confirmed or unsubscribed`. It never repeats the address. */
+  why: string;
+};
+
 /** The lines of a search result: the title, the address and the description, as the page's head gives them. */
 export type Snippet = {
   /** The meta description, or empty when the page has none. */
@@ -2741,6 +2766,18 @@ export type StockPicture = {
 
 /** Where to look for a picture. */
 export type StockSource = "unsplash" | "gifs";
+
+/** What an import of readers did. */
+export type SubscriberImport = {
+  /** The readers added, each with the status the file gave them. */
+  added: number;
+  /** The readers left as they were, because the site already had their address. */
+  already: number;
+  /** Each row left out, with why. */
+  skipped: SkippedReader[];
+  /** Which system wrote the file. */
+  source: ReaderFile;
+};
 
 /** One page of subscribers, and where it sits in the whole list. */
 export type SubscriberList = {
@@ -4535,6 +4572,42 @@ export interface Operations {
       };
     };
     output: SubscriberList;
+  };
+  /** Adds a reader with the status given, such as one who signed up on paper. No email goes out to them. Needs `subscribers:write`. */
+  add_subscriber: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: NewSubscriber;
+    };
+    output: AdminSubscribers;
+  };
+  /** Every reader as Khalid's CSV export, oldest first, to keep or to bring into another site. Needs `subscribers:write`. */
+  export_subscribers: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: string;
+  };
+  /** Brings in a list of readers from Khalid, Substack or Ghost. Each keeps the status the file gave them, and no email goes out. An address the site has is left as it is. Needs `subscribers:write`. */
+  import_subscribers: {
+    input: {
+      query?: {
+        /** The newsletter readers join when the file names none, such as `weekly`. Left out, they join main. */
+        list?: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: string;
+    };
+    output: SubscriberImport;
   };
   /** Removes a subscriber and everything kept about them, for a reader who asks to be forgotten. Needs `subscribers:write`. */
   erase_subscriber: {

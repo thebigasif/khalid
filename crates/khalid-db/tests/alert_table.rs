@@ -4,7 +4,7 @@
 use std::path::PathBuf;
 
 use chrono::{DateTime, Duration, TimeZone, Utc};
-use khalid_alerts::{Finding, Kind, Raised, fresh};
+use khalid_alerts::{Finding, Held, Kind, Raised, fresh};
 use khalid_core::Slug;
 use khalid_db::{AlertTable, Database};
 
@@ -34,7 +34,11 @@ async fn tables() -> (tempfile::TempDir, AlertTable, AlertTable) {
 async fn keys_are_kept_per_kind_and_per_site() {
     let (_dir, main, sister) = tables().await;
     let keys = [Kind::StalePost.key("en.a"), Kind::Certificate.key("blog")];
-    main.remember(&keys, at()).await.unwrap();
+    let found = keys.clone().map(|key| Finding {
+        key,
+        line: String::new(),
+    });
+    main.remember(&found, at()).await.unwrap();
     let stale = main.raised(Kind::StalePost).await.unwrap();
     assert_eq!(stale.into_iter().collect::<Vec<_>>(), ["stale-post:en.a"]);
     assert_eq!(sister.raised(Kind::StalePost).await.unwrap().len(), 0);
@@ -58,4 +62,24 @@ async fn a_finding_kept_in_the_table_is_not_raised_again() {
     assert!(first.is_some(), "raised the first time");
     let again = fresh(&main, Kind::StalePost, found(), at()).await.unwrap();
     assert_eq!(again, None, "kept, so not raised again");
+}
+
+#[tokio::test]
+async fn held_findings_keep_their_line_and_time_per_site() {
+    let (_dir, main, sister) = tables().await;
+    let found = vec![Finding {
+        key: Kind::StalePost.key("en.a"),
+        line: "Old post (en.a), last changed 2024-03-01".to_owned(),
+    }];
+    fresh(&main, Kind::StalePost, found, at()).await.unwrap();
+    let held = main.held().await.unwrap();
+    assert_eq!(
+        held,
+        [Held {
+            key: "stale-post:en.a".to_owned(),
+            line: "Old post (en.a), last changed 2024-03-01".to_owned(),
+            raised_at: at(),
+        }]
+    );
+    assert_eq!(sister.held().await.unwrap(), []);
 }

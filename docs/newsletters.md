@@ -130,9 +130,19 @@ khalid --site <folder> newsletter digest --list weekly
 
 sends one email that lists every post published since the last digest, each with its title and link. The first digest looks back seven days. With nothing new it sends nothing, so it is safe to run from a timer, such as a systemd timer or a cron job once a week. `--label` narrows it to a segment and `--language` picks the posts' language.
 
+`khalid serve` can send it for you, so you need no timer. Put a `digest.toml` in the newsletter's folder, such as `content/newsletters/main/digest.toml` for `main`:
+
+```toml
+every = "week"       # or "day"
+labels = ["paid"]    # only readers with every label; leave it out for everyone
+language = "en"      # the posts' language; leave it out for the main language
+```
+
+Once an hour the server checks each newsletter with the file. When no digest of it went out in the last week (or day) and there are new posts, it sends one. With nothing new it waits and checks again an hour later. Remove the file to stop it.
+
 ## In the admin and the Admin API
 
-The admin's Subscribers screen does all of the above except the digest while `khalid serve` runs: it lists your readers, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and sign-up form, sends a published post, and shows the numbers. Only the owner and admins see it, because addresses are personal data.
+The admin's Subscribers screen does the rest of the above while `khalid serve` runs: it lists your readers, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and sign-up form, sends a published post, and shows the numbers. Only the owner and admins see it, because addresses are personal data.
 
 The same routes are in the Admin API, for a key with the `subscribers:write` scope:
 
@@ -142,7 +152,18 @@ The same routes are in the Admin API, for a key with the `subscribers:write` sco
 | `PUT /api/admin/v1/subscribers/{id}/labels/{label}/` | Gives a reader a label. A reader who unsubscribed gets none. |
 | `DELETE /api/admin/v1/subscribers/{id}/labels/{label}/` | Takes a label away. |
 | `DELETE /api/admin/v1/subscribers/{id}/` | Forgets a reader: their address, newsletters, labels and links are removed. The totals of emails sent stay, as they name no one. |
+| `POST /api/admin/v1/subscribers/` | Adds one reader, `{"email": "lena@example.com", "status": "confirmed"}`, with `lists` (`main` when left out) and `labels` if you like. It answers `409` when the address is on the list already. |
+| `POST /api/admin/v1/subscribers/import/` | Brings in a CSV file: Khalid's own export, Substack's `email_list` file, or Ghost's members export. Readers without a newsletter join `?list=` or `main`. It answers how many were added, how many were there already, and the line of each row left out, with why. |
+| `GET /api/admin/v1/subscribers/export/` | Every reader as a CSV file, oldest first, with the columns `email,status,created_at,lists,labels`. The import route reads it back. |
 | `GET /api/admin/v1/newsletters/` | Each newsletter with its confirmed and waiting readers and its sign-up form, whether the site can send now (`ready`, `no_mail` or `no_postal_address`), and the numbers of every email sent. |
 | `POST /api/admin/v1/newsletters/{name}/sends/` | Sends a published post, `{"post": "en.what-a-sitemap-does", "labels": ["paid"]}`, once. It answers `202` with the send's key as the copies start to leave. |
 
-No route adds a subscriber. Readers join only through the form and the link in its email, so every address on the list asked to be there.
+Readers who sign up on your site confirm through the link in their email, so every address they give asked to be there.
+
+### Moving your list from Substack or Ghost
+
+Download the list from the old system, then send it to the import route. On Substack, the export's `email_list` file is the list. On Ghost, export the members from the Members screen.
+
+Each reader keeps the status the old system gave them. A reader who got your emails there gets them here, and one who turned emails off stays unsubscribed. No confirmation email goes out, because they confirmed with the old system. Substack's paid subscribers and Ghost's paying members get the label `paid`, and Ghost's labels come along as labels.
+
+An address that is on your list already is left as it is, so an import never signs up again a reader who left. You can run the same import twice safely.

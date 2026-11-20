@@ -175,6 +175,15 @@ pub(crate) fn on_desk<T>(
     site: &Path,
     work: impl AsyncFnOnce(&RedirectDesk) -> T,
 ) -> Result<T, (UserMessage, Exit)> {
+    on_main_site(site, async |database, id| work(&desk(database, id)).await)
+}
+
+/// Opens `data/site.db` in `site`, runs `work` with the database and the
+/// main site's id, and closes it.
+pub(crate) fn on_main_site<T>(
+    site: &Path,
+    work: impl AsyncFnOnce(&Database, SiteId) -> T,
+) -> Result<T, (UserMessage, Exit)> {
     let failed = |message| (message, Exit::Failure);
     let path = db::data_file(site).map_err(failed)?;
     let (Ok(main), Ok(runtime)) = (
@@ -194,7 +203,7 @@ pub(crate) fn on_desk<T>(
             database.site(&main).await
         };
         let done = match opened.await {
-            Ok(id) => Ok(work(&desk(&database, id)).await),
+            Ok(id) => Ok(work(&database, id).await),
             Err(error) => Err(failed(db_message::of(&path, &error))),
         };
         database.close().await;
