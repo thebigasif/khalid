@@ -100,11 +100,14 @@ pub struct SubscriberImport {
     pub already: u64,
     /// Each row left out, with why.
     pub skipped: Vec<SkippedReader>,
+    /// Whether the readers were kept. False after `check=true`: the
+    /// counts say what an import would do, and nothing changed.
+    pub saved: bool,
 }
 
 impl SubscriberImport {
     /// `added` and `already` readers from a `source` file, and the rows
-    /// `skipped`.
+    /// `skipped`, all kept.
     pub fn new(
         source: ReaderFile,
         (added, already): (u64, u64),
@@ -115,6 +118,16 @@ impl SubscriberImport {
             added,
             already,
             skipped,
+            saved: true,
+        }
+    }
+
+    /// The same counts for a check that kept nothing.
+    #[must_use]
+    pub fn only_counted(self) -> Self {
+        Self {
+            saved: false,
+            ..self
         }
     }
 }

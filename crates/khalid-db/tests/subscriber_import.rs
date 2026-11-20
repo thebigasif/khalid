@@ -107,3 +107,23 @@ async fn an_imported_reader_gets_no_confirmation_link() {
         "{signed_up:?}"
     );
 }
+
+#[tokio::test]
+async fn a_check_counts_like_an_import_and_keeps_nothing() {
+    let (_dir, table) = table().await;
+    let there = [new("ines@example.org", SubscriberStatus::Confirmed, &[])];
+    table.bring_in(&there, at(2)).await.unwrap();
+    let file = [
+        new("ines@example.org", SubscriberStatus::Confirmed, &[]),
+        new("kim@example.com", SubscriberStatus::Pending, &["paid"]),
+        new("kim@example.com", SubscriberStatus::Pending, &[]),
+    ];
+    let counted = table.count_in(&file, at(3)).await.unwrap();
+    let new_ones: Vec<bool> = counted.iter().map(Option::is_some).collect();
+    assert_eq!(new_ones, [false, true, false]);
+    let everyone = table.everyone().await.unwrap();
+    assert_eq!(everyone.len(), 1, "{everyone:?}");
+    let added = table.bring_in(&file, at(3)).await.unwrap();
+    let saved: Vec<bool> = added.iter().map(Option::is_some).collect();
+    assert_eq!(saved, new_ones);
+}
