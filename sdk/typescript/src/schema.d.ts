@@ -1433,6 +1433,24 @@ export type LintCounts = {
   warnings: number;
 };
 
+/** New values for some of how a post is listed. A part left out keeps its value, and `null` clears one that may be empty. */
+export type ListingEdit = {
+  /** The kind of article, as schema.org names it, or `null` for the collection's. */
+  article_type?: "BlogPosting" | "Article" | "NewsArticle" | "TechArticle" | "Report" | null;
+  /** A new breadcrumb name, or `null` for the post's title. */
+  breadcrumb_title?: string | null;
+  /** Every other word for the focus keyword; an empty list for none. */
+  keyword_synonyms?: string[] | null;
+  /** `false` to keep a news post out of the news sitemap, or `null` to follow its article type. */
+  news?: boolean | null;
+  /** The kind of web page, as schema.org names it, or `null` for `WebPage`. */
+  page_type?: "WebPage" | "FAQPage" | "ContactPage" | "AboutPage" | "QAPage" | "ItemPage" | "CollectionPage" | null;
+  /** Every reviewer's author slug; an empty list for none. */
+  reviewed_by?: string[] | null;
+  /** Whether the post is listed in the XML sitemap. */
+  sitemap?: boolean | null;
+};
+
 /** A page that gets search traffic though readers cannot use it. */
 export type LostPage = {
   /** Clicks from Google search in the month. */
@@ -2088,6 +2106,24 @@ export type PostLinks = {
   outbound: number;
 };
 
+/** How search engines list and describe a post. Every part has a value: `true` for the sitemap, and `null` or an empty list otherwise, when never set. */
+export type PostListing = {
+  /** The kind of article, as schema.org names it, or `null` for the collection's. */
+  article_type?: "BlogPosting" | "Article" | "NewsArticle" | "TechArticle" | "Report" | null;
+  /** A shorter name for the post in breadcrumb trails, or `null` for its title. */
+  breadcrumb_title?: string | null;
+  /** Other words for the focus keyword that count as using it, such as `site links` for `internal links`. */
+  keyword_synonyms: string[];
+  /** `false` keeps a news post out of the news sitemap; `null` lists it as its article type says. */
+  news?: boolean | null;
+  /** The kind of web page, as schema.org names it, or `null` for `WebPage`. */
+  page_type?: "WebPage" | "FAQPage" | "ContactPage" | "AboutPage" | "QAPage" | "ItemPage" | "CollectionPage" | null;
+  /** The slugs of the authors who checked the post, shown as "Reviewed by". */
+  reviewed_by: string[];
+  /** Whether the post is listed in the XML sitemap. `false` keeps it out, as for a thank-you post no one searches for. */
+  sitemap: boolean;
+};
+
 /** One post's numbers for the month. */
 export type PostNumbers = {
   /** Clicks from Google search. */
@@ -2208,6 +2244,8 @@ export type PostSettings = {
   focus_keyword?: string | null;
   /** Checked HTML added to the post's page head, such as an analytics tag. Only owners and admins may change it. */
   head_code?: string | null;
+  /** How search engines list and describe the post. */
+  listing: PostListing;
   /** Whether a reader must give a password to read the body. The password itself is never sent back. */
   password_protected: boolean;
   /** Where the post stands in review. */
@@ -2596,6 +2634,7 @@ export type SettingsEdit = {
   focus_keyword?: string | null;
   /** New head code, or `null` for none. Owners and admins only. */
   head_code?: string | null;
+  listing?: ListingEdit | null;
   /** A new password of 8 to 128 characters that readers must give, or `null` to remove it. It is kept only as a hash. */
   password?: string | null;
   review_state?: ReviewState | null;

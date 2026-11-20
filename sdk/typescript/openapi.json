@@ -18723,6 +18723,93 @@
           }
         }
       },
+      "ListingEdit": {
+        "type": "object",
+        "description": "New values for some of how a post is listed. A part left out keeps its\nvalue, and `null` clears one that may be empty.",
+        "properties": {
+          "article_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of article, as schema.org names it, or `null` for the collection's.",
+            "enum": [
+              "BlogPosting",
+              "Article",
+              "NewsArticle",
+              "TechArticle",
+              "Report",
+              null
+            ]
+          },
+          "breadcrumb_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new breadcrumb name, or `null` for the post's title.",
+            "example": "Anchor text"
+          },
+          "keyword_synonyms": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every other word for the focus keyword; an empty list for none.",
+            "example": [
+              "site links"
+            ]
+          },
+          "news": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "`false` to keep a news post out of the news sitemap, or `null` to\nfollow its article type."
+          },
+          "page_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of web page, as schema.org names it, or `null` for `WebPage`.",
+            "enum": [
+              "WebPage",
+              "FAQPage",
+              "ContactPage",
+              "AboutPage",
+              "QAPage",
+              "ItemPage",
+              "CollectionPage",
+              null
+            ]
+          },
+          "reviewed_by": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every reviewer's author slug; an empty list for none.",
+            "example": [
+              "mira"
+            ]
+          },
+          "sitemap": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether the post is listed in the XML sitemap."
+          }
+        },
+        "additionalProperties": false
+      },
       "LostPage": {
         "type": "object",
         "description": "A page that gets search traffic though readers cannot use it.",
@@ -20747,6 +20834,88 @@
           }
         }
       },
+      "PostListing": {
+        "type": "object",
+        "description": "How search engines list and describe a post. Every part has a value:\n`true` for the sitemap, and `null` or an empty list otherwise, when\nnever set.",
+        "required": [
+          "sitemap",
+          "keyword_synonyms",
+          "reviewed_by"
+        ],
+        "properties": {
+          "article_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of article, as schema.org names it, or `null` for the collection's.",
+            "enum": [
+              "BlogPosting",
+              "Article",
+              "NewsArticle",
+              "TechArticle",
+              "Report",
+              null
+            ]
+          },
+          "breadcrumb_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A shorter name for the post in breadcrumb trails, or `null` for\nits title.",
+            "example": "Anchor text"
+          },
+          "keyword_synonyms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Other words for the focus keyword that count as using it, such as\n`site links` for `internal links`.",
+            "example": [
+              "site links"
+            ]
+          },
+          "news": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "`false` keeps a news post out of the news sitemap; `null` lists it\nas its article type says."
+          },
+          "page_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of web page, as schema.org names it, or `null` for `WebPage`.",
+            "enum": [
+              "WebPage",
+              "FAQPage",
+              "ContactPage",
+              "AboutPage",
+              "QAPage",
+              "ItemPage",
+              "CollectionPage",
+              null
+            ]
+          },
+          "reviewed_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The slugs of the authors who checked the post, shown as \"Reviewed\nby\".",
+            "example": [
+              "mira"
+            ]
+          },
+          "sitemap": {
+            "type": "boolean",
+            "description": "Whether the post is listed in the XML sitemap. `false` keeps it\nout, as for a thank-you post no one searches for."
+          }
+        }
+      },
       "PostNumbers": {
         "type": "object",
         "description": "One post's numbers for the month.",
@@ -21057,7 +21226,8 @@
           "aliases",
           "access",
           "password_protected",
-          "connections"
+          "connections",
+          "listing"
         ],
         "properties": {
           "access": {
@@ -21155,6 +21325,10 @@
             ],
             "description": "Checked HTML added to the post's page head, such as an analytics\ntag. Only owners and admins may change it.",
             "example": "<meta name=\"verify\" content=\"x\">"
+          },
+          "listing": {
+            "$ref": "#/components/schemas/PostListing",
+            "description": "How search engines list and describe the post."
           },
           "password_protected": {
             "type": "boolean",
@@ -22377,6 +22551,17 @@
             ],
             "description": "New head code, or `null` for none. Owners and admins only.",
             "example": "<meta name=\"verify\" content=\"x\">"
+          },
+          "listing": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ListingEdit",
+                "description": "New listing choices; the parts left out keep theirs."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "password": {
             "type": [

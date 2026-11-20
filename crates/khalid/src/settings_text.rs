@@ -54,6 +54,7 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
     let schema = front.schema.as_deref();
     settings.schema = schema.and_then(|text| CustomJsonLd::try_new(text).ok());
     settings.connections = more::connections_of(front);
+    settings.listing = more::listing_of(front);
     settings
 }
 
@@ -144,6 +145,7 @@ pub(crate) fn write_settings(
     write_access(text, before, after);
     write_search(text, before, after);
     more::write_connections(text, &before.connections, &after.connections);
+    more::write_listing(text, &before.listing, &after.listing);
     Ok(())
 }
 

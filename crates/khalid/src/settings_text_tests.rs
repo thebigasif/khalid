@@ -10,7 +10,7 @@ use khalid_api::resources::{
     SeriesPart, ShareCard,
 };
 use khalid_content::parse_post;
-use khalid_core::Slug;
+use khalid_core::{ArticleSchemaType, PageSchemaType, Slug};
 
 use super::{settings_of, write_settings};
 use crate::post_text::PostText;
@@ -121,7 +121,7 @@ fn search_title_focus_keyword_and_schema_read_back_the_same() {
 }
 
 #[test]
-fn ties_read_back_the_same_and_clear_to_no_line() {
+fn ties_and_listing_choices_read_back_the_same_and_clear_to_no_line() {
     let mut after = PostSettings::default();
     let links = &mut after.connections;
     links.translation = Some(text("anchor-text"));
@@ -131,8 +131,18 @@ fn ties_read_back_the_same_and_clear_to_no_line() {
     links.cluster = Some(ClusterMembership::new(cluster, ClusterPlace::Pillar));
     links.topic_group = Some(text("internal-links"));
     links.main_post = true;
+    let listing = &mut after.listing;
+    listing.sitemap = false;
+    listing.news = Some(false);
+    listing.breadcrumb_title = Some(text("Anchor text"));
+    listing.page_type = Some(PageSchemaType::FaqPage);
+    listing.article_type = Some(ArticleSchemaType::Report);
+    listing.keyword_synonyms = vec![text("link words"), text("anchor: text")];
+    listing.reviewed_by = vec![Slug::try_new("mira").unwrap()];
     let (written, read) = round_trip(&after);
     assert_eq!(read, after, "{written}");
+    assert!(written.contains("sitemap: false\n"), "{written}");
+    assert!(written.contains("page_type: FAQPage\n"), "{written}");
     let mut text = PostText::parse(&written).unwrap();
     let defaults = PostSettings::default();
     write_settings(&mut text, &after, &defaults, PostStatus::Draft).unwrap();

@@ -21,6 +21,7 @@ mod menu;
 mod post;
 mod post_connections;
 mod post_head;
+mod post_listing;
 mod post_row;
 mod post_settings;
 mod real_update;
@@ -62,6 +63,7 @@ pub use post_connections::{
     ClusterMembership, ConnectionsEdit, MAX_RELATED, PostConnections, SeriesPart,
 };
 pub use post_head::{HeadElement, HeadParts, PostHead};
+pub use post_listing::{ARTICLE_TYPES, ListingEdit, PAGE_TYPES, PostListing};
 pub use post_row::{ClusterPlace, Gate, IndexStatus, LintCounts, PostLinks, PostRow};
 pub use post_settings::{
     Alias, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, ReviewState, ShareCard,

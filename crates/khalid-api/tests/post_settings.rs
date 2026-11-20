@@ -26,6 +26,10 @@ fn settings_never_set_are_empty_false_and_draft() {
             "translation": null, "related": [], "series": null, "cluster": null,
             "topic_group": null, "main_post": false,
         },
+        "listing": {
+            "sitemap": true, "news": null, "breadcrumb_title": null, "page_type": null,
+            "article_type": null, "keyword_synonyms": [], "reviewed_by": [],
+        },
     });
     assert_eq!(json, empty);
 }

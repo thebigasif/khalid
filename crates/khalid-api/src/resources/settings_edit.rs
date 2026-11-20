@@ -8,6 +8,7 @@ use serde::{Deserialize, Deserializer};
 use utoipa::ToSchema;
 
 use super::post_connections::ConnectionsEdit;
+use super::post_listing::ListingEdit;
 use super::post_settings::access_schema;
 use super::seo_fields::{CustomJsonLd, SearchTitle};
 use super::{
@@ -106,6 +107,8 @@ pub struct SettingsEdit {
     schema: Change<CustomJsonLd>,
     /// New ties to the blog's other posts; the parts left out keep theirs.
     connections: Option<ConnectionsEdit>,
+    /// New listing choices; the parts left out keep theirs.
+    listing: Option<ListingEdit>,
 }
 
 impl SettingsEdit {
@@ -200,6 +203,10 @@ impl SettingsEdit {
             connections: match self.connections {
                 Some(edit) => edit.applied_to(settings.connections),
                 None => settings.connections,
+            },
+            listing: match self.listing {
+                Some(edit) => edit.applied_to(settings.listing),
+                None => settings.listing,
             },
         }
     }

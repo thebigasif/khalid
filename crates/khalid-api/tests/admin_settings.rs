@@ -113,6 +113,11 @@ fn every_setting() -> Value {
             "series": {"name": "Links: a course", "order": 2},
             "cluster": {"name": "links", "role": "member"},
             "topic_group": "internal-links", "main_post": false
+        },
+        "listing": {
+            "sitemap": false, "news": false, "breadcrumb_title": "Anchor text",
+            "page_type": "FAQPage", "article_type": "TechArticle",
+            "keyword_synonyms": ["link words"], "reviewed_by": ["mira"]
         }
     })
 }
