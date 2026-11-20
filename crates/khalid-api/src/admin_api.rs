@@ -541,11 +541,7 @@ fn unsupported(setting: &'static str, why: &'static str) -> Problem {
 
 /// The 422 for an edit that claims a real update it is not (F2).
 fn not_real_update(why: NotRealUpdate) -> Problem {
-    let message = UserMessage::new(
-        "This edit cannot be marked as a real update.",
-        why.why(),
-        why.fix(),
-    );
+    let message = UserMessage::new(why.what(), why.why(), why.fix());
     Problem::new(ProblemType::InvalidBody, &message).with_rule("real_update")
 }
 

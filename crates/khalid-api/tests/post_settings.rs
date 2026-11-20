@@ -22,6 +22,14 @@ fn settings_never_set_are_empty_false_and_draft() {
         "share_cards": {"x": null, "facebook": null}, "aliases": [], "access": "public",
         "password_protected": false, "template": null, "head_code": null,
         "seo_title": null, "focus_keyword": null, "schema": null,
+        "connections": {
+            "translation": null, "related": [], "series": null, "cluster": null,
+            "topic_group": null, "main_post": false,
+        },
+        "listing": {
+            "sitemap": true, "news": null, "breadcrumb_title": null, "page_type": null,
+            "article_type": null, "keyword_synonyms": [], "reviewed_by": [],
+        },
     });
     assert_eq!(json, empty);
 }

@@ -17232,6 +17232,25 @@
           "take_over"
         ]
       },
+      "ClusterMembership": {
+        "type": "object",
+        "description": "The topic cluster a post belongs to, and its role in it.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The cluster's name, the same on every post in it.",
+            "example": "internal-links"
+          },
+          "role": {
+            "$ref": "#/components/schemas/ClusterPlace",
+            "description": "`pillar` for the main post, or `member`, the default."
+          }
+        },
+        "additionalProperties": false
+      },
       "ClusterPlace": {
         "type": "string",
         "description": "A post's role in its topic cluster.",
@@ -17321,6 +17340,71 @@
           "reader",
           "staff"
         ]
+      },
+      "ConnectionsEdit": {
+        "type": "object",
+        "description": "New values for some of a post's ties. A part left out keeps its value,\nand `null` clears one that may be empty.",
+        "properties": {
+          "cluster": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClusterMembership",
+                "description": "A new topic cluster and role, or `null` for none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "main_post": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether the post is its topic group's main post."
+          },
+          "related": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every pinned related post's slug, at most five; an empty list to\nlet the build choose.",
+            "example": [
+              "internal-links"
+            ]
+          },
+          "series": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeriesPart",
+                "description": "A new series and place, or `null` for none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "topic_group": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new topic group, or `null` for none.",
+            "example": "internal-links"
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new translation key, or `null` for none.",
+            "example": "anchor-text"
+          }
+        },
+        "additionalProperties": false
       },
       "ContentCollection": {
         "type": "object",
@@ -18638,6 +18722,93 @@
             "minimum": 0
           }
         }
+      },
+      "ListingEdit": {
+        "type": "object",
+        "description": "New values for some of how a post is listed. A part left out keeps its\nvalue, and `null` clears one that may be empty.",
+        "properties": {
+          "article_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of article, as schema.org names it, or `null` for the collection's.",
+            "enum": [
+              "BlogPosting",
+              "Article",
+              "NewsArticle",
+              "TechArticle",
+              "Report",
+              null
+            ]
+          },
+          "breadcrumb_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new breadcrumb name, or `null` for the post's title.",
+            "example": "Anchor text"
+          },
+          "keyword_synonyms": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every other word for the focus keyword; an empty list for none.",
+            "example": [
+              "site links"
+            ]
+          },
+          "news": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "`false` to keep a news post out of the news sitemap, or `null` to\nfollow its article type."
+          },
+          "page_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of web page, as schema.org names it, or `null` for `WebPage`.",
+            "enum": [
+              "WebPage",
+              "FAQPage",
+              "ContactPage",
+              "AboutPage",
+              "QAPage",
+              "ItemPage",
+              "CollectionPage",
+              null
+            ]
+          },
+          "reviewed_by": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every reviewer's author slug; an empty list for none.",
+            "example": [
+              "mira"
+            ]
+          },
+          "sitemap": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether the post is listed in the XML sitemap."
+          }
+        },
+        "additionalProperties": false
       },
       "LostPage": {
         "type": "object",
@@ -20488,6 +20659,68 @@
           }
         }
       },
+      "PostConnections": {
+        "type": "object",
+        "description": "How a post ties to the blog's other posts. Every part has a value:\n`null`, an empty list or `false` when never set.",
+        "required": [
+          "related",
+          "main_post"
+        ],
+        "properties": {
+          "cluster": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClusterMembership",
+                "description": "The topic cluster the post belongs to, and its role in it."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "main_post": {
+            "type": "boolean",
+            "description": "Whether this post is its topic group's main post, the one the\ngroup's other posts should link to."
+          },
+          "related": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The slugs of the posts shown under this one, in place of the ones\nchosen at build time. At most [`MAX_RELATED`].",
+            "example": [
+              "internal-links"
+            ]
+          },
+          "series": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeriesPart",
+                "description": "The series the post is one part of, and its place in it."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "topic_group": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The topic group the post shares with others (P8), such as\n`internal-links`.",
+            "example": "internal-links"
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key shared by the versions of this post in other languages,\nsuch as `anchor-text`, or `null` when it has none.",
+            "example": "anchor-text"
+          }
+        }
+      },
       "PostEdit": {
         "type": "object",
         "description": "An edit to a post: the fields to change, and the `updated_at` of the\ncopy it was made on. Fields left out keep their value, and `null`\nclears one that may be empty. A `status` of `published` publishes a\ndraft, once the linter lets it through; `scheduled` with a future\n`published_at` publishes it then, and `draft` takes a scheduled post\noff its schedule and a live post down.",
@@ -20575,6 +20808,14 @@
             "type": "string",
             "format": "date-time",
             "description": "The `updated_at` of the copy the edit was made on."
+          },
+          "updated_note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Rewrites the note of the post's last real update, such as to fix a\ntypo, and leaves its date alone. Only for a post with an updated\ndate; `real_update` wins when both are sent.",
+            "example": "Refreshed the 2026 numbers."
           }
         },
         "additionalProperties": false
@@ -20598,6 +20839,88 @@
             "format": "int32",
             "description": "Posts this one links to.",
             "minimum": 0
+          }
+        }
+      },
+      "PostListing": {
+        "type": "object",
+        "description": "How search engines list and describe a post. Every part has a value:\n`true` for the sitemap, and `null` or an empty list otherwise, when\nnever set.",
+        "required": [
+          "sitemap",
+          "keyword_synonyms",
+          "reviewed_by"
+        ],
+        "properties": {
+          "article_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of article, as schema.org names it, or `null` for the collection's.",
+            "enum": [
+              "BlogPosting",
+              "Article",
+              "NewsArticle",
+              "TechArticle",
+              "Report",
+              null
+            ]
+          },
+          "breadcrumb_title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A shorter name for the post in breadcrumb trails, or `null` for\nits title.",
+            "example": "Anchor text"
+          },
+          "keyword_synonyms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Other words for the focus keyword that count as using it, such as\n`site links` for `internal links`.",
+            "example": [
+              "site links"
+            ]
+          },
+          "news": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "`false` keeps a news post out of the news sitemap; `null` lists it\nas its article type says."
+          },
+          "page_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The kind of web page, as schema.org names it, or `null` for `WebPage`.",
+            "enum": [
+              "WebPage",
+              "FAQPage",
+              "ContactPage",
+              "AboutPage",
+              "QAPage",
+              "ItemPage",
+              "CollectionPage",
+              null
+            ]
+          },
+          "reviewed_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The slugs of the authors who checked the post, shown as \"Reviewed\nby\".",
+            "example": [
+              "mira"
+            ]
+          },
+          "sitemap": {
+            "type": "boolean",
+            "description": "Whether the post is listed in the XML sitemap. `false` keeps it\nout, as for a thank-you post no one searches for."
           }
         }
       },
@@ -20910,7 +21233,9 @@
           "share_cards",
           "aliases",
           "access",
-          "password_protected"
+          "password_protected",
+          "connections",
+          "listing"
         ],
         "properties": {
           "access": {
@@ -20953,6 +21278,10 @@
             "example": [
               "mira"
             ]
+          },
+          "connections": {
+            "$ref": "#/components/schemas/PostConnections",
+            "description": "How the post ties to the blog's other posts."
           },
           "date": {
             "type": [
@@ -21004,6 +21333,10 @@
             ],
             "description": "Checked HTML added to the post's page head, such as an analytics\ntag. Only owners and admins may change it.",
             "example": "<meta name=\"verify\" content=\"x\">"
+          },
+          "listing": {
+            "$ref": "#/components/schemas/PostListing",
+            "description": "How search engines list and describe the post."
           },
           "password_protected": {
             "type": "boolean",
@@ -21807,6 +22140,31 @@
           }
         }
       },
+      "SeriesPart": {
+        "type": "object",
+        "description": "The series a post is one part of, as an edit sends it.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The series' name as readers see it, the same on every part.",
+            "example": "Topic clusters from scratch"
+          },
+          "order": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The post's place in the series, counted from 1, or `null` to follow\nthe numbered parts in date order.",
+            "example": 2,
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      },
       "SerpdadConnection": {
         "type": "object",
         "description": "The connection, or `null` while it is off.",
@@ -22141,6 +22499,17 @@
               "mira"
             ]
           },
+          "connections": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ConnectionsEdit",
+                "description": "New ties to the blog's other posts; the parts left out keep theirs."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "date": {
             "type": [
               "string",
@@ -22190,6 +22559,17 @@
             ],
             "description": "New head code, or `null` for none. Owners and admins only.",
             "example": "<meta name=\"verify\" content=\"x\">"
+          },
+          "listing": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ListingEdit",
+                "description": "New listing choices; the parts left out keep theirs."
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "password": {
             "type": [

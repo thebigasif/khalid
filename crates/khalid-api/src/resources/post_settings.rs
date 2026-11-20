@@ -12,6 +12,8 @@ use utoipa::ToSchema;
 use utoipa::openapi::schema::{ObjectBuilder, Schema, Type};
 
 use super::display_option;
+use super::post_connections::PostConnections;
+use super::post_listing::PostListing;
 use super::seo_fields::{CustomJsonLd, SearchTitle};
 
 /// Where a post stands in review, before it is published (KH-EDT-4).
@@ -228,6 +230,10 @@ pub struct PostSettings {
     /// Hand-written JSON-LD the page carries beside the schema Khalid
     /// writes, for a type Khalid does not write itself.
     pub schema: Option<CustomJsonLd>,
+    /// How the post ties to the blog's other posts.
+    pub connections: PostConnections,
+    /// How search engines list and describe the post.
+    pub listing: PostListing,
 }
 
 /// The most secondary keywords a post may name, the same limit front

@@ -5,7 +5,7 @@ use khalid_core::Slug;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use super::real_update::{NotRealUpdate, RealUpdate};
+use super::real_update::{NotRealUpdate, RealUpdate, UpdateNote};
 use super::settings_edit::Change;
 use super::{NonBlank, PostSettings, ReviewState, SettingsEdit, display, display_option};
 use crate::post_password::HashPasswordError;
@@ -237,7 +237,10 @@ impl AdminPost {
         let status = edit.status;
         let (updated, updated_note) = match edit.real_update {
             Some(update) => (Some(at.date_naive()), Some(update.note().to_owned())),
-            None => (self.updated, self.updated_note),
+            None => match edit.updated_note {
+                Some(note) => (self.updated, Some(note.as_str().to_owned())),
+                None => (self.updated, self.updated_note),
+            },
         };
         let settings = match edit.settings {
             Some(change) => change.applied_to(self.settings),
@@ -305,6 +308,11 @@ pub struct PostEdit {
     /// saying what changed: the post's `updated` date becomes today. Left
     /// out, the date stays as it is, whatever else changes.
     real_update: Option<RealUpdate>,
+    /// Rewrites the note of the post's last real update, such as to fix a
+    /// typo, and leaves its date alone. Only for a post with an updated
+    /// date; `real_update` wins when both are sent.
+    #[schema(value_type = Option<String>, example = "Refreshed the 2026 numbers.")]
+    updated_note: Option<UpdateNote>,
     /// The `updated_at` of the copy the edit was made on.
     updated_at: DateTime<Utc>,
 }
@@ -333,6 +341,7 @@ impl PostEdit {
             published_at: None,
             unpublish_at: None,
             real_update: None,
+            updated_note: None,
             updated_at,
         }
     }
@@ -346,7 +355,12 @@ impl PostEdit {
     /// Returns [`NotRealUpdate`] saying why the claim does not hold.
     pub fn honest_for(&self, post: &AdminPost) -> Result<(), NotRealUpdate> {
         if self.real_update.is_none() {
-            return Ok(());
+            let orphan_note = self.updated_note.is_some() && post.updated.is_none();
+            return if orphan_note {
+                Err(NotRealUpdate::NoUpdateYet)
+            } else {
+                Ok(())
+            };
         }
         if post.status() != PostStatus::Published || self.status == Some(PostStatus::Draft) {
             return Err(NotRealUpdate::NotLive);
