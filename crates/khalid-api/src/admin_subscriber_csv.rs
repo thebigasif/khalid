@@ -5,7 +5,7 @@
 //! `subscribers:write`: the file is readers' personal data.
 
 use axum::extract::rejection::QueryRejection;
-use axum::extract::{Query, State};
+use axum::extract::{DefaultBodyLimit, Query, State};
 use axum::http::header;
 use axum::{Extension, Json};
 use khalid_core::{Slug, UserMessage};
@@ -26,7 +26,12 @@ pub(crate) fn routes() -> OpenApiRouter<Subscribers> {
     OpenApiRouter::new()
         .routes(routes!(import_subscribers))
         .routes(routes!(export_subscribers))
+        .layer(DefaultBodyLimit::max(LARGEST_FILE))
 }
+
+/// The largest reader file the import takes: about 150,000 readers, where
+/// the 2 MB every other route takes holds about 20,000.
+const LARGEST_FILE: usize = 16 * 1024 * 1024;
 
 /// Where imported readers go when the file names no newsletter.
 #[derive(Debug, Deserialize, IntoParams)]

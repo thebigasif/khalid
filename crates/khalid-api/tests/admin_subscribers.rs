@@ -600,6 +600,10 @@ async fn a_file_that_is_no_reader_list_adds_no_one() {
     let (status, _, text) = csv(&router, OWNER, route, "post_id,title\n").await;
     assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{text}");
     assert!(text.contains("\"rule\":\"file\""), "{text}");
+    // A file past the 2 MB other routes take still reaches the reader.
+    let big = format!("post_id,title\n{}\n", "a".repeat(3 * 1024 * 1024));
+    let (status, _, text) = csv(&router, OWNER, route, &big).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{text}");
     let route = ("POST", "/subscribers/import/?list=Weekly!");
     let (status, _, text) = csv(&router, OWNER, route, "email,status\n").await;
     assert_eq!(status, StatusCode::BAD_REQUEST, "{text}");
