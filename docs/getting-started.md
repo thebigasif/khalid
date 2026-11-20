@@ -153,7 +153,7 @@ khalid --site blog audit
 
 Inside the blog folder, the one that holds `site.toml`, you can leave out `--site`: after `cd blog`, `khalid lint` does the same as `khalid --site blog lint`. This guide keeps `--site blog` so every command runs from the folder above.
 
-Each linter message ends with a rule and a guide, such as "Rule no-internal-link, guide internal-links". The rule is the check that fired. The guide names a SerpDad guide that explains it at length; those guides are not published yet, so until then the three sentences in the message are the whole advice. Every message is listed in `crates/khalid-lint/catalogue.toml`, and `khalid --site blog lint --json` gives them in a form scripts can read.
+Each linter message ends with its rule and a link, such as "Rule no-internal-link. Read more: https://serpdad.com/khalid/docs/lint-rules/#internal-links". The rule is the check that fired. The link opens the section of [What the linter checks](lint-rules.md) that explains it, with every other rule on the same subject. Every message is listed in `crates/khalid-lint/catalogue.toml`, and `khalid --site blog lint --json` gives them in a form scripts can read.
 
 Six rules block publishing: no title, no date, no author, no link to another page of the site, more than one main headline, and structured data that misses a field Google needs.
 
