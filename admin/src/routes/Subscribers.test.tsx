@@ -51,6 +51,7 @@ function newsletters(sending: Newsletters["sending"] = "ready"): Newsletters {
 function blog(kept: AdminSubscriber[], sending: Newsletters["sending"] = "ready") {
   let list = [...kept];
   const bodies: unknown[] = [];
+  const counts: string[] = [];
   const page = (readers: AdminSubscriber[]) => {
     const pagination = {
       page: 1,
@@ -70,6 +71,15 @@ function blog(kept: AdminSubscriber[], sending: Newsletters["sending"] = "ready"
     },
     "GET /posts/": () =>
       rowsPage([row({ id: "en.what-a-sitemap-does", title: "What a sitemap does" })]),
+    "GET /newsletters/main/readers/": (request) => {
+      const labels = new URL(request.url).searchParams.get("labels") ?? "";
+      counts.push(labels);
+      return json(200, {
+        list: "main",
+        labels: labels.split(","),
+        readers: labels === "nobody" ? 0 : 3,
+      });
+    },
     "POST /newsletters/main/sends/": async (request) => {
       bodies.push(await request.json());
       return json(202, { key: "post:en/what-a-sitemap-does" });
@@ -83,7 +93,7 @@ function blog(kept: AdminSubscriber[], sending: Newsletters["sending"] = "ready"
       return noContent();
     },
   });
-  return { sent, bodies };
+  return { sent, bodies, counts };
 }
 
 /** The table row that holds `email`. */
@@ -114,14 +124,30 @@ describe("the Subscribers screen", () => {
 
   it("sends a post to the labelled readers of a newsletter", async () => {
     signedIn();
-    const { bodies } = blog([reader()]);
+    const { bodies, counts } = blog([reader()]);
     renderAt("/subscribers");
     const post = await screen.findByRole("combobox", { name: words.send.post });
     await userEvent.selectOptions(post, "en.what-a-sitemap-does");
     await userEvent.type(screen.getByLabelText(words.send.labels), "paid, Paid, early");
-    await userEvent.click(screen.getByRole("button", { name: words.send.submitLabelled }));
+    // The count comes first: the readers with both labels, on the button too.
+    expect(await screen.findByText(words.send.segment(3, "main"))).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: words.send.submit(3) }));
     expect(await screen.findByText(words.send.started("What a sitemap does"))).toBeVisible();
     expect(bodies).toEqual([{ post: "en.what-a-sitemap-does", labels: ["paid", "early"] }]);
+    expect(counts).toContain("paid,early");
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("offers no send to labels no reader carries", async () => {
+    signedIn();
+    const { bodies } = blog([reader()]);
+    renderAt("/subscribers");
+    const post = await screen.findByRole("combobox", { name: words.send.post });
+    await userEvent.selectOptions(post, "en.what-a-sitemap-does");
+    await userEvent.type(screen.getByLabelText(words.send.labels), "nobody");
+    expect(await screen.findByText(words.send.segment(0, "main"))).toBeVisible();
+    expect(screen.getByRole("button", { name: words.send.submit(0) })).toBeDisabled();
+    expect(bodies).toEqual([]);
   });
 
   it("says what the site lacks before it can send, and offers no form", async () => {

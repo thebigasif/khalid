@@ -153,6 +153,7 @@ The same routes are in the Admin API, for a key with the `subscribers:write` sco
 | `DELETE /api/admin/v1/subscribers/{id}/labels/{label}/` | Takes a label away. |
 | `DELETE /api/admin/v1/subscribers/{id}/` | Forgets a reader: their address, newsletters, labels and links are removed. The totals of emails sent stay, as they name no one. |
 | `GET /api/admin/v1/newsletters/` | Each newsletter with its confirmed and waiting readers and its sign-up form, whether the site can send now (`ready`, `no_mail` or `no_postal_address`), and the numbers of every email sent. |
+| `GET /api/admin/v1/newsletters/{name}/readers/?labels=paid,vip` | Counts the confirmed readers who carry every label, as `khalid newsletter segment` does, so a send can say how many it reaches first. The Subscribers screen shows it as you type labels. |
 | `POST /api/admin/v1/newsletters/{name}/sends/` | Sends a published post, `{"post": "en.what-a-sitemap-does", "labels": ["paid"]}`, once. It answers `202` with the send's key as the copies start to leave. |
 
 No route adds a subscriber. Readers join only through the form and the link in its email, so every address on the list asked to be there.

@@ -87,6 +87,19 @@ pub trait SubscriberDesk: Send + Sync {
         list: &'a Slug,
         send: &'a NewsletterSend,
     ) -> BoxFuture<'a, Result<String, SubscriberError>>;
+
+    /// How many confirmed readers of newsletter `list` carry every one of
+    /// `labels`: the readers a send to them would reach.
+    ///
+    /// # Errors
+    ///
+    /// [`SubscriberError::NoList`] when the newsletter does not exist, and
+    /// [`SubscriberError::Store`] when the subscribers cannot be read.
+    fn readers<'a>(
+        &'a self,
+        list: &'a Slug,
+        labels: &'a [Slug],
+    ) -> BoxFuture<'a, Result<u64, SubscriberError>>;
 }
 
 /// Whether a label is given or taken away.

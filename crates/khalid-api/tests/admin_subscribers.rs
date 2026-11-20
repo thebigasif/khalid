@@ -178,6 +178,25 @@ impl SubscriberDesk for Desk {
         };
         Box::pin(async move { answer })
     }
+
+    fn readers<'a>(
+        &'a self,
+        list: &'a Slug,
+        labels: &'a [Slug],
+    ) -> BoxFuture<'a, Result<u64, SubscriberError>> {
+        let readers = self.readers.lock().unwrap();
+        let counted = readers
+            .iter()
+            .filter(|each| each.status == SubscriberStatus::Confirmed)
+            .filter(|each| labels.iter().all(|label| each.labels.contains(label)))
+            .count();
+        let answer = if list.as_str() == "main" {
+            Ok(u64::try_from(counted).unwrap())
+        } else {
+            Err(SubscriberError::NoList)
+        };
+        Box::pin(async move { answer })
+    }
 }
 
 /// The API with `desk`, a key that manages subscribers and one that only
@@ -410,6 +429,39 @@ async fn a_site_that_cannot_send_says_what_it_lacks() {
         json["detail"].as_str().unwrap().contains("postal address"),
         "{json}"
     );
+}
+
+#[tokio::test]
+async fn a_segment_is_counted_before_a_send() {
+    let router = router(Some(three()));
+    let label = ("PUT", "/subscribers/1/labels/paid/");
+    send(&router, OWNER, label, None).await;
+    let route = ("GET", "/newsletters/main/readers/?labels=paid");
+    let (status, json) = send(&router, OWNER, route, None).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(
+        json,
+        json!({ "list": "main", "labels": ["paid"], "readers": 1 })
+    );
+    let route = ("GET", "/newsletters/main/readers/?labels=paid,%20vip,");
+    let (_, json) = send(&router, OWNER, route, None).await;
+    assert_eq!(json["labels"], json!(["paid", "vip"]));
+    assert_eq!(json["readers"], 0, "nobody carries both");
+    let (_, json) = send(&router, OWNER, ("GET", "/newsletters/main/readers/"), None).await;
+    assert_eq!(json["readers"], 1, "every confirmed reader");
+}
+
+#[tokio::test]
+async fn a_segment_of_an_unknown_newsletter_or_label_is_refused() {
+    let router = router(Some(three()));
+    let route = ("GET", "/newsletters/weekly/readers/");
+    let (status, json) = send(&router, OWNER, route, None).await;
+    assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
+    let route = ("GET", "/newsletters/main/readers/?labels=Not%20a%20label");
+    let (status, json) = send(&router, OWNER, route, None).await;
+    assert_eq!(status, StatusCode::BAD_REQUEST, "{json}");
+    let (status, _) = send(&router, WRITER, ("GET", "/newsletters/main/readers/"), None).await;
+    assert_eq!(status, StatusCode::FORBIDDEN);
 }
 
 #[tokio::test]

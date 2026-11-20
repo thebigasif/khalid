@@ -190,4 +190,21 @@ impl SubscriberDesk for SiteSubscribers {
             self.start(segment, send, sender).await
         })
     }
+
+    fn readers<'a>(
+        &'a self,
+        list: &'a Slug,
+        labels: &'a [Slug],
+    ) -> BoxFuture<'a, Result<u64, SubscriberError>> {
+        Box::pin(async move {
+            let lists = self.lists().await?;
+            let list = lists
+                .find(Some(list.as_str()))
+                .ok_or(SubscriberError::NoList)?;
+            let segment = Segment::new(list, labels.iter().cloned());
+            let found = self.table.audience(&segment).await;
+            let found = found.map_err(SubscriberError::store)?;
+            u64::try_from(found.len()).map_err(SubscriberError::store)
+        })
+    }
 }

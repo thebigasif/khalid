@@ -4584,6 +4584,104 @@
         ]
       }
     },
+    "/api/admin/v1/newsletters/{name}/readers/": {
+      "get": {
+        "tags": [
+          "admin subscribers"
+        ],
+        "summary": "Counts the confirmed readers of a newsletter who carry every label\ngiven, so a send to them can say how many it reaches before it starts.\nNeeds `subscribers:write`.",
+        "operationId": "count_readers",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "description": "The newsletter, such as main",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "labels",
+            "in": "query",
+            "description": "The labels every counted reader carries, such as `paid,vip`. Leave\nit out to count every confirmed reader.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "How many readers a send would reach",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SegmentReaders"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A label is not lowercase letters, digits and hyphens",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks subscribers:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The site has no newsletter by that name",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/newsletters/{name}/sends/": {
       "post": {
         "tags": [
@@ -21443,6 +21541,39 @@
             "type": "string",
             "description": "The Search Console property the numbers come from.",
             "example": "sc-domain:example.com"
+          }
+        }
+      },
+      "SegmentReaders": {
+        "type": "object",
+        "description": "How many readers a send would reach.",
+        "required": [
+          "list",
+          "labels",
+          "readers"
+        ],
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The labels each counted reader carries, each once.",
+            "example": [
+              "paid"
+            ]
+          },
+          "list": {
+            "type": "string",
+            "description": "The newsletter.",
+            "example": "main"
+          },
+          "readers": {
+            "type": "integer",
+            "format": "int64",
+            "description": "How many confirmed readers carry every label.",
+            "example": 42,
+            "minimum": 0
           }
         }
       },

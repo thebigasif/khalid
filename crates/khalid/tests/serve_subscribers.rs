@@ -101,6 +101,11 @@ fn a_confirmed_reader_is_labelled_sent_a_post_once_and_forgotten() {
     );
     assert!(main["form"].as_str().unwrap().contains("<form"), "{main}");
 
+    let count = format!("{NEWSLETTERS}main/readers/?labels=paid");
+    let (status, counted) = server.admin("GET", &count, None);
+    assert_eq!(status, 200, "{counted}");
+    assert_eq!(counted["readers"], 1, "the count shown before the send");
+
     let before = stub.received().len();
     let send = json!({"post": "en.why-internal-links-matter", "labels": ["paid"]});
     let (status, started) = server.admin("POST", SENDS, Some(&send));

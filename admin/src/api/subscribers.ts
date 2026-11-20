@@ -87,6 +87,19 @@ export function listNewsletters(): Promise<Reply<Newsletters>> {
   });
 }
 
+/** How many confirmed readers of newsletter `list` carry every one of `labels`. */
+export function countReaders(list: string, labels: string[]): Promise<Reply<number>> {
+  const query = new URLSearchParams({ labels: labels.join(",") });
+  const path = `/newsletters/${encodeURIComponent(list)}/readers/?${query.toString()}`;
+  return call(path, {}, async (response) => {
+    const counted: Partial<components["schemas"]["SegmentReaders"]> = await response.json();
+    if (typeof counted.readers !== "number") {
+      throw new TypeError("The answer has no reader count.");
+    }
+    return counted.readers;
+  });
+}
+
 /** Sends a published post to a newsletter's readers who carry every one of `labels`, once. */
 export function sendPost(list: string, post: string, labels: string[]): Promise<Reply<string>> {
   const body: components["schemas"]["NewsletterSend"] = { post, labels };
