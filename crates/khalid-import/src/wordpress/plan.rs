@@ -86,6 +86,9 @@ pub struct ImportedItem {
     /// What it had that Khalid's front matter cannot hold yet, in a fixed
     /// order, so the report can say so.
     pub held: Vec<Held>,
+    /// The feature image its file names as its lead image, at its old
+    /// address, so `--download-images` can bring it in.
+    pub image: Option<AbsoluteUrl>,
     /// Where its file went.
     pub place: Place,
 }
@@ -94,13 +97,13 @@ pub struct ImportedItem {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum Held {
-    /// The title for search results, when it differs from the headline.
+    /// A page's title for search results, which page front matter cannot
+    /// hold.
     SearchTitle(String),
-    /// The tags' slugs.
-    Tags(Vec<String>),
     /// The focus keywords, the main one first.
     FocusKeywords(Vec<String>),
-    /// The image shown with the post in lists and share cards.
+    /// The image shown with the post in lists and share cards, when neither
+    /// it nor the post has words to describe it.
     FeatureImage(AbsoluteUrl),
     /// Categories beyond the one front matter holds, by slug.
     MoreCategories(Vec<String>),

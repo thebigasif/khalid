@@ -197,6 +197,8 @@ pub struct Seo {
     pub twitter_description: Option<String>,
     /// The image on X.
     pub twitter_image: Option<String>,
+    /// What the feature image shows, for readers who cannot see it.
+    pub feature_image_alt: Option<String>,
 }
 
 /// HTML a post added to its own page, in the head or before the end of the

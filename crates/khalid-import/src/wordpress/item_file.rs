@@ -8,7 +8,7 @@ use khalid_routes::{PostAddress, Routes};
 
 use crate::Place;
 use crate::PlannedFile;
-use crate::front_matter::{FrontMatter, Parts};
+use crate::front_matter::{FrontMatter, Parts, tag_list};
 use crate::markdown::body_markdown;
 use crate::redirects::path_of;
 use crate::slug::{PostSlug, post_slug};
@@ -34,6 +34,7 @@ struct File<'a> {
     seo: SeoMeta,
     front: FrontMatter,
     held: Vec<Held>,
+    image: Option<AbsoluteUrl>,
 }
 
 /// The file for `item` in `place`, and what became of it. Every file is
@@ -58,17 +59,12 @@ pub(crate) fn item_file(
         seo: SeoMeta::read(item, &from.export.site),
         front: FrontMatter::default(),
         held: Vec::new(),
+        image: None,
         slug,
     };
     file.front
         .text("title", &decoded(&item.title))
         .text("slug", file.slug.as_str());
-    let title = file
-        .seo
-        .title
-        .as_deref()
-        .map(|title| Held::SearchTitle(decoded(title)));
-    file.held.extend(title);
     let (path, address) = match place {
         Place::Page => file.page(),
         Place::Post | Place::Draft => file.post(place)?,
@@ -78,6 +74,7 @@ pub(crate) fn item_file(
         seo,
         front,
         mut held,
+        image,
         ..
     } = file;
     if !seo.focus_keywords.is_empty() {
@@ -100,6 +97,7 @@ pub(crate) fn item_file(
         slug,
         slug_origin: origin,
         held,
+        image,
         place,
     };
     Ok((PlannedFile { path, text }, imported))
@@ -116,6 +114,8 @@ impl File<'_> {
     fn page(&mut self) -> (String, Option<String>) {
         let (slug, site) = (&self.slug, self.from.site);
         self.front.maybe("description", self.description());
+        let title = self.seo.title.as_deref().map(decoded);
+        self.held.extend(title.map(Held::SearchTitle));
         self.held.extend(self.seo.robots.clone().map(Held::Robots));
         self.held
             .extend(self.seo.canonical.clone().map(Held::Canonical));
@@ -151,7 +151,8 @@ impl File<'_> {
         self.front
             .maybe("author", author(item, export, site))
             .maybe("category", category)
-            .maybe("description", description);
+            .maybe("description", description)
+            .maybe("seo_title", self.seo.title.as_deref().map(decoded));
         let live = date.filter(|_| address.is_some());
         if let Some(alias) = live.and_then(|date| self.alias(date)) {
             self.front.list("aliases", &[alias]);
@@ -163,7 +164,10 @@ impl File<'_> {
             .maybe("robots", self.seo.robots.as_ref())
             .maybe("canonical", self.seo.canonical.as_ref());
         self.social(&group);
-        post_held(item, export, more, &mut self.held);
+        self.tags_and_image();
+        if !more.is_empty() {
+            self.held.push(Held::MoreCategories(more));
+        }
         let path = match (address.is_some(), date) {
             (true, Some(date)) => format!("content/{locale}/posts/{date}-{}.md", self.slug),
             _ => format!("drafts/{locale}/{}.md", self.slug),
@@ -206,6 +210,29 @@ impl File<'_> {
         }
     }
 
+    /// The post's tags, by the names readers saw, and its feature image as
+    /// its lead image. A feature image with nothing to describe it stays in
+    /// the report.
+    fn tags_and_image(&mut self) {
+        let export = self.from.export;
+        let names = self.item.tags.iter().map(|slug| {
+            let term = export.tags.iter().find(|term| term.slug == *slug);
+            decoded(term.map_or(slug, |term| &term.name))
+        });
+        self.front.list("tags", &tag_list(names));
+        match feature_image(self.item, export) {
+            Some((src, Some(alt))) => {
+                self.front.map(
+                    "image",
+                    &[("src", Some(src.to_string())), ("alt", Some(alt))],
+                );
+                self.image = Some(src);
+            }
+            Some((src, None)) => self.held.push(Held::FeatureImage(src)),
+            None => {}
+        }
+    }
+
     /// The post's old path as an alias, when the old site and the blog share
     /// a host, the path lies inside the blog and the address changed.
     fn alias(&self, date: NaiveDate) -> Option<String> {
@@ -218,18 +245,6 @@ impl File<'_> {
         let post = PostAddress::new("posts", site.default_language(), &self.slug, Some(date));
         let redirect = routes.redirect(site, path_of(old), &post).ok()?;
         Some(redirect.from().to_owned())
-    }
-}
-
-/// What a post had that its front matter cannot hold: tags, its feature
-/// image and categories beyond the first.
-fn post_held(item: &Item, export: &Export, more: Vec<String>, held: &mut Vec<Held>) {
-    if !item.tags.is_empty() {
-        held.push(Held::Tags(item.tags.clone()));
-    }
-    held.extend(feature_image(item, export).map(Held::FeatureImage));
-    if !more.is_empty() {
-        held.push(Held::MoreCategories(more));
     }
 }
 
@@ -272,8 +287,16 @@ fn categories(
     )
 }
 
-/// The address of the image a post's `_thumbnail_id` names.
-fn feature_image(item: &Item, export: &Export) -> Option<AbsoluteUrl> {
+/// The address of the image a post's `_thumbnail_id` names, with what it
+/// shows: the image's own alt text, else the post's title, as an imported
+/// lead image gets. No alt text when neither has a word in it.
+fn feature_image(item: &Item, export: &Export) -> Option<(AbsoluteUrl, Option<String>)> {
     let id = item.meta("_thumbnail_id")?.parse().ok()?;
-    export.item(id)?.attachment_url.clone()
+    let image = export.item(id)?;
+    let alt = image
+        .meta("_wp_attachment_image_alt")
+        .filter(|alt| !alt.trim().is_empty())
+        .unwrap_or(&item.title);
+    let alt = Some(decoded(alt)).filter(|alt| !alt.trim().is_empty());
+    Some((image.attachment_url.clone()?, alt))
 }

@@ -8,7 +8,7 @@ use khalid_routes::{PostAddress, Routes};
 
 use crate::front_matter::FrontMatter;
 use crate::ghost::body::post_body;
-use crate::ghost::held::{address, author_slugs, held};
+use crate::ghost::held::{address, author_slugs, held, lead_image, post_fields};
 use crate::ghost::{Dropped, Export, ImportedPost, Post, PostError};
 use crate::slug::{PostSlug, post_slug};
 use crate::{Place, PlannedFile};
@@ -75,6 +75,7 @@ pub(crate) fn post_file(
                 "canonical",
                 self::address(post.canonical_url.as_ref(), from),
             );
+            post_fields(&mut front, post, from, &authors.collect::<Vec<_>>());
             let path = match (address.is_some(), date) {
                 (true, Some(date)) => format!("content/{locale}/posts/{date}-{slug}.md"),
                 _ => format!("drafts/{locale}/{slug}.md"),
@@ -92,17 +93,15 @@ pub(crate) fn post_file(
     if !body.left.is_empty() {
         dropped.push(Dropped::Cards(body.left));
     }
+    let image = lead_image(post, from)
+        .filter(|_| place != Place::Page)
+        .map(|(src, _)| src);
     let imported = ImportedPost {
         id: post.id.clone(),
         address,
         path: path.clone(),
-        // A page has no author field, and Ghost themes do not show one.
-        held: held(
-            post,
-            from,
-            place,
-            authors.filter(|_| place != Place::Page).collect(),
-        ),
+        held: held(post, from, place),
+        image,
         dropped,
         slug,
         slug_origin: origin,

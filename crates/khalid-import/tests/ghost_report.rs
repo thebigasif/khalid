@@ -47,8 +47,8 @@ fn the_report_says_what_comes_in_what_is_mapped_and_what_is_not_carried() {
          Coming in: 1 post, 3 drafts, 1 page and 2 authors.\n\
          Slugs kept: 5. Slugs made for posts that had none: 0.\n\
          Old addresses mapped: 4, of which 4 move and 0 stay the same.\n\
-         Tag archives not mapped until posts can hold tags: 2.\n\
-         Posts with fields their files cannot hold yet: keep-a-starter-alive (search title, more authors, tags, feature image, Open Graph card, X card); about (canonical address); spring-flour (scheduled time); members-loaf (members only).\n\
+         Tag archives not mapped to the new tag pages yet: 2.\n\
+         Posts with fields their files cannot hold yet: about (canonical address); spring-flour (scheduled time); members-loaf (members only).\n\
          Posts for members only, kept as drafts so nothing paid is published: 1.\n\
          Posts with code injection, which is never carried: 6650a1f2c3d4e5f6a7b8c901.\n\
          Cards with no place in Khalid, left out: 0.\n\
