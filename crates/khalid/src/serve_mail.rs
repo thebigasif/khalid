@@ -16,13 +16,15 @@ use crate::alert_watch::Every;
 use crate::announce::SiteAnnounce;
 use crate::exit::Exit;
 use crate::form_delivery::{FormRetry, SiteDelivery};
+use crate::scheduler::Digests;
 use crate::serve_https::{self, Listen};
 use crate::site_content::LiveContent;
 use crate::site_watch::SiteWatch;
 use crate::{alert_watch, form_pages, mail_hook, newsletter, search_route};
 
-/// The routes readers post to, and the retry of form emails that failed.
-pub(super) type Posted = (Router, Option<Arc<FormRetry>>);
+/// The routes readers post to, the retry of form emails that failed, and
+/// the newsletter digests the scheduler sends.
+pub(super) type Posted = (Router, (Option<Arc<FormRetry>>, Option<Arc<Digests>>));
 
 /// The secret `[mail]` signs in with, and the one the mail hook checks.
 pub(super) type MailSecrets = (Option<Secret<String>>, Option<Secret<String>>);
@@ -35,7 +37,8 @@ pub(super) type MailSecrets = (Option<Secret<String>>, Option<Secret<String>>);
 /// what they receive in the database `site` reads, and the newsletter
 /// reads the clock `every` carries. The alert checks and
 /// the speed and uptime watch run `every` so often. The form emails that
-/// fail are tried again by the retry it returns beside the routes. With
+/// fail are tried again by the retry it returns beside the routes, with
+/// the newsletter digests, when the site can send them. With
 /// the mail `hook` secret, Resend or Postmark can stop newsletters to an
 /// address that bounced or complained.
 pub(super) fn mail_and_alerts(
@@ -56,6 +59,7 @@ pub(super) fn mail_and_alerts(
     .map_err(internal)?;
     let newsletters = newsletters.merge(mail_hook::router(config, welcomes.clone(), hook));
     let retry = FormRetry::for_site(mailer.clone(), (database, id));
+    let digests = Digests::new((folder, config), (database, id), mailer.clone());
     let delivery = SiteDelivery::new(config, retry.clone(), telling.clone()).map_err(internal)?;
     let delivery: Arc<dyn FormDelivery> = Arc::new(delivery);
     let forms = (&site.security, delivery);
@@ -81,5 +85,5 @@ pub(super) fn mail_and_alerts(
         sources,
         every: every.checks,
     };
-    Ok(((newsletters.merge(forms), retry), ready))
+    Ok(((newsletters.merge(forms), (retry, digests)), ready))
 }

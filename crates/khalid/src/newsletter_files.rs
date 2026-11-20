@@ -10,6 +10,7 @@ use khalid_core::{SitePath, Slug};
 use khalid_newsletter::{BoxFuture, Lists, Welcome, WelcomeFiles};
 
 pub(crate) mod archive_pages;
+pub(crate) mod digest_plan;
 
 /// Where the newsletters' folders are, inside the site folder.
 const FOLDER: &str = "content/newsletters";
