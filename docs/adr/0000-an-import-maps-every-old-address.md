@@ -26,7 +26,7 @@ Three facts shape where redirects can live:
 - **Two outputs for the map.**
   - When the old site and the blog share a host and an old post address lies inside the mount, the post's front matter keeps it in `aliases`, and Khalid answers it.
   - Every entry that redirects, inside the mount or not, goes into `import/wordpress-redirects.csv`, with `from,to,status,match` columns and `exact` or `regex` in the last. The host's rules or the redirect manager's CSV import (KH-SEO-8) read it.
-- **What front matter cannot hold is held, not dropped.** Each imported item lists what it had and the files cannot hold yet, such as tags, a search title or a feature image, so the report names it.
+- **What front matter cannot hold is held, not dropped.** Each imported item lists what it had and the files cannot hold yet, such as a page's tags, a scheduled time or a feature image with nothing to describe it, so the report names it. Posts write their tags, search title, co-authors, lead image and share cards into front matter.
 
 ## Consequences
 

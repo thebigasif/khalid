@@ -163,6 +163,7 @@ struct RawSeo {
     twitter_title: Option<String>,
     twitter_description: Option<String>,
     twitter_image: Option<String>,
+    feature_image_alt: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -286,6 +287,7 @@ fn post(raw: RawPost, links: Links) -> Result<Post, ExportError> {
         twitter_title: pick(own.twitter_title, meta.twitter_title),
         twitter_description: pick(own.twitter_description, meta.twitter_description),
         twitter_image: pick(own.twitter_image, meta.twitter_image),
+        feature_image_alt: pick(own.feature_image_alt, meta.feature_image_alt),
     };
     let body = match (blank(raw.lexical), blank(raw.mobiledoc), blank(raw.html)) {
         (Some(lexical), _, _) => Body::Lexical(lexical),

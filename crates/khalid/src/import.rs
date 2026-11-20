@@ -80,56 +80,25 @@ impl Plan {
         }
     }
 
-    /// The feature image of each post that has one, by the post's file.
-    /// Only `WordPress` and Ghost exports name one.
+    /// The lead image each post's file names at its old address, by the
+    /// post's file. Only `WordPress` and Ghost exports name one.
     fn leads(&self) -> BTreeMap<PathBuf, String> {
-        let mut leads = BTreeMap::new();
-        match self {
-            Self::Wordpress(plan) => {
-                for item in &plan.items {
-                    for held in &item.held {
-                        if let wordpress::Held::FeatureImage(image) = held {
-                            leads.insert(item.path.clone(), image.as_str().to_owned());
-                        }
-                    }
-                }
-            }
-            Self::Ghost(plan) => {
-                for post in &plan.posts {
-                    for held in &post.held {
-                        if let ghost::Held::FeatureImage(image) = held {
-                            leads.insert(post.path.clone(), image.as_str().to_owned());
-                        }
-                    }
-                }
-            }
-            Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => {}
-        }
-        leads
+        let pairs: Vec<(&PathBuf, &Option<AbsoluteUrl>)> = match self {
+            Self::Wordpress(plan) => plan.items.iter().map(|i| (&i.path, &i.image)).collect(),
+            Self::Ghost(plan) => plan.posts.iter().map(|p| (&p.path, &p.image)).collect(),
+            Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => Vec::new(),
+        };
+        pairs
+            .into_iter()
+            .filter_map(|(path, image)| Some((path.clone(), image.as_ref()?.as_str().to_owned())))
+            .collect()
     }
 
-    /// Downloads the images the plan's posts show into their folders, so
-    /// the report no longer lists a feature image that became a lead image.
+    /// Downloads the images the plan's posts show, their lead images first,
+    /// into their folders.
     fn download_images(&mut self, site: &Path, cli: &Cli) -> Result<Images, (UserMessage, Exit)> {
         let leads = self.leads();
-        let images = images::bring_in(self.files_mut(), &leads, site, cli)?;
-        let taken = |path: &PathBuf| images.leads.contains(path);
-        match self {
-            Self::Wordpress(plan) => {
-                for item in plan.items.iter_mut().filter(|item| taken(&item.path)) {
-                    item.held
-                        .retain(|held| !matches!(held, wordpress::Held::FeatureImage(_)));
-                }
-            }
-            Self::Ghost(plan) => {
-                for post in plan.posts.iter_mut().filter(|post| taken(&post.path)) {
-                    post.held
-                        .retain(|held| !matches!(held, ghost::Held::FeatureImage(_)));
-                }
-            }
-            Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => {}
-        }
-        Ok(images)
+        images::bring_in(self.files_mut(), &leads, site, cli)
     }
 
     fn write(&self, site: &Path) -> Result<Vec<PathBuf>, WriteError> {

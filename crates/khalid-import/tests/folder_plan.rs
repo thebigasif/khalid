@@ -10,7 +10,7 @@ use khalid_routes::Routes;
 const FILES: [(&str, &str); 6] = [
     (
         "_posts/2024-03-12-why-rye.md",
-        "---\ntitle: Why rye\ndate: 2024-03-12 09:30:00 +0100\nexcerpt: A grain that waits\ntags: rye\n---\nRye needs time.\n",
+        "---\ntitle: Why rye\ndate: 2024-03-12 09:30:00 +0100\nexcerpt: A grain that waits\ntags: rye\ncategories: [Bread, Rye]\n---\nRye needs time.\n",
     ),
     (
         "_drafts/spring-flour.md",
@@ -20,7 +20,10 @@ const FILES: [(&str, &str); 6] = [
         "content/posts/starters/index.md",
         "+++\ntitle = \"Starters\"\ndate = 2024-05-01\naliases = [\"/blog/old-starters/\"]\n+++\nKeep it warm.\n",
     ),
-    ("content/about.md", "---\ntitle: About\n---\nWe bake.\n"),
+    (
+        "content/about.md",
+        "---\ntitle: About\ntags: team\n---\nWe bake.\n",
+    ),
     (
         "content/posts/why-rye.md",
         "---\ntitle: Why rye, again\ndate: 2024-06-01\n---\nStill rye.\n",
@@ -86,9 +89,11 @@ fn a_jekyll_post_keeps_its_date_description_and_names_its_tags() {
     );
     assert_eq!(
         rye.text,
-        "---\ntitle: \"Why rye\"\nslug: \"why-rye\"\ndate: \"2024-03-12\"\ndescription: \"A grain that waits\"\n---\n\nRye needs time.\n"
+        "---\ntitle: \"Why rye\"\nslug: \"why-rye\"\ndate: \"2024-03-12\"\ndescription: \"A grain that waits\"\ntags:\n  - \"rye\"\n  - \"Bread\"\n---\n\nRye needs time.\n"
     );
-    assert_eq!(plan.posts[1].left, ["tags"]);
+    assert_eq!(plan.posts[1].left, Vec::<String>::new());
+    let about = plan.posts.iter().find(|post| post.place == Place::Page);
+    assert_eq!(about.unwrap().left, ["tags"]);
 }
 
 #[test]
