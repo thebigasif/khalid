@@ -42,6 +42,7 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
     settings.access = front.access;
     settings.password.clone_from(&front.password_hash);
     settings.template.clone_from(&front.template);
+    settings.comments = front.comments;
     settings.head_code.clone_from(&front.head_code);
     // A file edited by hand may hold a title or JSON-LD the API would
     // refuse; it reads as unset here, and the build names the mistake.
@@ -237,9 +238,9 @@ fn cards_text(cards: &ShareCards) -> Option<String> {
     ])
 }
 
-/// Writes the access, password hash, template and head code that differ
-/// between `before` and `after`. Public access is the default, so it is
-/// written as no line at all.
+/// Writes the access, password hash, template, comment state and head
+/// code that differ between `before` and `after`. Public access and the
+/// site's comment state are the defaults, so they are written as no line.
 fn write_access(text: &mut PostText, before: &PostSettings, after: &PostSettings) {
     if after.access != before.access {
         let access = (after.access != PostAccess::Public).then(|| after.access.to_string());
@@ -255,6 +256,10 @@ fn write_access(text: &mut PostText, before: &PostSettings, after: &PostSettings
             "template",
             after.template.as_ref().map(ToString::to_string),
         );
+    }
+    if after.comments != before.comments {
+        let state = after.comments.map(|state| state.to_string());
+        put(text, "comments", state);
     }
     if after.head_code != before.head_code {
         let code = after

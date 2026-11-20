@@ -15944,6 +15944,7 @@
           "code",
           "home_sections",
           "nav",
+          "comments",
           "updated_at",
           "restart_needed"
         ],
@@ -15958,6 +15959,10 @@
               "type": "object"
             },
             "description": "The site's own code from `[code]`, one object per entry as written:\n`head`, `body`, the `category` it waits for (`preferences`,\n`analytics`, `marketing` or `no-tracking`), the `vendor` and its\n`policy` link. An entry with no `category` counts as Marketing. The\nold single `[code]` table reads as one entry."
+          },
+          "comments": {
+            "$ref": "#/components/schemas/CommentsSetting",
+            "description": "Whether readers may comment, from `[comments]`, defaults filled in."
           },
           "cta": {
             "oneOf": [
@@ -17321,6 +17326,52 @@
           "reader",
           "staff"
         ]
+      },
+      "CommentsChange": {
+        "type": "object",
+        "description": "A change to `[comments]`: only the parts sent change.",
+        "properties": {
+          "notify": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether owners and admins get an email about each new comment."
+          },
+          "state": {
+            "type": "string",
+            "description": "Whether readers may comment: `open`, `closed` or `off`.",
+            "enum": [
+              "open",
+              "closed",
+              "off"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommentsSetting": {
+        "type": "object",
+        "description": "`[comments]`: whether readers may comment on a post that does not say\notherwise, and whether owners and admins get an email about each new\nreader's comment.",
+        "required": [
+          "state",
+          "notify"
+        ],
+        "properties": {
+          "notify": {
+            "type": "boolean",
+            "description": "Whether owners and admins get an email about each new comment."
+          },
+          "state": {
+            "type": "string",
+            "description": "Whether readers may comment: `open`, `closed` or `off`.",
+            "enum": [
+              "open",
+              "closed",
+              "off"
+            ]
+          }
+        }
       },
       "ContentCollection": {
         "type": "object",
@@ -20954,6 +21005,19 @@
               "mira"
             ]
           },
+          "comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state.",
+            "enum": [
+              "open",
+              "closed",
+              "off",
+              null
+            ]
+          },
           "date": {
             "type": [
               "string",
@@ -21977,6 +22041,17 @@
             },
             "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`. A list that differs\nfrom the saved one needs `admin:all`."
           },
+          "comments": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CommentsChange",
+                "description": "A new `[comments]` state or mail switch. A part left out stays."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "cta": {
             "oneOf": [
               {
@@ -22139,6 +22214,19 @@
             "description": "The other authors' slugs, all of them.",
             "example": [
               "mira"
+            ]
+          },
+          "comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state.",
+            "enum": [
+              "open",
+              "closed",
+              "off",
+              null
             ]
           },
           "date": {

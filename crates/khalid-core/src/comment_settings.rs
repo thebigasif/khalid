@@ -1,10 +1,12 @@
 //! `[comments]` in `site.toml`: whether readers may comment on the site's
 //! posts. A post's own `comments:` field wins over it.
 
-use serde::Deserialize;
+use std::fmt;
+
+use serde::{Deserialize, Serialize};
 
 /// Whether readers may comment, on the whole site or on one post.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum CommentState {
     /// Readers may comment, and approved comments show. The default.
@@ -18,11 +20,30 @@ pub enum CommentState {
 }
 
 impl CommentState {
+    /// Every state, in the order the admin offers them.
+    pub const ALL: [Self; 3] = [Self::Open, Self::Closed, Self::Off];
+
+    /// The name `site.toml` and front matter write, such as `closed`.
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Open => "open",
+            Self::Closed => "closed",
+            Self::Off => "off",
+        }
+    }
+
     /// The state of a post that says `own`, or nothing, on a site whose
     /// posts are `site` unless they say otherwise.
     #[must_use]
     pub fn of_post(site: Self, own: Option<Self>) -> Self {
         own.unwrap_or(site)
+    }
+}
+
+impl fmt::Display for CommentState {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
     }
 }
 

@@ -30,6 +30,8 @@ export type SettingsDraft = {
   robots: string;
   aliases: string;
   unpublishAt: string;
+  /** `open`, `closed` or `off`, empty to follow the blog's setting. */
+  comments: string;
   xTitle: string;
   xDescription: string;
   xImage: string;
@@ -49,7 +51,8 @@ const IMAGE = ["imageSrc", "imageAlt", "imageCaption"] as const;
 const CARDS = ["xTitle", "xDescription", "xImage"] as const;
 const FACEBOOK = ["facebookTitle", "facebookDescription", "facebookImage"] as const;
 const ONE_BY_ONE = ["slug", "author", "coAuthors", "date", "excerpt", "reviewState"] as const;
-const OTHERS = ["canonical", "robots", "aliases", "unpublishAt"] as const;
+const OTHERS = ["canonical", "robots", "aliases", "unpublishAt", "comments"] as const;
+const COMMENT_STATES = ["open", "closed", "off"] as const;
 const SEARCH = ["seoTitle", "focusKeyword", "secondaryKeywords", "schema"] as const;
 const KEYS = [...ONE_BY_ONE, ...OTHERS, ...IMAGE, ...CARDS, ...FACEBOOK, ...SEARCH];
 
@@ -71,6 +74,7 @@ export function settingsDraft(post: AdminPost): SettingsDraft {
     robots: settings.robots ?? "",
     aliases: settings.aliases.join("\n"),
     unpublishAt: post.unpublish_at ? localInput(post.unpublish_at) : "",
+    comments: settings.comments ?? "",
     xTitle: x?.title ?? "",
     xDescription: x?.description ?? "",
     xImage: x?.image ?? "",
@@ -162,6 +166,9 @@ function settingsChanged(saved: SettingsDraft, now: SettingsDraft): SettingsEdit
   }
   if (changed("robots")) {
     settings.robots = orNull(now.robots);
+  }
+  if (changed("comments")) {
+    settings.comments = COMMENT_STATES.find((state) => state === now.comments) ?? null;
   }
   if (changed("seoTitle")) {
     settings.seo_title = orNull(now.seoTitle);
