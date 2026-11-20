@@ -5,6 +5,7 @@
 
 mod comments;
 mod images;
+mod readers;
 
 use std::collections::BTreeMap;
 use std::fmt::{Display, Write as _};
@@ -139,7 +140,8 @@ type Done = Result<Exit, (UserMessage, Exit)>;
 pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, cli: &Cli) -> Exit {
     let (config, routes, output) = (checked.0, checked.1, cli.output);
     planned(args, (config, routes), cli)
-        .and_then(|mut plan| match (args.run, args.images) {
+        .and_then(|plan| Ok((plan, readers::find(args)?)))
+        .and_then(|(mut plan, list)| match (args.run, args.images) {
             (Run::Dry, choice) => {
                 let mut said = plan.report();
                 if choice == ImagesChoice::Download {
@@ -150,14 +152,21 @@ pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, c
                         "With --download-images, the import would download {images}."
                     );
                 }
+                if let Some(list) = &list {
+                    said.push_str(&readers::dry_text(list));
+                }
                 Ok(answer(&said, None, output))
             }
-            (Run::Write, ImagesChoice::Download) => {
-                let images = plan.download_images(site, cli)?;
-                import(site, (config, routes), (&plan, Some(&images)), output)
-            }
-            (Run::Write, ImagesChoice::Link) => {
-                import(site, (config, routes), (&plan, None), output)
+            (Run::Write, choice) => {
+                if let Some(list) = &list {
+                    readers::check(list)?;
+                }
+                let images = match choice {
+                    ImagesChoice::Download => Some(plan.download_images(site, cli)?),
+                    ImagesChoice::Link => None,
+                };
+                let plan = (&plan, images.as_ref(), list.as_ref());
+                import(site, (config, routes), plan, output)
             }
         })
         .unwrap_or_else(|(message, exit)| report::failure(output, &message, exit))
@@ -169,7 +178,7 @@ pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, c
 fn import(
     site: &Path,
     (config, routes): (&Config, &Routes),
-    (plan, images): (&Plan, Option<&Images>),
+    (plan, images, list): (&Plan, Option<&Images>, Option<&readers::ReaderList>),
     output: Output,
 ) -> Done {
     let mut written = plan
@@ -216,6 +225,9 @@ fn import(
         said.push_str(&images_text(images));
     }
     said.push_str(&comments_text(&kept));
+    if let Some(list) = list {
+        said.push_str(&readers::bring_in(site, list)?);
+    }
     Ok(answer(&said, Some((site, &written, stored, &held)), output))
 }
 
