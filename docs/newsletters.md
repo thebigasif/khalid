@@ -130,9 +130,19 @@ khalid --site <folder> newsletter digest --list weekly
 
 sends one email that lists every post published since the last digest, each with its title and link. The first digest looks back seven days. With nothing new it sends nothing, so it is safe to run from a timer, such as a systemd timer or a cron job once a week. `--label` narrows it to a segment and `--language` picks the posts' language.
 
+`khalid serve` can send it for you, so you need no timer. Put a `digest.toml` in the newsletter's folder, such as `content/newsletters/main/digest.toml` for `main`:
+
+```toml
+every = "week"       # or "day"
+labels = ["paid"]    # only readers with every label; leave it out for everyone
+language = "en"      # the posts' language; leave it out for the main language
+```
+
+Once an hour the server checks each newsletter with the file. When no digest of it went out in the last week (or day) and there are new posts, it sends one. With nothing new it waits and checks again an hour later. Remove the file to stop it.
+
 ## In the admin and the Admin API
 
-The admin's Subscribers screen does all of the above except the digest while `khalid serve` runs: it lists your readers, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and sign-up form, sends a published post, and shows the numbers. Only the owner and admins see it, because addresses are personal data.
+The admin's Subscribers screen does the rest of the above while `khalid serve` runs: it lists your readers, gives and takes away labels, forgets a reader who asks, shows each newsletter's readers and sign-up form, sends a published post, and shows the numbers. Only the owner and admins see it, because addresses are personal data.
 
 The same routes are in the Admin API, for a key with the `subscribers:write` scope:
 
