@@ -138,7 +138,8 @@ fn readers_come_in_with_their_status_and_no_email_and_go_out_as_csv() {
     let site = demo_copy();
     let mut settings = site.path().to_path_buf();
     settings.push("site.toml");
-    let text = fs::read_to_string(&settings).unwrap() + &mail_settings(&stub);
+    let mut text = fs::read_to_string(&settings).unwrap();
+    text.push_str(&mail_settings(&stub));
     fs::write(&settings, text).unwrap();
     let key = new_key(site.path(), &OWNER);
     let server = start(site.path(), &key);
