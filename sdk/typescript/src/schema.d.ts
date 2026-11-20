@@ -71,6 +71,14 @@ export type AdminAuthor = {
   updated_at: string;
 };
 
+/** One page of the authors. */
+export type AdminAuthorList = {
+  /** The authors on this page. */
+  authors: AdminAuthor[];
+  /** Where this page sits in the list. */
+  meta: Meta;
+};
+
 /** Authors as the Admin API wraps them. */
 export type AdminAuthors = {
   /** The author or authors. */
@@ -411,6 +419,14 @@ export type AdminPage = {
   updated_at: string;
 };
 
+/** One page of the site's pages. */
+export type AdminPageList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The pages on this page of the list. */
+  pages: AdminPage[];
+};
+
 /** The views of one page from one assistant. */
 export type AdminPageViews = {
   /** The page's path. */
@@ -477,6 +493,14 @@ export type AdminRedirect = {
   status: number;
   /** Where a move leads: a path, a web address, or a pattern's template with `$1` for its first group. Empty for 410 and 451. */
   to?: string | null;
+};
+
+/** One page of the stored redirects. */
+export type AdminRedirectList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The redirects on this page, oldest first. */
+  redirects: AdminRedirect[];
 };
 
 /** Redirects as the Admin API wraps them. */
@@ -568,6 +592,14 @@ export type AdminSnippet = {
   updated_at: string;
 };
 
+/** One page of the snippets. */
+export type AdminSnippetList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The snippets on this page. */
+  snippets: AdminSnippet[];
+};
+
 /** Snippets as the Admin API wraps them. */
 export type AdminSnippets = {
   /** The snippet or snippets. */
@@ -624,6 +656,14 @@ export type AdminTag = {
   slug: string;
   /** When the last of those posts changed. A rename or removal sends it back, so a post tagged since is never changed unseen. */
   updated_at: string;
+};
+
+/** One page of the tags. */
+export type AdminTagList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The tags on this page. */
+  tags: AdminTag[];
 };
 
 /** Tags as the Admin API wraps them. */
@@ -3047,15 +3087,23 @@ export interface Operations {
     };
     output: AdminChanges;
   };
-  /** Lists every author in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  /** Lists the authors in every language: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_authors: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminAuthors;
+    output: AdminAuthorList;
   };
   /** Creates an author in the language it names or the site's default. Needs `posts:publish`. */
   create_author: {
@@ -3709,15 +3757,23 @@ export interface Operations {
     };
     output: AdminRedirects;
   };
-  /** Lists every page in every language, ordered by language and slug. A site has tens of pages, so the list comes whole. Needs `posts:write`. */
+  /** Lists the pages in every language, ordered by language and slug: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_pages: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminPages;
+    output: AdminPageList;
   };
   /** Creates a page, live at once, in the language it names or the site's default. Needs `posts:publish`. */
   create_page: {
@@ -4006,15 +4062,23 @@ export interface Operations {
     };
     output: PostVersions;
   };
-  /** Lists every stored redirect, oldest first. Aliases in front matter are not listed; they live in their posts. Needs `settings:write`. */
+  /** Lists the stored redirects, oldest first: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=status:410`. Aliases in front matter are not listed; they live in their posts. Needs `settings:write`. */
   list_redirects: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminRedirects;
+    output: AdminRedirectList;
   };
   /** Stores one redirect made by hand. It is checked against every stored redirect, so it can neither take an address that has one nor close a loop. Needs `settings:write`. */
   create_redirect: {
@@ -4389,15 +4453,23 @@ export interface Operations {
     };
     output: SiteAnswer;
   };
-  /** Lists every snippet in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  /** Lists the snippets in every language: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_snippets: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminSnippets;
+    output: AdminSnippetList;
   };
   /** Creates a snippet in the language it names or the site's default. Needs `posts:publish`. */
   create_snippet: {
@@ -4627,15 +4699,23 @@ export interface Operations {
     };
     output: AdminSubscribers;
   };
-  /** Lists every tag the site's posts carry, drafts included, in every language, with how many posts have each. Needs `posts:write`. */
+  /** Lists every tag the site's posts carry, drafts included, in every language, with how many posts have each: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_tags: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminTags;
+    output: AdminTagList;
   };
   /** Renames a tag in every post that has it, drafts included; a name another tag has merges the two. The rename carries the tag's `updated_at`; when one of its posts changed since, the answer is a 409 and no post changes (RULES.md BL-API-7). Needs `posts:publish`. */
   rename_tag: {

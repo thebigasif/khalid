@@ -18,6 +18,8 @@ use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::entry_store::Entry;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::Problem;
 use crate::resources::{AdminPage, NewPage, PageEdit};
 
@@ -47,13 +49,28 @@ pub(crate) struct AdminPages {
     pages: Vec<AdminPage>,
 }
 
-/// Lists every page in every language, ordered by language and slug. A
-/// site has tens of pages, so the list comes whole. Needs `posts:write`.
+/// One page of the site's pages.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminPageList {
+    /// The pages on this page of the list.
+    pages: Vec<AdminPage>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields a page list can be filtered on.
+const PAGE_FIELDS: &[&str] = &["id", "slug", "language", "title", "path", "updated_at"];
+
+/// Lists the pages in every language, ordered by language and slug: all
+/// of them, or one page with `limit` and `page`, and only those passing
+/// `filter`, such as `filter=language:de`. Needs `posts:write`.
 #[utoipa::path(
     get, path = "/pages/", tag = "admin pages",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every page", body = AdminPages),
+        (status = 200, description = "The pages, or one page of them", body = AdminPageList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no pages", body = Problem, content_type = "application/problem+json"),
@@ -62,11 +79,16 @@ pub(crate) struct AdminPages {
 async fn list_pages(
     State(pages): State<Kept<AdminPage>>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminPages>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminPageList>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let listed = PAGE.store(pages.as_deref())?.list().await;
     let pages = listed.map_err(|error| Problem::internal(&error))?;
-    Ok(Json(AdminPages { pages }))
+    let found = query.page(pages, PAGE_FIELDS)?;
+    Ok(Json(AdminPageList {
+        pages: found.items,
+        meta: found.meta,
+    }))
 }
 
 /// Reads one page. Needs `posts:write`.
