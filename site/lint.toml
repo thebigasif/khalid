@@ -17,6 +17,9 @@ repeated-openers = "info"
 few-transitions = "info"
 passive-voice = "info"
 complex-words = "info"
+# The demo at /khalid/demo/ is a second site the Pages workflow publishes
+# beside this one, so this site has no page there for the linter to find.
+broken-internal-link = "info"
 
 [thresholds]
 # The paragraph limit before Khalid 1.3, which this text was written for.
