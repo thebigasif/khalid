@@ -773,6 +773,12 @@ export type AiState = {
 /** What a suggestion is for. */
 export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_description" | "alt_text" | "lint_fix" | "takeaways";
 
+/** The alerts still raised. A problem that clears, such as a renewed certificate, leaves the list at the next check; one that happens once, such as a burst of 404s, stays 30 days. */
+export type AlertList = {
+  /** One alert per kind, in the order alerts go out. */
+  alerts: RaisedAlert[];
+};
+
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
 
@@ -2249,6 +2255,30 @@ export type Problem = {
   type: string;
 };
 
+/** The findings of one kind still raised. */
+export type RaisedAlert = {
+  /** Each problem, newest first. */
+  findings: RaisedFinding[];
+  /** What to do, in one sentence. */
+  fix: string;
+  /** What the alert is about: the `kind` of the `alert.raised` webhook. */
+  kind: string;
+  /** When its newest finding was raised, in UTC. */
+  raised_at: string;
+  /** What happened, in one sentence. */
+  what: string;
+  /** Why it matters, in one sentence. */
+  why: string;
+};
+
+/** One problem an alert raised. */
+export type RaisedFinding = {
+  /** Stays the same while the problem lasts. */
+  key: string;
+  /** The problem in one line. */
+  line: string;
+};
+
 /** One reader feature a template turns on or off. */
 export type ReaderDefault = {
   /** The key in `[reader]`, such as `reading_time`. */
@@ -2937,6 +2967,16 @@ export interface Operations {
       body: SuggestionRequest;
     };
     output: Offered;
+  };
+  /** Lists the alerts still raised for the site's owner: a site that stopped answering or answers slowly, a certificate near its end, a burst of 404s, stale posts, a scheduled post the linter refused, a crawler that stopped coming. Each says what happened, why it matters and what to do. The list is empty on a server with no database. Needs `settings:write`. */
+  list_alerts: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AlertList;
   };
   /** Counts how often each AI assistant's bots read the site in the last `days` days, beside the readers the assistant sent. Needs `settings:write`. */
   ai_bots: {

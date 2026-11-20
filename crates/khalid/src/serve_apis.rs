@@ -31,6 +31,7 @@ use khalid_newsletter::Mailer;
 
 use self::taxonomy_events::{AnnouncedCategories, AnnouncedTags};
 use crate::account_author::SiteAuthorProfiles;
+use crate::alerts::SiteAlerts;
 use crate::announce::SiteAnnounce;
 use crate::search_console_finder::SiteFollowUps;
 use crate::site_categories::SiteCategories;
@@ -159,6 +160,7 @@ pub(crate) fn api_router(
             id,
             Arc::new(SystemClock),
         ))),
+        alerts: Some(Arc::new(SiteAlerts::new(database, id))),
     };
     let keys: Arc<dyn KeyStore> = Arc::new(KeyTable::new(database.clone(), id, SystemClock));
     let content: Arc<dyn ContentStore> = Arc::new(content);

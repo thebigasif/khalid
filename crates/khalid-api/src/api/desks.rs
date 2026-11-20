@@ -6,6 +6,7 @@ use std::sync::Arc;
 use khalid_core::LimitSettings;
 
 use crate::ai::AiDesk;
+use crate::alerts::AlertReader;
 use crate::analytics_desk::AnalyticsDesk;
 use crate::audit_desk::AuditDesk;
 use crate::comment_moderation::{CommentModeration, NoComments};
@@ -109,6 +110,9 @@ pub struct AdminDesks {
     /// The speed and uptime watch's looks, or `None` when the watch route
     /// answers that this server keeps none.
     pub uptime: Option<Arc<dyn UptimeReader>>,
+    /// The alerts raised for the owner, or `None` when the alerts route
+    /// lists none.
+    pub alerts: Option<Arc<dyn AlertReader>>,
 }
 
 impl std::fmt::Debug for AdminDesks {
@@ -127,7 +131,7 @@ impl AdminDesks {
     /// no categories, no settings, no design, no
     /// templates, no counted views, no comments on drafts, no Search Console connection,
     /// no form answers, no `SerpDad` connection, no writing suggestions, no
-    /// subscribers and no watch looks, with the usual limits.
+    /// subscribers, no watch looks and no alerts, with the usual limits.
     pub fn none() -> Self {
         Self {
             comments: Arc::new(NoComments),
@@ -157,6 +161,7 @@ impl AdminDesks {
             limits: LimitSettings::default(),
             subscribers: None,
             uptime: None,
+            alerts: None,
         }
     }
 }
