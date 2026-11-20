@@ -56,6 +56,11 @@ export const dashboardWords = {
   quickMedia: "Add a picture or file",
   quickComments: "Answer comments",
   quickLook: "Change the look",
+  alerts: "Alerts for you",
+  alertsLede:
+    "Problems Khalid found while it watched the blog. Each one leaves this list once it is fixed.",
+  alertsMore: (count: number) => `And ${count} more.`,
+  alertSince: (date: string) => `Since ${date}`,
   issues: "Fix these first",
   issuesLede: "The checks that fail on most posts. Fixing one helps every post it names.",
   onPosts: (count: number) => (count === 1 ? "1 post" : `${count} posts`),
