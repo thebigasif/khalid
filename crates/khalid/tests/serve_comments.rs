@@ -54,10 +54,18 @@ fn copy_dir(from: &Path, into: &Path) {
 /// A copy of the demo site, with a key that may moderate comments, served.
 #[cfg(test)]
 fn served_demo() -> (TempDir, Server, String) {
+    served_demo_with(|_| {})
+}
+
+/// A copy of the demo site, changed by `edit`, with a key that may
+/// moderate comments, served.
+#[cfg(test)]
+fn served_demo_with(edit: impl FnOnce(&Path)) -> (TempDir, Server, String) {
     let mut demo = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     demo.push("../../fixtures/demo-site");
     let site = tempfile::tempdir().unwrap();
     copy_dir(&demo, site.path());
+    edit(site.path());
     let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
         .args(["--site", site.path().to_str().unwrap(), "keys", "create"])
         .args(["--json", "--name", "Moderator", "--scope", "posts:write"])
@@ -272,4 +280,46 @@ fn a_mistake_comes_back_as_a_page_and_a_flood_is_slowed() {
     assert!(head.contains("retry-after: 600"), "{head}");
     assert!(page.contains("try again in 10 minutes"));
     assert_eq!(queue(&server, &key).len(), 3, "the bait was kept nowhere");
+}
+
+/// Writes `line` into the front matter of the sitemap post in `site`.
+#[cfg(test)]
+fn sitemap_post_says(site: &Path, line: &str) {
+    let mut file = site.to_path_buf();
+    file.push("content/en/posts/2026-09-28-what-a-sitemap-does.md");
+    let text = fs::read_to_string(&file).unwrap();
+    let text = text.replacen(
+        "translation: sitemap\n",
+        &format!("translation: sitemap\n{line}\n"),
+        1,
+    );
+    fs::write(&file, text).unwrap();
+}
+
+#[test]
+fn a_closed_post_shows_a_note_and_takes_no_comment() {
+    let (_site, server, key) = served_demo_with(|site| sitemap_post_says(site, "comments: closed"));
+    let page = post_page_with(&server, "Comments are closed on this post.");
+    assert!(page.contains("Comments are closed on this post."), "{page}");
+    assert!(!page.contains("<form class=\"comment-form\""), "{page}");
+    let sent = comment(&server, "name=Lena&email=&comment=Hello.&website=");
+    assert_eq!(sent.0, 404, "{}", sent.2);
+    assert!(queue(&server, &key).is_empty(), "nothing was kept");
+}
+
+#[test]
+fn a_site_with_comments_off_shows_none_but_where_a_post_opens_them() {
+    let (_site, server, _key) = served_demo_with(|site| {
+        let mut settings = site.to_path_buf();
+        settings.push("site.toml");
+        let text = fs::read_to_string(&settings).unwrap();
+        fs::write(&settings, format!("{text}\n[comments]\nstate = \"off\"\n")).unwrap();
+        sitemap_post_says(site, "comments: open");
+    });
+    let page = post_page_with(&server, "<form class=\"comment-form\"");
+    assert!(page.contains("<form class=\"comment-form\""), "{page}");
+    let other = send(&server, ("GET", "/blog/how-to-write-a-title-tag/"), &[], "");
+    assert_eq!(other.0, 200);
+    assert!(other.2.contains("<h1"), "{}", other.2);
+    assert!(!other.2.contains("id=\"comments\""), "{}", other.2);
 }

@@ -1,10 +1,22 @@
-//! Making a slug from a post's title.
+//! Making a slug from a post's title, the way the site writes slugs.
 
+use serde::Deserialize;
 use unicode_normalization::UnicodeNormalization;
 use unicode_normalization::char::is_combining_mark;
 
 use crate::slug::encoded_len;
-use crate::{Locale, ParseSlugError, Slug, SlugMode};
+use crate::{Locale, ParseSlugError, Slug};
+
+/// How slugs are written (`docs/decisions/2026-10-26-cto-answers.md`, section 2).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SlugMode {
+    /// Lowercase a to z, digits and hyphens, transliterated by language.
+    #[default]
+    Ascii,
+    /// Letters from any script, for languages where ASCII is unreadable.
+    Unicode,
+}
 
 impl Slug {
     /// Makes a slug from `title`, written in `locale`, the way the site's

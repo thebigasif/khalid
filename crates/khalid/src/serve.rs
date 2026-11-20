@@ -230,7 +230,7 @@ fn serve_with(
         let announcing = announcing.retrying(&telling);
         // Each part reads the database or the folder alone, so all open at once.
         let (alerting, alert_watching) = alerting.start((config, database, id, telling.clone()));
-        let replies = (security.clone(), telling.clone());
+        let replies = (security.clone(), telling.clone(), mailer.clone());
         let commenting = comment_pages::start(config, (database, id), (&source, &live), replies);
         let shown_pages = consent_route::pages(config, live.clone(), security.clone());
         let ((comments, moderation, rereading), (door, posts), (media, files, library), unlocked) =
