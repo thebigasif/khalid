@@ -17,6 +17,9 @@ pub struct RenderComments {
     pub action: String,
     /// The post page's own address, which the form sends back.
     pub page: String,
+    /// Whether the post takes new comments. A closed post shows its
+    /// approved comments and a note in place of the forms.
+    pub open: bool,
 }
 
 /// A comment with the replies under it.

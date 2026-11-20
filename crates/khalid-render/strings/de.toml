@@ -102,6 +102,7 @@ month_12 = "Dezember"
 # Die Kommentare unter einem Beitrag und das Formular dazu (Aufgabe 5.4).
 comments = "Kommentare"
 comments_none = "Noch keine Kommentare."
+comments_closed = "Die Kommentare zu diesem Beitrag sind geschlossen."
 comment_leave = "Kommentar schreiben"
 comment_reply = "Antworten"
 comment_staff = "Vom Blog"

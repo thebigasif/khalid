@@ -72,7 +72,7 @@ impl SitePages {
         // A headless site's heads carry the same trail as its pages would.
         trails::fill(folder, (config, routes), &mut languages)?;
         post_categories::fill((config, routes), &categories, &mut languages);
-        comment_pages::fill(config, self.0.comments.as_ref(), &mut languages);
+        comment_pages::fill(config, content, self.0.comments.as_ref(), &mut languages);
         form_pages::fill(config, self.0.forms.as_ref(), &mut languages);
         form_pages::under_mount(config, &mut languages);
         post_gate::open(config, routes, content, &mut languages)?;

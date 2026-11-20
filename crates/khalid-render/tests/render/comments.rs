@@ -26,8 +26,31 @@ fn with_comments(threads: Vec<RenderThread>) -> RenderPost {
         threads,
         action: "/blog/comments/".to_owned(),
         page: "/blog/what-a-sitemap-does/".to_owned(),
+        open: true,
     });
     post
+}
+
+#[test]
+fn a_closed_post_shows_its_comments_and_a_note_with_no_form() {
+    let thread = RenderThread {
+        comment: comment(1, "Ben", CommentWriter::Reader, "Useful."),
+        replies: Vec::new(),
+    };
+    let mut post = with_comments(vec![thread]);
+    if let Some(comments) = &mut post.comments {
+        comments.open = false;
+    }
+    let page = render("en", post);
+    assert_valid_page(&page);
+    let section = part(&page, "<section class=\"comments\"", "</section>");
+    assert!(section.contains("Useful."), "{section}");
+    assert!(!section.contains("<form"), "{section}");
+    assert!(!section.contains("comment-sent"), "{section}");
+    assert!(
+        section.contains("<p class=\"comments-closed\">Comments are closed on this post.</p>"),
+        "{section}"
+    );
 }
 
 #[test]

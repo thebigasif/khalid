@@ -18,6 +18,7 @@ mod ai_page_settings;
 mod ai_settings;
 mod alert_settings;
 mod clock;
+mod comment_settings;
 mod config;
 mod environment;
 mod geo_point;
@@ -62,7 +63,8 @@ pub use alert_settings::AlertSettings;
 #[cfg(any(test, feature = "test-util"))]
 pub use clock::FixedClock;
 pub use clock::{Clock, SystemClock};
-pub use config::{Config, ConfigError, Mode, SlugMode};
+pub use comment_settings::{CommentSettings, CommentState};
+pub use config::{Config, ConfigError, Mode};
 pub use environment::Environment;
 pub use geo_point::{GeoPoint, GeoPointError};
 pub use head_code::{HeadCode, HeadCodeError};
@@ -108,6 +110,7 @@ pub use site_nav::{
 };
 pub use site_path::{SitePath, SitePathError};
 pub use slug::{ParseSlugError, Slug};
+pub use slug_from_title::SlugMode;
 pub use template_choice::{CallToAction, OptionValue, PackName, SourcePlace, TemplateChoice};
 pub use term_seo::TermSeo;
 pub use unclear_words::{Unclear, UnclearWords, WHICH_CHAIN};

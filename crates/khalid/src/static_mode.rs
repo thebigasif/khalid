@@ -124,6 +124,7 @@ pub(crate) fn comments(config: &Config, languages: &mut [LanguagePages]) {
                     threads: Vec::new(),
                     action: action.clone(),
                     page: page.meta.path.clone(),
+                    open: true,
                 });
             }
         }

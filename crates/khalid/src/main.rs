@@ -138,6 +138,7 @@ mod publish;
 mod pull;
 mod pull_message;
 mod push_hook;
+mod reader_comment_mail;
 mod redirect_files;
 mod redirect_route;
 mod redirects;

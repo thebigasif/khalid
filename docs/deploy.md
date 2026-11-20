@@ -417,6 +417,20 @@ While it is on, three commands read it. A crawler counts only when its address i
 
 Add `--json` to any of them for the same as one JSON object. The hourly alerts also raise `crawl-stopped` when Googlebot or Bingbot has not fetched a page for a week, and `crawler-errors` when crawlers got a server error in the last hour. Both go out like every other alert.
 
+## Comments
+
+Readers can comment under every post a running server shows. Comments wait for your approval before anyone sees them. To close comments on the whole site, or turn them off, add a `[comments]` table to `site.toml`:
+
+```toml
+[comments]
+state = "closed"   # open (the default), closed or off
+notify = false     # stop the email about each new comment (on by default)
+```
+
+When the site sends mail (`[mail]`), each new reader comment emails the site's owners and admins with its text, the post's address and a link to the Comments screen, so no comment waits unseen. The reader's email address is never in it.
+
+`closed` keeps the approved comments on each post and takes away the form, so no new comment comes in. `off` shows no comments and no form. One post can say otherwise in its front matter, which wins over the site: `comments: closed` closes a busy old post, and `comments: open` opens one post on a site where comments are off. The pages change as soon as you save; no restart is needed.
+
 ## Request limits
 
 `khalid serve` limits how often one key or one reader may ask for work, so a busy script or a leaked key cannot slow the blog for everyone. Past a limit the answer is 429, "too many requests", with a `Retry-After` header that says how many seconds to wait. The usual numbers suit one blog on a small server. To change them, add a `[limits]` table to `site.toml` and restart the server:

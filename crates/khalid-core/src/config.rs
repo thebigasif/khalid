@@ -11,10 +11,10 @@ use crate::mail_settings::MailTable;
 use crate::search_console_settings::SearchConsoleTable;
 use crate::toml_location::{field_of, line_of, line_of_key, line_of_key_in};
 use crate::{
-    AbsoluteUrl, AdminFolder, AiPageSettings, AiSettings, AlertSettings, Announcement, Environment,
-    LimitSettings, Locale, LogSettings, MailSettings, MediaSettings, NavSettings, ParseUrlError,
-    PrivacySettings, Reader, ReaderSwitch, SearchConsoleSettings, SeoSettings, SiteCode,
-    TemplateChoice, VisitorLogSettings,
+    AbsoluteUrl, AdminFolder, AiPageSettings, AiSettings, AlertSettings, Announcement,
+    CommentSettings, Environment, LimitSettings, Locale, LogSettings, MailSettings, MediaSettings,
+    NavSettings, ParseUrlError, PrivacySettings, Reader, ReaderSwitch, SearchConsoleSettings,
+    SeoSettings, SiteCode, SlugMode, TemplateChoice, VisitorLogSettings,
 };
 
 /// Every setting Khalid reads, checked once at start and then passed by
@@ -47,6 +47,7 @@ pub struct Config {
     search_console: Option<SearchConsoleSettings>,
     visitor_log: VisitorLogSettings,
     limits: LimitSettings,
+    comments: CommentSettings,
     log: LogSettings,
     preview_link_lifetime: Duration,
     trash_days: Option<u16>,
@@ -77,17 +78,6 @@ impl Mode {
             Self::Headless => false,
         }
     }
-}
-
-/// How slugs are written (`docs/decisions/2026-10-26-cto-answers.md`, section 2).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum SlugMode {
-    /// Lowercase a to z, digits and hyphens, transliterated by language.
-    #[default]
-    Ascii,
-    /// Letters from any script, for languages where ASCII is unreadable.
-    Unicode,
 }
 
 /// `site.toml` as written, before the checks that span several fields.
@@ -129,6 +119,8 @@ struct SiteFile {
     visitor_log: VisitorLogSettings,
     #[serde(default)]
     limits: LimitSettings,
+    #[serde(default)]
+    comments: CommentSettings,
     #[serde(default)]
     log: LogSettings,
     #[serde(default)]
@@ -370,6 +362,7 @@ impl Config {
             search_console,
             visitor_log: file.visitor_log,
             limits: file.limits,
+            comments: file.comments,
             log: file.log,
             preview_link_lifetime,
             trash_days: (file.trash_days > 0).then_some(file.trash_days),
@@ -434,6 +427,12 @@ impl Config {
     /// off unless the site switches it on.
     pub fn visitor_log(&self) -> &VisitorLogSettings {
         &self.visitor_log
+    }
+
+    /// Whether readers may comment on posts that do not say otherwise,
+    /// from `[comments]`; open unless the site says closed or off.
+    pub fn comments(&self) -> CommentSettings {
+        self.comments
     }
 
     /// How many requests the APIs and the search page take a minute,
