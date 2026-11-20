@@ -93,3 +93,35 @@ fn a_score_on_a_page_with_no_author_is_the_publishers() {
         assert!(id.ends_with("#organization"), "{graph:#}");
     }
 }
+
+#[test]
+fn a_pages_robots_canonical_cards_and_image_reach_its_head() {
+    let text = "---\ntitle: Tools\nrobots: noindex\ncanonical: https://serpdad.com/tools/\n\
+                image:\n  src: desk.jpg\n  alt: A desk\n\
+                share_cards:\n  facebook:\n    title: Our tools\n---\n\nThe tools.\n";
+    let (_dir, config, content) = site_with_page(text);
+    let locale = config.default_language().clone();
+    let pages = plain_pages(&config, &Wikilinks::new(), &content, &locale).unwrap();
+    let page = &pages[0];
+    let site = build_seo::site(&config).unwrap();
+    let html = khalid_seo::head_tags(&site, &page.seo).unwrap().to_html();
+    for want in [
+        r#"<meta name="robots" content="noindex, follow">"#,
+        r#"<link rel="canonical" href="https://serpdad.com/tools/">"#,
+        r#"<meta property="og:title" content="Our tools">"#,
+    ] {
+        assert!(html.contains(want), "{want} missing from {html}");
+    }
+    let lead = page.lead.as_ref().map(|image| image.src.as_str());
+    assert_eq!(lead, Some("desk.jpg"));
+}
+
+#[test]
+fn a_plain_page_keeps_the_sites_defaults() {
+    let (_dir, config, content) = site_with_page("---\ntitle: Tools\n---\n\nThe tools.\n");
+    let locale = config.default_language().clone();
+    let pages = plain_pages(&config, &Wikilinks::new(), &content, &locale).unwrap();
+    let page = &pages[0];
+    assert_eq!((&page.seo.robots, &page.seo.canonical), (&None, &None));
+    assert_eq!(page.seo.cards, khalid_seo::CardOverrides::default());
+}

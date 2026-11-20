@@ -214,7 +214,7 @@ fn serve_with(
         .map_err(|message| (message, Exit::Failure))?;
     let security = security_headers(config, listen)?;
     let search = search_route::Search::of(&source, (database, id), &security);
-    let ((posted, forms), alerting) = mail_and_alerts(
+    let ((posted, (forms, digests)), alerting) = mail_and_alerts(
         (site, config, listen, every),
         (&search, runtime, &telling),
         &content,
@@ -243,7 +243,7 @@ fn serve_with(
         posts.follow(source.live_config());
         let reloads = Reloads::new(site, (redirects.clone(), library, rereading));
         let nightly = NightlyAudit::new(site, (config, routes), audit_events::to(&telling));
-        let timed = (alerting, keys.weekly, forms, nightly);
+        let timed = (alerting, keys.weekly, forms, nightly, digests);
         let scheduling = scheduler::start((&door, &posts, every.clock), timed, reloads);
         let pruning = Pruning::start((database, id), every.clock);
         let previews = preview::router(Arc::clone(&door), source.clone(), config, security.clone());

@@ -49,6 +49,7 @@ pub(crate) fn add_page(
             PageKind::Website,
         )?;
         let body = PageBody::Page(RenderPage {
+            image: None,
             title: made.title,
             updated: None,
             body: BodyHtml::from_sanitised(made.body),
