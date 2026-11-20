@@ -19,7 +19,7 @@ use crate::admin_subscribers::{Subscribers, no_store, problem};
 use crate::keys::{Principal, Scope};
 use crate::problem::{Problem, ProblemType};
 use crate::resources::SubscriberImport;
-use crate::subscriber_desk::SubscriberError;
+use crate::subscriber_desk::{ImportMode, SubscriberError};
 
 /// The import and export routes, for the subscriber router to guard.
 pub(crate) fn routes() -> OpenApiRouter<Subscribers> {
@@ -42,11 +42,16 @@ pub(crate) struct ImportQuery {
     /// `weekly`. Left out, they join main.
     #[param(value_type = Option<String>)]
     list: Option<Slug>,
+    /// True to count what the import would do and keep nothing, such as
+    /// to show the number of readers before staff say yes.
+    #[serde(default)]
+    check: bool,
 }
 
 /// Brings in a list of readers from Khalid, Substack or Ghost. Each keeps
 /// the status the file gave them, and no email goes out. An address the
-/// site has is left as it is. Needs `subscribers:write`.
+/// site has is left as it is. With `check=true` it answers the same counts
+/// and keeps nothing. Needs `subscribers:write`.
 #[utoipa::path(
     post, path = "/subscribers/import/", tag = "admin subscribers",
     security(("admin_key" = [])),
@@ -74,7 +79,12 @@ async fn import_subscribers(
     require(&principal, Scope::SubscribersWrite)?;
     let Query(query) = query.map_err(|_| bad_query())?;
     let desk = subscribers.ok_or_else(no_store)?;
-    let imported = desk.import(&body, query.list.as_ref()).await;
+    let mode = if query.check {
+        ImportMode::Check
+    } else {
+        ImportMode::Save
+    };
+    let imported = desk.import(&body, query.list.as_ref(), mode).await;
     let imported = imported.map_err(|error| match error {
         SubscriberError::NotReaders(why) => not_readers(&why),
         error => problem(error, ""),
