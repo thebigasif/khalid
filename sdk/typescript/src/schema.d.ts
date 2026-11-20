@@ -289,6 +289,8 @@ export type AdminGlossary = {
 export type AdminIssues = {
   /** Up to ten problems, those that stop posts going live first. */
   issues: SiteIssue[];
+  /** Where this page sits in the list. */
+  meta: Meta;
 };
 
 /** A key that works, in Admin API shape. The secret is shown once, when the key is made, and never again. */
@@ -307,6 +309,14 @@ export type AdminKey = {
   role?: string | null;
   /** An integration key's scopes, such as `posts:write`. */
   scopes: string[];
+};
+
+/** One page of the keys that work. */
+export type AdminKeyList = {
+  /** The keys on this page, oldest first. */
+  keys: AdminKey[];
+  /** Where this page sits in the list. */
+  meta: Meta;
 };
 
 /** Keys as the Admin API wraps them. */
@@ -790,6 +800,14 @@ export type AdminWebhook = {
   secret?: string | null;
   /** Where it sends it. */
   url: string;
+};
+
+/** One page of the webhooks that are on. */
+export type AdminWebhookList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The webhooks on this page, oldest first. */
+  webhooks: AdminWebhook[];
 };
 
 /** Webhooks as the Admin API wraps them. */
@@ -2249,6 +2267,8 @@ export type PostVersion = {
 
 /** Earlier versions, wrapped the way the Admin API wraps resources. */
 export type PostVersions = {
+  /** Where this page sits in the list. */
+  meta: Meta;
   /** The newest first. */
   versions: PostVersion[];
 };
@@ -2922,6 +2942,8 @@ export type TermEdits = {
 
 /** The trash as the Admin API wraps it. */
 export type TrashList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
   /** The deleted posts and pages, the most recently deleted first. */
   trash: TrashedPost[];
 };
@@ -3507,15 +3529,23 @@ export interface Operations {
     };
     output: null;
   };
-  /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
+  /** Lists the keys that work, oldest first, with what each may do and never its secret: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=kind:integration`. Needs `admin:all`. */
   list_keys: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminKeys;
+    output: AdminKeyList;
   };
   /** Makes a content key or an integration key with the scopes it names. The answer shows the key this once; keep it, because only its hash is stored (RULES.md BL-SEC-3). Needs `admin:all`. */
   create_key: {
@@ -3542,9 +3572,17 @@ export interface Operations {
     };
     output: null;
   };
-  /** The live site's most common lint problems, for the dashboard's task list: each rule that fires, on how many posts, with what, why and fix and one post to open first. Those that stop posts going live come first, then those on the most posts. Every rule runs on every post, as `khalid lint` does, so the dashboard asks for it after the rest. Needs `posts:write`. */
+  /** The live site's most common lint problems, for the dashboard's task list: each rule that fires, on how many posts, with what, why and fix and one post to open first. Those that stop posts going live come first, then those on the most posts. `limit`, `page` and `filter`, such as `filter=weight:block`, narrow the list. Every rule runs on every post, as `khalid lint` does, so the dashboard asks for it after the rest. Needs `posts:write`. */
   list_issues: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
@@ -4048,12 +4086,20 @@ export interface Operations {
     };
     output: PreviewLinks;
   };
-  /** Lists the title and text each edit of the post replaced, the newest first, up to the 100 newest. An edit that changed neither keeps none. Bringing one back is an ordinary edit with its title and text, which keeps the text it replaces in turn. Needs `posts:write`. */
+  /** Lists the title and text each edit of the post replaced, the newest first, up to the 100 newest: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=saved_at:>'2026-11-01'`. An edit that changed neither keeps none. Bringing one back is an ordinary edit with its title and text, which keeps the text it replaces in turn. Needs `posts:write`. */
   list_post_versions: {
     input: {
       path: {
         /** The post's identity */
         id: string;
+      };
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
       };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
@@ -4760,9 +4806,17 @@ export interface Operations {
     };
     output: TemplateList;
   };
-  /** Lists the deleted posts and pages, the most recently deleted first. Needs `posts:write`. */
+  /** Lists the deleted posts and pages, the most recently deleted first: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=kind:page`. Needs `posts:write`. */
   list_trash: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
@@ -4808,15 +4862,23 @@ export interface Operations {
     };
     output: UptimeReport;
   };
-  /** Lists every webhook that is switched on, oldest first, without their secrets. Needs `webhooks:manage`. */
+  /** Lists the webhooks that are switched on, oldest first, without their secrets: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=event:post.published`. Needs `webhooks:manage`. */
   list_webhooks: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminWebhooks;
+    output: AdminWebhookList;
   };
   /** Adds a webhook that sends one event to one address, signed with a new secret. The answer shows the secret once; keep it, because the receiver needs it to check each delivery. Needs `webhooks:manage`. */
   add_webhook: {

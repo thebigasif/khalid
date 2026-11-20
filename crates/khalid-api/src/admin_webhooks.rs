@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::rejection::JsonRejection;
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use axum::{Extension, Json, middleware};
 use chrono::{DateTime, Utc};
@@ -19,6 +19,8 @@ use crate::admin_deliveries;
 use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::webhook_store::{StoredWebhook, WebhookStore};
 
@@ -77,13 +79,29 @@ pub(crate) struct AdminWebhooks {
     webhooks: Vec<AdminWebhook>,
 }
 
-/// Lists every webhook that is switched on, oldest first, without their
-/// secrets. Needs `webhooks:manage`.
+/// One page of the webhooks that are on.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminWebhookList {
+    /// The webhooks on this page, oldest first.
+    webhooks: Vec<AdminWebhook>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields a webhook list can be filtered on. Never the secret.
+const WEBHOOK_FIELDS: &[&str] = &["id", "event", "url", "created_at"];
+
+/// Lists the webhooks that are switched on, oldest first, without their
+/// secrets: all of them, or one page with `limit` and `page`, and only
+/// those passing `filter`, such as `filter=event:post.published`. Needs
+/// `webhooks:manage`.
 #[utoipa::path(
     get, path = "/webhooks/", tag = "admin webhooks",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every webhook that is on", body = AdminWebhooks),
+        (status = 200, description = "The webhooks that are on, or one page of them", body = AdminWebhookList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks webhooks:manage", body = Problem, content_type = "application/problem+json"),
     )
@@ -91,16 +109,21 @@ pub(crate) struct AdminWebhooks {
 async fn list_webhooks(
     State(webhooks): State<Webhooks>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminWebhooks>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminWebhookList>, Problem> {
     require(&principal, Scope::WebhooksManage)?;
-    let Some(store) = webhooks else {
-        return Ok(Json(AdminWebhooks {
-            webhooks: Vec::new(),
-        }));
+    let webhooks = match webhooks {
+        Some(store) => {
+            let stored = store.list().await.map_err(|e| Problem::internal(&e))?;
+            stored.iter().map(AdminWebhook::from).collect()
+        }
+        None => Vec::new(),
     };
-    let stored = store.list().await.map_err(|e| Problem::internal(&e))?;
-    let webhooks = stored.iter().map(AdminWebhook::from).collect();
-    Ok(Json(AdminWebhooks { webhooks }))
+    let paged = query.page(webhooks, WEBHOOK_FIELDS)?;
+    Ok(Json(AdminWebhookList {
+        webhooks: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// One new webhook.

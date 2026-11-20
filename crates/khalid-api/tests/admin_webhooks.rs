@@ -87,11 +87,19 @@ async fn the_list_shows_each_webhook_without_its_secret() {
     let (status, json) = send(&router, MANAGER, ("GET", "/webhooks/")).await;
     assert_eq!(status, StatusCode::OK, "{json}");
     assert_eq!(
-        json,
-        json!({"webhooks": [{"id": 1, "event": "comment.added",
+        json["webhooks"],
+        json!([{"id": 1, "event": "comment.added",
             "url": "https://hooks.example.com/khalid",
-            "created_at": "2026-10-27T09:00:00Z"}]})
+            "created_at": "2026-10-27T09:00:00Z"}])
     );
+    let filtered = ("GET", "/webhooks/?filter=event:post.published");
+    let (_, json) = send(&router, MANAGER, filtered).await;
+    assert_eq!(json["webhooks"], json!([]), "{json}");
+    assert_eq!(json["meta"]["pagination"]["total"], 0);
+    // A secret is never listed, so a filter cannot probe it either.
+    let probe = ("GET", "/webhooks/?filter=secret:~'6f'");
+    let (status, json) = send(&router, MANAGER, probe).await;
+    assert_eq!(status, StatusCode::BAD_REQUEST, "{json}");
 }
 
 #[tokio::test]
@@ -100,7 +108,7 @@ async fn a_webhook_switched_off_is_gone_and_a_second_try_is_a_404() {
     let (status, _) = send(&router, MANAGER, ("DELETE", "/webhooks/1/")).await;
     assert_eq!(status, StatusCode::NO_CONTENT);
     let (_, json) = send(&router, MANAGER, ("GET", "/webhooks/")).await;
-    assert_eq!(json, json!({"webhooks": []}));
+    assert_eq!(json["webhooks"], json!([]));
     for path in ["/webhooks/1/", "/webhooks/first/"] {
         let (status, json) = send(&router, MANAGER, ("DELETE", path)).await;
         assert_eq!(status, StatusCode::NOT_FOUND, "{path}: {json}");
