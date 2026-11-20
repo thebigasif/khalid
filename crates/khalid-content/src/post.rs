@@ -4,8 +4,8 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_core::{
-    AbsoluteUrl, ArticleSchemaType, HeadCode, PageSchemaType, PasswordHash, PostAccess,
-    RobotsDirectives, Slug, TemplateName,
+    AbsoluteUrl, ArticleSchemaType, CommentState, HeadCode, PageSchemaType, PasswordHash,
+    PostAccess, RobotsDirectives, Slug, TemplateName,
 };
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Deserializer};
@@ -131,6 +131,10 @@ pub struct PostFront {
     /// else sees the title, the description and a note.
     #[serde(default)]
     pub access: PostAccess,
+    /// Whether readers may comment on this post: `open`, `closed`, which
+    /// keeps the approved comments and takes no new ones, or `off`. Left
+    /// out, the post follows the site's `[comments]` state.
+    pub comments: Option<CommentState>,
     /// A theme template to show the post with, such as `wide` for
     /// `theme/templates/post-wide.html`, in place of `post.html`.
     pub template: Option<TemplateName>,

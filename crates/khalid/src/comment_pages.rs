@@ -4,7 +4,7 @@
 //! the site's webhooks.
 
 use std::collections::BTreeMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::{Arc, PoisonError, RwLock};
 
 use axum::Router;
@@ -16,7 +16,8 @@ use khalid_comments::{
     Comments, FormRoute, PostFile, PostPage, PostPages, RateLimits, RefusalPages, Thread,
     api_shape, form_router, threads,
 };
-use khalid_core::{Config, Mode, SystemClock};
+use khalid_content::SiteContent;
+use khalid_core::{CommentState, Config, Mode, SystemClock};
 use khalid_db::{CommentTable, Database, SiteId};
 use khalid_render::{CommentWriter, PageBody, RenderComment, RenderComments, RenderThread};
 use khalid_seo::SeoComment;
@@ -80,16 +81,28 @@ impl PostPages for ShownComments {
 
 /// Gives each post page in `languages` its comments and the form under it,
 /// and its schema the same comments, then notes the page as one that takes
-/// comments.
+/// comments. A post whose comments are closed, by its own `comments:` field
+/// in `content` or else the site's `[comments]`, shows them with no form
+/// and takes none; a post whose comments are off shows none.
 /// A site that takes no comments, `shown` being `None`, is left as it is.
 pub(crate) fn fill(
     config: &Config,
+    content: &SiteContent,
     shown: Option<&ShownComments>,
     languages: &mut [LanguagePages],
 ) {
     let Some(shown) = shown else {
         return;
     };
+    // Few posts say their own state, so a 10,000-post site looks each page
+    // up in a short map rather than in every post.
+    let own: BTreeMap<&Path, CommentState> = content
+        .posts
+        .iter()
+        .filter_map(|doc| Some((doc.path.as_path(), doc.front.comments?)))
+        .collect();
+    let state_of =
+        |source: &Path| CommentState::of_post(config.comments().state, own.get(source).copied());
     let action = format!("{}comments/", config.mount());
     let threads = shown
         .0
@@ -106,14 +119,23 @@ pub(crate) fn fill(
             let (PageBody::Post(post), Some(source)) = (&mut page.body, &page.source) else {
                 continue;
             };
+            let state = state_of(source);
+            if state == CommentState::Off {
+                continue;
+            }
             let file = PostFile::new(source.to_string_lossy().replace('\\', "/"));
             let on_post = threads.get(&file).map_or(&[][..], Vec::as_slice);
             post.comments = Some(RenderComments {
                 threads: on_post.iter().map(render_thread).collect(),
                 action: action.clone(),
                 page: page.meta.path.clone(),
+                open: state == CommentState::Open,
             });
             page.seo.comments = on_post.iter().map(seo_comment).collect();
+            // The form's route takes comments only for the pages noted here.
+            if state == CommentState::Closed {
+                continue;
+            }
             let language = language.site.locale.clone();
             let href = page.meta.path.clone();
             pages.insert(

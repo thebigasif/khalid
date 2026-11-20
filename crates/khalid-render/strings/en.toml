@@ -151,6 +151,7 @@ month_12 = "December"
 # The comments under a post and the form to leave one (task 5.4).
 comments = "Comments"
 comments_none = "No comments yet."
+comments_closed = "Comments are closed on this post."
 comment_leave = "Leave a comment"
 comment_reply = "Reply"
 comment_staff = "From the blog"
