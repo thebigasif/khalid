@@ -50,6 +50,93 @@ pub struct AdminSubscriber {
     pub unsubscribed_at: Option<DateTime<Utc>>,
 }
 
+/// A reader added by staff or brought in from a file. They keep the status
+/// given here, and no email goes out to them.
+///
+/// Exhaustive on purpose: the route and the importer fill it in.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct NewSubscriber {
+    /// Where their email goes.
+    #[schema(example = "lena@example.com")]
+    pub email: String,
+    /// Where they stand. A confirmed reader gets the next newsletter.
+    pub status: SubscriberStatus,
+    /// When they first signed up, if known; now when left out.
+    #[serde(default)]
+    pub created_at: Option<DateTime<Utc>>,
+    /// The newsletters they get. Left out, they get main.
+    #[serde(default)]
+    #[schema(value_type = Vec<String>, example = json!(["main"]))]
+    pub lists: Vec<Slug>,
+    /// Their labels, such as `paid`.
+    #[serde(default)]
+    #[schema(value_type = Vec<String>, example = json!(["paid"]))]
+    pub labels: Vec<Slug>,
+}
+
+/// Which system wrote a file of readers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
+#[serde(rename_all = "lowercase")]
+pub enum ReaderFile {
+    /// Khalid's own export.
+    Khalid,
+    /// Substack's `email_list` file.
+    Substack,
+    /// Ghost's members export.
+    Ghost,
+}
+
+/// What an import of readers did.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+#[non_exhaustive]
+pub struct SubscriberImport {
+    /// Which system wrote the file.
+    pub source: ReaderFile,
+    /// The readers added, each with the status the file gave them.
+    pub added: u64,
+    /// The readers left as they were, because the site already had their
+    /// address.
+    pub already: u64,
+    /// Each row left out, with why.
+    pub skipped: Vec<SkippedReader>,
+}
+
+impl SubscriberImport {
+    /// `added` and `already` readers from a `source` file, and the rows
+    /// `skipped`.
+    pub fn new(
+        source: ReaderFile,
+        (added, already): (u64, u64),
+        skipped: Vec<SkippedReader>,
+    ) -> Self {
+        Self {
+            source,
+            added,
+            already,
+            skipped,
+        }
+    }
+}
+
+/// One row of a reader file that was left out.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+#[non_exhaustive]
+pub struct SkippedReader {
+    /// The line it starts on, from 1 for the header.
+    pub line: u64,
+    /// Why, such as `its status "gone" is not pending, confirmed or
+    /// unsubscribed`. It never repeats the address.
+    pub why: String,
+}
+
+impl SkippedReader {
+    /// The row on `line`, left out for `why`.
+    pub fn new(line: u64, why: String) -> Self {
+        Self { line, why }
+    }
+}
+
 /// Which subscribers a list asks for. Every part left out matches everyone.
 ///
 /// Exhaustive on purpose: the route fills it in and the database reads it.

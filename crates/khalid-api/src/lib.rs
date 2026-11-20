@@ -40,6 +40,7 @@ mod admin_schema_templates;
 mod admin_serpdad;
 mod admin_site_settings;
 mod admin_snippets;
+mod admin_subscriber_csv;
 mod admin_subscribers;
 mod admin_tags;
 mod admin_templates;

@@ -2,7 +2,7 @@
 //! and comes back (KH-GRO-6).
 
 use chrono::{DateTime, Duration, TimeZone, Utc};
-use khalid_alerts::{Finding, Kind, MemoryRaised, Raised, fresh};
+use khalid_alerts::{Alert, Finding, Held, Kind, MemoryRaised, Raised, fresh, standing};
 
 #[cfg(test)]
 fn at() -> DateTime<Utc> {
@@ -81,4 +81,50 @@ async fn kinds_keep_their_own_keys_and_old_keys_are_dropped() {
         .await
         .unwrap();
     assert_eq!(store.raised(Kind::StalePost).await.unwrap().len(), 0);
+}
+
+#[tokio::test]
+async fn what_is_still_raised_is_listed_by_kind_with_its_lines() {
+    let store = MemoryRaised::default();
+    raised(&store, Kind::StalePost, &["en.a"]).await;
+    let later = vec![
+        finding(Kind::StalePost, "en.a"),
+        finding(Kind::StalePost, "en.b"),
+    ];
+    fresh(&store, Kind::StalePost, later, at() + Duration::hours(1))
+        .await
+        .unwrap();
+    raised(&store, Kind::Certificate, &["blog"]).await;
+    let alerts = standing(store.held().await.unwrap());
+    let kinds: Vec<Kind> = alerts.iter().map(Alert::kind).collect();
+    assert_eq!(
+        kinds,
+        [Kind::Certificate, Kind::StalePost],
+        "Kind::ALL order"
+    );
+    let stale = &alerts[1];
+    let lines: Vec<&str> = stale.findings().iter().map(|f| f.line.as_str()).collect();
+    assert_eq!(lines, ["en.b", "en.a"], "newest first");
+    assert_eq!(stale.raised_at(), at() + Duration::hours(1));
+    assert_eq!(
+        stale.what(),
+        "Some live posts have not changed for a long time."
+    );
+}
+
+#[test]
+fn a_key_kept_before_lines_were_kept_shows_its_subject() {
+    let held = vec![Held {
+        key: Kind::StalePost.key("en.old"),
+        line: String::new(),
+        raised_at: at(),
+    }];
+    let alerts = standing(held);
+    assert_eq!(alerts[0].findings()[0].line, "en.old");
+    let unknown = vec![Held {
+        key: "gone-kind:x".to_owned(),
+        line: "x".to_owned(),
+        raised_at: at(),
+    }];
+    assert_eq!(standing(unknown), [], "a kind this version does not know");
 }
