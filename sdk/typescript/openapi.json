@@ -3264,9 +3264,36 @@
         "tags": [
           "admin keys"
         ],
-        "summary": "Lists every key that works, oldest first, with what each may do and\nnever its secret. Needs `admin:all`.",
+        "summary": "Lists the keys that work, oldest first, with what each may do and\nnever its secret: all of them, or one page with `limit` and `page`, and\nonly those passing `filter`, such as `filter=kind:integration`. Needs\n`admin:all`.",
         "operationId": "list_keys",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -3279,11 +3306,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every key that works",
+            "description": "The keys that work, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminKeys"
+                  "$ref": "#/components/schemas/AdminKeyList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -3484,9 +3521,36 @@
         "tags": [
           "admin posts"
         ],
-        "summary": "The live site's most common lint problems, for the dashboard's task\nlist: each rule that fires, on how many posts, with what, why and fix\nand one post to open first. Those that stop posts going live come\nfirst, then those on the most posts. Every rule runs on every post, as\n`khalid lint` does, so the dashboard asks for it after the rest. Needs\n`posts:write`.",
+        "summary": "The live site's most common lint problems, for the dashboard's task\nlist: each rule that fires, on how many posts, with what, why and fix\nand one post to open first. Those that stop posts going live come\nfirst, then those on the most posts. `limit`, `page` and `filter`,\nsuch as `filter=weight:block`, narrow the list. Every rule runs on\nevery post, as `khalid lint` does, so the dashboard asks for it after\nthe rest. Needs `posts:write`.",
         "operationId": "list_issues",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -3504,6 +3568,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminIssues"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -6697,7 +6771,7 @@
         "tags": [
           "admin posts"
         ],
-        "summary": "Lists the title and text each edit of the post replaced, the newest\nfirst, up to the 100 newest. An edit that changed neither keeps none.\nBringing one back is an ordinary edit with its title and text, which\nkeeps the text it replaces in turn. Needs `posts:write`.",
+        "summary": "Lists the title and text each edit of the post replaced, the newest\nfirst, up to the 100 newest: all of them, or one page with `limit` and\n`page`, and only those passing `filter`, such as\n`filter=saved_at:>'2026-11-01'`. An edit that changed neither keeps\nnone. Bringing one back is an ordinary edit with its title and text,\nwhich keeps the text it replaces in turn. Needs `posts:write`.",
         "operationId": "list_post_versions",
         "parameters": [
           {
@@ -6705,6 +6779,33 @@
             "in": "path",
             "description": "The post's identity",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -6726,6 +6827,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PostVersions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -11184,9 +11295,36 @@
         "tags": [
           "admin trash"
         ],
-        "summary": "Lists the deleted posts and pages, the most recently deleted first.\nNeeds `posts:write`.",
+        "summary": "Lists the deleted posts and pages, the most recently deleted first: all\nof them, or one page with `limit` and `page`, and only those passing\n`filter`, such as `filter=kind:page`. Needs `posts:write`.",
         "operationId": "list_trash",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -11199,11 +11337,21 @@
         ],
         "responses": {
           "200": {
-            "description": "The deleted posts and pages",
+            "description": "The deleted posts and pages, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TrashList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -11478,9 +11626,36 @@
         "tags": [
           "admin webhooks"
         ],
-        "summary": "Lists every webhook that is switched on, oldest first, without their\nsecrets. Needs `webhooks:manage`.",
+        "summary": "Lists the webhooks that are switched on, oldest first, without their\nsecrets: all of them, or one page with `limit` and `page`, and only\nthose passing `filter`, such as `filter=event:post.published`. Needs\n`webhooks:manage`.",
         "operationId": "list_webhooks",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -11493,11 +11668,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every webhook that is on",
+            "description": "The webhooks that are on, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminWebhooks"
+                  "$ref": "#/components/schemas/AdminWebhookList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -15438,7 +15623,8 @@
         "type": "object",
         "description": "Issues as the Admin API wraps them.",
         "required": [
-          "issues"
+          "issues",
+          "meta"
         ],
         "properties": {
           "issues": {
@@ -15447,6 +15633,10 @@
               "$ref": "#/components/schemas/SiteIssue"
             },
             "description": "Up to ten problems, those that stop posts going live first."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
           }
         }
       },
@@ -15502,6 +15692,27 @@
             "example": [
               "posts:write"
             ]
+          }
+        }
+      },
+      "AdminKeyList": {
+        "type": "object",
+        "description": "One page of the keys that work.",
+        "required": [
+          "keys",
+          "meta"
+        ],
+        "properties": {
+          "keys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminKey"
+            },
+            "description": "The keys on this page, oldest first."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
           }
         }
       },
@@ -16917,6 +17128,27 @@
             "type": "string",
             "description": "Where it sends it.",
             "example": "https://hooks.example.com/khalid"
+          }
+        }
+      },
+      "AdminWebhookList": {
+        "type": "object",
+        "description": "One page of the webhooks that are on.",
+        "required": [
+          "webhooks",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
+          "webhooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminWebhook"
+            },
+            "description": "The webhooks on this page, oldest first."
           }
         }
       },
@@ -21428,9 +21660,14 @@
         "type": "object",
         "description": "Earlier versions, wrapped the way the Admin API wraps resources.",
         "required": [
-          "versions"
+          "versions",
+          "meta"
         ],
         "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
           "versions": {
             "type": "array",
             "items": {
@@ -23509,9 +23746,14 @@
         "type": "object",
         "description": "The trash as the Admin API wraps it.",
         "required": [
-          "trash"
+          "trash",
+          "meta"
         ],
         "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
           "trash": {
             "type": "array",
             "items": {
