@@ -94,6 +94,8 @@ fn the_report_counts_everything_in_plain_words() {
          Items with fields their files cannot hold yet: 0.\n\
          Items that could not come in: 0.\n\
          Items left behind: an uploaded file whose page leads to its post (1: 12); a nav_menu_item, which Khalid has no place for (1: 14).\n\
+         Comments coming in: 1, of which 0 wait for approval.\n\
+         Comments left behind: 0.\n\
          Redirect rules left behind: 8 /old-menu/, which answers 404 as Khalid already does; 9 /members/, which depends on the visitor (login); 10 /draft-page/, which is switched off; 11 /shop/, which is switched off; 12 /ping/, which does not redirect (nothing).\n"
     );
 }

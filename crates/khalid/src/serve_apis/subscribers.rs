@@ -9,8 +9,8 @@ use std::sync::Arc;
 use khalid_api::content_store::BoxFuture;
 use khalid_api::post_store::PostStore;
 use khalid_api::resources::{
-    AdminNewsletter, AdminSend, AdminSubscriber, NewsletterSend, PostStatus, SendReadiness,
-    SubscriberFilter, SubscriberPage, SubscriberStatus,
+    AdminNewsletter, AdminSend, AdminSubscriber, NewSubscriber, NewsletterSend, PostStatus,
+    SendReadiness, SubscriberFilter, SubscriberImport, SubscriberPage, SubscriberStatus,
 };
 use khalid_api::subscriber_desk::{LabelChange, SubscriberDesk, SubscriberError};
 use khalid_core::{Clock, Config, Slug, SystemClock};
@@ -19,6 +19,7 @@ use khalid_newsletter::{
     Lists, Mailer, Newsletter, Pages, PostalAddress, Segment, SubscriberStore,
 };
 
+use super::subscriber_files;
 use crate::site_posts::SitePosts;
 use crate::{newsletter, newsletter_files, newsletter_send};
 
@@ -139,6 +140,32 @@ impl SubscriberDesk for SiteSubscribers {
             let erased = self.table.erase(id).await.map_err(SubscriberError::store)?;
             erased.then_some(()).ok_or(SubscriberError::NotFound)
         })
+    }
+
+    fn add<'a>(
+        &'a self,
+        reader: &'a NewSubscriber,
+    ) -> BoxFuture<'a, Result<AdminSubscriber, SubscriberError>> {
+        Box::pin(async move {
+            let lists = self.lists().await?;
+            subscriber_files::add(&self.table, &lists, reader, SystemClock.now()).await
+        })
+    }
+
+    fn import<'a>(
+        &'a self,
+        csv: &'a str,
+        list: Option<&'a Slug>,
+    ) -> BoxFuture<'a, Result<SubscriberImport, SubscriberError>> {
+        Box::pin(async move {
+            let lists = self.lists().await?;
+            let at = SystemClock.now();
+            subscriber_files::import(&self.table, &lists, (csv, list), at).await
+        })
+    }
+
+    fn export(&self) -> BoxFuture<'_, Result<String, SubscriberError>> {
+        Box::pin(subscriber_files::export(&self.table))
     }
 
     fn newsletters(&self) -> BoxFuture<'_, Result<Vec<AdminNewsletter>, SubscriberError>> {

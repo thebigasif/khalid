@@ -8,15 +8,18 @@
 //! whose next try has come (G40). At start and then once an hour it deletes
 //! for good each post that has waited in the trash longer than the site's
 //! `trash_days`. Once an hour it sends the weekly Search Console email
-//! when a week has passed since the last one, and audits the site when a
+//! when a week has passed since the last one, sends each newsletter digest
+//! that is due and has new posts, and audits the site when a
 //! day has passed since the last audit, though never in the first hour, so
 //! the audit's build never slows the start. Each round also reads the
 //! stores another process, such as `khalid mcp`, wrote to.
 
+mod digest;
 mod entries;
 mod nightly_audit;
 mod weekly_email;
 
+pub(crate) use digest::Digests;
 pub(crate) use nightly_audit::{Finished, NightlyAudit};
 pub(crate) use weekly_email::WeeklyEmail;
 
@@ -44,12 +47,14 @@ const EVERY: Duration = Duration::from_secs(5);
 const HOURLY: u32 = 720;
 
 /// What the scheduler runs beside the posts: the alerts, the weekly email,
-/// the form emails to try again and the nightly audit.
+/// the form emails to try again, the nightly audit and the newsletter
+/// digests.
 pub(crate) type Timed = (
     Arc<Alerting>,
     Option<Arc<WeeklyEmail>>,
     Option<Arc<FormRetry>>,
     Option<Arc<NightlyAudit>>,
+    Option<Arc<Digests>>,
 );
 
 /// The running scheduler, stopped before the database closes.
@@ -72,13 +77,14 @@ impl Scheduling {
 /// `posts`, whose times fall due by `clock`, raising each post the linter
 /// refuses through `alerting`, trying again each form email `forms` holds
 /// whose time has come, sending the `weekly` email when the site gets one,
-/// running the `nightly` audit when the site has pages, and reading the
+/// running the `nightly` audit when the site has pages, sending the
+/// newsletter `digests` when the site can send mail, and reading the
 /// stores in `reloads` again after another process wrote to them. Must be
 /// called inside the tokio runtime. The first round runs at once, so a
 /// time that passed while the server was stopped is acted on at start.
 pub(crate) fn start(
     (door, posts, clock): (&Arc<PublishDoor>, &SitePosts, ServeClock),
-    (alerting, weekly, forms, nightly): Timed,
+    (alerting, weekly, forms, nightly, digests): Timed,
     mut reloads: Reloads,
 ) -> Scheduling {
     let (door, posts, folder) = (
@@ -136,6 +142,9 @@ pub(crate) fn start(
             // After the posts, so asking Google never holds a post back.
             if let Some(weekly) = weekly.as_ref().filter(|_| rounds.is_multiple_of(HOURLY)) {
                 weekly.round().await;
+            }
+            if let Some(digests) = digests.as_ref().filter(|_| rounds.is_multiple_of(HOURLY)) {
+                digests.round(clock.now()).await;
             }
             let after_the_first_hour = rounds > 0 && rounds.is_multiple_of(HOURLY);
             // Beside the rounds, since a build can take minutes, and never
