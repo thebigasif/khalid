@@ -120,6 +120,27 @@ fn releases_after_1_8_0_link_the_open_after_launch_checks() {
     }
 }
 
+/// On Linux the binary keeps its relocations packed, which keeps it about
+/// 1.5 MB under its size budget, and still loads at a random address
+/// (ADR "the Linux binary packs its relocations").
+#[cfg(target_os = "linux")]
+#[test]
+fn the_linux_binary_packs_its_relocations_and_stays_position_independent() {
+    let binary = fs::read(env!("CARGO_BIN_EXE_khalid")).unwrap();
+    assert!(
+        binary.windows(9).any(|window| window == b".relr.dyn"),
+        "the khalid binary has no packed relocation section: \
+         crates/khalid/build.rs should pass -z pack-relative-relocs"
+    );
+    // `e_type` at byte 16, little-endian: 3 is `ET_DYN`, a binary the
+    // loader can place at any address.
+    assert_eq!(
+        &binary[16..18],
+        &[3, 0],
+        "the khalid binary is not position-independent"
+    );
+}
+
 #[test]
 fn the_sdk_and_the_admin_carry_the_same_version() {
     assert_eq!(npm_version("sdk/typescript/package.json"), VERSION);

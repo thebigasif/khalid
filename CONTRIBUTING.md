@@ -16,6 +16,7 @@ This is also how to get Khalid before its first release. You need:
 - Rust, through [rustup](https://rustup.rs/). The repository pins the version in `rust-toolchain.toml`, and rustup fetches it on the first build.
 - A C compiler: `build-essential` on Debian or Ubuntu, the Xcode Command Line Tools on a Mac.
 - Node.js 22 with npm, for the admin.
+- On Linux, glibc 2.36 or newer (Debian 12, Ubuntu 24.04, Fedora 37, RHEL 10 and later). On an older system, use the release binary, which runs anywhere.
 
 Then, from a terminal:
 
