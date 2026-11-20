@@ -18,6 +18,7 @@ const GROUPS: { legend: keyof typeof en.settings.more.groups; keys: More[] }[] =
   { legend: "search", keys: ["canonical", "robots", "aliases"] },
   { legend: "x", keys: ["xTitle", "xDescription", "xImage"] },
   { legend: "facebook", keys: ["facebookTitle", "facebookDescription", "facebookImage"] },
+  { legend: "comments", keys: ["comments"] },
   { legend: "down", keys: ["unpublishAt"] },
 ];
 
@@ -48,7 +49,17 @@ export function MoreSettings({ settings, onSetting, onBlur }: Props) {
       return <RobotsFields key={key} value={settings.robots} onChange={change} onBlur={onBlur} />;
     }
     let control = <input {...bind} type={shape.type ?? "text"} />;
-    if (shape.rows !== undefined) {
+    if (key === "comments") {
+      control = (
+        <select {...bind}>
+          {words.comments.map((choice) => (
+            <option key={choice.value} value={choice.value}>
+              {choice.label}
+            </option>
+          ))}
+        </select>
+      );
+    } else if (shape.rows !== undefined) {
       control = <textarea {...bind} rows={shape.rows} />;
     }
     return (

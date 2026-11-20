@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comments on, closed or off · Khalid admin mockup</title>
+<style>
+/* Shared admin styles, cut to what this mockup uses, so it opens offline. */
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#fff;--surface:#f6f7f9;--text:#1f2328;--muted:#57606a;--link:#0b57d0;--border:#d0d7de;--field:#6e7781;--tint:#eef4fe;--radius:.375rem}
+html{background:var(--bg);color:var(--text);font:400 1rem/1.5 Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+body{margin:0}
+main{padding:1.5rem 1.25rem 3rem;max-width:44rem}
+h1{font-size:clamp(1.5rem,1.2rem + 1.2vw,2rem);line-height:1.2;margin:0 0 .5rem}
+h2{font-size:1.25rem;margin:2rem 0 .5rem}
+p{margin:0 0 1rem}
+.lede{color:var(--muted)}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:2rem}
+fieldset{border:0;margin:0;padding:0}
+legend{font-weight:600;margin-bottom:.5rem}
+.field{margin-bottom:1rem}
+.hint{display:block;color:var(--muted);font-size:.9375rem}
+label{font-weight:600}
+select{font:inherit;min-height:44px;padding:.4rem .6rem;border:1px solid var(--field);border-radius:var(--radius);background:var(--bg);width:100%}
+input[type=radio],input[type=checkbox]{width:1.1rem;height:1.1rem;vertical-align:-.15rem}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:.55rem 1.1rem;border-radius:var(--radius);border:1px solid var(--link);background:var(--link);color:#fff;font:inherit;font-weight:600}
+.where{color:var(--muted);font-size:.875rem;text-transform:uppercase;letter-spacing:.04em;margin:0 0 .25rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Comments on, closed or off</h1>
+<p class="lede">Two places, one rule: the blog's setting counts for every post, and a post may say otherwise.</p>
+
+<p class="where">Settings, below the home sections</p>
+<form class="card">
+  <h2>Comments</h2>
+  <p>Whether readers may comment on your posts. A post can say otherwise under More settings in the editor.</p>
+  <fieldset>
+    <legend>Comments</legend>
+    <div class="field"><label><input type="radio" name="state" checked> Open</label>
+      <span class="hint">Readers may comment. You approve each comment before it shows.</span></div>
+    <div class="field"><label><input type="radio" name="state"> Closed</label>
+      <span class="hint">The comments readers already left stay. No new ones come in.</span></div>
+    <div class="field"><label><input type="radio" name="state"> Off</label>
+      <span class="hint">No comments show and there is no comment form.</span></div>
+  </fieldset>
+  <div class="field"><label><input type="checkbox" checked> Email the owners and admins about each new comment</label></div>
+  <button class="btn" type="button">Save comment settings</button>
+</form>
+
+<p class="where">Editor, More settings, its own group</p>
+<form class="card">
+  <fieldset>
+    <legend>Comments</legend>
+    <div class="field">
+      <label for="post-comments">Comments on this post</label>
+      <span class="hint" id="post-comments-hint">Closed keeps the comments readers already left and takes no new ones. Off hides them all.</span>
+      <select id="post-comments" aria-describedby="post-comments-hint">
+        <option selected>Use the blog's setting</option>
+        <option>Open: readers may comment</option>
+        <option>Closed: keep the comments, take no new ones</option>
+        <option>Off: no comments at all</option>
+      </select>
+    </div>
+  </fieldset>
+</form>
+</main>
+</body>
+</html>

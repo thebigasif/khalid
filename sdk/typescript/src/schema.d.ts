@@ -519,6 +519,8 @@ export type AdminSettings = {
   address: string;
   /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
   code: (Record<string, unknown>)[];
+  /** Whether readers may comment, from `[comments]`, defaults filled in. */
+  comments: CommentsSetting;
   cta?: CtaSetting | null;
   /** The language a reader gets first, such as `en`. */
   default_language: string;
@@ -983,6 +985,22 @@ export type CommentStatus = "pending" | "approved" | "spam" | "trash";
 
 /** Who wrote a comment. */
 export type CommentWriter = "reader" | "staff";
+
+/** A change to `[comments]`: only the parts sent change. */
+export type CommentsChange = {
+  /** Whether owners and admins get an email about each new comment. */
+  notify?: boolean | null;
+  /** Whether readers may comment: `open`, `closed` or `off`. */
+  state?: "open" | "closed" | "off";
+};
+
+/** `[comments]`: whether readers may comment on a post that does not say otherwise, and whether owners and admins get an email about each new reader's comment. */
+export type CommentsSetting = {
+  /** Whether owners and admins get an email about each new comment. */
+  notify: boolean;
+  /** Whether readers may comment: `open`, `closed` or `off`. */
+  state: "open" | "closed" | "off";
+};
 
 /** A collection in one language, in API shape: the folder's name and the title and description its `_index.md` gives, when it has one. */
 export type ContentCollection = {
@@ -2146,6 +2164,8 @@ export type PostSettings = {
   category?: string | null;
   /** The other authors' slugs, after the author. */
   co_authors: string[];
+  /** Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state. */
+  comments?: "open" | "closed" | "off" | null;
   /** The day the post is dated, as shown to readers. */
   date?: string | null;
   excerpt?: NonBlank | null;
@@ -2482,6 +2502,7 @@ export type SettingsChange = {
   address?: string | null;
   /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. A list that differs from the saved one needs `admin:all`. */
   code?: (Record<string, unknown>)[] | null;
+  comments?: CommentsChange | null;
   cta?: CtaSetting | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
@@ -2521,6 +2542,8 @@ export type SettingsEdit = {
   category?: string | null;
   /** The other authors' slugs, all of them. */
   co_authors?: string[] | null;
+  /** Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state. */
+  comments?: "open" | "closed" | "off" | null;
   /** A new date, as `YYYY-MM-DD`, or `null` for none. */
   date?: string | null;
   /** A new excerpt, or `null` for none. */
