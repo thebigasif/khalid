@@ -13,7 +13,7 @@ use crate::folder::body::folder_body;
 use crate::folder::read::date_of;
 use crate::folder::redirect_map::{MapEntry, REDIRECTS_CSV, folder_csv, redirect_map};
 use crate::folder::{BodyError, Export, SourceFile, UnreadFile};
-use crate::front_matter::FrontMatter;
+use crate::front_matter::{FrontMatter, tag_list};
 use crate::redirects::alias;
 use crate::slug::{PostSlug, post_slug};
 use crate::write::write_files;
@@ -53,7 +53,7 @@ pub struct ImportedPost {
     pub slug_origin: SlugOrigin,
     /// Where its file went.
     pub place: Place,
-    /// What was left out, such as template tags and `tags`.
+    /// What was left out, such as template tags, and a page's `tags`.
     pub left: Vec<String>,
 }
 
@@ -258,9 +258,19 @@ fn post_file(
     };
     out.maybe("description", front.description.as_ref())
         .list("aliases", &aliases);
-    for (field, values) in [("tags", &front.tags), ("categories", &front.categories)] {
-        if !values.is_empty() {
-            left.push(field.to_owned());
+    // A folder has no list of categories to check one against, so its
+    // categories join its tags. Page front matter holds neither.
+    let tags = tag_list(front.tags.iter().chain(&front.categories).cloned());
+    match place {
+        Place::Page => {
+            for (field, values) in [("tags", &front.tags), ("categories", &front.categories)] {
+                if !values.is_empty() {
+                    left.push(field.to_owned());
+                }
+            }
+        }
+        Place::Post | Place::Draft => {
+            out.list("tags", &tags);
         }
     }
     let path = PathBuf::from(path);

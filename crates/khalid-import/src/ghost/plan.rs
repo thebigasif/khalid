@@ -59,6 +59,9 @@ pub struct ImportedPost {
     /// What it had that Khalid's front matter cannot hold yet, in a fixed
     /// order, so the report can say so.
     pub held: Vec<Held>,
+    /// The feature image its file names as its lead image, at its old
+    /// address, so `--download-images` can bring it in.
+    pub image: Option<AbsoluteUrl>,
     /// What it had that an import never carries.
     pub dropped: Vec<Dropped>,
 }
@@ -67,18 +70,18 @@ pub struct ImportedPost {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum Held {
-    /// The title for search results, when it differs from the headline.
+    /// A page's title for search results, when it differs from the
+    /// headline.
     SearchTitle(String),
-    /// The slugs of the authors after the main one.
-    MoreAuthors(Vec<String>),
-    /// The slugs of its public tags, the primary one first. Internal tags,
-    /// whose names start with `#`, are not listed.
+    /// The slugs of a page's public tags, the primary one first. Internal
+    /// tags, whose names start with `#`, are not listed.
     Tags(Vec<String>),
-    /// The image shown with it in lists and share cards.
+    /// The image shown with it in lists and share cards: a page's, or a
+    /// post's with no alt text and no title to describe it.
     FeatureImage(AbsoluteUrl),
-    /// Its own Open Graph card, for Facebook and most other sites.
+    /// A page's own Open Graph card, for Facebook and most other sites.
     OpenGraph(ShareCard),
-    /// Its own card on X, formerly Twitter.
+    /// A page's own card on X, formerly Twitter.
     Twitter(ShareCard),
     /// The time a scheduled post was due to go live; it waits in drafts.
     Scheduled(NaiveDateTime),

@@ -6,7 +6,7 @@ use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_core::{AbsoluteUrl, Config, Environment};
-use khalid_import::ghost::{Dropped, Export, Held, Plan, ShareCard, Visibility, plan, read_export};
+use khalid_import::ghost::{Dropped, Export, Held, Plan, Visibility, plan, read_export};
 use khalid_routes::Routes;
 
 /// The plan of `export` from the Ghost site at `northfield.example.com`
@@ -33,34 +33,47 @@ fn url(text: &str) -> AbsoluteUrl {
 }
 
 #[test]
-fn a_post_names_its_main_author_and_holds_what_front_matter_cannot() {
+fn a_post_writes_its_search_title_people_tags_image_and_cards() {
     let plan = planned(&fixture(), "/blog/");
-    assert!(
-        plan.files[0]
-            .text
-            .contains("date: \"2024-03-12\"\nauthor: \"mara\"\n")
-    );
+    let file = &plan.files[0].text;
+    assert!(file.contains("date: \"2024-03-12\"\nauthor: \"mara\"\n"));
     let images = "https://northfield.example.com/content/images/2024/03";
+    let fields = format!(
+        "seo_title: \"Keep a sourdough starter alive | Northfield\"\n\
+         co_authors:\n  - \"jonas\"\n\
+         tags:\n  - \"Sourdough\"\n  - \"Rye\"\n\
+         image:\n  src: \"{images}/starter-jar.jpg\"\n  alt: \"How to keep a starter alive\"\n\
+         share_cards:\n  x:\n    title: \"A starter that lives\"\n  facebook:\n    title: \"Keep your starter alive\"\n    description: \"Food, warmth and time.\"\n    image: \"{images}/starter-og.jpg\"\n---\n"
+    );
+    assert!(file.contains(&fields), "{file}");
+    let post = khalid_content::parse_post(Path::new("post.md"), file).unwrap();
+    assert_eq!(post.front.tags, ["Sourdough", "Rye"]);
+    assert_eq!(post.front.co_authors.len(), 1);
+    assert!(post.front.image.is_some() && post.front.share_cards.x.is_some());
+    assert_eq!(plan.posts[0].held, []);
+    let jar = url(&format!("{images}/starter-jar.jpg"));
+    assert_eq!(plan.posts[0].image, Some(jar));
+    assert_eq!(plan.posts[0].dropped, [Dropped::CodeInjection]);
+}
+
+#[test]
+fn the_feature_image_keeps_its_own_alt_text_and_a_page_holds_its_fields() {
+    let text = r#"{"db":[{"data":{"posts":[{"id":"p1","title":"Rye","slug":"rye","status":"published","published_at":"2024-01-02T08:00:00.000Z","feature_image":"__GHOST_URL__/rye.jpg"},{"id":"p2","title":"About","slug":"about","type":"page","status":"published","feature_image":"__GHOST_URL__/us.jpg","meta_title":"About the bakery"}],"posts_meta":[{"post_id":"p1","feature_image_alt":"A dark rye loaf"}]}}]}"#;
+    let plan = planned(&read_export(text).unwrap(), "/blog/");
+    let file = &plan.files[0].text;
+    assert!(
+        file.contains("image:\n  src: \"https://northfield.example.com/rye.jpg\"\n  alt: \"A dark rye loaf\"\n"),
+        "{file}"
+    );
+    assert!(!plan.files[1].text.contains("image:"));
     assert_eq!(
-        plan.posts[0].held,
+        plan.posts[1].held,
         [
-            Held::SearchTitle("Keep a sourdough starter alive | Northfield".to_owned()),
-            Held::MoreAuthors(vec!["jonas".to_owned()]),
-            Held::Tags(vec!["sourdough".to_owned(), "rye".to_owned()]),
-            Held::FeatureImage(url(&format!("{images}/starter-jar.jpg"))),
-            Held::OpenGraph(ShareCard {
-                title: Some("Keep your starter alive".to_owned()),
-                description: Some("Food, warmth and time.".to_owned()),
-                image: Some(url(&format!("{images}/starter-og.jpg"))),
-            }),
-            Held::Twitter(ShareCard {
-                title: Some("A starter that lives".to_owned()),
-                description: None,
-                image: None,
-            }),
+            Held::SearchTitle("About the bakery".to_owned()),
+            Held::FeatureImage(url("https://northfield.example.com/us.jpg")),
         ]
     );
-    assert_eq!(plan.posts[0].dropped, [Dropped::CodeInjection]);
+    assert_eq!(plan.posts[1].image, None);
 }
 
 #[test]

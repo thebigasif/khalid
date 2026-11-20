@@ -2,8 +2,8 @@
 //! or page shows, and its feature image, from the old site into the
 //! entry's own folder, through the one outbound client (RULES.md
 //! BL-RUN-8), so a blog keeps its pictures when the old site goes away.
-//! The entry becomes `<name>/index.md`, its links name the files beside
-//! it, and its feature image becomes its lead image.
+//! The entry becomes `<name>/index.md`, and its links and its lead image
+//! name the files beside it.
 
 use std::collections::BTreeMap;
 use std::ffi::OsStr;
@@ -24,9 +24,6 @@ pub(crate) struct Images {
     pub(crate) fetched: usize,
     /// Each image left at its old address, with why, in the order found.
     pub(crate) kept: Vec<(String, String)>,
-    /// The files of the entries whose feature image became their lead
-    /// image, as the plan named them.
-    pub(crate) leads: Vec<PathBuf>,
     /// Each entry that moved into its own folder: the file the plan named,
     /// and the `index.md` it became.
     pub(crate) moved: BTreeMap<PathBuf, PathBuf>,
@@ -34,23 +31,21 @@ pub(crate) struct Images {
     files: Vec<(PathBuf, Vec<u8>)>,
 }
 
-/// The images one entry shows: its file in the plan, its feature image,
+/// The images one entry shows: its file in the plan, and its lead image
 /// and the old addresses in its body, each once.
 struct Shown {
     file: usize,
-    lead: Option<String>,
     addresses: Vec<String>,
 }
 
-/// Each entry in `files` that shows an image, with `leads`, the feature
+/// Each entry in `files` that shows an image, with `leads`, the lead
 /// images by the entry's file. Drafts are one file each, so they are
 /// listed in `kept` instead.
 fn shown(files: &[PlannedFile], leads: &BTreeMap<PathBuf, String>, kept: &mut Kept) -> Vec<Shown> {
     let mut shown = Vec::new();
     for (file, planned) in files.iter().enumerate() {
-        let lead = leads.get(&planned.path).cloned();
         let mut addresses = addresses(&planned.text);
-        if let Some(lead) = &lead {
+        if let Some(lead) = leads.get(&planned.path) {
             addresses.retain(|address| address != lead);
             addresses.insert(0, lead.clone());
         }
@@ -58,11 +53,7 @@ fn shown(files: &[PlannedFile], leads: &BTreeMap<PathBuf, String>, kept: &mut Ke
             continue;
         }
         if is_entry(&planned.path) {
-            shown.push(Shown {
-                file,
-                lead,
-                addresses,
-            });
+            shown.push(Shown { file, addresses });
         } else {
             for address in addresses {
                 let why = "it is in a draft, which is one file, so publish it and import again";
@@ -155,10 +146,6 @@ pub(crate) fn bring_in(
         for (address, (bytes, kind)) in got {
             let name = unique(&file_name(address, kind), &names);
             planned.text = relinked(&planned.text, address, &name);
-            if entry.lead.as_ref() == Some(address) && !planned.text.contains("\nimage:") {
-                planned.text = with_lead(&planned.text, &name);
-                images.leads.push(planned.path.clone());
-            }
             let mut path = folder.clone();
             path.push(&name);
             images.files.push((path, bytes.clone()));
@@ -294,28 +281,16 @@ fn unique(name: &str, taken: &[String]) -> String {
     candidate
 }
 
-/// `markdown` with each image link and figure that names `address` naming
-/// the file `name` instead.
-fn relinked(markdown: &str, address: &str, name: &str) -> String {
-    markdown
-        .replace(&format!("]({address})"), &format!("]({name})"))
+/// `file` with each image link and figure that names `address`, and the
+/// lead image in its front matter, naming the file `name` instead.
+fn relinked(file: &str, address: &str, name: &str) -> String {
+    file.replace(&format!("]({address})"), &format!("]({name})"))
         .replace(&format!("]({address} "), &format!("]({name} "))
         .replace(&format!("src=\"{address}\""), &format!("src=\"{name}\""))
-}
-
-/// `file` with `image` set to the file `name`, described by the entry's
-/// title, at the end of its front matter.
-fn with_lead(file: &str, name: &str) -> String {
-    let Some((front, body)) = file
-        .strip_prefix("---\n")
-        .and_then(|rest| rest.split_once("\n---\n"))
-    else {
-        return file.to_owned();
-    };
-    let Some(title) = front.lines().find_map(|line| line.strip_prefix("title: ")) else {
-        return file.to_owned();
-    };
-    format!("---\n{front}\nimage:\n  src: \"{name}\"\n  alt: {title}\n---\n{body}")
+        .replace(
+            &format!("\n  src: \"{address}\"\n"),
+            &format!("\n  src: \"{name}\"\n"),
+        )
 }
 
 #[cfg(test)]
@@ -361,11 +336,11 @@ mod tests {
     }
 
     #[test]
-    fn the_lead_goes_at_the_end_of_the_front_matter() {
-        let file = "---\ntitle: \"Rye\"\nslug: \"rye\"\n---\nBody\n";
+    fn the_lead_image_names_the_file_beside_the_post() {
+        let file = "---\ntitle: \"Rye\"\nimage:\n  src: \"https://x.example/rye.jpg\"\n  alt: \"Rye\"\n---\nBody\n";
         assert_eq!(
-            with_lead(file, "rye.png"),
-            "---\ntitle: \"Rye\"\nslug: \"rye\"\nimage:\n  src: \"rye.png\"\n  alt: \"Rye\"\n---\nBody\n"
+            relinked(file, "https://x.example/rye.jpg", "rye.png"),
+            "---\ntitle: \"Rye\"\nimage:\n  src: \"rye.png\"\n  alt: \"Rye\"\n---\nBody\n"
         );
     }
 }

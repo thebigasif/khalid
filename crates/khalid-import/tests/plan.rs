@@ -45,6 +45,8 @@ fn a_published_post_becomes_a_dated_file_with_its_front_matter() {
          category: \"sourdough\"\n\
          description: \"A starter needs food, warmth and time.\"\n\
          featured: true\n\
+         tags:\n  - \"Rye\"\n\
+         image:\n  src: \"https://northfield.example.com/wp-content/uploads/2024/03/starter-jar.jpg\"\n  alt: \"A bubbling starter in a glass jar\"\n\
          ---\n\
          \n\
          Feed it **every day**.\n"
@@ -52,20 +54,31 @@ fn a_published_post_becomes_a_dated_file_with_its_front_matter() {
 }
 
 #[test]
-fn the_post_keeps_its_slug_and_lists_what_front_matter_cannot_hold() {
+fn the_post_keeps_its_slug_and_holds_nothing_back() {
     let plan = plan(&basic(), None, &site(), &Routes::default());
     let post = &plan.items[0];
     assert_eq!((post.id, post.slug.as_str()), (10, "keep-a-starter-alive"));
     assert_eq!(post.slug_origin, SlugOrigin::Kept);
     let image = "https://northfield.example.com/wp-content/uploads/2024/03/starter-jar.jpg";
-    assert_eq!(
-        post.held,
-        [
-            Held::Tags(vec!["rye".to_owned()]),
-            Held::FeatureImage(AbsoluteUrl::parse(image).unwrap()),
-        ]
-    );
+    assert_eq!(post.held, []);
+    assert_eq!(post.image, Some(AbsoluteUrl::parse(image).unwrap()));
     assert!(plan.failed.is_empty(), "{:?}", plan.failed);
+}
+
+#[test]
+fn a_feature_image_with_no_alt_text_is_described_by_the_title() {
+    let text = fs::read_to_string(format!(
+        "{}/fixtures/wordpress/basic.xml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("A bubbling starter in a glass jar", " ");
+    let plan = plan(&read_wxr(&text).unwrap(), None, &site(), &Routes::default());
+    let file = &plan.files[0].text;
+    assert!(
+        file.contains("\n  alt: \"How to keep a starter alive\"\n"),
+        "{file}"
+    );
 }
 
 #[test]
@@ -88,10 +101,14 @@ fn search_titles_and_odd_text_are_carried() {
         "{}",
         plan.files[0].text
     );
-    assert_eq!(
-        plan.items[0].held[0],
-        Held::SearchTitle("Starters & you".to_owned())
+    assert!(
+        plan.files[0]
+            .text
+            .contains("seo_title: \"Starters & you\"\n"),
+        "{}",
+        plan.files[0].text
     );
+    assert_eq!(plan.items[0].held, []);
 }
 
 #[test]

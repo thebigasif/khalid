@@ -201,7 +201,6 @@ fn comments(f: &mut fmt::Formatter<'_>, plan: &Plan) -> fmt::Result {
 fn field(held: &Held) -> &'static str {
     match held {
         Held::SearchTitle(_) => "search title",
-        Held::Tags(_) => "tags",
         Held::FocusKeywords(_) => "focus keywords",
         Held::FeatureImage(_) => "feature image",
         Held::MoreCategories(_) => "more categories",

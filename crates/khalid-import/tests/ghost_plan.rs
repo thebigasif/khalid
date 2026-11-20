@@ -41,6 +41,11 @@ fn a_published_post_becomes_a_dated_file_that_reads_back() {
          author: \"mara\"\n\
          description: \"How to feed a sourdough starter so it stays strong.\"\n\
          featured: true\n\
+         seo_title: \"Keep a sourdough starter alive | Northfield\"\n\
+         co_authors:\n  - \"jonas\"\n\
+         tags:\n  - \"Sourdough\"\n  - \"Rye\"\n\
+         image:\n  src: \"https://northfield.example.com/content/images/2024/03/starter-jar.jpg\"\n  alt: \"How to keep a starter alive\"\n\
+         share_cards:\n  x:\n    title: \"A starter that lives\"\n  facebook:\n    title: \"Keep your starter alive\"\n    description: \"Food, warmth and time.\"\n    image: \"https://northfield.example.com/content/images/2024/03/starter-og.jpg\"\n\
          ---\n\
          \n\
          **Feed it every day.**\n"
