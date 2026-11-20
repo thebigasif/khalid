@@ -12,6 +12,13 @@ type Props = {
   words?: number | null;
 };
 
+/** The words on a finding's tag: whether it stops publishing, warns or is a tip. */
+const TAGS: Record<Finding["severity"], string> = {
+  block: en.editor.blockTag,
+  warn: en.editor.warnTag,
+  info: en.editor.tipTag,
+};
+
 /** The light a score shows: green from 80, amber from 50, red below. */
 export function lightOf(value: number): keyof typeof seoEditorWords.state {
   if (value >= 80) {
@@ -54,20 +61,27 @@ export function LintPanel({ findings, score, scores = null, words = null }: Prop
       )}
       {findings.length === 0 ? <p className="hint">{en.editor.noChecks}</p> : null}
       {findings.map((finding) => {
-        const block = finding.severity === "block";
+        const tag = TAGS[finding.severity];
         return (
           <section
             key={`${finding.rule} ${finding.subject ?? ""} ${finding.what}`}
-            className={block ? "check block" : "check warn"}
-            aria-label={block ? en.editor.blockTag : en.editor.warnTag}
+            className={`check ${finding.severity}`}
+            aria-label={tag}
           >
-            <p className="tag">{block ? en.editor.blockTag : en.editor.warnTag}</p>
+            <p className="tag">{tag}</p>
             <p>
               <strong>{finding.what}</strong>
               {finding.subject === null ? null : ` ${en.editor.here} "${finding.subject}".`}
             </p>
             <p>{finding.why}</p>
             <p>{finding.fix}</p>
+            {finding.guide_url === undefined ? null : (
+              <p>
+                <a href={finding.guide_url} target="_blank" rel="noopener">
+                  {en.editor.guide}
+                </a>
+              </p>
+            )}
           </section>
         );
       })}

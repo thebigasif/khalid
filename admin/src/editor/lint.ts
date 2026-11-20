@@ -7,12 +7,18 @@ import type { Problem } from "../api/posts";
  */
 export type Finding = {
   rule: string;
-  severity: "block" | "warn";
+  severity: Severity;
   subject: string | null;
   what: string;
   why: string;
   fix: string;
+  /** The address of the guide that explains the rule; an older blog sends none. */
+  guide_url?: string;
 };
+
+/** How much a finding matters, heaviest first; `info` is a tip that costs no points. */
+const SEVERITIES = ["block", "warn", "info"] as const;
+type Severity = (typeof SEVERITIES)[number];
 
 function isFinding(value: unknown): value is Finding {
   if (typeof value !== "object" || value === null) {
@@ -23,25 +29,26 @@ function isFinding(value: unknown): value is Finding {
   );
   const severity = "severity" in value ? value.severity : undefined;
   const subject = "subject" in value ? value.subject : null;
+  const guide = "guide_url" in value ? value.guide_url : undefined;
   return (
     texts &&
-    (severity === "block" || severity === "warn") &&
-    (subject === null || typeof subject === "string")
+    SEVERITIES.some((known) => known === severity) &&
+    (subject === null || typeof subject === "string") &&
+    (guide === undefined || typeof guide === "string")
   );
 }
 
 /** A lint report as the API sends it: a plain object, read field by field. */
 export type Lint = Record<string, unknown> | null | undefined;
 
-/** The findings in a lint report, blocks first. */
+/** The findings in a lint report: blocks first, then warnings, then tips. */
 export function findingsOf(lint: Lint): Finding[] {
   if (lint === null || lint === undefined || !Array.isArray(lint.findings)) {
     return [];
   }
-  const findings: unknown[] = lint.findings;
-  const blocks = findings.filter(isFinding).filter((finding) => finding.severity === "block");
-  const warnings = findings.filter(isFinding).filter((finding) => finding.severity === "warn");
-  return [...blocks, ...warnings];
+  const all: unknown[] = lint.findings;
+  const findings = all.filter(isFinding);
+  return SEVERITIES.flatMap((severity) => findings.filter((found) => found.severity === severity));
 }
 
 /** The findings behind a refused publish, blocks first; none for any other problem. */

@@ -986,6 +986,8 @@ export const en = {
     },
     blockTag: "Stops publishing",
     warnTag: "Warning, you can still publish",
+    tipTag: "Tip, it costs no points",
+    guide: "Read the guide (opens in a new tab)",
     here: "Here:",
     leave: "Some changes are not saved yet. Leaving now loses them.",
     stay: "Stay on this post",
