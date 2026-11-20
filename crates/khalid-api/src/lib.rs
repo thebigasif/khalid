@@ -7,6 +7,7 @@
 //! about content files, markdown, SQL or templates.
 
 mod admin_ai;
+mod admin_alerts;
 mod admin_analytics;
 mod admin_api;
 mod admin_api_keys;
@@ -49,6 +50,7 @@ mod admin_uptime;
 mod admin_versions;
 mod admin_webhooks;
 pub mod ai;
+pub mod alerts;
 pub mod analytics_desk;
 pub mod api;
 pub mod api_limits;
