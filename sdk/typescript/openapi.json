@@ -20808,6 +20808,14 @@
             "type": "string",
             "format": "date-time",
             "description": "The `updated_at` of the copy the edit was made on."
+          },
+          "updated_note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Rewrites the note of the post's last real update, such as to fix a\ntypo, and leaves its date alone. Only for a post with an updated\ndate; `real_update` wins when both are sent.",
+            "example": "Refreshed the 2026 numbers."
           }
         },
         "additionalProperties": false

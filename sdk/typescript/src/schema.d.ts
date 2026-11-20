@@ -2096,6 +2096,8 @@ export type PostEdit = {
   unpublish_at?: string | null;
   /** The `updated_at` of the copy the edit was made on. */
   updated_at: string;
+  /** Rewrites the note of the post's last real update, such as to fix a typo, and leaves its date alone. Only for a post with an updated date; `real_update` wins when both are sent. */
+  updated_note?: string | null;
 };
 
 /** How many of the blog's other posts a post links to, and how many link to it, each counted once. */

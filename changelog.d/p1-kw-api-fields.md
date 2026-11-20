@@ -1,0 +1,2 @@
+Added
+The Admin API can now set every post field that front matter holds. A post's `settings` gain `connections` (translation key, pinned related posts, series and part, topic cluster and role, topic group, main post) and `listing` (sitemap, news sitemap, breadcrumb title, page type, article type, keyword synonyms, reviewers). An edit's `updated_note` fixes the note of a post's last real update without moving its date. The editor, the MCP server and SerpDad can now link translations and keep a post out of the sitemap without anyone editing a file.

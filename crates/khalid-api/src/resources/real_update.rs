@@ -40,9 +40,21 @@ pub enum NotRealUpdate {
     /// sees as new has changed.
     #[error("the edit leaves the post's text as it was")]
     TextUnchanged,
+    /// The edit rewrites the note of the last real update, and the post
+    /// has never had one.
+    #[error("the post has had no real update")]
+    NoUpdateYet,
 }
 
 impl NotRealUpdate {
+    /// What happened, in one plain sentence.
+    pub fn what(self) -> &'static str {
+        match self {
+            Self::NoUpdateYet => "This post has no update note to change.",
+            Self::NotLive | Self::TextUnchanged => "This edit cannot be marked as a real update.",
+        }
+    }
+
     /// Why it matters, in one plain sentence for the person who sent it.
     pub fn why(self) -> &'static str {
         match self {
@@ -51,6 +63,9 @@ impl NotRealUpdate {
             }
             Self::TextUnchanged => {
                 "A real update changes what the post says, and this edit leaves its text as it was."
+            }
+            Self::NoUpdateYet => {
+                "A note says what changed on the updated date, and this post has no updated date yet."
             }
         }
     }
@@ -62,6 +77,9 @@ impl NotRealUpdate {
             Self::TextUnchanged => {
                 "Change the post's text in the same edit, or leave real_update out."
             }
+            Self::NoUpdateYet => {
+                "Send real_update with the note when the text changes, or leave updated_note out."
+            }
         }
     }
 }
@@ -70,7 +88,7 @@ impl NotRealUpdate {
 /// [`MAX_UPDATE_NOTE`] characters.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(try_from = "String")]
-struct UpdateNote(String);
+pub(super) struct UpdateNote(String);
 
 impl TryFrom<String> for UpdateNote {
     type Error = &'static str;
@@ -78,11 +96,18 @@ impl TryFrom<String> for UpdateNote {
     fn try_from(text: String) -> Result<Self, Self::Error> {
         let note = text.trim();
         if note.is_empty() {
-            return Err("real_update needs a note saying what changed");
+            return Err("the update needs a note saying what changed");
         }
         if note.chars().count() > MAX_UPDATE_NOTE {
-            return Err("real_update's note must be one short sentence of at most 160 characters");
+            return Err("the update's note must be one short sentence of at most 160 characters");
         }
         Ok(Self(note.to_owned()))
+    }
+}
+
+impl UpdateNote {
+    /// The note's text.
+    pub(super) fn as_str(&self) -> &str {
+        &self.0
     }
 }

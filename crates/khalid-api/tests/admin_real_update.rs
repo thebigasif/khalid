@@ -47,8 +47,12 @@ async fn put(id: &str, edit: &Value) -> (StatusCode, Value) {
     };
     let live = post("live", "anchor-text").published(changed);
     let draft = post("draft", "anchor-text-draft");
+    let day = changed.date_naive();
+    let dated = post("dated", "anchor-text-dated")
+        .published(changed)
+        .with_real_update(Some(day), Some("Refreshed the 2025 numbers.".to_owned()));
     let now = Utc.with_ymd_and_hms(2026, 10, 31, 9, 0, 0).unwrap();
-    let posts = MemoryPostStore::new(vec![live, draft]).with_clock(FixedClock::new(now));
+    let posts = MemoryPostStore::new(vec![live, draft, dated]).with_clock(FixedClock::new(now));
     let (router, _) = api::router(Arc::new(common::store()), Arc::new(posts), Arc::new(keys));
     let body = json!({"posts": [edit]});
     let request = Request::put(format!("/api/admin/v1/posts/{id}/"))
@@ -159,4 +163,31 @@ async fn a_real_update_needs_a_note_of_one_short_sentence() {
             "{note}"
         );
     }
+}
+
+#[tokio::test]
+async fn an_updated_note_is_rewritten_and_the_date_stays() {
+    let edit = json!({"updated_note": "Refreshed the 2026 numbers.", "updated_at": LAST_CHANGE});
+    let (status, json) = put("dated", &edit).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let post = &json["posts"][0];
+    assert_eq!(post["updated"], "2026-10-20");
+    assert_eq!(post["updated_note"], "Refreshed the 2026 numbers.");
+}
+
+#[tokio::test]
+async fn an_updated_note_on_a_post_never_updated_is_refused() {
+    let edit = json!({"updated_note": "Refreshed the 2026 numbers.", "updated_at": LAST_CHANGE});
+    let (status, json) = put("live", &edit).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{json}");
+    assert_eq!(json["rule"], "real_update");
+    let detail = json["detail"].as_str().unwrap();
+    assert!(
+        detail.starts_with("This post has no update note to change."),
+        "{detail}"
+    );
+    let long = "Rewrote it. ".repeat(30);
+    let edit = json!({"updated_note": long, "updated_at": LAST_CHANGE});
+    let (status, _) = put("dated", &edit).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
 }
