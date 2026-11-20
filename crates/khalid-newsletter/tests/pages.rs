@@ -3,7 +3,7 @@
 //! word from the site's language (task 5.5, FRONTEND.md).
 
 use khalid_core::{AbsoluteUrl, Locale, Slug};
-use khalid_newsletter::{NewsletterSite, Page, Pages, SiteLinks};
+use khalid_newsletter::{NewsletterSite, NewsletterWords, Page, Pages, SiteLinks};
 
 const TOKEN: &str = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
@@ -128,4 +128,29 @@ fn the_embeddable_form_posts_to_the_blog_s_full_address_with_its_list() {
     assert!(form.contains("<p hidden aria-hidden=\"true\">"), "{form}");
     assert!(!form.contains("<script"), "{form}");
     assert!(form.ends_with("<p><button type=\"submit\">Sign up</button></p>\n</form>\n"));
+}
+
+#[test]
+fn the_sites_own_words_change_one_page_word_and_keep_the_rest() {
+    let own: toml::Table = toml::from_str(
+        "confirm_subject = \"Confirm\"\n\n[page]\ncheck_title = \"Look in your inbox\"\n",
+    )
+    .unwrap();
+    let words = NewsletterWords::load()
+        .unwrap()
+        .with_site(&[("en".to_owned(), own)].into())
+        .unwrap();
+    let html = pages("Field Notes", "en")
+        .with_words(words)
+        .html(Page::Check);
+    assert!(html.contains("<h1>Look in your inbox</h1>"), "{html}");
+    assert!(
+        html.contains("a message with a link is on its way"),
+        "{html}"
+    );
+    let wrong: toml::Table = toml::from_str("[page]\nfooter = \"x\"\n").unwrap();
+    let refused = NewsletterWords::load()
+        .unwrap()
+        .with_site(&[("de".to_owned(), wrong)].into());
+    assert!(refused.unwrap_err().to_string().contains("de"));
 }

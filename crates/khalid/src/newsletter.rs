@@ -15,8 +15,8 @@ use khalid_core::{Config, MailTransport, Secret, SystemClock, UserMessage};
 use khalid_db::{Database, SiteId, SubscriberTable};
 use khalid_mail::{ApiMailer, Sender, Service, SmtpMailer};
 use khalid_newsletter::{
-    Mailer, Newsletter, NewsletterSite, Pages, PostalAddress, ReaderPass, SignUpCheck,
-    SignUpLimits, SiteLinks, Welcomes,
+    Mailer, Newsletter, NewsletterSite, NewsletterWords, Pages, PostalAddress, ReaderPass,
+    SignUpCheck, SignUpLimits, SiteLinks, Welcomes,
 };
 use khalid_outbound::{Outbound, Resolver};
 use tokio::runtime::Runtime;
@@ -25,7 +25,7 @@ use crate::announce::SiteAnnounce;
 use crate::newsletter_files::WelcomeFolder;
 use crate::serve_https::ServeClock;
 use crate::subscriber_events::AnnouncedSubscribers;
-use crate::{newsletter_files, serve_message};
+use crate::{newsletter_files, serve_message, site_chrome};
 
 /// The newsletter's routes for the site in `folder` with `config`, in its
 /// default language, taking sign-ups for the newsletters in
@@ -44,7 +44,9 @@ pub(crate) fn router(
     mailer: Option<Arc<dyn Mailer>>,
 ) -> Result<(Router, Option<Newsletter>), UserMessage> {
     let site = site(config);
+    let words = words(folder)?;
     let pages = Pages::new(site.clone()).map_err(|_| serve_message::internal())?;
+    let pages = pages.with_words(words.clone());
     let newsletter = match mailer {
         Some(mailer) => {
             let table = Arc::new(SubscriberTable::new(database.clone(), id));
@@ -53,7 +55,7 @@ pub(crate) fn router(
             let key = key.map_err(|_| serve_message::internal())?;
             let made = Newsletter::new(store, mailer, Arc::new(clock), site);
             let made = made.map_err(|_| serve_message::internal())?;
-            let made = made.with_pass(reader_pass(config, &key));
+            let made = made.with_words(words).with_pass(reader_pass(config, &key));
             Some(with_files(made, folder, config))
         }
         None => None,
@@ -110,6 +112,20 @@ fn with_files(newsletter: Newsletter, folder: &Path, config: &Config) -> Newslet
     }
 }
 
+/// The newsletter's words for the site in `folder`: the built-in ones with
+/// the `[newsletter]` table of its strings files laid over them.
+///
+/// # Errors
+///
+/// What, why and fix when that table holds a word no email or page shows.
+pub(crate) fn words(folder: &Path) -> Result<NewsletterWords, UserMessage> {
+    let own = site_chrome::own_words(folder, "newsletter");
+    let words = NewsletterWords::load().map_err(|_| serve_message::internal())?;
+    words
+        .with_site(&own)
+        .map_err(|error| site_chrome::own_words_message("newsletter", "khalid-newsletter", &error))
+}
+
 /// The site the emails come from, in its default language.
 pub(crate) fn site(config: &Config) -> NewsletterSite {
     NewsletterSite {
@@ -148,4 +164,41 @@ pub(crate) fn mailer(
     let api = ApiMailer::new(service, key, sender, outbound.clone())
         .map_err(|_| serve_message::internal())?;
     Ok(Some(Arc::new(api)))
+}
+
+#[cfg(test)]
+mod tests {
+    use khalid_core::Locale;
+
+    use super::*;
+
+    /// A site folder whose `theme/strings/en.toml` holds `text`.
+    fn site_with(text: &str) -> tempfile::TempDir {
+        let folder = tempfile::tempdir().unwrap();
+        let mut file = folder.path().to_path_buf();
+        file.push("theme/strings");
+        std::fs::create_dir_all(&file).unwrap();
+        file.push("en.toml");
+        std::fs::write(&file, text).unwrap();
+        folder
+    }
+
+    #[test]
+    fn the_sites_newsletter_words_reach_the_digest_and_a_bad_word_is_named() {
+        let folder = site_with("[newsletter]\ndigest_subject = \"Fresh from {site}\"\n");
+        let words = words(folder.path()).unwrap();
+        let (subject, _) = words.digest(&Locale::try_new("en").unwrap(), "Notes");
+        assert_eq!(subject, "Fresh from Notes");
+        let bad = site_with("[newsletter]\nsubject = \"x\"\n");
+        let message = words_error(bad.path());
+        assert!(message.what().contains("[newsletter]"), "{message:?}");
+        assert!(message.fix().contains("khalid-newsletter/strings/en.toml"));
+    }
+
+    fn words_error(folder: &Path) -> UserMessage {
+        match words(folder) {
+            Ok(_) => panic!("a word no email shows was taken"),
+            Err(message) => message,
+        }
+    }
 }
