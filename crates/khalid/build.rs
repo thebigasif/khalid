@@ -2,7 +2,8 @@
 //! starter posts and the staff toolbar's styles, into one text compressed
 //! with Brotli in cargo's output folder, with an index of where each file
 //! starts and ends (`assets::texts`). Kept plain, they took 15 KB of a
-//! binary with a size budget; packed they take about a third.
+//! binary with a size budget; packed they take about a third. On Linux it
+//! also asks the linker to pack the binary's relocations.
 
 use std::ffi::OsString;
 use std::fmt::Write as _;
@@ -25,6 +26,7 @@ const FILES: [&str; 10] = [
 ];
 
 fn main() -> io::Result<()> {
+    pack_relocations();
     let (mut all, mut index) = (String::new(), String::new());
     for name in FILES {
         let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -39,6 +41,21 @@ fn main() -> io::Result<()> {
     fs::write(&out, brotli(all.as_bytes())?)?;
     out.set_file_name("texts.index");
     fs::write(&out, index)
+}
+
+/// Asks the linker to store the binary's relative relocations packed
+/// (`DT_RELR`) on Linux. A position-independent binary keeps one 24-byte
+/// entry for every pointer the loader moves when it places the binary at a
+/// random address; packed, a run of them takes a few bits each. The binary
+/// still loads at a random address. Only the `khalid` binary gets it, never
+/// a test binary. Needs glibc 2.36 or musl 1.2.4 where the binary runs
+/// (docs/standards/performance.md, "Packed relocations").
+fn pack_relocations() {
+    let linux =
+        std::env::vars_os().any(|(name, value)| name == "CARGO_CFG_TARGET_OS" && value == "linux");
+    if linux {
+        println!("cargo::rustc-link-arg-bins=-Wl,-z,pack-relative-relocs");
+    }
 }
 
 /// Where cargo wants this script's output. Cargo hands it over only as an

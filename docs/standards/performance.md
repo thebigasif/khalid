@@ -180,7 +180,7 @@ Looked at and left alone:
 
 - **Duplicate crate versions.** html5ever 0.38 (through htmd) beside 0.40 (through ammonia and scraper), png 0.17 (through tiny-skia) beside 0.18, and argon2 0.5 (through webauthn-rs) beside 0.6. Each older copy comes from a crate whose newest release still needs it, so removing one means dropping a feature or downgrading a security crate such as ammonia, for at most about 200 KB.
 - **Dependency features.** The direct dependencies already turn off default features and name only what the code uses.
-- **A non-PIE binary** would drop 1.4 MB of relocations but give up address space layout randomisation for the binary. No.
+- **A non-PIE binary** would drop 1.4 MB of relocations but give up address space layout randomisation for the binary. No. Packing them keeps it, see "Packed relocations".
 
 ### Integration 29: AVIF output
 
@@ -381,6 +381,21 @@ Speed, on this server at load 2 to 5, `khalid-perf` and `khalid build` built fro
 | Full rebuild, 10,000 posts | 17.64, 17.26 s | 17.24, 17.02 s |
 
 A post renders about 0.015 ms slower, far inside the 1 ms budget, and the full rebuild, which renders every page, is no slower.
+
+### Packed relocations (2026-11-20)
+
+After PR 1251 main built 31,432,248 bytes in CI, 25,032 under the budget, and PRs 1256 and 1257 failed the size check. This makes about 1.5 MB of room without changing what the binary does (ADR "the Linux binary packs its relocations").
+
+The binary is position-independent, so it loads at a random address. The file keeps a 24-byte entry for every pointer the loader has to move, about 1.4 MB in all. `crates/khalid/build.rs` now passes `-z pack-relative-relocs` to the linker for the `khalid` binary on Linux, which stores those entries as `DT_RELR`: one address, then one bitmap word for the next 63 pointers. Each step is `cargo build --release -p khalid` on this server:
+
+| Change | Bytes | Saving |
+|---|---|---|
+| Before (main, 52d769e2a) | 31,424,728 | |
+| Relocations packed (kept) | 29,933,856 | 1,490,872 |
+
+The binary still has type `ET_DYN`, so it still loads at a random address. A full build of the 10,000-post site wrote the same files, byte for byte, and took 17.2 and 17.7 s against 19.4 and 20.0 s before, run back to back at load 5 to 6.
+
+What it needs where the binary runs: glibc 2.36 or newer, or musl 1.2.4 or newer. The linker records the glibc need as the version `GLIBC_ABI_DT_RELR`, so an older glibc refuses to start the binary with a plain message instead of starting it wrong. The release binaries and the Docker image are static musl builds; a static musl test program linked the same way ran here with its relocations applied. A build from source on an older glibc should use the release binary instead (`CONTRIBUTING.md`).
 
 ## Page weight
 
