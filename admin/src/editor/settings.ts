@@ -1,5 +1,6 @@
 import type { AdminPost, PostEdit } from "../api/posts";
 import type { components } from "../api/schema";
+import { type ReachChoice, type ReachDraft, reachDraft, reachEdit, sameReach } from "./reach";
 import { localInput } from "./schedule";
 
 /** Where a post stands in review. */
@@ -40,10 +41,10 @@ export type SettingsDraft = {
   focusKeyword: string;
   secondaryKeywords: string;
   schema: string;
-};
+} & ReachDraft;
 
 /** The settings whose field is free text. */
-export type TextSetting = Exclude<keyof SettingsDraft, "reviewState">;
+export type TextSetting = Exclude<keyof SettingsDraft, "reviewState" | ReachChoice>;
 
 const IMAGE = ["imageSrc", "imageAlt", "imageCaption"] as const;
 const CARDS = ["xTitle", "xDescription", "xImage"] as const;
@@ -81,6 +82,7 @@ export function settingsDraft(post: AdminPost): SettingsDraft {
     focusKeyword: settings.focus_keyword ?? "",
     secondaryKeywords: (settings.secondary_keywords ?? []).join("\n"),
     schema: settings.schema ?? "",
+    ...reachDraft(settings),
   };
 }
 
@@ -97,7 +99,7 @@ export function withSetting<K extends keyof SettingsDraft>(
 
 /** Whether two drafts hold the same settings. */
 export function sameSettings(a: SettingsDraft, b: SettingsDraft): boolean {
-  return KEYS.every((key) => a[key] === b[key]);
+  return KEYS.every((key) => a[key] === b[key]) && sameReach(a, b);
 }
 
 // Trimmed text, or null when nothing is left, which clears the setting.
@@ -175,7 +177,7 @@ function settingsChanged(saved: SettingsDraft, now: SettingsDraft): SettingsEdit
   if (changed("schema")) {
     settings.schema = orNull(now.schema);
   }
-  return settings;
+  return { ...settings, ...reachEdit(saved, now) };
 }
 
 /** The fields of an edit that change settings: only those that differ from `saved`. */
