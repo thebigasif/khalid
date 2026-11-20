@@ -22,8 +22,8 @@ use khalid_core::{Config, Locale, Slug, UserMessage};
 use khalid_db::IndexedTerm;
 use khalid_lint::{
     Cluster, ClusterRole, EntryKind, GlossaryTerm, Heading, HeadingLevel, Image, LinkKind,
-    LintCollection, LintEntry, LintFact, LintForm, LintLink, LintPost, LintSite, PageRef,
-    StructuredDataGap,
+    LintCollection, LintEntry, LintFact, LintForm, LintLink, LintPost, LintRedirect, LintSite,
+    PageRef, StructuredDataGap,
 };
 use khalid_render::Person;
 use khalid_routes::{PostAddress, Routes};
@@ -32,7 +32,7 @@ use khalid_seo::{LinkPolicy, SeoPage, SeoSite};
 use crate::build_pages::{path_of, routed};
 use crate::lint_text::{plain_text, prose_text, section_shapes, wikilinks};
 use crate::site_briefs::Briefs;
-use crate::{build_reader, build_schema, build_seo, site_facts};
+use crate::{build_reader, build_schema, build_seo, lint_paths, site_facts};
 
 /// What a post is linted against besides itself: the site's routes, the
 /// pages a wikilink reaches in each language, the site as the SEO outputs
@@ -50,6 +50,7 @@ pub(crate) struct LintInput {
     people: BTreeMap<Locale, BTreeMap<Slug, Person>>,
     authors: Vec<Document<AuthorFront>>,
     categories: Vec<IndexedTerm>,
+    redirects: Vec<LintRedirect>,
 }
 
 impl LintInput {
@@ -84,7 +85,14 @@ impl LintInput {
             people,
             authors: content.authors.clone(),
             categories: Vec::new(),
+            redirects: Vec::new(),
         }
+    }
+
+    /// This input with the moves stored in the site's database, so a link
+    /// to an old address is named as redirecting, not broken.
+    pub(crate) fn with_redirects(self, redirects: Vec<LintRedirect>) -> Self {
+        Self { redirects, ..self }
     }
 
     /// This input with each post's brief, read from `briefs/`.
@@ -178,6 +186,8 @@ pub(crate) fn lint_site<'c>(
     site.own_hosts = internal.iter().map(|d| d.as_str().to_owned()).collect();
     // A process serves the one site `--site` names, so it has no sister
     // sites and `sibling_hosts` stays empty.
+    site.known_paths = Some(lint_paths::known(&site, content, (config, &input.routes)));
+    site.redirects.clone_from(&input.redirects);
     (site, documents)
 }
 

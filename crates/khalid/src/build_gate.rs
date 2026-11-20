@@ -17,7 +17,7 @@ use khalid_lint::{Linter, LocationKind, PublishGate, Report, Verdict};
 use khalid_routes::Routes;
 
 use crate::lint_input::{self, LintInput};
-use crate::{categories, lint, lint_message, site_briefs};
+use crate::{categories, lint, lint_message, lint_paths, site_briefs};
 
 /// A dated post, a case study or a changelog entry the gate keeps off the
 /// site, and the report saying why.
@@ -49,7 +49,8 @@ pub(crate) fn screen(
     let linter = Linter::new(&settings, clock).map_err(|error| lint_message::of(&error))?;
     let input = LintInput::new(content, config, routes.clone())
         .with_briefs(site_briefs::load(site)?)
-        .with_categories(named);
+        .with_categories(named)
+        .with_redirects(lint_paths::stored(site)?);
     Ok(refused(&linter, content, config, &input))
 }
 

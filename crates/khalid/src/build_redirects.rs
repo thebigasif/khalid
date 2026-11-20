@@ -70,7 +70,7 @@ pub(crate) fn lines(
 
 /// The exact moves stored in `data/site.db` in `site`, or none when the
 /// site has no database; a build never makes one.
-fn stored_moves(site: &Path) -> Result<Vec<RedirectRule>, UserMessage> {
+pub(crate) fn stored_moves(site: &Path) -> Result<Vec<RedirectRule>, UserMessage> {
     if !db::data_file(site)?.exists() {
         return Ok(Vec::new());
     }
