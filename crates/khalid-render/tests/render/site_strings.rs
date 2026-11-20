@@ -4,7 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use khalid_core::Locale;
-use khalid_render::{PageBody, PageKind, RenderError, Renderer};
+use khalid_render::{LocationWords, PageBody, PageKind, RenderError, Renderer, SiteWords};
 
 use crate::common::{demo_site, meta};
 
@@ -57,6 +57,21 @@ fn the_sites_words_reach_text_outside_templates() {
     assert_eq!(renderer.text(&locale("fr-CA"), "month_1"), Some("janvier"));
     assert_eq!(renderer.text(&locale("fr"), "month_2"), Some("February"));
     assert_eq!(renderer.text(&locale("en"), "month_1"), Some("January"));
+    let words = SiteWords::of_site(site.path()).unwrap();
+    assert_eq!(words.get(&locale("fr"), "month_1"), Some("janvier"));
+    assert_eq!(
+        renderer.words().get(&locale("fr"), "month_1"),
+        Some("janvier")
+    );
+    let card = LocationWords::of_site(&words, &locale("fr"));
+    assert_eq!(
+        card.days[0], "Monday",
+        "a key the file leaves out stays English"
+    );
+    assert_eq!(
+        SiteWords::builtin().unwrap().get(&locale("fr"), "month_1"),
+        Some("January")
+    );
 }
 
 #[test]

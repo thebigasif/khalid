@@ -73,8 +73,9 @@ pub(crate) fn footer(config: &Config, links: &[MenuLink], locale: &Locale) -> Ve
 
 /// The footer link to the imprint of `locale`, since German law asks that
 /// it be one click from every page, unless the site has no imprint or the
-/// owner's footer already links to it.
-fn imprint_link(config: &Config, locale: &Locale) -> Option<NavLink> {
+/// owner's footer already links to it. Its label is the built-in word
+/// until [`imprint_page::label`] gives it the site's own.
+pub(crate) fn imprint_link(config: &Config, locale: &Locale) -> Option<NavLink> {
     config.privacy().imprint.as_ref()?;
     let href = path_of(config, locale, imprint_page::REST);
     let nav = config.nav();

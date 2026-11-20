@@ -10,7 +10,7 @@ use crate::dates;
 use crate::direction::Direction;
 use crate::heading_links;
 use crate::pack::{PackContext, RenderPack};
-use crate::strings::Strings;
+use crate::strings::SiteWords;
 use crate::templates::{self, Source};
 use crate::{
     Brand, ConsentBanner, ConsentPart, PageBody, PageMeta, PrivacyFacts, RenderError, RenderSite,
@@ -38,7 +38,7 @@ const FUEL_PER_CARD: u64 = 2_000;
 #[derive(Debug)]
 pub struct Renderer {
     env: Environment<'static>,
-    strings: Strings,
+    strings: SiteWords,
     pack: PackContext,
     brand: BrandContext,
 }
@@ -58,7 +58,7 @@ impl Renderer {
     /// Returns a [`RenderError`] if a built-in template or strings file is
     /// broken, which this crate's tests rule out.
     pub fn new() -> Result<Self, RenderError> {
-        Self::build(Vec::new(), &RenderPack::classic(), Strings::load()?)
+        Self::build(Vec::new(), &RenderPack::classic(), SiteWords::builtin()?)
     }
 
     /// A renderer where the template pack `pack` replaces the default
@@ -95,7 +95,7 @@ impl Renderer {
             });
         }
         sources.extend(templates::overrides(site_root)?);
-        Self::build(sources, pack, Strings::with_site(site_root)?)
+        Self::build(sources, pack, SiteWords::of_site(site_root)?)
     }
 
     /// A renderer where each file in `site_root/theme/templates/` replaces
@@ -114,7 +114,7 @@ impl Renderer {
     fn build(
         overrides: Vec<Source>,
         pack: &RenderPack<'_>,
-        strings: Strings,
+        strings: SiteWords,
     ) -> Result<Self, RenderError> {
         let mut env = Environment::new();
         env.set_auto_escape_callback(|_| AutoEscape::Html);
@@ -226,7 +226,7 @@ impl Renderer {
         let context = context! {
             site => Serde(site),
             meta => Serde(meta),
-            t => Serde(self.strings.for_locale(&site.locale)),
+            t => Serde(self.strings.table(&site.locale)),
             lang => site.locale.as_str(),
             dir => Serde(Direction::of(&site.locale)),
             page => body.value(),
@@ -257,7 +257,7 @@ impl Renderer {
             .get_template(name)
             .map_err(|error| RenderError::render(name, error))?;
         let context = context! {
-            t => Serde(self.strings.for_locale(locale)),
+            t => Serde(self.strings.table(locale)),
             banner => Serde(banner),
             part => Serde(part),
         };
@@ -283,7 +283,7 @@ impl Renderer {
             .get_template(name)
             .map_err(|error| RenderError::render(name, error))?;
         let context = context! {
-            t => Serde(self.strings.for_locale(locale)),
+            t => Serde(self.strings.table(locale)),
             lang => locale.as_str(),
             facts => Serde(facts),
         };
@@ -296,9 +296,12 @@ impl Renderer {
     /// under `t`, such as `search_link` for the search page's title. `None`
     /// for a key the strings file does not have.
     pub fn text(&self, locale: &Locale, key: &str) -> Option<&str> {
-        self.strings
-            .for_locale(locale)
-            .and_then(|strings| strings.get(key))
-            .map(String::as_str)
+        self.strings.get(locale, key)
+    }
+
+    /// Every word the templates read, in each language, with the site's
+    /// own files laid over the built-in ones.
+    pub fn words(&self) -> &SiteWords {
+        &self.strings
     }
 }

@@ -37,6 +37,48 @@ pub fn builtin_strings(locale: &Locale) -> Result<BTreeMap<String, String>, Rend
     Ok(strings.for_locale(locale).cloned().unwrap_or_default())
 }
 
+/// The words readers see on one site, by language: the built-in strings
+/// with the site's own `theme/strings/<lang>.toml` files laid over them, as
+/// the templates read them, for words written outside a template, such as
+/// the month names in a title or the hours on a location card.
+#[derive(Debug, Clone)]
+pub struct SiteWords(Strings);
+
+impl SiteWords {
+    /// The built-in words alone, for a site that has no folder to read.
+    ///
+    /// # Errors
+    ///
+    /// [`RenderError::Strings`] when a built-in strings file cannot be read.
+    pub fn builtin() -> Result<Self, RenderError> {
+        Strings::load().map(Self)
+    }
+
+    /// The built-in words with the files in `site_root/theme/strings/`
+    /// laid over them.
+    ///
+    /// # Errors
+    ///
+    /// The errors of [`crate::Renderer::with_theme`] for the strings files:
+    /// a file not named for a language, a key the templates never read, a
+    /// TOML mistake, or a file that cannot be read.
+    pub fn of_site(site_root: &Path) -> Result<Self, RenderError> {
+        Strings::with_site(site_root).map(Self)
+    }
+
+    /// The words of `locale`'s language, or the English ones when it has
+    /// none of its own.
+    pub fn table(&self, locale: &Locale) -> &BTreeMap<String, String> {
+        static NONE: BTreeMap<String, String> = BTreeMap::new();
+        self.0.for_locale(locale).unwrap_or(&NONE)
+    }
+
+    /// The word `key` of `locale`'s language, such as `imprint_title`.
+    pub fn get(&self, locale: &Locale, key: &str) -> Option<&str> {
+        self.table(locale).get(key).map(String::as_str)
+    }
+}
+
 /// Every built-in strings table, by language.
 #[derive(Debug, Clone)]
 pub(crate) struct Strings {
