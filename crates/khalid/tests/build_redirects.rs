@@ -98,7 +98,8 @@ fn a_moved_pages_old_address_answers_with_a_301() {
     let site = site(&[("why-links-matter", &[])]);
     let pages = at(site.path(), "content/en/pages");
     fs::create_dir_all(&pages).unwrap();
-    let about = "---\ntitle: Who we are\nslug: team\naliases: [\"/blog/about/\"]\n---\n\nThe team.\n";
+    let about =
+        "---\ntitle: Who we are\nslug: team\naliases: [\"/blog/about/\"]\n---\n\nThe team.\n";
     fs::write(at(&pages, "about.md"), about).unwrap();
     let output = build(&site);
     let stderr = String::from_utf8_lossy(&output.stderr);
