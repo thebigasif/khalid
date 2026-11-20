@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { authorSlugs } from "../api/authors";
 import type { PostRow } from "../api/rows";
 import { numbersById, readPostNumbers } from "../api/searchConsole";
 import { en } from "../strings/en";
@@ -24,6 +25,9 @@ export function BulkPosts({ rows }: Props) {
     retry: false,
   }).data;
   const authors = [...new Set(rows.flatMap((row) => (row.author ? [row.author] : [])))];
+  // "Set the author" offers every author of the site, not only those on this page.
+  const everyAuthor = useQuery({ queryKey: ["author-slugs"], queryFn: authorSlugs, retry: false });
+  const offered = [...new Set([...(everyAuthor.data ?? []), ...authors])];
   const chosen = rows.filter((row) => ticked.includes(row.id));
 
   const tick = (id: string, on: boolean) => {
@@ -49,7 +53,7 @@ export function BulkPosts({ rows }: Props) {
           </>
         )}
       </div>
-      {chosen.length === 0 ? null : <BulkChange ticked={chosen} authors={authors} onDone={done} />}
+      {chosen.length === 0 ? null : <BulkChange ticked={chosen} authors={offered} onDone={done} />}
       <PostTable
         rows={rows}
         ticked={ticked}
