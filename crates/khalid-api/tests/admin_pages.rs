@@ -293,6 +293,29 @@ async fn a_pages_search_settings_are_set_kept_and_cleared() {
 }
 
 #[tokio::test]
+async fn a_page_moves_to_a_new_address_unless_another_page_has_it() {
+    let router = with_about();
+    let new = json!({"pages": [{"slug": "contact", "title": "Contact", "markdown": "Write."}]});
+    let (status, _) = send(&router, "POST", "/api/admin/v1/pages/", EDITOR, Some(new)).await;
+    assert_eq!(status, StatusCode::CREATED);
+    let about = "/api/admin/v1/pages/en.about/";
+    let taken = json!({"pages": [{"slug": "contact", "updated_at": LAST_CHANGE}]});
+    let (status, json) = send(&router, "PUT", about, EDITOR, Some(taken)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    let moved = json!({"pages": [{"slug": "team", "updated_at": LAST_CHANGE}]});
+    let (status, json) = send(&router, "PUT", about, EDITOR, Some(moved)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json["pages"][0]["id"], "en.team", "{json}");
+    assert_eq!(json["pages"][0]["slug"], "team", "{json}");
+    let (status, _) = send(&router, "GET", about, EDITOR, None).await;
+    assert_eq!(status, StatusCode::NOT_FOUND);
+    let bad = json!({"pages": [{"slug": "Not a slug", "updated_at": LAST_CHANGE}]});
+    let team = "/api/admin/v1/pages/en.team/";
+    let (status, _) = send(&router, "PUT", team, EDITOR, Some(bad)).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+}
+
+#[tokio::test]
 async fn a_new_page_may_start_with_search_settings() {
     let router = with_about();
     let new = json!({"pages": [{"slug": "thanks", "title": "Thanks", "markdown": "Got it.",

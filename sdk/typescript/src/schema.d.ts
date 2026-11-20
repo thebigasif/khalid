@@ -1810,6 +1810,8 @@ export type PageEdit = {
   /** A new body, in markdown. */
   markdown?: string | null;
   seo?: PageSeoEdit | null;
+  /** A new last part of the address. The old address then answers with a 301 to the new one, so links to it keep working. */
+  slug?: string | null;
   /** A new title. */
   title?: string | null;
   /** The `updated_at` of the copy this edit was made on. */
@@ -3733,7 +3735,7 @@ export interface Operations {
     };
     output: AdminPages;
   };
-  /** Edits one page: only the fields sent change. The edit carries the `updated_at` of the copy it was made on; when the page changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
+  /** Edits one page: only the fields sent change. A new slug moves the page, and its old address then answers with a 301. The edit carries the `updated_at` of the copy it was made on; when the page changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
   edit_page: {
     input: {
       path: {

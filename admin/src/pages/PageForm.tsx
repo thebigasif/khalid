@@ -24,6 +24,13 @@ export function PageForm({ page, onSave }: Props) {
     <form onSubmit={submit}>
       <PageField name="title" form="edit" value={fields.title} onChange={set("title")} required />
       <PageField
+        name="address"
+        form="edit"
+        value={fields.address}
+        onChange={set("address")}
+        required
+      />
+      <PageField
         name="description"
         form="edit"
         value={fields.description}

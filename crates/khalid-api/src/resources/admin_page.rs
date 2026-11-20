@@ -80,6 +80,16 @@ impl AdminPage {
         }
     }
 
+    /// Where readers find the page, such as `/blog/about/`, once known.
+    pub fn path(&self) -> Option<&str> {
+        self.path.as_deref()
+    }
+
+    /// The last part of the page's address.
+    pub fn slug(&self) -> &Slug {
+        &self.slug
+    }
+
     /// The same page with this description.
     #[must_use]
     pub fn with_description(self, description: Option<&str>) -> Self {
@@ -143,6 +153,10 @@ impl NewPage {
 #[derive(Debug, Clone, Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]
 pub struct PageEdit {
+    /// A new last part of the address. The old address then answers with
+    /// a 301 to the new one, so links to it keep working.
+    #[schema(value_type = Option<String>, example = "team")]
+    slug: Option<Slug>,
     /// A new title.
     title: Option<String>,
     /// A new description; an empty one removes it.
@@ -156,6 +170,11 @@ pub struct PageEdit {
 }
 
 impl PageEdit {
+    /// The new slug, if sent.
+    pub fn slug(&self) -> Option<&Slug> {
+        self.slug.as_ref()
+    }
+
     /// The new title, if sent.
     pub fn title(&self) -> Option<&str> {
         self.title.as_deref()
@@ -213,7 +232,10 @@ impl Entry for AdminPage {
             Some(text) => Some(text),
             None => self.description,
         };
+        let slug = edit.slug.unwrap_or(self.slug);
         Self {
+            id: format!("{}.{slug}", self.language),
+            slug,
             title: edit.title.unwrap_or(self.title),
             seo,
             markdown: edit.markdown.unwrap_or(self.markdown),

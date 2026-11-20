@@ -16,6 +16,10 @@ const fields = {
     hint: "One or two sentences search engines show under the title. Optional.",
   },
   markdown: { label: "Text", hint: "What the page says, in markdown." },
+  address: {
+    label: "Address",
+    hint: "The last part of the page's address, such as about. If you change it, the old address sends readers and search engines to the new one with a 301 redirect, the signal that a page moved for good.",
+  },
   robots: {
     label: "Search results",
     hint: "Whether search engines may list this page. Hide a page such as a thank-you page.",
