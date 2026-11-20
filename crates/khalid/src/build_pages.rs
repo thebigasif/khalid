@@ -34,7 +34,7 @@ use crate::post_lock::Unlocked;
 pub(crate) use crate::site_page::Page;
 use crate::{
     build_ai_page, build_home, build_message, build_reader, build_schema, build_seo, imprint_page,
-    link_graph, privacy_page, site_chrome,
+    link_graph, privacy_page, share_cards, site_chrome,
 };
 
 /// The pages of one language, and the site as they show it.
@@ -406,6 +406,7 @@ fn post_page(
     let body = (&rendered.structured[..], &rendered.links[..]);
     build_schema::fill(&mut seo, config, (path.as_str(), &name), body)?;
     seo.custom_schema = build_schema::custom(&doc.path, front.schema.as_deref())?;
+    seo.cards = share_cards::overrides(config, &path, &front.share_cards);
     let meta = meta(config, title, description, path, PageKind::Article)?;
     let body = PageBody::Post(Box::new(post));
     let mut page = page(locale, config, &rest, meta, body, seo).made_from(&doc.path);

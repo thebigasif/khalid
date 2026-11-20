@@ -109,7 +109,7 @@ pub use site::SeoSite;
 pub use sitemap::{Sitemap, SitemapEntry};
 pub use sitemap_index::{IndexEntry, SitemapIndex, sitemap_index_url};
 pub use sitemap_set::{SitemapFile, SitemapSection, SitemapSet};
-pub use social::{ShareImage, TwitterHandle};
+pub use social::{CardOverride, CardOverrides, ShareImage, TwitterHandle};
 pub use template_words::{PageNumber, TemplateWords};
 pub use url_path::UrlPath;
 pub use verification::{

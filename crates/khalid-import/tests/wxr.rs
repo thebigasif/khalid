@@ -4,7 +4,7 @@ use std::fs;
 
 use chrono::NaiveDate;
 use khalid_core::AbsoluteUrl;
-use khalid_import::wordpress::{ItemKind, ItemStatus, WxrError, read_wxr};
+use khalid_import::wordpress::{CommentState, ItemKind, ItemStatus, WxrError, read_wxr};
 
 #[cfg(test)]
 fn fixture(name: &str) -> String {
@@ -48,10 +48,10 @@ fn reads_the_site_authors_and_terms() {
 }
 
 #[test]
-fn leaves_out_the_authors_email_addresses() {
+fn leaves_out_the_staff_email_addresses() {
     let export = read_wxr(&fixture("basic.xml")).unwrap();
     let model = format!("{export:?}");
-    assert!(!model.contains('@'), "{model}");
+    assert!(!model.contains("@northfield.example.com"), "{model}");
 }
 
 #[test]
@@ -137,6 +137,40 @@ fn reads_a_post_with_its_terms_and_meta() {
     assert_eq!(post.meta("_thumbnail_id"), Some("12"));
     assert_eq!(post.parent, None);
     assert!(!export.items[1].sticky);
+}
+
+#[test]
+fn reads_a_comment_with_its_utc_time_and_state() {
+    let export = read_wxr(&fixture("basic.xml")).unwrap();
+    let [comment] = export.items[0].comments.as_slice() else {
+        panic!("{:?}", export.items[0].comments)
+    };
+    assert_eq!((comment.id, comment.parent), (1, None));
+    assert_eq!(
+        (comment.author.as_str(), comment.email.as_str()),
+        ("A reader", "reader@example.com")
+    );
+    let utc = NaiveDate::from_ymd_opt(2024, 3, 13).and_then(|day| day.and_hms_opt(10, 0, 0));
+    assert_eq!(comment.date, utc, "GMT, not the site's own time");
+    assert_eq!(comment.content, "Thanks!");
+    assert_eq!(comment.state, CommentState::Approved);
+    assert!(!comment.ping);
+    let ping = fixture("basic.xml")
+        .replace("[CDATA[comment]]", "[CDATA[pingback]]")
+        .replace(
+            "[CDATA[1]]></wp:comment_approved>",
+            "[CDATA[spam]]></wp:comment_approved>",
+        )
+        .replace(
+            "<wp:comment_date_gmt><![CDATA[2024-03-13 10:00:00]]>",
+            "<wp:comment_date_gmt><![CDATA[0000-00-00 00:00:00]]>",
+        );
+    let export = read_wxr(&ping).unwrap();
+    let comment = &export.items[0].comments[0];
+    assert!(comment.ping);
+    assert_eq!(comment.state, CommentState::Spam);
+    let local = NaiveDate::from_ymd_opt(2024, 3, 13).and_then(|day| day.and_hms_opt(11, 0, 0));
+    assert_eq!(comment.date, local, "the site's own time when GMT is zeros");
 }
 
 #[test]

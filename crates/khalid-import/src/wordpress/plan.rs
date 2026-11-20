@@ -7,11 +7,13 @@ use chrono::NaiveDateTime;
 use khalid_content::ContentError;
 use khalid_core::{AbsoluteUrl, Config, ParseSlugError, RobotsDirectives, Slug};
 
+use crate::wordpress::comments::plan_comments;
 use crate::wordpress::item_file::{Source, item_file};
 use crate::wordpress::redirect_map::{redirect_map, wordpress_csv};
 use crate::wordpress::site_files::{author_files, categories_file};
 use crate::wordpress::{
-    Export, Item, ItemKind, ItemStatus, MapEntry, Redirection, SkippedRule, UnreadField,
+    Export, ImportedComment, Item, ItemKind, ItemStatus, LeftComment, MapEntry, Redirection,
+    SkippedRule, UnreadField,
 };
 use crate::write::write_files;
 use crate::{Place, PlannedFile, SlugOrigin, WriteError};
@@ -37,6 +39,10 @@ pub struct Plan {
     pub authors: usize,
     /// How many categories `categories.toml` lists.
     pub categories: usize,
+    /// The comments that come in, under published posts, in export order.
+    pub comments: Vec<ImportedComment>,
+    /// Each comment that stays behind, with the reason.
+    pub left_comments: Vec<LeftComment>,
 }
 
 /// An item that stays behind.
@@ -206,6 +212,7 @@ pub fn plan(
         plan.files.push(file);
         plan.categories = count;
     }
+    (plan.comments, plan.left_comments) = plan_comments(export, &plan.items);
     plan.redirects = redirect_map(export, redirection, &plan.items, site, routes);
     plan.skipped_rules = redirection.map(|r| r.skipped.clone()).unwrap_or_default();
     plan.files.push(PlannedFile {

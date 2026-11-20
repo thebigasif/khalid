@@ -39,6 +39,8 @@ pub struct Item {
     pub tags: Vec<String>,
     /// Every custom field in file order, where SEO plugins keep their data.
     pub meta: Vec<Meta>,
+    /// Its comments, pingbacks and trackbacks, in file order.
+    pub comments: Vec<Comment>,
 }
 
 impl Item {
@@ -59,6 +61,58 @@ pub struct Meta {
     pub key: String,
     /// The field's value, as stored.
     pub value: String,
+}
+
+/// One comment as the export holds it, a `wp:comment` of an item.
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct Comment {
+    /// Its id, which a reply names as its parent.
+    pub id: u64,
+    /// The comment it answers, if any.
+    pub parent: Option<u64>,
+    /// The name shown with it.
+    pub author: String,
+    /// The writer's email, which may be empty.
+    pub email: String,
+    /// When it was sent, in UTC, or in the site's own time when the export
+    /// has no UTC time.
+    pub date: Option<NaiveDateTime>,
+    /// What they wrote, as `WordPress` keeps it: text with some HTML.
+    pub content: String,
+    /// Where it stood in moderation.
+    pub state: CommentState,
+    /// Whether it is a pingback or trackback, a note another site left
+    /// automatically, rather than a reader's comment.
+    pub ping: bool,
+}
+
+/// Where a comment stood in `WordPress`'s moderation, `wp:comment_approved`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum CommentState {
+    /// Shown under the post, `1`.
+    Approved,
+    /// Waiting for approval, `0`.
+    Pending,
+    /// Marked as spam.
+    Spam,
+    /// In the bin.
+    Trash,
+    /// Any other state, by its name in the file.
+    Other(String),
+}
+
+impl CommentState {
+    pub(crate) fn from_name(name: &str) -> Self {
+        match name {
+            "1" | "approve" => Self::Approved,
+            "0" | "hold" => Self::Pending,
+            "spam" => Self::Spam,
+            "trash" | "post-trashed" => Self::Trash,
+            other => Self::Other(other.to_owned()),
+        }
+    }
 }
 
 /// What kind of item an export holds.

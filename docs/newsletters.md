@@ -152,8 +152,19 @@ The same routes are in the Admin API, for a key with the `subscribers:write` sco
 | `PUT /api/admin/v1/subscribers/{id}/labels/{label}/` | Gives a reader a label. A reader who unsubscribed gets none. |
 | `DELETE /api/admin/v1/subscribers/{id}/labels/{label}/` | Takes a label away. |
 | `DELETE /api/admin/v1/subscribers/{id}/` | Forgets a reader: their address, newsletters, labels and links are removed. The totals of emails sent stay, as they name no one. |
+| `POST /api/admin/v1/subscribers/` | Adds one reader, `{"email": "lena@example.com", "status": "confirmed"}`, with `lists` (`main` when left out) and `labels` if you like. It answers `409` when the address is on the list already. |
+| `POST /api/admin/v1/subscribers/import/` | Brings in a CSV file: Khalid's own export, Substack's `email_list` file, or Ghost's members export. Readers without a newsletter join `?list=` or `main`. It answers how many were added, how many were there already, and the line of each row left out, with why. |
+| `GET /api/admin/v1/subscribers/export/` | Every reader as a CSV file, oldest first, with the columns `email,status,created_at,lists,labels`. The import route reads it back. |
 | `GET /api/admin/v1/newsletters/` | Each newsletter with its confirmed and waiting readers and its sign-up form, whether the site can send now (`ready`, `no_mail` or `no_postal_address`), and the numbers of every email sent. |
 | `GET /api/admin/v1/newsletters/{name}/readers/?labels=paid,vip` | Counts the confirmed readers who carry every label, as `khalid newsletter segment` does, so a send can say how many it reaches first. The Subscribers screen shows it as you type labels. |
 | `POST /api/admin/v1/newsletters/{name}/sends/` | Sends a published post, `{"post": "en.what-a-sitemap-does", "labels": ["paid"]}`, once. It answers `202` with the send's key as the copies start to leave. |
 
-No route adds a subscriber. Readers join only through the form and the link in its email, so every address on the list asked to be there.
+Readers who sign up on your site confirm through the link in their email, so every address they give asked to be there.
+
+### Moving your list from Substack or Ghost
+
+Download the list from the old system, then send it to the import route. On Substack, the export's `email_list` file is the list. On Ghost, export the members from the Members screen.
+
+Each reader keeps the status the old system gave them. A reader who got your emails there gets them here, and one who turned emails off stays unsubscribed. No confirmation email goes out, because they confirmed with the old system. Substack's paid subscribers and Ghost's paying members get the label `paid`, and Ghost's labels come along as labels.
+
+An address that is on your list already is left as it is, so an import never signs up again a reader who left. You can run the same import twice safely.

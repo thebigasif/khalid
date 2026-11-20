@@ -1,8 +1,10 @@
 //! Where the Admin API reads and changes newsletter subscribers, and sends
 //! a post to a newsletter (G39, plan 4.6).
 //!
-//! Readers join only through the sign-up form and its confirmation email
-//! (double opt-in), so no route adds a subscriber.
+//! Readers join through the sign-up form and its confirmation email
+//! (double opt-in). Staff may also add a reader or bring a list in from
+//! another system: those readers keep the status they had, and no email
+//! goes out to them (backlog row 9).
 
 use std::error::Error;
 
@@ -10,8 +12,8 @@ use khalid_core::Slug;
 
 use crate::content_store::BoxFuture;
 use crate::resources::{
-    AdminNewsletter, AdminSend, AdminSubscriber, NewsletterSend, SendReadiness, SubscriberFilter,
-    SubscriberPage,
+    AdminNewsletter, AdminSend, AdminSubscriber, NewSubscriber, NewsletterSend, SendReadiness,
+    SubscriberFilter, SubscriberImport, SubscriberPage,
 };
 
 /// A site's subscribers and newsletters, for the Admin API. `khalid serve`
@@ -52,6 +54,45 @@ pub trait SubscriberDesk: Send + Sync {
     /// [`SubscriberError::NotFound`] when no subscriber has that identity,
     /// and [`SubscriberError::Store`] when it cannot be written.
     fn erase(&self, id: i64) -> BoxFuture<'_, Result<(), SubscriberError>>;
+
+    /// Adds `reader` with the status given, and no email to them, and
+    /// returns them. Left without newsletters, they join main.
+    ///
+    /// # Errors
+    ///
+    /// [`SubscriberError::BadAddress`] when the address cannot take mail,
+    /// [`SubscriberError::Taken`] when the site has it already,
+    /// [`SubscriberError::NoList`] when a newsletter does not exist, and
+    /// [`SubscriberError::Store`] when it cannot be written.
+    fn add<'a>(
+        &'a self,
+        reader: &'a NewSubscriber,
+    ) -> BoxFuture<'a, Result<AdminSubscriber, SubscriberError>>;
+
+    /// Brings in the readers of `csv`, Khalid's own export or a Substack
+    /// or Ghost list, each with the status the file gave them and no email
+    /// to them. Readers the file names no newsletter for join `list`, or
+    /// main. An address the site has is left as it is.
+    ///
+    /// # Errors
+    ///
+    /// [`SubscriberError::NotReaders`] when `csv` is no reader list,
+    /// [`SubscriberError::NoList`] when a newsletter does not exist, and
+    /// [`SubscriberError::Store`] when the readers cannot be written; then
+    /// none is added.
+    fn import<'a>(
+        &'a self,
+        csv: &'a str,
+        list: Option<&'a Slug>,
+    ) -> BoxFuture<'a, Result<SubscriberImport, SubscriberError>>;
+
+    /// Every reader as Khalid's own CSV export, oldest first, which
+    /// [`SubscriberDesk::import`] reads back.
+    ///
+    /// # Errors
+    ///
+    /// [`SubscriberError::Store`] when the readers cannot be read.
+    fn export(&self) -> BoxFuture<'_, Result<String, SubscriberError>>;
 
     /// The site's newsletters in alphabetical order, each with its counts.
     ///
@@ -121,6 +162,15 @@ pub enum SubscriberError {
     /// The subscriber left, so they get no new label.
     #[error("the subscriber unsubscribed")]
     Unsubscribed,
+    /// The address cannot take mail.
+    #[error("the address cannot take mail")]
+    BadAddress,
+    /// The site has a subscriber at that address already.
+    #[error("the site has a subscriber at that address already")]
+    Taken,
+    /// The file is not a list of readers Khalid reads; the text says why.
+    #[error("the file is not a list of readers: {0}")]
+    NotReaders(String),
     /// The site has no newsletter by that name.
     #[error("the site has no newsletter by that name")]
     NoList,

@@ -128,3 +128,71 @@ fn a_confirmed_reader_is_labelled_sent_a_post_once_and_forgotten() {
     assert_eq!(listed["meta"]["pagination"]["total"], 1, "{listed}");
     assert_eq!(listed["subscribers"][0]["email"], "ada@example.com");
 }
+
+/// Substack's `email_list` file: Lena reads free, Omar pays, Ines turned
+/// email off, and one row has no address that takes mail.
+const SUBSTACK: &str = "email,active_subscription,expiry,plan,email_disabled,created_at\n\
+lena@example.com,false,,other,false,2021-03-04T05:06:07.000Z\n\
+omar@example.com,true,2027-01-01T00:00:00.000Z,yearly,false,2022-01-01T00:00:00.000Z\n\
+ines@example.org,false,,other,true,2020-05-06T07:08:09.000Z\n\
+not-an-address,false,,other,false,\n";
+
+#[test]
+fn readers_come_in_with_their_status_and_no_email_and_go_out_as_csv() {
+    let stub = StubSmtp::start().unwrap();
+    let site = demo_copy();
+    let mut settings = site.path().to_path_buf();
+    settings.push("site.toml");
+    let mut text = fs::read_to_string(&settings).unwrap();
+    text.push_str(&mail_settings(&stub));
+    fs::write(&settings, text).unwrap();
+    let key = new_key(site.path(), &OWNER);
+    let server = start(site.path(), &key);
+    assert!(server.answers("/blog/", 200));
+    let auth = format!("Khalid {key}");
+    let auth = [("Authorization", auth.as_str())];
+    let csv = |method, path: &str, body: &str| {
+        let typed = Some("text/csv");
+        server.send(method, path, &auth, (body.as_bytes(), typed))
+    };
+
+    let import = format!("{SUBSCRIBERS}import/");
+    let (status, answer) = csv("POST", &import, SUBSTACK);
+    assert_eq!(status, 200, "{answer}");
+    let answer: serde_json::Value = serde_json::from_str(&answer).unwrap();
+    let skipped = json!([{"line": 5, "why": "its address cannot take mail"}]);
+    let expected = json!({"source": "substack", "added": 3, "already": 0, "skipped": skipped});
+    assert_eq!(answer, expected);
+    let (_, listed) = server.admin("GET", &format!("{SUBSCRIBERS}?label=paid"), None);
+    assert_eq!(
+        listed["subscribers"][0]["email"], "omar@example.com",
+        "{listed}"
+    );
+    let (_, listed) = server.admin("GET", &format!("{SUBSCRIBERS}?status=unsubscribed"), None);
+    assert_eq!(
+        listed["subscribers"][0]["email"], "ines@example.org",
+        "{listed}"
+    );
+
+    let kim = json!({"email": "Kim@Example.com", "status": "pending"});
+    let (status, added) = server.admin("POST", SUBSCRIBERS, Some(&kim));
+    assert_eq!(status, 201, "{added}");
+    assert_eq!(added["subscribers"][0]["lists"], json!(["main"]), "{added}");
+    let (status, again) = server.admin("POST", SUBSCRIBERS, Some(&kim));
+    assert_eq!(status, 409, "{again}");
+
+    let (status, exported) = csv("GET", &format!("{SUBSCRIBERS}export/"), "");
+    assert_eq!(status, 200, "{exported}");
+    assert!(
+        exported.starts_with("email,status,created_at,lists,labels\nlena@example.com,confirmed,2021-03-04T05:06:07+00:00,main,\n"),
+        "{exported}"
+    );
+    assert!(
+        exported.contains("\nines@example.org,unsubscribed,"),
+        "{exported}"
+    );
+    let (status, answer) = csv("POST", &import, &exported);
+    assert_eq!(status, 200, "{answer}");
+    assert!(answer.contains("\"added\":0,\"already\":4"), "{answer}");
+    assert_eq!(stub.received(), Vec::<String>::new(), "no email goes out");
+}

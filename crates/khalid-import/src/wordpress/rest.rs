@@ -227,6 +227,9 @@ fn item_of(item: RestItem, creator: String, categories: Vec<String>, tags: Vec<S
         categories,
         tags,
         meta: item.yoast_head_json.map(yoast_meta).unwrap_or_default(),
+        // The public REST API does not list unapproved comments or emails,
+        // so a REST import brings none.
+        comments: Vec::new(),
     }
 }
 
