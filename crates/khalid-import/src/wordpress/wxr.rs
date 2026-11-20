@@ -5,7 +5,9 @@ use chrono::NaiveDateTime;
 use khalid_core::AbsoluteUrl;
 use roxmltree::{Document, Node};
 
-use crate::wordpress::{Author, Export, Item, ItemKind, ItemStatus, Meta, Site, Term, WxrError};
+use crate::wordpress::{
+    Author, Comment, CommentState, Export, Item, ItemKind, ItemStatus, Meta, Site, Term, WxrError,
+};
 
 /// The XML namespaces an export uses, matched by what their address starts
 /// with, since WXR 1.0, 1.1 and 1.2 each carry their version in it.
@@ -129,6 +131,7 @@ impl Reader<'_, '_> {
             categories: Vec::new(),
             tags: Vec::new(),
             meta: Vec::new(),
+            comments: Vec::new(),
         };
         for field in node.children().filter(Node::is_element) {
             if is(field, Ns::Rss, "category") {
@@ -145,9 +148,39 @@ impl Reader<'_, '_> {
                     key: text(field, Ns::Wp, "meta_key"),
                     value: text(field, Ns::Wp, "meta_value"),
                 });
+            } else if is(field, Ns::Wp, "comment") {
+                item.comments.push(self.comment(field)?);
             }
         }
         Ok(item)
+    }
+
+    /// One `wp:comment`. Its UTC time wins over the site's own.
+    fn comment(&self, node: Node<'_, '_>) -> Result<Comment, WxrError> {
+        let id =
+            child(node, Ns::Wp, "comment_id").ok_or_else(|| self.bad(node, "wp:comment_id"))?;
+        let mut date = None;
+        for field in ["comment_date_gmt", "comment_date"] {
+            if date.is_none()
+                && let Some(node) = child(node, Ns::Wp, field)
+            {
+                date = self.date(node)?;
+            }
+        }
+        let kind = text(node, Ns::Wp, "comment_type");
+        Ok(Comment {
+            id: self.number(id)?,
+            parent: child(node, Ns::Wp, "comment_parent")
+                .map(|parent| self.number(parent))
+                .transpose()?
+                .filter(|parent| *parent != 0),
+            author: text(node, Ns::Wp, "comment_author"),
+            email: text(node, Ns::Wp, "comment_author_email"),
+            date,
+            content: text(node, Ns::Wp, "comment_content"),
+            state: CommentState::from_name(&text(node, Ns::Wp, "comment_approved")),
+            ping: kind == "pingback" || kind == "trackback",
+        })
     }
 
     /// A date, or none for the zeros `WordPress` writes when there is none.

@@ -5,7 +5,9 @@
 use std::collections::BTreeMap;
 
 use chrono::{DateTime, Utc};
-use khalid_api::resources::{AdminSubscriber, SubscriberFilter, SubscriberPage, SubscriberStatus};
+use khalid_api::resources::{
+    AdminSubscriber, NewSubscriber, SubscriberFilter, SubscriberPage, SubscriberStatus,
+};
 use khalid_api::subscriber_desk::LabelChange;
 use khalid_core::Slug;
 
@@ -166,6 +168,98 @@ impl SubscriberTable {
             .execute(&self.db.writer)
             .await?;
         Ok(done.rows_affected() > 0)
+    }
+
+    /// Adds each reader in `readers` `at` that time, in one go, with the
+    /// status, newsletters and labels given, and answers each one's new
+    /// identity in order. An address the site already has is left as it
+    /// is and answers `None`, so an import never signs a reader back up.
+    /// An unsubscribed reader joins no newsletter. No token is made, so no
+    /// email can go out.
+    ///
+    /// # Errors
+    ///
+    /// [`DbError`] when the table cannot be written; nothing is added then.
+    pub async fn bring_in(
+        &self,
+        readers: &[NewSubscriber],
+        at: DateTime<Utc>,
+    ) -> Result<Vec<Option<i64>>, DbError> {
+        let mut tx = self.db.writer.begin().await?;
+        let mut added = Vec::with_capacity(readers.len());
+        for reader in readers {
+            let since = stamp(reader.created_at.unwrap_or(at));
+            let status = status_name(reader.status);
+            let (confirmed, left) = match reader.status {
+                SubscriberStatus::Pending => (None, None),
+                SubscriberStatus::Confirmed => (Some(&since), None),
+                SubscriberStatus::Unsubscribed => (None, Some(stamp(at))),
+            };
+            let id: Option<i64> = sqlx::query_scalar(
+                "INSERT INTO subscribers \
+                 (site_id, email, status, created_at, confirmed_at, unsubscribed_at) \
+                 VALUES (?1, ?2, ?3, ?4, ?5, ?6) ON CONFLICT DO NOTHING RETURNING id",
+            )
+            .bind(self.site.as_row())
+            .bind(&reader.email)
+            .bind(status)
+            .bind(&since)
+            .bind(confirmed)
+            .bind(left)
+            .fetch_optional(&mut *tx)
+            .await?;
+            if let Some(id) = id {
+                let lists = match reader.status {
+                    SubscriberStatus::Unsubscribed => &[][..],
+                    _ => &reader.lists[..],
+                };
+                for list in lists {
+                    sqlx::query(
+                        "INSERT INTO subscriber_lists (site_id, subscriber_id, list, joined_at) \
+                         VALUES (?1, ?2, ?3, ?4) ON CONFLICT DO NOTHING",
+                    )
+                    .bind(self.site.as_row())
+                    .bind(id)
+                    .bind(list.as_str())
+                    .bind(&since)
+                    .execute(&mut *tx)
+                    .await?;
+                }
+                for label in &reader.labels {
+                    sqlx::query(
+                        "INSERT INTO subscriber_labels (site_id, subscriber_id, label, added_at) \
+                         VALUES (?1, ?2, ?3, ?4) ON CONFLICT DO NOTHING",
+                    )
+                    .bind(self.site.as_row())
+                    .bind(id)
+                    .bind(label.as_str())
+                    .bind(stamp(at))
+                    .execute(&mut *tx)
+                    .await?;
+                }
+            }
+            added.push(id);
+        }
+        tx.commit().await?;
+        Ok(added)
+    }
+
+    /// Every subscriber in any status, oldest first, for an export.
+    ///
+    /// # Errors
+    ///
+    /// [`DbError`] when the table cannot be read, or holds a value no
+    /// subscriber has.
+    pub async fn everyone(&self) -> Result<Vec<AdminSubscriber>, DbError> {
+        let sql = concat!(
+            columns!(),
+            "FROM subscribers s WHERE s.site_id = ?1 ORDER BY s.id"
+        );
+        let rows: Vec<Row> = sqlx::query_as(sql)
+            .bind(self.site.as_row())
+            .fetch_all(&self.db.readers)
+            .await?;
+        rows.into_iter().map(subscriber).collect()
     }
 
     /// Each newsletter anyone joined, by name, with its confirmed and

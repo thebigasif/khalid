@@ -69,8 +69,9 @@ pub use seo_scores::{READABILITY_RULES, SeoScores};
 pub use settings::Settings;
 pub use settings_edit::SettingsEdit;
 pub use subscriber::{
-    AdminNewsletter, AdminSend, AdminSubscriber, NewsletterSend, SendReadiness, SubscriberFilter,
-    SubscriberPage, SubscriberStatus,
+    AdminNewsletter, AdminSend, AdminSubscriber, NewSubscriber, NewsletterSend, ReaderFile,
+    SendReadiness, SkippedReader, SubscriberFilter, SubscriberImport, SubscriberPage,
+    SubscriberStatus,
 };
 pub use term::Term;
 
