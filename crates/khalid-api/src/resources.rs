@@ -37,8 +37,8 @@ pub use admin_key::{AdminKey, NewKey, NewKeyKind};
 pub use admin_page::{AdminPage, NewPage, PageEdit};
 pub use admin_post::{AdminPost, NewPost, PostDraft, PostEdit, PostStatus};
 pub use admin_settings::{
-    AdminSettings, CtaChange, HomeSectionSetting, MenuLinkSetting, NavChange, NavSetting,
-    SettingsChange,
+    AdminSettings, CommentsChange, CommentsSetting, CtaChange, HomeSectionSetting, MenuLinkSetting,
+    NavChange, NavSetting, SettingsChange,
 };
 pub use admin_snippet::{AdminSnippet, NewSnippet, SnippetEdit};
 pub use admin_tag::{AdminTag, TagEdit};

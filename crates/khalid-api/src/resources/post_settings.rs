@@ -253,6 +253,18 @@ pub(super) fn access_schema() -> Schema {
     schema.into()
 }
 
+/// The schema for the site's [`CommentState`]: one of its names.
+pub(super) fn comment_state_schema() -> Schema {
+    let names = CommentState::ALL.map(CommentState::as_str);
+    let schema = ObjectBuilder::new()
+        .schema_type(Type::String)
+        .enum_values(Some(names))
+        .description(Some(
+            "Whether readers may comment: `open`, `closed` or `off`.",
+        ));
+    schema.into()
+}
+
 /// The schema for a post's [`CommentState`]: one of its names, or `null`
 /// for the site's.
 pub(super) fn comments_schema() -> Schema {
