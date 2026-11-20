@@ -14,6 +14,12 @@ const UEBER: AdminPage = {
   path: "/blog/de/ueber-uns/",
   description: "Who writes Field Notes.",
   markdown: "Field Notes is a small blog.\n",
+  seo: {
+    robots: null,
+    canonical: null,
+    feature_image: null,
+    share_cards: { x: { title: "Wer wir sind", image: "/media/x.png" }, facebook: null },
+  },
   updated_at: "2026-10-30T09:00:00Z",
 };
 
