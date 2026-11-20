@@ -154,6 +154,8 @@ Readers who sign up on your site confirm through the link in their email, so eve
 
 Download the list from the old system, then pick it under "Move readers in or out" on the admin's Subscribers screen. The screen shows how many readers the file adds before it saves anything, and adds them when you say yes. The import route does the same for a script. On Substack, the export's `email_list` file is the list. On Ghost, export the members from the Members screen.
 
+`khalid import substack` and `khalid import ghost` bring the list in with the posts. The Substack import reads the `email_list` file in the unpacked export folder. The Ghost import reads a CSV file with `members` in its name from the folder that holds the Ghost JSON export, so save the members export next to it. A dry run with `--dry-run` says how many readers the file holds. When the list cannot be read, the import stops before it writes a post.
+
 Each reader keeps the status the old system gave them. A reader who got your emails there gets them here, and one who turned emails off stays unsubscribed. No confirmation email goes out, because they confirmed with the old system. Substack's paid subscribers and Ghost's paying members get the label `paid`, and Ghost's labels come along as labels.
 
 An address that is on your list already is left as it is, so an import never signs up again a reader who left. You can run the same import twice safely.

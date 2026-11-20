@@ -3,7 +3,9 @@
 //! redirect map in `data/site.db` through the redirect desk (plan section
 //! 5.7, KH-API-7, KH-SEO-8).
 
+mod comments;
 mod images;
+mod readers;
 
 use std::collections::BTreeMap;
 use std::fmt::{Display, Write as _};
@@ -112,6 +114,14 @@ impl Plan {
     }
 
     /// The redirect map's file, from the site folder.
+    /// The comments that come in. Only `WordPress` exports bring any.
+    fn comments(&self) -> &[wordpress::ImportedComment] {
+        match self {
+            Self::Wordpress(plan) => &plan.comments,
+            Self::Ghost(_) | Self::Medium(_) | Self::Substack(_) | Self::Folder(_) => &[],
+        }
+    }
+
     fn map_file(&self) -> &'static str {
         match self {
             Self::Wordpress(_) => wordpress::REDIRECTS_CSV,
@@ -130,7 +140,8 @@ type Done = Result<Exit, (UserMessage, Exit)>;
 pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, cli: &Cli) -> Exit {
     let (config, routes, output) = (checked.0, checked.1, cli.output);
     planned(args, (config, routes), cli)
-        .and_then(|mut plan| match (args.run, args.images) {
+        .and_then(|plan| Ok((plan, readers::find(args)?)))
+        .and_then(|(mut plan, list)| match (args.run, args.images) {
             (Run::Dry, choice) => {
                 let mut said = plan.report();
                 if choice == ImagesChoice::Download {
@@ -141,14 +152,21 @@ pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, c
                         "With --download-images, the import would download {images}."
                     );
                 }
+                if let Some(list) = &list {
+                    said.push_str(&readers::dry_text(list));
+                }
                 Ok(answer(&said, None, output))
             }
-            (Run::Write, ImagesChoice::Download) => {
-                let images = plan.download_images(site, cli)?;
-                import(site, (config, routes), (&plan, Some(&images)), output)
-            }
-            (Run::Write, ImagesChoice::Link) => {
-                import(site, (config, routes), (&plan, None), output)
+            (Run::Write, choice) => {
+                if let Some(list) = &list {
+                    readers::check(list)?;
+                }
+                let images = match choice {
+                    ImagesChoice::Download => Some(plan.download_images(site, cli)?),
+                    ImagesChoice::Link => None,
+                };
+                let plan = (&plan, images.as_ref(), list.as_ref());
+                import(site, (config, routes), plan, output)
             }
         })
         .unwrap_or_else(|(message, exit)| report::failure(output, &message, exit))
@@ -160,7 +178,7 @@ pub(crate) fn run(site: &Path, checked: (&Config, &Routes), args: &ImportArgs, c
 fn import(
     site: &Path,
     (config, routes): (&Config, &Routes),
-    (plan, images): (&Plan, Option<&Images>),
+    (plan, images, list): (&Plan, Option<&Images>, Option<&readers::ReaderList>),
     output: Output,
 ) -> Done {
     let mut written = plan
@@ -194,6 +212,9 @@ fn import(
     let held = import_held::hold(site, (config, routes), &written, &mut entries)
         .map_err(|message| (message, Exit::Failure))?;
     let stored = store(site, entries).map_err(|(why, exit)| not_stored(why, exit))?;
+    let none = BTreeMap::new();
+    let moved = images.map_or(&none, |images| &images.moved);
+    let kept = comments::store(site, plan.comments(), moved)?;
     // The report's first sentence is for a dry run only.
     let said = plan.report();
     let mut said = said
@@ -203,7 +224,31 @@ fn import(
     if let Some(images) = images {
         said.push_str(&images_text(images));
     }
+    said.push_str(&comments_text(&kept));
+    if let Some(list) = list {
+        said.push_str(&readers::bring_in(site, list)?);
+    }
     Ok(answer(&said, Some((site, &written, stored, &held)), output))
+}
+
+/// How many comments were stored, in plain sentences, or nothing when the
+/// export brought none.
+fn comments_text(kept: &comments::Stored) -> String {
+    let mut text = String::new();
+    // Writing to a String cannot fail.
+    if kept.stored > 0 {
+        let stored = counted(kept.stored, "comment");
+        let _ = writeln!(text, "Stored {stored} under their posts.");
+    }
+    if kept.too_long > 0 {
+        let _ = writeln!(
+            text,
+            "Comments longer than {} letters, which Khalid does not keep: {}.",
+            khalid_comments::CommentText::MAX,
+            kept.too_long
+        );
+    }
+    text
 }
 
 /// What became of the images the posts show, in plain sentences.

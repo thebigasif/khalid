@@ -38,7 +38,7 @@
 		<category domain="category" nicename="sourdough"><![CDATA[Sourdough &amp; starters]]></category>
 		<category domain="post_tag" nicename="rye"><![CDATA[Rye]]></category>
 		<wp:postmeta><wp:meta_key><![CDATA[_thumbnail_id]]></wp:meta_key><wp:meta_value><![CDATA[12]]></wp:meta_value></wp:postmeta>
-		<wp:comment><wp:comment_id>1</wp:comment_id><wp:comment_author><![CDATA[A reader]]></wp:comment_author><wp:comment_content><![CDATA[Thanks!]]></wp:comment_content></wp:comment>
+		<wp:comment><wp:comment_id>1</wp:comment_id><wp:comment_author><![CDATA[A reader]]></wp:comment_author><wp:comment_author_email><![CDATA[reader@example.com]]></wp:comment_author_email><wp:comment_date><![CDATA[2024-03-13 11:00:00]]></wp:comment_date><wp:comment_date_gmt><![CDATA[2024-03-13 10:00:00]]></wp:comment_date_gmt><wp:comment_content><![CDATA[Thanks!]]></wp:comment_content><wp:comment_approved><![CDATA[1]]></wp:comment_approved><wp:comment_type><![CDATA[comment]]></wp:comment_type><wp:comment_parent>0</wp:comment_parent></wp:comment>
 	</item>
 	<item>
 		<title><![CDATA[About the bakery]]></title>

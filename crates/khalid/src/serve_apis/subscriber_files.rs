@@ -43,7 +43,7 @@ pub(super) async fn add(
 /// address cannot take mail, or whose newsletter the site lacks, is
 /// skipped with why; the address is never repeated. A check counts the
 /// same way and keeps no one.
-pub(super) async fn import(
+pub(crate) async fn import(
     table: &SubscriberTable,
     lists: &Lists,
     (csv, list, mode): (&str, Option<&Slug>, ImportMode),
