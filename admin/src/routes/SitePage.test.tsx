@@ -75,6 +75,36 @@ describe("a page's own screen", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("saves only the search and sharing settings that changed", async () => {
+    signedIn();
+    const { edits } = blog();
+    renderAt("/pages/de.ueber-uns");
+    await userEvent.click(await screen.findByText(pagesWords.seo.summary));
+    const hidden = pagesWords.seo.robots[1]?.value ?? "";
+    await userEvent.selectOptions(screen.getByLabelText(FIELDS.robots.label), hidden);
+    await userEvent.type(screen.getByLabelText(FIELDS.imageSrc.label), "/media/team.jpg");
+    const alt = screen.getByLabelText(FIELDS.imageAlt.label);
+    expect(alt).toBeRequired();
+    await userEvent.type(alt, "The team");
+    await userEvent.clear(screen.getByLabelText(FIELDS.xTitle.label));
+    await userEvent.click(screen.getByRole("button", { name: EDIT.save }));
+    expect(await screen.findByText(EDIT.saved)).toBeVisible();
+    expect(edits).toEqual([
+      {
+        updated_at: UEBER.updated_at,
+        seo: {
+          robots: "noindex",
+          feature_image: { src: "/media/team.jpg", alt: "The team", caption: null },
+          share_cards: {
+            facebook: null,
+            x: { title: null, description: null, image: "/media/x.png" },
+          },
+        },
+      },
+    ]);
+    expect(await axeViolations()).toEqual([]);
+  });
+
   it("sends nothing when nothing changed", async () => {
     signedIn();
     const { edits } = blog();

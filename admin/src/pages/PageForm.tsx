@@ -3,6 +3,7 @@ import type { AdminPage } from "../api/pages";
 import { pagesWords } from "../strings/pagesWords";
 import { fieldsOf, type PageFields } from "./edits";
 import { PageField } from "./PageField";
+import { PageSeoFields } from "./PageSeoFields";
 
 type Props = { page: AdminPage; onSave: (fields: PageFields) => Promise<void> };
 
@@ -29,6 +30,7 @@ export function PageForm({ page, onSave }: Props) {
         onChange={set("description")}
       />
       <PageField name="markdown" form="edit" value={fields.markdown} onChange={set("markdown")} />
+      <PageSeoFields fields={fields} set={set} />
       <button type="submit" className="btn primary" disabled={busy}>
         {pagesWords.edit.save}
       </button>

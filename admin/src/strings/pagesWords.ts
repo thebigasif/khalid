@@ -16,6 +16,39 @@ const fields = {
     hint: "One or two sentences search engines show under the title. Optional.",
   },
   markdown: { label: "Text", hint: "What the page says, in markdown." },
+  robots: {
+    label: "Search results",
+    hint: "Whether search engines may list this page. Hide a page such as a thank-you page.",
+  },
+  canonical: {
+    label: "Original address",
+    hint: "Only when the page first appeared somewhere else, such as https://example.com/about/. Search engines then credit that address.",
+  },
+  imageSrc: {
+    label: "Feature image",
+    hint: "Shown under the title and in link previews. A media path such as /media/team.jpg, or a full address.",
+  },
+  imageAlt: {
+    label: "Image description",
+    hint: "What the image shows, for readers who cannot see it. Needed when there is an image.",
+  },
+  facebookTitle: {
+    label: "Facebook title",
+    hint: "The title Facebook and LinkedIn show when someone shares the page.",
+  },
+  facebookDescription: { label: "Facebook description", hint: "The line under that title." },
+  xTitle: { label: "X title", hint: "The title X shows when someone shares the page." },
+  xDescription: { label: "X description", hint: "The line under that title." },
+};
+
+const seo = {
+  summary: "Search and sharing",
+  lede: "How search engines and social sites show this page. A link preview is the card a social site shows when someone shares the page. Leave a field empty to use the page's own title, description and image.",
+  robots: [
+    { value: "", label: "Show this page in search results" },
+    { value: "noindex", label: "Keep it out of search results" },
+    { value: "noindex, nofollow", label: "Keep it out, and do not follow its links" },
+  ],
 };
 
 export const pagesWords = {
@@ -23,6 +56,7 @@ export const pagesWords = {
   title: "Pages",
   lede: "A page is part of your site that is not a post, such as About or Contact. It has no date and no author, and stays out of the post lists and feeds. Each page is a file in your site folder, so git keeps its history.",
   fields,
+  seo,
   add: {
     title: "Add a page",
     live: "A new page is live as soon as you add it.",
