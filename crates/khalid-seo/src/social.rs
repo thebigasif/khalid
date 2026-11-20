@@ -37,6 +37,47 @@ impl ShareImage {
     }
 }
 
+/// What one network's link preview shows in place of the page's own title,
+/// description and share image, as the writer set it for that network.
+/// An unset part keeps the page's own.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct CardOverride {
+    /// The headline on the card.
+    pub title: Option<String>,
+    /// The line under the headline.
+    pub description: Option<String>,
+    /// The card's image. Its size is unknown, so no size tags go with it.
+    pub image: Option<AbsoluteUrl>,
+}
+
+impl CardOverride {
+    /// A card with these parts. Empty text counts as unset.
+    pub fn new(
+        title: Option<String>,
+        description: Option<String>,
+        image: Option<AbsoluteUrl>,
+    ) -> Self {
+        let filled = |text: Option<String>| text.filter(|text| !text.trim().is_empty());
+        Self {
+            title: filled(title),
+            description: filled(description),
+            image,
+        }
+    }
+}
+
+/// The link previews a writer set by hand: one for sites that read Open
+/// Graph, such as Facebook, and one for X.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[non_exhaustive]
+pub struct CardOverrides {
+    /// The Open Graph card, which Facebook, `LinkedIn` and chat apps show.
+    pub open_graph: CardOverride,
+    /// The X card. X reads the Open Graph tags for any part left unset.
+    pub x: CardOverride,
+}
+
 /// A Twitter or X account name, such as `@serpdad`.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TwitterHandle(String);
@@ -84,9 +125,10 @@ fn property(out: &mut Vec<HeadTag>, property: &'static str, content: String) {
 
 /// Appends the Open Graph and Twitter card tags for `page` to `out`.
 ///
-/// The title is the page's own title, or the site name on a page without
-/// one. The image is the page's own, else the site's default, else none, in
-/// which case the Twitter card is the small `summary`.
+/// The title is the Open Graph card's, else the page's own title, else the
+/// site name. The image is the card's, else the page's own, else the site's
+/// default, else none, in which case the Twitter card is the small
+/// `summary`. The X card's own parts follow as `twitter:` tags.
 pub(crate) fn push_social_tags(
     site: &SeoSite,
     page: &SeoPage,
@@ -95,15 +137,17 @@ pub(crate) fn push_social_tags(
     out: &mut Vec<HeadTag>,
 ) {
     let is_article = page.kind == PageKind::Post;
-    let title = if page.title.is_empty() {
-        site.name.clone()
-    } else {
-        page.title.clone()
+    let card = &page.cards.open_graph;
+    let title = match &card.title {
+        Some(title) => title.clone(),
+        None if page.title.is_empty() => site.name.clone(),
+        None => page.title.clone(),
     };
     property(out, "og:site_name", site.name.clone());
     let og_type = if is_article { "article" } else { "website" };
     property(out, "og:type", og_type.to_owned());
     property(out, "og:title", title);
+    let description = card.description.as_deref().unwrap_or(description);
     if !description.is_empty() {
         property(out, "og:description", description.to_owned());
     }
@@ -117,7 +161,9 @@ pub(crate) fn push_social_tags(
         }
     }
     let image = page.share_image.as_ref().or(site.share_image.as_ref());
-    if let Some(image) = image {
+    if let Some(own) = &card.image {
+        property(out, "og:image", own.as_str().to_owned());
+    } else if let Some(image) = image {
         property(out, "og:image", image.url.as_str().to_owned());
         property(out, "og:image:width", image.width.to_string());
         property(out, "og:image:height", image.height.to_string());
@@ -136,20 +182,28 @@ pub(crate) fn push_social_tags(
             property(out, "article:section", category.clone());
         }
     }
-    let card = if image.is_some() {
+    let x = &page.cards.x;
+    let large = image.is_some() || card.image.is_some() || x.image.is_some();
+    let kind = if large {
         "summary_large_image"
     } else {
         "summary"
     };
-    out.push(HeadTag::Meta {
-        name: "twitter:card",
-        content: card.to_owned(),
-    });
+    let meta = |out: &mut Vec<HeadTag>, name, content: String| {
+        out.push(HeadTag::Meta { name, content });
+    };
+    meta(out, "twitter:card", kind.to_owned());
     if let Some(handle) = &site.twitter_site {
-        out.push(HeadTag::Meta {
-            name: "twitter:site",
-            content: handle.as_str().to_owned(),
-        });
+        meta(out, "twitter:site", handle.as_str().to_owned());
+    }
+    if let Some(title) = &x.title {
+        meta(out, "twitter:title", title.clone());
+    }
+    if let Some(description) = &x.description {
+        meta(out, "twitter:description", description.clone());
+    }
+    if let Some(own) = &x.image {
+        meta(out, "twitter:image", own.as_str().to_owned());
     }
     if is_article && site.share_labels {
         push_share_labels(site, page, out);

@@ -89,6 +89,7 @@ fn an_author_photo_leads_the_page_and_reserves_its_space() {
 #[test]
 fn plain_page_in_english() {
     let about = RenderPage {
+        image: None,
         title: "About this blog".to_owned(),
         updated: NaiveDate::from_ymd_opt(2026, 10, 1),
         body: BodyHtml::from_sanitised(
