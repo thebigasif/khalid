@@ -27,7 +27,7 @@ impl CommentState {
 }
 
 /// `[comments]`: how the site takes comments.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
 #[non_exhaustive]
 pub struct CommentSettings {
@@ -35,6 +35,24 @@ pub struct CommentSettings {
     /// `open`, the default, `closed` or `off`.
     #[serde(default)]
     pub state: CommentState,
+    /// Whether the site's owners and admins get an email about each new
+    /// reader's comment, when the site sends mail. On unless set to
+    /// `false`.
+    #[serde(default = "on")]
+    pub notify: bool,
+}
+
+impl Default for CommentSettings {
+    fn default() -> Self {
+        Self {
+            state: CommentState::default(),
+            notify: true,
+        }
+    }
+}
+
+fn on() -> bool {
+    true
 }
 
 #[cfg(test)]

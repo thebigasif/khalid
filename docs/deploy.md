@@ -424,7 +424,10 @@ Readers can comment under every post a running server shows. Comments wait for y
 ```toml
 [comments]
 state = "closed"   # open (the default), closed or off
+notify = false     # stop the email about each new comment (on by default)
 ```
+
+When the site sends mail (`[mail]`), each new reader comment emails the site's owners and admins with its text, the post's address and a link to the Comments screen, so no comment waits unseen. The reader's email address is never in it.
 
 `closed` keeps the approved comments on each post and takes away the form, so no new comment comes in. `off` shows no comments and no form. One post can say otherwise in its front matter, which wins over the site: `comments: closed` closes a busy old post, and `comments: open` opens one post on a site where comments are off. The pages change as soon as you save; no restart is needed.
 

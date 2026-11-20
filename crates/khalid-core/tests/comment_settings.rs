@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use khalid_core::{Config, CommentState, Environment};
+use khalid_core::{CommentState, Config, Environment};
 
 const SITE: &str = r#"name = "Field Notes on SEO"
 address = "https://www.example.com"
@@ -18,8 +18,18 @@ fn load(text: &str) -> Result<Config, String> {
 }
 
 #[test]
-fn a_site_without_the_table_takes_comments() {
-    assert_eq!(load(SITE).unwrap().comments().state, CommentState::Open);
+fn a_site_without_the_table_takes_comments_and_mails_about_them() {
+    let comments = load(SITE).unwrap().comments();
+    assert_eq!(comments.state, CommentState::Open);
+    assert!(comments.notify);
+}
+
+#[test]
+fn the_mail_about_new_comments_can_be_switched_off() {
+    let text = format!("{SITE}\n[comments]\nnotify = false\n");
+    let comments = load(&text).unwrap().comments();
+    assert!(!comments.notify);
+    assert_eq!(comments.state, CommentState::Open);
 }
 
 #[test]

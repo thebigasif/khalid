@@ -19,6 +19,7 @@ use khalid_comments::{
 use khalid_content::SiteContent;
 use khalid_core::{CommentState, Config, Mode, SystemClock};
 use khalid_db::{CommentTable, Database, SiteId};
+use khalid_newsletter::Mailer;
 use khalid_render::{CommentWriter, PageBody, RenderComment, RenderComments, RenderThread};
 use khalid_seo::SeoComment;
 use khalid_server::{LivePages, Render, SecurityHeaders};
@@ -27,6 +28,7 @@ use serde::Serialize;
 
 use crate::announce::SiteAnnounce;
 use crate::build_pages::LanguagePages;
+use crate::reader_comment_mail::ReaderCommentMail;
 use crate::site_pages::SitePages;
 
 /// The approved comments each post page shows, by post file, and the post
@@ -196,6 +198,9 @@ struct PageEvents {
     source: SitePages,
     live: LivePages,
     announce: SiteAnnounce,
+    /// The email to the owners about each reader's comment, with the
+    /// site's address without its path, such as `https://example.com`.
+    mail: Option<(ReaderCommentMail, String)>,
 }
 
 /// The resource a `comment.added` delivery carries: the comment in Admin
@@ -207,6 +212,21 @@ struct Added {
 
 impl CommentEvents for PageEvents {
     fn added(&self, comment: &Comment) {
+        if let Some((mail, origin)) = &self.mail {
+            let pages = self
+                .shown
+                .0
+                .pages
+                .read()
+                .unwrap_or_else(PoisonError::into_inner);
+            let on = pages.values().find(|page| page.file == comment.post);
+            // A page that left since names its file instead.
+            let page = on.map_or_else(
+                || comment.post.as_str().to_owned(),
+                |page| format!("{origin}{}", page.href),
+            );
+            mail.send(comment, &page);
+        }
         let comment = api_shape(comment, Audience::Integrations);
         self.announce.fire(Event::CommentAdded, Added { comment });
     }
@@ -265,24 +285,27 @@ impl CommentsReload {
 /// The comments of a running site: the routes of the reader form, the
 /// Admin API's moderation, and what reads them again after another process
 /// changed them. The form's answers carry `security`, and each new comment
-/// is told to `announce`. A site not in server mode takes no comments: no
-/// form route, and moderation finds nothing.
+/// is told to `announce` and, from a reader, mailed through `mailer` to the
+/// owners. A site not in server mode takes no comments: no form route, and
+/// moderation finds nothing.
 pub(crate) async fn start(
     config: &Config,
     (db, site): (&Database, SiteId),
     (source, live): (&SitePages, &LivePages),
-    (security, announce): (SecurityHeaders, SiteAnnounce),
+    (security, announce, mailer): (SecurityHeaders, SiteAnnounce, Option<Arc<dyn Mailer>>),
 ) -> (Router, Arc<dyn CommentModeration>, Option<CommentsReload>) {
     let (Some(shown), Some(stylesheet)) = (source.comments(), source.stylesheet()) else {
         return (Router::new(), Arc::new(NoComments), None);
     };
     let store = CommentTable::new(db.clone(), site);
+    let origin = config.address().as_str().trim_end_matches('/').to_owned();
     let events = PageEvents {
         store: store.clone(),
         shown: shown.clone(),
         source: source.clone(),
         live: live.clone(),
         announce,
+        mail: ReaderCommentMail::of((db, site, config), mailer).map(|mail| (mail, origin)),
     };
     let comments = Comments::new(store, SystemClock).with_events(Arc::new(events));
     match comments.shown().await {
