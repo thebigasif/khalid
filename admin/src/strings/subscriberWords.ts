@@ -35,6 +35,11 @@ export const subscriberWords = {
     labelsHint: "Leave empty to send to everyone on the newsletter. Separate labels with commas.",
     submit: (readers: number) => `Send to ${plural(readers, "reader", "readers")}`,
     submitLabelled: "Send to the labelled readers",
+    counting: "Counting the readers with these labels…",
+    segment: (readers: number, list: string) =>
+      readers === 0
+        ? `No reader of ${list} carries every one of these labels, so this send would reach nobody.`
+        : `${plural(readers, "reader", "readers")} of ${list} ${readers === 1 ? "carries" : "carry"} every one of these labels.`,
     sending: "Sending…",
     started: (title: string) =>
       `${title} is on its way. Its numbers show under Sent emails once the copies are out.`,

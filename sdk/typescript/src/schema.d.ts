@@ -2428,6 +2428,16 @@ export type SearchTotals = {
   property: string;
 };
 
+/** How many readers a send would reach. */
+export type SegmentReaders = {
+  /** The labels each counted reader carries, each once. */
+  labels: string[];
+  /** The newsletter. */
+  list: string;
+  /** How many confirmed readers carry every label. */
+  readers: number;
+};
+
 /** Whether the site can send a newsletter now, and if not, what it lacks. */
 export type SendReadiness = "ready" | "no_mail" | "no_postal_address";
 
@@ -3668,6 +3678,24 @@ export interface Operations {
       };
     };
     output: AdminNewsletters;
+  };
+  /** Counts the confirmed readers of a newsletter who carry every label given, so a send to them can say how many it reaches before it starts. Needs `subscribers:write`. */
+  count_readers: {
+    input: {
+      path: {
+        /** The newsletter, such as main */
+        name: string;
+      };
+      query?: {
+        /** The labels every counted reader carries, such as `paid,vip`. Leave it out to count every confirmed reader. */
+        labels?: string;
+      };
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: SegmentReaders;
   };
   /** Emails a published post to a newsletter's confirmed subscribers, once. The answer comes as the copies start to leave. Needs `subscribers:write`. */
   send_post: {

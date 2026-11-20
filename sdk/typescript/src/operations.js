@@ -55,6 +55,7 @@ export const operations = {
   delete_media: { method: "DELETE", path: "/api/admin/v1/media/{id}/", key: "admin", body: null },
   copy_picture: { method: "POST", path: "/api/admin/v1/media/{id}/copies/", key: "admin", body: "application/json" },
   list_newsletters: { method: "GET", path: "/api/admin/v1/newsletters/", key: "admin", body: null },
+  count_readers: { method: "GET", path: "/api/admin/v1/newsletters/{name}/readers/", key: "admin", body: null },
   send_post: { method: "POST", path: "/api/admin/v1/newsletters/{name}/sends/", key: "admin", body: "application/json" },
   list_misses: { method: "GET", path: "/api/admin/v1/not-found/", key: "admin", body: null },
   redirect_miss: { method: "POST", path: "/api/admin/v1/not-found/redirect/", key: "admin", body: "application/json" },

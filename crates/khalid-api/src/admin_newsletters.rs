@@ -2,13 +2,13 @@
 //! sign-up form, the emails that went out, and sending a post (G39, plan
 //! 4.6).
 
-use axum::extract::rejection::JsonRejection;
-use axum::extract::{OriginalUri, Path, State};
+use axum::extract::rejection::{JsonRejection, QueryRejection};
+use axum::extract::{OriginalUri, Path, Query, State};
 use axum::http::StatusCode;
 use axum::{Extension, Json, middleware};
 use khalid_core::{Slug, UserMessage};
-use serde::Serialize;
-use utoipa::ToSchema;
+use serde::{Deserialize, Serialize};
+use utoipa::{IntoParams, ToSchema};
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
@@ -26,6 +26,7 @@ pub(crate) fn routes(subscribers: Subscribers, door: AdminDoor) -> OpenApiRouter
     OpenApiRouter::new()
         .routes(routes!(list_newsletters))
         .routes(routes!(send_post))
+        .routes(routes!(count_readers))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
         .with_state(subscribers)
@@ -127,6 +128,93 @@ async fn send_post(
         error => Problem::internal(&error),
     })?;
     Ok((StatusCode::ACCEPTED, Json(SendStarted { key })))
+}
+
+/// Which readers to count: labels, separated by commas.
+#[derive(Debug, Deserialize, IntoParams)]
+#[into_params(parameter_in = Query)]
+#[serde(deny_unknown_fields)]
+pub(crate) struct ReadersQuery {
+    /// The labels every counted reader carries, such as `paid,vip`. Leave
+    /// it out to count every confirmed reader.
+    labels: Option<String>,
+}
+
+/// How many readers a send would reach.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct SegmentReaders {
+    /// The newsletter.
+    #[schema(example = "main")]
+    list: String,
+    /// The labels each counted reader carries, each once.
+    #[schema(example = json!(["paid"]))]
+    labels: Vec<String>,
+    /// How many confirmed readers carry every label.
+    #[schema(example = 42)]
+    readers: u64,
+}
+
+/// Counts the confirmed readers of a newsletter who carry every label
+/// given, so a send to them can say how many it reaches before it starts.
+/// Needs `subscribers:write`.
+#[utoipa::path(
+    get, path = "/newsletters/{name}/readers/", tag = "admin subscribers",
+    security(("admin_key" = [])),
+    params(("name" = String, Path, description = "The newsletter, such as main"), ReadersQuery),
+    responses(
+        (status = 200, description = "How many readers a send would reach", body = SegmentReaders),
+        (status = 400, description = "A label is not lowercase letters, digits and hyphens", body = Problem, content_type = "application/problem+json"),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks subscribers:write", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "The site has no newsletter by that name", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn count_readers(
+    State(subscribers): State<Subscribers>,
+    Extension(principal): Extension<Principal>,
+    Path(name): Path<String>,
+    OriginalUri(uri): OriginalUri,
+    query: Result<Query<ReadersQuery>, QueryRejection>,
+) -> Result<Json<SegmentReaders>, Problem> {
+    require(&principal, Scope::SubscribersWrite)?;
+    let Query(query) = query.map_err(|_| bad_labels())?;
+    let list = Slug::try_new(&name).map_err(|_| no_list(&name, uri.path()))?;
+    let mut labels: Vec<Slug> = Vec::new();
+    for typed in query.labels.as_deref().unwrap_or_default().split(',') {
+        let typed = typed.trim();
+        if typed.is_empty() {
+            continue;
+        }
+        let label = Slug::try_new(typed).map_err(|_| bad_labels())?;
+        if !labels.contains(&label) {
+            labels.push(label);
+        }
+    }
+    let readers = match subscribers {
+        Some(desk) => desk.readers(&list, &labels).await,
+        None => Ok(0),
+    };
+    let readers = readers.map_err(|error| match error {
+        SubscriberError::NoList => no_list(&name, uri.path()),
+        error => Problem::internal(&error),
+    })?;
+    Ok(Json(SegmentReaders {
+        list: list.as_str().to_owned(),
+        labels: labels
+            .iter()
+            .map(|label| label.as_str().to_owned())
+            .collect(),
+        readers,
+    }))
+}
+
+fn bad_labels() -> Problem {
+    let message = UserMessage::new(
+        "A label in the count is not one Khalid can read.",
+        "Labels are lowercase letters, digits and hyphens, such as paid.",
+        "Separate the labels with commas, such as labels=paid,vip.",
+    );
+    Problem::new(ProblemType::InvalidQuery, &message)
 }
 
 fn unreadable(reason: &str) -> Problem {

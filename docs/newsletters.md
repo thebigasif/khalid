@@ -156,6 +156,7 @@ The same routes are in the Admin API, for a key with the `subscribers:write` sco
 | `POST /api/admin/v1/subscribers/import/` | Brings in a CSV file: Khalid's own export, Substack's `email_list` file, or Ghost's members export. Readers without a newsletter join `?list=` or `main`. It answers how many were added, how many were there already, and the line of each row left out, with why. |
 | `GET /api/admin/v1/subscribers/export/` | Every reader as a CSV file, oldest first, with the columns `email,status,created_at,lists,labels`. The import route reads it back. |
 | `GET /api/admin/v1/newsletters/` | Each newsletter with its confirmed and waiting readers and its sign-up form, whether the site can send now (`ready`, `no_mail` or `no_postal_address`), and the numbers of every email sent. |
+| `GET /api/admin/v1/newsletters/{name}/readers/?labels=paid,vip` | Counts the confirmed readers who carry every label, as `khalid newsletter segment` does, so a send can say how many it reaches first. The Subscribers screen shows it as you type labels. |
 | `POST /api/admin/v1/newsletters/{name}/sends/` | Sends a published post, `{"post": "en.what-a-sitemap-does", "labels": ["paid"]}`, once. It answers `202` with the send's key as the copies start to leave. |
 
 Readers who sign up on your site confirm through the link in their email, so every address they give asked to be there.
