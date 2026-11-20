@@ -1,0 +1,61 @@
+# An ordinary markdown link to an address beside the site's posts that
+# nothing answers is flagged, with or without its section and final slash,
+# and over the site's own host too. A link to a post, a page, a list the
+# build writes, an old address that redirects, a file, or a folder above
+# the posts is fine.
+extends = "clean"
+
+[[links]]
+kind = "internal"
+target = "/blog/link-juice-explained/"
+text = "what link juice is"
+
+[[links]]
+kind = "external"
+target = "https://www.example.com/blog/anchor-txt#tips"
+text = "anchor text tips"
+
+[[links]]
+kind = "internal"
+target = "/blog/choosing-link-text/#examples"
+text = "how to choose link text"
+
+[[links]]
+kind = "internal"
+target = "/blog/about/"
+text = "about this blog"
+
+[[links]]
+kind = "internal"
+target = "/blog/archive/"
+text = "every post"
+
+[[links]]
+kind = "internal"
+target = "/blog/link-text-tips/"
+text = "link text tips"
+
+[[links]]
+kind = "internal"
+target = "/blog/old-guide/"
+text = "the old guide"
+
+[[links]]
+kind = "internal"
+target = "/blog/checklist.pdf"
+text = "the checklist"
+
+[[links]]
+kind = "internal"
+target = "/blog/"
+text = "the blog"
+
+[[links]]
+kind = "internal"
+target = "/blog/tag/links/"
+text = "posts about links"
+
+[[links]]
+kind = "external"
+target = "https://developers.google.com/search/docs/crawling-indexing/links-crawlable"
+text = "Google's guide to links"

@@ -337,6 +337,12 @@ why = "Each detour slows readers down, and Google trusts a direct link to the cu
 fix = "Change the link to the post's current address."
 guide = "redirects"
 
+[broken-internal-link]
+what = "A link in this post opens an address on this site that has no page."
+why = "Readers who follow it land on a page that does not exist, and search engines count it as a dead end."
+fix = "Change the link to the address of an existing page, or add a redirect from this address."
+guide = "internal-links"
+
 [cross-site-link]
 what = "This post links to a sister site that runs on the same Khalid server."
 why = "Google may read sister sites that link to each other as a link scheme and trust both less."

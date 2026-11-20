@@ -113,6 +113,7 @@ fn blocking_and_structure_rules(thresholds: Thresholds, reviewed: Vec<Slug>) -> 
             max: thresholds.max_links,
         }),
         Box::new(link_targets::RedirectingLink),
+        Box::new(link_targets::BrokenInternalLink),
         Box::new(link_targets::CrossSiteLink),
         Box::new(structure::FormWithoutDestination),
         Box::new(site_trust::AuthorWithoutProfile),
