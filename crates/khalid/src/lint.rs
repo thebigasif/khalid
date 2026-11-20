@@ -275,9 +275,9 @@ pub(crate) fn write_finding(text: &mut String, finding: &Finding) {
     }
     let _ = writeln!(
         text,
-        "  Rule {}, guide {}.\n",
+        "  Rule {}. Read more: {}\n",
         finding.rule(),
-        message.guide()
+        message.guide_url()
     );
 }
 
