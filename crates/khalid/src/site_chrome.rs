@@ -1,8 +1,14 @@
 //! What every page of one language shows around its content: the site's
 //! name, stylesheet, reader script, menus and announcement, from `site.toml`.
 
-use khalid_core::{Config, FooterGroup, Locale, MenuLink, Mode};
-use khalid_render::{AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite};
+use std::collections::BTreeMap;
+use std::fmt::Display;
+use std::path::Path;
+
+use khalid_core::{Config, FooterGroup, Locale, MenuLink, Mode, UserMessage};
+use khalid_render::{
+    AnnouncementBar, BreadcrumbStyle, Nav, NavGroup, NavLink, RenderSite, SiteWords,
+};
 
 use crate::build_pages::path_of;
 use crate::{assets, build_ai_page, build_reader, imprint_page};
@@ -37,6 +43,30 @@ pub(crate) fn render_site(config: &Config, locale: &Locale, stylesheet: &str) ->
             bold_last: config.seo().breadcrumbs.bold_last,
         },
     }
+}
+
+/// The site's own words for the pages and emails another crate writes, by
+/// language: the `part` table, such as `[comments]`, of each file in the
+/// site's `theme/strings/`. None when the files cannot be read, since the
+/// renderer refuses them with their own message first.
+pub(crate) fn own_words(folder: &Path, part: &str) -> BTreeMap<String, toml::Table> {
+    SiteWords::of_site(folder)
+        .map(|words| words.part(part))
+        .unwrap_or_default()
+}
+
+/// The message when the `part` table of a site strings file, whose crate
+/// keeps its English words in `crate_name`, holds a word nothing shows.
+pub(crate) fn own_words_message(part: &str, crate_name: &str, error: &dyn Display) -> UserMessage {
+    UserMessage::new(
+        format!("Khalid could not use the site's own [{part}] words: {error}."),
+        format!(
+            "The [{part}] table of a strings file, such as theme/strings/fr.toml, changes the words of those pages and emails."
+        ),
+        format!(
+            "Use only the keys of https://github.com/thebigasif/khalid/tree/main/crates/{crate_name}/strings/en.toml in it, then try again."
+        ),
+    )
 }
 
 /// Where a template's newsletter form posts: the site's own sign-up

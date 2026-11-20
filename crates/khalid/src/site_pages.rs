@@ -198,6 +198,11 @@ impl SitePages {
         self.0.forms.clone()
     }
 
+    /// The site folder the pages are made from.
+    pub(crate) fn folder(&self) -> &Path {
+        &self.0.folder
+    }
+
     /// The address of the stylesheet every page links; `None` when headless.
     pub(crate) fn stylesheet(&self) -> Option<String> {
         let settings = self.settings();

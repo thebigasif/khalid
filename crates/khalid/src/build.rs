@@ -242,7 +242,7 @@ fn build(
     let seo_pages = build_seo::heads(&seo_site, &mut languages)?;
     build_sitemap::fill(config, &seo_site, &seo_pages, &mut languages)?;
     let mut written = 0;
-    let locks = static_mode::locks(config.mode())?;
+    let locks = static_mode::locks(site, config.mode())?;
     let mut code = PageCode::new(config, HeadNonce::Static);
     if let Some((renderer, css, sheets)) = &theme {
         write_asset(out, css)?;

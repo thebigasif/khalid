@@ -75,6 +75,40 @@ fn the_sites_words_reach_text_outside_templates() {
 }
 
 #[test]
+fn the_tables_for_other_pages_are_kept_by_language_for_their_crates() {
+    let site = site_with_strings(&[
+        (
+            "fr.toml",
+            "month_1 = \"janvier\"\n\n[comments]\ntitle = \"Non envoyé\"\n",
+        ),
+        (
+            "en.toml",
+            "[notes]\nsearch = \"Search needs the server.\"\n",
+        ),
+    ]);
+    let words = SiteWords::of_site(site.path()).unwrap();
+    let comments = words.part("comments");
+    assert_eq!(comments.keys().collect::<Vec<_>>(), ["fr"]);
+    assert_eq!(comments["fr"]["title"].as_str(), Some("Non envoyé"));
+    assert_eq!(
+        words.part("notes")["en"]["search"].as_str(),
+        Some("Search needs the server.")
+    );
+    assert!(words.part("newsletter").is_empty());
+    assert_eq!(words.get(&locale("fr"), "month_1"), Some("janvier"));
+}
+
+#[test]
+fn a_table_no_page_reads_is_refused() {
+    let site = site_with_strings(&[("fr.toml", "[footer]\ntitle = \"Pied\"\n")]);
+    let error = SiteWords::of_site(site.path()).unwrap_err();
+    assert!(
+        matches!(&error, RenderError::SiteStrings { .. }),
+        "{error:?}"
+    );
+}
+
+#[test]
 fn a_site_file_changes_one_built_in_word_and_keeps_the_rest() {
     let site = site_with_strings(&[("de.toml", "not_found_title = \"Nicht gefunden\"\n")]);
     let page = not_found(site.path(), "de").unwrap();
