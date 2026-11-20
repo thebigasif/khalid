@@ -141,6 +141,7 @@ pub(crate) fn ai_page(
     seo.translation = build_lists::list_key("ai")?;
     let meta = meta(config, title.clone(), description, path, PageKind::Website)?;
     let body = RenderPage {
+        image: None,
         title,
         updated: Some(today),
         body: BodyHtml::from_sanitised(body),

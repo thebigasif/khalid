@@ -1,10 +1,10 @@
-//! The Admin API's subscriber routes: the list, labels, and forgetting a
-//! reader (G39, plan 4.6). Readers join only through the sign-up form, so
-//! no route adds one.
+//! The Admin API's subscriber routes: the list, adding a reader, labels,
+//! and forgetting a reader (G39, plan 4.6, backlog row 9). A reader added
+//! here keeps the status given and gets no email.
 
 use std::sync::Arc;
 
-use axum::extract::rejection::QueryRejection;
+use axum::extract::rejection::{JsonRejection, QueryRejection};
 use axum::extract::{OriginalUri, Path, Query, State};
 use axum::http::StatusCode;
 use axum::{Extension, Json, middleware};
@@ -15,12 +15,13 @@ use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
 use crate::admin_key::{AdminDoor, require, require_admin_key};
+use crate::admin_subscriber_csv;
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
 use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::query::Limit;
-use crate::resources::{AdminSubscriber, SubscriberFilter, SubscriberStatus};
+use crate::resources::{AdminSubscriber, NewSubscriber, SubscriberFilter, SubscriberStatus};
 use crate::subscriber_desk::{LabelChange, SubscriberDesk, SubscriberError};
 
 /// The desk every subscriber route calls, or `None` for a server that
@@ -41,8 +42,9 @@ const MAX_SEARCH: usize = 200;
 /// in: addresses are readers' personal data.
 pub(crate) fn routes(subscribers: Subscribers, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
-        .routes(routes!(list_subscribers))
+        .routes(routes!(list_subscribers, add_subscriber))
         .routes(routes!(erase_subscriber))
+        .merge(admin_subscriber_csv::routes())
         .routes(routes!(add_label, remove_label))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
@@ -130,6 +132,40 @@ async fn list_subscribers(
         subscribers: listed.subscribers,
         meta,
     }))
+}
+
+/// Adds a reader with the status given, such as one who signed up on
+/// paper. No email goes out to them. Needs `subscribers:write`.
+#[utoipa::path(
+    post, path = "/subscribers/", tag = "admin subscribers",
+    security(("admin_key" = [])),
+    request_body = NewSubscriber,
+    responses(
+        (status = 201, description = "The reader, added", body = AdminSubscribers),
+        (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
+        (status = 403, description = "The key lacks subscribers:write", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The site has a subscriber at this address already", body = Problem, content_type = "application/problem+json"),
+        (status = 422, description = "The body could not be read, the address cannot take mail, or a newsletter does not exist", body = Problem, content_type = "application/problem+json"),
+    )
+)]
+async fn add_subscriber(
+    State(subscribers): State<Subscribers>,
+    Extension(principal): Extension<Principal>,
+    body: Result<Json<NewSubscriber>, JsonRejection>,
+) -> Result<(StatusCode, Json<AdminSubscribers>), Problem> {
+    require(&principal, Scope::SubscribersWrite)?;
+    let Json(reader) = body.map_err(|rejection| unreadable(&rejection.body_text()))?;
+    let desk = subscribers.ok_or_else(no_store)?;
+    let added = desk
+        .add(&reader)
+        .await
+        .map_err(|error| problem(error, ""))?;
+    Ok((
+        StatusCode::CREATED,
+        Json(AdminSubscribers {
+            subscribers: vec![added],
+        }),
+    ))
 }
 
 /// Gives a subscriber a label, such as `paid`. Needs `subscribers:write`.
@@ -231,12 +267,61 @@ async fn erase_subscriber(
 }
 
 /// The problem a desk error at `path` answers with.
-fn problem(error: SubscriberError, path: &str) -> Problem {
+pub(crate) fn problem(error: SubscriberError, path: &str) -> Problem {
     match error {
         SubscriberError::NotFound => missing(path),
         SubscriberError::Unsubscribed => left(),
+        SubscriberError::BadAddress => bad_address(),
+        SubscriberError::Taken => taken(),
+        SubscriberError::NoList => no_list(),
         error => Problem::internal(&error),
     }
+}
+
+/// The problem for a server that keeps no subscribers, so cannot add one.
+pub(crate) fn no_store() -> Problem {
+    let message = UserMessage::new(
+        "This site keeps no subscribers, so none can be added.",
+        "Subscribers live in the site's database, which only khalid serve opens.",
+        "Run the site with khalid serve, then add the reader again.",
+    );
+    Problem::new(ProblemType::Conflict, &message)
+}
+
+fn unreadable(reason: &str) -> Problem {
+    let message = UserMessage::new(
+        format!("The reader could not be read: {reason}."),
+        "A reader needs an email and a status: pending, confirmed or unsubscribed.",
+        "Send them as JSON, such as an email with \"status\": \"confirmed\".",
+    );
+    Problem::new(ProblemType::InvalidBody, &message)
+}
+
+fn bad_address() -> Problem {
+    let message = UserMessage::new(
+        "This address cannot take mail.",
+        "A newsletter sent to it would never arrive.",
+        "Check the address for a typing mistake, such as a missing @.",
+    );
+    Problem::new(ProblemType::InvalidBody, &message).with_rule("email")
+}
+
+fn taken() -> Problem {
+    let message = UserMessage::new(
+        "The site has a subscriber at this address already.",
+        "Each address is one reader, so it was not added twice.",
+        "Find them in the list to change their labels.",
+    );
+    Problem::new(ProblemType::Conflict, &message).with_rule("email")
+}
+
+fn no_list() -> Problem {
+    let message = UserMessage::new(
+        "The site has no newsletter by one of these names.",
+        "A reader can only join a newsletter in content/newsletters/.",
+        "Pick a newsletter the site has, or leave lists out for main.",
+    );
+    Problem::new(ProblemType::InvalidBody, &message).with_rule("lists")
 }
 
 fn missing(path: &str) -> Problem {

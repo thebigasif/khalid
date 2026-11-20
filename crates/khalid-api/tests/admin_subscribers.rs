@@ -7,6 +7,7 @@
 
 mod common;
 
+use std::fmt::Write as _;
 use std::sync::{Arc, Mutex};
 
 use axum::body::{Body, to_bytes};
@@ -18,8 +19,9 @@ use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
 use khalid_api::resources::{
-    AdminNewsletter, AdminSend, AdminSubscriber, NewsletterSend, SendReadiness, SubscriberFilter,
-    SubscriberPage, SubscriberStatus,
+    AdminNewsletter, AdminSend, AdminSubscriber, NewSubscriber, NewsletterSend, ReaderFile,
+    SendReadiness, SkippedReader, SubscriberFilter, SubscriberImport, SubscriberPage,
+    SubscriberStatus,
 };
 use khalid_api::subscriber_desk::{LabelChange, SubscriberDesk, SubscriberError};
 use khalid_core::Slug;
@@ -64,6 +66,26 @@ impl Desk {
             readers: Mutex::new(readers),
             ..Self::default()
         })
+    }
+
+    /// Adds `new` as the next reader on `main`, unless their address is
+    /// taken or has no `@`.
+    fn put(&self, new: &NewSubscriber) -> Result<AdminSubscriber, SubscriberError> {
+        let mut readers = self.readers.lock().unwrap();
+        if !new.email.contains('@') {
+            return Err(SubscriberError::BadAddress);
+        }
+        if readers.iter().any(|each| each.email == new.email) {
+            return Err(SubscriberError::Taken);
+        }
+        if new.lists.iter().any(|list| list.as_str() != "main") {
+            return Err(SubscriberError::NoList);
+        }
+        let id = i64::try_from(readers.len()).unwrap() + 1;
+        let mut added = reader(id, &new.email, new.status);
+        added.labels.clone_from(&new.labels);
+        readers.push(added.clone());
+        Ok(added)
     }
 }
 
@@ -136,6 +158,61 @@ impl SubscriberDesk for Desk {
             Ok(())
         };
         Box::pin(async move { answer })
+    }
+
+    fn add<'a>(
+        &'a self,
+        new: &'a NewSubscriber,
+    ) -> BoxFuture<'a, Result<AdminSubscriber, SubscriberError>> {
+        let answer = self.put(new);
+        Box::pin(async move { answer })
+    }
+
+    /// Reads `email,status` rows; a file with another header is refused.
+    fn import<'a>(
+        &'a self,
+        csv: &'a str,
+        _list: Option<&'a Slug>,
+    ) -> BoxFuture<'a, Result<SubscriberImport, SubscriberError>> {
+        let mut lines = csv.lines();
+        let answer = if lines.next() == Some("email,status") {
+            let (mut added, mut already) = (0, 0);
+            for line in lines {
+                let (email, status) = line.split_once(',').unwrap();
+                let status = serde_json::from_value(json!(status)).unwrap();
+                let new = NewSubscriber {
+                    email: email.to_owned(),
+                    status,
+                    created_at: None,
+                    lists: Vec::new(),
+                    labels: Vec::new(),
+                };
+                match self.put(&new) {
+                    Ok(_) => added += 1,
+                    Err(_) => already += 1,
+                }
+            }
+            let skipped = vec![SkippedReader::new(9, "it has no email address".to_owned())];
+            Ok(SubscriberImport::new(
+                ReaderFile::Khalid,
+                (added, already),
+                skipped,
+            ))
+        } else {
+            Err(SubscriberError::NotReaders(
+                "its first row is no header".to_owned(),
+            ))
+        };
+        Box::pin(async move { answer })
+    }
+
+    fn export(&self) -> BoxFuture<'_, Result<String, SubscriberError>> {
+        let readers = self.readers.lock().unwrap();
+        let mut text = "email,status\n".to_owned();
+        for each in readers.iter() {
+            writeln!(text, "{},{:?}", each.email, each.status).unwrap();
+        }
+        Box::pin(async move { Ok(text) })
     }
 
     fn newsletters(&self) -> BoxFuture<'_, Result<Vec<AdminNewsletter>, SubscriberError>> {
@@ -422,4 +499,119 @@ async fn a_server_with_no_subscribers_lists_none() {
     assert_eq!(json["sending"], "no_mail");
     let (status, _) = send(&router, OWNER, ("DELETE", "/subscribers/1/"), None).await;
     assert_eq!(status, StatusCode::NOT_FOUND);
+    let body = json!({"email": "kim@example.com", "status": "confirmed"});
+    let (status, json) = send(&router, OWNER, ("POST", "/subscribers/"), Some(&body)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+}
+
+#[tokio::test]
+async fn a_reader_is_added_with_the_status_given() {
+    let router = router(Some(three()));
+    let body = json!({"email": "kim@example.com", "status": "confirmed", "labels": ["paid"]});
+    let (status, json) = send(&router, OWNER, ("POST", "/subscribers/"), Some(&body)).await;
+    assert_eq!(status, StatusCode::CREATED, "{json}");
+    let kim = &json["subscribers"][0];
+    assert_eq!(
+        (kim["status"].as_str(), kim["id"].as_i64()),
+        (Some("confirmed"), Some(4))
+    );
+    assert_eq!(kim["labels"], json!(["paid"]));
+    let (status, json) = send(&router, OWNER, ("POST", "/subscribers/"), Some(&body)).await;
+    assert_eq!(status, StatusCode::CONFLICT, "{json}");
+    assert_eq!(json["rule"], "email");
+}
+
+#[tokio::test]
+async fn an_added_reader_needs_an_address_a_status_and_a_real_list() {
+    let router = router(Some(three()));
+    let cases = [
+        (json!({"email": "kim@example.com"}), None),
+        (json!({"email": "kim", "status": "pending"}), Some("email")),
+        (
+            json!({"email": "kim@example.com", "status": "pending", "lists": ["weekly"]}),
+            Some("lists"),
+        ),
+    ];
+    for (body, rule) in cases {
+        let (status, json) = send(&router, OWNER, ("POST", "/subscribers/"), Some(&body)).await;
+        assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{body}: {json}");
+        assert_eq!(json["rule"].as_str(), rule, "{body}: {json}");
+    }
+}
+
+/// Sends `body` as CSV to `path`; answers the status, content type and
+/// body text.
+async fn csv(
+    router: &axum::Router,
+    key: &str,
+    (method, path): (&str, &str),
+    body: &str,
+) -> (StatusCode, String, String) {
+    let request = Request::builder()
+        .method(method)
+        .uri(format!("/api/admin/v1{path}"))
+        .header("authorization", format!("Khalid {key}"))
+        .header("content-type", "text/csv")
+        .body(Body::from(body.to_owned()))
+        .unwrap();
+    let response = router.clone().oneshot(request).await.unwrap();
+    let status = response.status();
+    let kind = response
+        .headers()
+        .get("content-type")
+        .map(|v| v.to_str().unwrap().to_owned());
+    let bytes = to_bytes(response.into_body(), 1024 * 1024).await.unwrap();
+    (
+        status,
+        kind.unwrap_or_default(),
+        String::from_utf8(bytes.to_vec()).unwrap(),
+    )
+}
+
+#[tokio::test]
+async fn a_reader_list_comes_in_and_goes_out() {
+    let router = router(Some(three()));
+    let file = "email,status\nkim@example.com,confirmed\nlena@example.com,pending\n";
+    let route = ("POST", "/subscribers/import/?list=main");
+    let (status, _, text) = csv(&router, OWNER, route, file).await;
+    assert_eq!(status, StatusCode::OK, "{text}");
+    let json: Value = serde_json::from_str(&text).unwrap();
+    let skipped = json!([{"line": 9, "why": "it has no email address"}]);
+    assert_eq!(
+        json,
+        json!({"source": "khalid", "added": 1, "already": 1, "skipped": skipped})
+    );
+    let (status, kind, text) = csv(&router, OWNER, ("GET", "/subscribers/export/"), "").await;
+    assert_eq!(
+        (status, kind.as_str()),
+        (StatusCode::OK, "text/csv; charset=utf-8")
+    );
+    assert!(
+        text.starts_with("email,status\nlena@example.com,"),
+        "{text}"
+    );
+    assert!(text.ends_with("kim@example.com,Confirmed\n"), "{text}");
+}
+
+#[tokio::test]
+async fn a_file_that_is_no_reader_list_adds_no_one() {
+    let router = router(Some(three()));
+    let route = ("POST", "/subscribers/import/");
+    let (status, _, text) = csv(&router, OWNER, route, "post_id,title\n").await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{text}");
+    assert!(text.contains("\"rule\":\"file\""), "{text}");
+    // A file past the 2 MB other routes take still reaches the reader.
+    let big = format!("post_id,title\n{}\n", "a".repeat(3 * 1024 * 1024));
+    let (status, _, text) = csv(&router, OWNER, route, &big).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{text}");
+    let route = ("POST", "/subscribers/import/?list=Weekly!");
+    let (status, _, text) = csv(&router, OWNER, route, "email,status\n").await;
+    assert_eq!(status, StatusCode::BAD_REQUEST, "{text}");
+    for route in [
+        ("POST", "/subscribers/import/"),
+        ("GET", "/subscribers/export/"),
+    ] {
+        let (status, _, text) = csv(&router, WRITER, route, "email,status\n").await;
+        assert_eq!(status, StatusCode::FORBIDDEN, "{route:?}: {text}");
+    }
 }
