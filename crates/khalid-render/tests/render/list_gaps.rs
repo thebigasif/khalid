@@ -74,6 +74,7 @@ fn a_series_page_numbers_its_parts_in_order() {
 
 fn term(links: Option<GlossaryLinks>) -> PageBody {
     PageBody::Page(RenderPage {
+        image: None,
         title: "Anchor text".to_owned(),
         updated: None,
         body: BodyHtml::from_sanitised("<p>The words a link is written on.</p>".to_owned()),

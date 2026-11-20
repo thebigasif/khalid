@@ -211,6 +211,28 @@ fn a_page_may_be_a_hub_for_a_category_with_chapters_in_order() {
     assert!(error.contains("missing field `category`"), "{error}");
 }
 
+#[test]
+fn a_page_takes_robots_canonical_a_feature_image_and_share_cards() {
+    let text = "---\ntitle: About\nrobots: noindex\ncanonical: https://serpdad.com/about/\n\
+                image:\n  src: team.jpg\n  alt: The team at the office\n\
+                share_cards:\n  x:\n    title: Who we are\n---\n";
+    let dir = site_with("content/en/pages/about.md", text);
+    let content = read_content(&ContentTree::walk(dir.path()).unwrap()).unwrap();
+    let front = &content.pages[0].front;
+    let robots = front.robots.as_ref().map(ToString::to_string);
+    assert_eq!(robots.as_deref(), Some("noindex, follow"));
+    let canonical = front.canonical.as_ref().map(ToString::to_string);
+    assert_eq!(canonical.as_deref(), Some("https://serpdad.com/about/"));
+    let image = front.image.as_ref().map(|image| image.alt.as_str());
+    assert_eq!(image, Some("The team at the office"));
+    let x = front
+        .share_cards
+        .x
+        .as_ref()
+        .and_then(|x| x.title.as_deref());
+    assert_eq!(x, Some("Who we are"));
+}
+
 /// Writes `text` as the `facts.toml` of the site in `dir`.
 #[cfg(test)]
 fn write_facts(dir: &tempfile::TempDir, text: &str) {
