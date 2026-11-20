@@ -41,8 +41,9 @@ pub(crate) trait EntryFile: Entry {
     /// The file of a new entry.
     fn text(new: &Self::New) -> PostText;
 
-    /// Writes `edit` into the file, leaving every other line as it was.
-    fn edit(text: &mut PostText, edit: &Self::Edit);
+    /// Writes `edit` into the file of `current`, leaving every other line
+    /// as it was.
+    fn edit(text: &mut PostText, current: &Self, edit: &Self::Edit);
 
     /// The same entry, told the `path` readers would find it at, such as
     /// `/blog/about/`. Only an entry with its own address keeps it.
@@ -230,7 +231,7 @@ impl<T: EntryFile> SiteEntries<T> {
         let found = self.current(id, T::seen(edit))?;
         let text = fs::read_to_string(&found.path).map_err(EntryStoreError::new)?;
         let mut text = PostText::parse(&text).ok_or_else(|| unreadable(&found.path))?;
-        T::edit(&mut text, edit);
+        T::edit(&mut text, &found.entry, edit);
         atomic::replace(&found.path, &text.to_text()).map_err(EntryStoreError::new)?;
         self.written(id)
     }
