@@ -1,5 +1,5 @@
 // The Subscribers screen's words, kept beside en.ts so that file stays short.
-import type { SendReadiness, SubscriberStatus } from "../api/subscribers";
+import type { ReaderImport, SendReadiness, SubscriberStatus } from "../api/subscribers";
 
 const plural = (count: number, one: string, many: string) =>
   `${count.toLocaleString("en")} ${count === 1 ? one : many}`;
@@ -7,7 +7,7 @@ const plural = (count: number, one: string, many: string) =>
 export const subscriberWords = {
   nav: "Subscribers",
   title: "Subscribers",
-  lede: "The readers who signed up for your newsletters. Readers join only through the sign-up form and the link in its email, so everyone here asked to be here. Only the owner and admins see this screen.",
+  lede: "The readers who signed up for your newsletters. New readers join through the sign-up form and the link in its email, and readers you bring from another newsletter keep where they stood there. Only the owner and admins see this screen.",
   loading: "Loading your newsletters…",
   lists: {
     title: "Your newsletters",
@@ -101,5 +101,30 @@ export const subscriberWords = {
     next: "Next 50",
     forgetNote:
       "Forget removes a reader's address, newsletters and labels for good, for a reader who asks. A reader who wants fewer emails can unsubscribe with the link in any of them.",
+  },
+  files: {
+    title: "Move readers in or out",
+    lede: "Bring your list from Substack, Ghost or another Khalid site as a CSV file (a spreadsheet saved as plain text). Each reader keeps where they stood there, and no email goes to them. Addresses already here stay as they are.",
+    download: "Download every reader (CSV)",
+    file: "Reader file",
+    fileHint: "Substack's email_list file, Ghost's members export, or a file you downloaded here.",
+    into: "Readers the file puts on no newsletter join",
+    checking: "Reading the file…",
+    sources: { khalid: "Khalid", substack: "Substack", ghost: "Ghost" } satisfies Record<
+      ReaderImport["source"],
+      string
+    >,
+    counted: (source: string, added: number) =>
+      `This ${source} file adds ${plural(added, "reader", "readers")}.`,
+    already: (count: number) =>
+      `${plural(count, "reader is", "readers are")} here already and will stay as they are.`,
+    notYet: "Nothing is saved until you say yes.",
+    skipped: (count: number) => `${plural(count, "row is", "rows are")} left out`,
+    skippedRow: (line: number, why: string) => `Line ${line.toLocaleString("en")}: ${why}`,
+    add: (added: number) => `Add ${plural(added, "reader", "readers")}`,
+    adding: "Adding the readers…",
+    added: (added: number) =>
+      `${plural(added, "reader is", "readers are")} added. No email went to them.`,
+    nothingNew: "Every reader in this file is here already, so there is nothing to add.",
   },
 };
