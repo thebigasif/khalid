@@ -259,3 +259,48 @@ async fn a_delete_that_names_no_copy_is_a_400() {
     let (status, _) = send(&router, "GET", about, EDITOR, None).await;
     assert_eq!(status, StatusCode::OK);
 }
+
+#[tokio::test]
+async fn a_pages_search_settings_are_set_kept_and_cleared() {
+    let router = with_about();
+    let about = "/api/admin/v1/pages/en.about/";
+    let (_, json) = send(&router, "GET", about, EDITOR, None).await;
+    let unset = json!({"robots": null, "canonical": null, "feature_image": null,
+        "share_cards": {"x": null, "facebook": null}});
+    assert_eq!(json["pages"][0]["seo"], unset, "{json}");
+    let seo = json!({"robots": "noindex", "canonical": "https://serpdad.com/about/",
+        "feature_image": {"src": "team.jpg", "alt": "The team"},
+        "share_cards": {"x": {"title": "Who we are"}}});
+    let edit = json!({"pages": [{"seo": seo, "updated_at": LAST_CHANGE}]});
+    let (status, json) = send(&router, "PUT", about, EDITOR, Some(edit)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let saved = &json["pages"][0];
+    assert_eq!(saved["seo"]["robots"], "noindex, follow", "{json}");
+    assert_eq!(saved["seo"]["feature_image"]["alt"], "The team", "{json}");
+    let seen = saved["updated_at"].clone();
+    let edit =
+        json!({"pages": [{"title": "About us", "seo": {"robots": null}, "updated_at": seen}]});
+    let (status, json) = send(&router, "PUT", about, EDITOR, Some(edit)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    let seo = &json["pages"][0]["seo"];
+    assert_eq!(seo["robots"], Value::Null, "{json}");
+    assert_eq!(seo["canonical"], "https://serpdad.com/about/", "{json}");
+    assert_eq!(seo["share_cards"]["x"]["title"], "Who we are", "{json}");
+    let blank = json!({"pages": [{"seo": {"feature_image": {"src": "a.jpg", "alt": " "}},
+        "updated_at": json["pages"][0]["updated_at"]}]});
+    let (status, _) = send(&router, "PUT", about, EDITOR, Some(blank)).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY);
+}
+
+#[tokio::test]
+async fn a_new_page_may_start_with_search_settings() {
+    let router = with_about();
+    let new = json!({"pages": [{"slug": "thanks", "title": "Thanks", "markdown": "Got it.",
+        "seo": {"robots": "noindex, nofollow"}}]});
+    let (status, json) = send(&router, "POST", "/api/admin/v1/pages/", EDITOR, Some(new)).await;
+    assert_eq!(status, StatusCode::CREATED, "{json}");
+    assert_eq!(
+        json["pages"][0]["seo"]["robots"], "noindex, nofollow",
+        "{json}"
+    );
+}

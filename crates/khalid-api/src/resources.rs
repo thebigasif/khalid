@@ -18,6 +18,7 @@ mod comment;
 mod content_collection;
 mod media;
 mod menu;
+mod page_seo;
 mod post;
 mod post_head;
 mod post_row;
@@ -56,6 +57,7 @@ pub use media::{
     MediaEditBody, MediaEdits, MediaFolder, MediaFolders, MediaItems, MediaList, PictureEditBody,
 };
 pub use menu::{Menu, MenuLink};
+pub use page_seo::{PageSeo, PageSeoEdit};
 pub use post::{Bodies, Post, PostSeries};
 pub use post_head::{HeadElement, HeadParts, PostHead};
 pub use post_row::{ClusterPlace, Gate, IndexStatus, LintCounts, PostLinks, PostRow};

@@ -15321,6 +15321,7 @@
           "language",
           "title",
           "markdown",
+          "seo",
           "updated_at"
         ],
         "properties": {
@@ -15351,6 +15352,10 @@
             ],
             "description": "Where readers find it on the site, such as a redirect leads from\nonce the page is deleted.",
             "example": "/blog/about/"
+          },
+          "seo": {
+            "$ref": "#/components/schemas/PageSeo",
+            "description": "Its robots directives, canonical address, feature image and share\ncards."
           },
           "slug": {
             "type": "string",
@@ -19004,6 +19009,10 @@
             "type": "string",
             "description": "The body, in markdown."
           },
+          "seo": {
+            "$ref": "#/components/schemas/PageSeo",
+            "description": "Its search settings, all unset when left out."
+          },
           "slug": {
             "type": "string",
             "description": "The last part of the address, such as `about`.",
@@ -19579,6 +19588,17 @@
             ],
             "description": "A new body, in markdown."
           },
+          "seo": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PageSeoEdit",
+                "description": "New values for some search settings; the rest keep theirs."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "title": {
             "type": [
               "string",
@@ -19607,6 +19627,89 @@
               "$ref": "#/components/schemas/PageEdit"
             },
             "description": "The one edit."
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageSeo": {
+        "type": "object",
+        "description": "A page's search settings. Each is `null`, or a card with nothing set,\nuntil someone sets it.",
+        "properties": {
+          "canonical": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The address search engines should credit instead of this page.",
+            "example": "https://example.com/original/"
+          },
+          "feature_image": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FeatureImage",
+                "description": "The image under the page's heading, also used in link previews."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "robots": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The page's own robots directives, such as `noindex`, in place of\nthe site's.",
+            "example": "noindex"
+          },
+          "share_cards": {
+            "$ref": "#/components/schemas/ShareCards",
+            "description": "How the page looks when shared on X and Facebook."
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageSeoEdit": {
+        "type": "object",
+        "description": "New values for some of a page's search settings. A setting left out\nkeeps its value, and `null` clears it.",
+        "properties": {
+          "canonical": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new canonical address, or `null` for the page's own.",
+            "example": "https://example.com/original/"
+          },
+          "feature_image": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FeatureImage",
+                "description": "A new feature image, or `null` for none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "robots": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New robots directives, or `null` for the site's.",
+            "example": "noindex"
+          },
+          "share_cards": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ShareCards",
+                "description": "Both share cards; a card left out uses the page's own title,\ndescription and image."
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false
