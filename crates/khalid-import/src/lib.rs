@@ -20,6 +20,7 @@ mod pieces;
 mod redirects;
 mod sentences;
 mod slug;
+pub mod subscribers;
 pub mod substack;
 pub mod wordpress;
 mod write;
