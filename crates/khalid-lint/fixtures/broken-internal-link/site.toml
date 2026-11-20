@@ -1,0 +1,17 @@
+# A site that knows the addresses it answers: one post, one page and the
+# archive, all in /blog. One post moved, and one old address is a stored
+# redirect.
+host = "example.com"
+redirects = [{ from = "/blog/old-guide/", to = "/blog/choosing-link-text/" }]
+
+[known_paths]
+paths = ["/blog/", "/blog/choosing-link-text/", "/blog/about/", "/blog/archive/"]
+folders = ["/blog"]
+
+[[posts]]
+locale = "en"
+slug = "choosing-link-text"
+path = "/blog/choosing-link-text/"
+aliases = ["/blog/link-text-tips/"]
+title = "Choosing link text readers trust"
+body_text = "Good link text tells readers where a link goes before they click."
