@@ -5117,7 +5117,7 @@
         "tags": [
           "admin pages"
         ],
-        "summary": "Edits one page: only the fields sent change. The edit carries the\n`updated_at` of the copy it was made on; when the page changed since,\nthe answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.",
+        "summary": "Edits one page: only the fields sent change. A new slug moves the page,\nand its old address then answers with a 301. The edit carries the\n`updated_at` of the copy it was made on; when the page changed since,\nthe answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.",
         "operationId": "edit_page",
         "parameters": [
           {
@@ -5191,7 +5191,7 @@
             }
           },
           "409": {
-            "description": "The page changed after the copy the edit was made on",
+            "description": "The page changed after the copy the edit was made on, or another page in its language has the new slug",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -19905,6 +19905,14 @@
                 "type": "null"
               }
             ]
+          },
+          "slug": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new last part of the address. The old address then answers with\na 301 to the new one, so links to it keep working.",
+            "example": "team"
           },
           "title": {
             "type": [

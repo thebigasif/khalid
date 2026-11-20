@@ -39,6 +39,10 @@ pub struct PageFront {
     /// How the page looks when shared on X and Facebook.
     #[serde(default)]
     pub share_cards: ShareCards,
+    /// Old paths that redirect here, such as `/blog/about-us/`, so a page
+    /// whose address changed keeps its links.
+    #[serde(default, deserialize_with = "crate::post::aliases")]
+    pub aliases: Vec<String>,
 }
 
 /// What makes a page a topic's hub.

@@ -18,7 +18,12 @@ export type SeoFields = {
 };
 
 /** A page's fields as the form holds them: plain text. */
-export type PageFields = { title: string; description: string; markdown: string } & SeoFields;
+export type PageFields = {
+  title: string;
+  address: string;
+  description: string;
+  markdown: string;
+} & SeoFields;
 
 /** The search choice the form shows for `robots`: listed, hidden, or hidden with its links unfollowed. */
 export function robotsChoice(robots: string | null | undefined): string {
@@ -47,6 +52,7 @@ function seoFieldsOf(seo: PageSeo): SeoFields {
 export function fieldsOf(page: AdminPage): PageFields {
   return {
     title: page.title,
+    address: page.slug,
     description: page.description ?? "",
     markdown: page.markdown,
     ...seoFieldsOf(page.seo),
@@ -100,6 +106,10 @@ export function changes(page: AdminPage, fields: PageFields): PageEdit | null {
   const before = fieldsOf(page);
   const edit: PageEdit = { updated_at: page.updated_at };
   let changed = false;
+  if (fields.address.trim() !== before.address) {
+    edit.slug = fields.address.trim();
+    changed = true;
+  }
   for (const key of ["title", "description"] as const) {
     if (fields[key].trim() !== before[key].trim()) {
       edit[key] = fields[key].trim();

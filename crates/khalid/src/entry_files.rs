@@ -59,7 +59,14 @@ impl EntryFile for AdminPage {
         text
     }
 
+    fn moved_to(edit: &PageEdit) -> Option<&Slug> {
+        edit.slug()
+    }
+
     fn edit(text: &mut PostText, current: &Self, edit: &PageEdit) {
+        if let Some(slug) = edit.slug().filter(|slug| *slug != current.slug()) {
+            write_move(text, current, slug);
+        }
         write_seo(text, current.seo(), &edit.seo_after(current.seo()));
         if let Some(title) = edit.title() {
             text.set("title", &quoted(title));
@@ -85,6 +92,32 @@ fn page_seo(front: &PageFront) -> PageSeo {
     seo.share_cards.x = cards.x.as_ref().map(settings_text::share_card);
     seo.share_cards.facebook = cards.facebook.as_ref().map(settings_text::share_card);
     seo
+}
+
+/// Writes the move of the page `current` to `slug` into `text`: its new
+/// `slug:`, and its old address added to `aliases`, so the old address
+/// answers with a 301 to the new one (KH-SEO-8). The new address leaves
+/// `aliases`, so moving back makes no loop.
+fn write_move(text: &mut PostText, current: &AdminPage, slug: &Slug) {
+    text.set("slug", slug.as_str());
+    let Some(old) = current.path() else {
+        return;
+    };
+    let folder = old
+        .strip_suffix(&format!("{}/", current.slug()))
+        .unwrap_or(old);
+    let new = format!("{folder}{slug}/");
+    // The file was read as a page a moment ago, so its front matter parses.
+    let mut aliases = front::<PageFront>(text)
+        .map(|f| f.aliases)
+        .unwrap_or_default();
+    aliases.retain(|alias| *alias != new);
+    if !aliases.iter().any(|alias| alias == old) {
+        aliases.push(old.to_owned());
+    }
+    let quoted: Vec<String> = aliases.iter().map(|alias| quoted(alias)).collect();
+    let list = (!quoted.is_empty()).then(|| format!("[{}]", quoted.join(", ")));
+    put(text, "aliases", list);
 }
 
 /// Writes into `text` each search setting that differs between `before`

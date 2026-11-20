@@ -105,6 +105,26 @@ describe("a page's own screen", () => {
     expect(await axeViolations()).toEqual([]);
   });
 
+  it("moves the page to a new address and opens it there", async () => {
+    signedIn();
+    const WIR = { ...UEBER, id: "de.wir", slug: "wir", updated_at: "2026-10-31T10:00:00Z" };
+    const { edits } = blog({
+      "PUT /pages/de.ueber-uns/": async (request) => {
+        const body: { pages: PageEdit[] } = await request.json();
+        edits.push(...body.pages);
+        return json(200, { pages: [WIR] });
+      },
+      "GET /pages/de.wir/": () => json(200, { pages: [WIR] }),
+    });
+    renderAt("/pages/de.ueber-uns");
+    const address = await screen.findByLabelText(FIELDS.address.label);
+    await userEvent.clear(address);
+    await userEvent.type(address, "wir");
+    await userEvent.click(screen.getByRole("button", { name: EDIT.save }));
+    expect(await screen.findByText(EDIT.lede("wir", "German"))).toBeVisible();
+    expect(edits).toEqual([{ updated_at: UEBER.updated_at, slug: "wir" }]);
+  });
+
   it("sends nothing when nothing changed", async () => {
     signedIn();
     const { edits } = blog();

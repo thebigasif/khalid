@@ -150,6 +150,39 @@ fn a_pages_search_settings_are_written_and_read_back() {
 }
 
 #[test]
+fn a_moved_page_keeps_its_file_and_its_old_address_redirects() {
+    let (site, pages) = site();
+    let seen = pages.find("en.about").unwrap().unwrap().entry.updated_at();
+    let moved = pages.update_now(
+        "en.about",
+        &edit(json!({"slug": "team", "updated_at": seen})),
+    );
+    let moved = moved.unwrap();
+    assert_eq!(moved.id(), "en.team");
+    let path = within(site.path(), &["content", "en", "pages", "about.md"]);
+    assert_eq!(
+        fs::read_to_string(&path).unwrap(),
+        "---\ntitle: About\nslug: team\ntranslation: about\naliases: [\"/about/\"]\n---\n\nWho writes here.\n"
+    );
+    assert!(pages.find("en.about").unwrap().is_none());
+    let back = json!({"slug": "about", "updated_at": moved.updated_at()});
+    pages.update_now("en.team", &edit(back)).unwrap();
+    let text = fs::read_to_string(&path).unwrap();
+    assert!(
+        text.contains("slug: about\n") && text.contains("aliases: [\"/team/\"]\n"),
+        "{text}"
+    );
+    let new = json!({"slug": "contact", "title": "Contact", "markdown": "Write."});
+    pages.create_now(&new_page(new)).unwrap();
+    let seen = pages.find("en.about").unwrap().unwrap().entry.updated_at();
+    let taken = pages.update_now(
+        "en.about",
+        &edit(json!({"slug": "contact", "updated_at": seen})),
+    );
+    assert!(matches!(taken.unwrap_err(), EntryError::Taken(id) if id == "en.contact"));
+}
+
+#[test]
 fn a_copy_older_than_the_file_is_stale_even_after_a_hand_edit() {
     let (site, pages) = site();
     let seen = pages.find("en.about").unwrap().unwrap().entry.updated_at();
