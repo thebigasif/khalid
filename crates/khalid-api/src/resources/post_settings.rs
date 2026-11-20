@@ -5,11 +5,13 @@ use std::fmt;
 
 use chrono::NaiveDate;
 use khalid_core::{
-    AbsoluteUrl, HeadCode, PasswordHash, PostAccess, RobotsDirectives, Slug, TemplateName,
+    AbsoluteUrl, CommentState, HeadCode, PasswordHash, PostAccess, RobotsDirectives, Slug,
+    TemplateName,
 };
 use serde::{Deserialize, Serialize, Serializer};
+use serde_json::Value;
 use utoipa::ToSchema;
-use utoipa::openapi::schema::{ObjectBuilder, Schema, Type};
+use utoipa::openapi::schema::{ObjectBuilder, Schema, SchemaType, Type};
 
 use super::display_option;
 use super::seo_fields::{CustomJsonLd, SearchTitle};
@@ -207,6 +209,11 @@ pub struct PostSettings {
     #[serde(serialize_with = "display_option")]
     #[schema(value_type = Option<String>, example = "wide")]
     pub template: Option<TemplateName>,
+    /// Whether readers may comment on this post: `open`, `closed`, which
+    /// keeps the approved comments and takes no new ones, or `off`; `null`
+    /// to follow the site's `[comments]` state.
+    #[schema(schema_with = comments_schema)]
+    pub comments: Option<CommentState>,
     /// Checked HTML added to the post's page head, such as an analytics
     /// tag. Only owners and admins may change it.
     #[serde(serialize_with = "display_option")]
@@ -242,6 +249,19 @@ pub(super) fn access_schema() -> Schema {
         .enum_values(Some(names))
         .description(Some(
             "Who may read the body: `public`, or `members`, who are signed in.",
+        ));
+    schema.into()
+}
+
+/// The schema for a post's [`CommentState`]: one of its names, or `null`
+/// for the site's.
+pub(super) fn comments_schema() -> Schema {
+    let names = CommentState::ALL.map(|state| Value::from(state.as_str()));
+    let schema = ObjectBuilder::new()
+        .schema_type(SchemaType::from_iter([Type::String, Type::Null]))
+        .enum_values(Some(names.into_iter().chain([Value::Null])))
+        .description(Some(
+            "Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state.",
         ));
     schema.into()
 }
