@@ -340,7 +340,28 @@ month_2 = "février"
 - A key you leave out keeps the built-in word of that language, or the English word when Khalid has none for it.
 - `en.toml` changes the English words, and every language Khalid has no words for starts from them.
 - A key no template reads, most often a typing mistake, stops the build with a message that names the file and the key.
-- The title variables such as `{currentmonth}`, comments and newsletter mails still use the built-in words.
+- The same words reach the text Khalid writes outside the templates: the title variables such as `{currentmonth}`, the "Written by" and reading time labels in X and Slack previews, the imprint link in the footer, and the day names and opening hours on location cards and the locations page.
+
+The pages and emails of comments, the newsletter and a static site's forms keep their words in their own tables of the same file:
+
+```toml
+[comments]
+title = "Votre commentaire n'est pas parti"
+
+[newsletter]
+confirm_subject = "Confirmez votre adresse pour {site}"
+
+[newsletter.page]
+check_title = "Regardez dans votre boîte mail"
+
+[notes]
+search = "La recherche n'est pas disponible ici."
+```
+
+- `[comments]` words the page a reader sees when a comment cannot be sent. Its keys are in [crates/khalid-comments/strings/en.toml](https://github.com/thebigasif/khalid/tree/main/crates/khalid-comments/strings/en.toml).
+- `[newsletter]` words the confirmation, pass and digest emails and their footer, and `[newsletter.page]` the sign-up pages. Its keys are in [crates/khalid-newsletter/strings/en.toml](https://github.com/thebigasif/khalid/tree/main/crates/khalid-newsletter/strings/en.toml).
+- `[notes]` words the notes a static site shows where a form or comments would be. Its keys are in [crates/khalid-static/strings/en.toml](https://github.com/thebigasif/khalid/tree/main/crates/khalid-static/strings/en.toml).
+- A key the table's English file does not have, in `[newsletter]` or `[notes]`, stops `khalid build` or `khalid serve` with a message that names the table. In `[comments]`, the server log names it and the built-in words show.
 
 ## Checking every screen size
 

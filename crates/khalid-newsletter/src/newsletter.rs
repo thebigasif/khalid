@@ -87,6 +87,17 @@ impl Newsletter {
         &self.lists
     }
 
+    /// This newsletter, writing its emails with `words`, such as the
+    /// built-in words with the site's own laid over them.
+    #[must_use]
+    pub fn with_words(self, words: NewsletterWords) -> Self {
+        let site = self.site.0.clone();
+        Self {
+            site: Arc::new((site, words)),
+            ..self
+        }
+    }
+
     /// This newsletter, giving each reader who confirms the cookie `pass`
     /// makes, so they can read gated content.
     #[must_use]
