@@ -53,6 +53,7 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
     settings.secondary_keywords = related.filter_map(|k| NonBlank::try_new(k)).collect();
     let schema = front.schema.as_deref();
     settings.schema = schema.and_then(|text| CustomJsonLd::try_new(text).ok());
+    settings.connections = more::connections_of(front);
     settings
 }
 
@@ -142,6 +143,7 @@ pub(crate) fn write_settings(
     write_links(text, before, after);
     write_access(text, before, after);
     write_search(text, before, after);
+    more::write_connections(text, &before.connections, &after.connections);
     Ok(())
 }
 
@@ -299,6 +301,9 @@ pub(crate) fn put(text: &mut PostText, key: &str, value: Option<String>) {
         }
     }
 }
+
+#[path = "settings_text_more.rs"]
+mod more;
 
 #[cfg(test)]
 #[path = "settings_text_tests.rs"]

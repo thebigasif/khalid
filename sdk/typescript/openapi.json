@@ -17232,6 +17232,25 @@
           "take_over"
         ]
       },
+      "ClusterMembership": {
+        "type": "object",
+        "description": "The topic cluster a post belongs to, and its role in it.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The cluster's name, the same on every post in it.",
+            "example": "internal-links"
+          },
+          "role": {
+            "$ref": "#/components/schemas/ClusterPlace",
+            "description": "`pillar` for the main post, or `member`, the default."
+          }
+        },
+        "additionalProperties": false
+      },
       "ClusterPlace": {
         "type": "string",
         "description": "A post's role in its topic cluster.",
@@ -17321,6 +17340,71 @@
           "reader",
           "staff"
         ]
+      },
+      "ConnectionsEdit": {
+        "type": "object",
+        "description": "New values for some of a post's ties. A part left out keeps its value,\nand `null` clears one that may be empty.",
+        "properties": {
+          "cluster": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClusterMembership",
+                "description": "A new topic cluster and role, or `null` for none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "main_post": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether the post is its topic group's main post."
+          },
+          "related": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Every pinned related post's slug, at most five; an empty list to\nlet the build choose.",
+            "example": [
+              "internal-links"
+            ]
+          },
+          "series": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeriesPart",
+                "description": "A new series and place, or `null` for none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "topic_group": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new topic group, or `null` for none.",
+            "example": "internal-links"
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new translation key, or `null` for none.",
+            "example": "anchor-text"
+          }
+        },
+        "additionalProperties": false
       },
       "ContentCollection": {
         "type": "object",
@@ -20488,6 +20572,68 @@
           }
         }
       },
+      "PostConnections": {
+        "type": "object",
+        "description": "How a post ties to the blog's other posts. Every part has a value:\n`null`, an empty list or `false` when never set.",
+        "required": [
+          "related",
+          "main_post"
+        ],
+        "properties": {
+          "cluster": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClusterMembership",
+                "description": "The topic cluster the post belongs to, and its role in it."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "main_post": {
+            "type": "boolean",
+            "description": "Whether this post is its topic group's main post, the one the\ngroup's other posts should link to."
+          },
+          "related": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The slugs of the posts shown under this one, in place of the ones\nchosen at build time. At most [`MAX_RELATED`].",
+            "example": [
+              "internal-links"
+            ]
+          },
+          "series": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SeriesPart",
+                "description": "The series the post is one part of, and its place in it."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "topic_group": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The topic group the post shares with others (P8), such as\n`internal-links`.",
+            "example": "internal-links"
+          },
+          "translation": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The key shared by the versions of this post in other languages,\nsuch as `anchor-text`, or `null` when it has none.",
+            "example": "anchor-text"
+          }
+        }
+      },
       "PostEdit": {
         "type": "object",
         "description": "An edit to a post: the fields to change, and the `updated_at` of the\ncopy it was made on. Fields left out keep their value, and `null`\nclears one that may be empty. A `status` of `published` publishes a\ndraft, once the linter lets it through; `scheduled` with a future\n`published_at` publishes it then, and `draft` takes a scheduled post\noff its schedule and a live post down.",
@@ -20910,7 +21056,8 @@
           "share_cards",
           "aliases",
           "access",
-          "password_protected"
+          "password_protected",
+          "connections"
         ],
         "properties": {
           "access": {
@@ -20953,6 +21100,10 @@
             "example": [
               "mira"
             ]
+          },
+          "connections": {
+            "$ref": "#/components/schemas/PostConnections",
+            "description": "How the post ties to the blog's other posts."
           },
           "date": {
             "type": [
@@ -21807,6 +21958,31 @@
           }
         }
       },
+      "SeriesPart": {
+        "type": "object",
+        "description": "The series a post is one part of, as an edit sends it.",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The series' name as readers see it, the same on every part.",
+            "example": "Topic clusters from scratch"
+          },
+          "order": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32",
+            "description": "The post's place in the series, counted from 1, or `null` to follow\nthe numbered parts in date order.",
+            "example": 2,
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false
+      },
       "SerpdadConnection": {
         "type": "object",
         "description": "The connection, or `null` while it is off.",
@@ -22139,6 +22315,17 @@
             "description": "The other authors' slugs, all of them.",
             "example": [
               "mira"
+            ]
+          },
+          "connections": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ConnectionsEdit",
+                "description": "New ties to the blog's other posts; the parts left out keep theirs."
+              },
+              {
+                "type": "null"
+              }
             ]
           },
           "date": {

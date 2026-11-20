@@ -955,6 +955,14 @@ export type CheckIn = {
 /** What a check-in asks for. */
 export type Claim = "join" | "take_over";
 
+/** The topic cluster a post belongs to, and its role in it. */
+export type ClusterMembership = {
+  /** The cluster's name, the same on every post in it. */
+  name: string;
+  /** `pillar` for the main post, or `member`, the default. */
+  role?: ClusterPlace;
+};
+
 /** A post's role in its topic cluster. */
 export type ClusterPlace = "pillar" | "member";
 
@@ -983,6 +991,20 @@ export type CommentStatus = "pending" | "approved" | "spam" | "trash";
 
 /** Who wrote a comment. */
 export type CommentWriter = "reader" | "staff";
+
+/** New values for some of a post's ties. A part left out keeps its value, and `null` clears one that may be empty. */
+export type ConnectionsEdit = {
+  cluster?: ClusterMembership | null;
+  /** Whether the post is its topic group's main post. */
+  main_post?: boolean | null;
+  /** Every pinned related post's slug, at most five; an empty list to let the build choose. */
+  related?: string[] | null;
+  series?: SeriesPart | null;
+  /** A new topic group, or `null` for none. */
+  topic_group?: string | null;
+  /** A new translation key, or `null` for none. */
+  translation?: string | null;
+};
 
 /** A collection in one language, in API shape: the folder's name and the title and description its `_index.md` gives, when it has one. */
 export type ContentCollection = {
@@ -2022,6 +2044,20 @@ export type PostCheck = {
   words: number;
 };
 
+/** How a post ties to the blog's other posts. Every part has a value: `null`, an empty list or `false` when never set. */
+export type PostConnections = {
+  cluster?: ClusterMembership | null;
+  /** Whether this post is its topic group's main post, the one the group's other posts should link to. */
+  main_post: boolean;
+  /** The slugs of the posts shown under this one, in place of the ones chosen at build time. At most [`MAX_RELATED`]. */
+  related: string[];
+  series?: SeriesPart | null;
+  /** The topic group the post shares with others (P8), such as `internal-links`. */
+  topic_group?: string | null;
+  /** The key shared by the versions of this post in other languages, such as `anchor-text`, or `null` when it has none. */
+  translation?: string | null;
+};
+
 /** An edit to a post: the fields to change, and the `updated_at` of the copy it was made on. Fields left out keep their value, and `null` clears one that may be empty. A `status` of `published` publishes a draft, once the linter lets it through; `scheduled` with a future `published_at` publishes it then, and `draft` takes a scheduled post off its schedule and a live post down. */
 export type PostEdit = {
   /** A new author's slug, or `null` for none. */
@@ -2160,6 +2196,8 @@ export type PostSettings = {
   category?: string | null;
   /** The other authors' slugs, after the author. */
   co_authors: string[];
+  /** How the post ties to the blog's other posts. */
+  connections: PostConnections;
   /** The day the post is dated, as shown to readers. */
   date?: string | null;
   excerpt?: NonBlank | null;
@@ -2445,6 +2483,14 @@ export type SeoScores = {
   seo: number;
 };
 
+/** The series a post is one part of, as an edit sends it. */
+export type SeriesPart = {
+  /** The series' name as readers see it, the same on every part. */
+  name: string;
+  /** The post's place in the series, counted from 1, or `null` to follow the numbered parts in date order. */
+  order?: number | null;
+};
+
 /** The connection, or `null` while it is off. */
 export type SerpdadConnection = {
   /** When the key `SerpDad` sends drafts with was made. */
@@ -2538,6 +2584,7 @@ export type SettingsEdit = {
   category?: string | null;
   /** The other authors' slugs, all of them. */
   co_authors?: string[] | null;
+  connections?: ConnectionsEdit | null;
   /** A new date, as `YYYY-MM-DD`, or `null` for none. */
   date?: string | null;
   /** A new excerpt, or `null` for none. */

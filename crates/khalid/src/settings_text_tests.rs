@@ -1,11 +1,13 @@
 //! Settings written into a post's front matter read back the same.
 
+use std::num::NonZeroU32;
 use std::path::Path;
 
 use chrono::NaiveDate;
 use khalid_api::resources::{
-    CustomJsonLd, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, PostStatus,
-    ReviewState, SearchTitle, ShareCard,
+    ClusterMembership, ClusterPlace, CustomJsonLd, FeatureImage, MAX_RELATED,
+    MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, PostStatus, ReviewState, SearchTitle,
+    SeriesPart, ShareCard,
 };
 use khalid_content::parse_post;
 use khalid_core::Slug;
@@ -116,6 +118,26 @@ fn search_title_focus_keyword_and_schema_read_back_the_same() {
         written.contains("focus_keyword: \"anchor text\"\n"),
         "{written}"
     );
+}
+
+#[test]
+fn ties_read_back_the_same_and_clear_to_no_line() {
+    let mut after = PostSettings::default();
+    let links = &mut after.connections;
+    links.translation = Some(text("anchor-text"));
+    links.related = vec![Slug::try_new("internal-links").unwrap()];
+    links.series = Some(SeriesPart::new(text("Links: a course"), NonZeroU32::new(2)));
+    let cluster = Slug::try_new("links").unwrap();
+    links.cluster = Some(ClusterMembership::new(cluster, ClusterPlace::Pillar));
+    links.topic_group = Some(text("internal-links"));
+    links.main_post = true;
+    let (written, read) = round_trip(&after);
+    assert_eq!(read, after, "{written}");
+    let mut text = PostText::parse(&written).unwrap();
+    let defaults = PostSettings::default();
+    write_settings(&mut text, &after, &defaults, PostStatus::Draft).unwrap();
+    assert_eq!(text.to_text(), FILE);
+    assert_eq!(MAX_RELATED, khalid_content::MAX_RELATED);
 }
 
 #[test]

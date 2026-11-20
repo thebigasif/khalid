@@ -19,6 +19,7 @@ mod content_collection;
 mod media;
 mod menu;
 mod post;
+mod post_connections;
 mod post_head;
 mod post_row;
 mod post_settings;
@@ -57,6 +58,9 @@ pub use media::{
 };
 pub use menu::{Menu, MenuLink};
 pub use post::{Bodies, Post, PostSeries};
+pub use post_connections::{
+    ClusterMembership, ConnectionsEdit, MAX_RELATED, PostConnections, SeriesPart,
+};
 pub use post_head::{HeadElement, HeadParts, PostHead};
 pub use post_row::{ClusterPlace, Gate, IndexStatus, LintCounts, PostLinks, PostRow};
 pub use post_settings::{

@@ -107,7 +107,13 @@ fn every_setting() -> Value {
         "head_code": null,
         "seo_title": "Anchor text that says where it goes {sep} {site}",
         "focus_keyword": "anchor text",
-        "schema": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}"
+        "schema": "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}",
+        "connections": {
+            "translation": "anchor-text", "related": ["internal-links"],
+            "series": {"name": "Links: a course", "order": 2},
+            "cluster": {"name": "links", "role": "member"},
+            "topic_group": "internal-links", "main_post": false
+        }
     })
 }
 
