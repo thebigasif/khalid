@@ -101,8 +101,18 @@ fn the_ai_training_switch_round_trips_and_reaches_robots_txt() {
         json!({"ai_training": "block"}),
         "{read}"
     );
-    let (status, robots) = server.raw("GET", "/robots.txt", &[], None);
-    assert_eq!(status, 200, "{robots}");
+    // robots.txt renders again behind the save, a moment later: on a busy
+    // machine the first look can still see the old file.
+    let mut robots = String::new();
+    for _ in 0..200 {
+        let (status, text) = server.raw("GET", "/robots.txt", &[], None);
+        assert_eq!(status, 200, "{text}");
+        robots = text;
+        if robots.contains("User-agent: GPTBot\n") {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
     assert!(robots.contains("User-agent: GPTBot\n"), "{robots}");
     assert!(!robots.contains("OAI-SearchBot"), "{robots}");
 }
