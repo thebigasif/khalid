@@ -7,7 +7,7 @@
 use chrono::{TimeZone, Utc};
 use khalid_core::Slug;
 use khalid_import::subscribers::{
-    Reader, ReaderRowError, ReaderSource, ReadersError, Standing, read_readers,
+    Reader, ReaderRowError, ReaderSource, ReadersError, Standing, read_readers, write_readers,
 };
 
 fn slugs(names: &[&str]) -> Vec<Slug> {
@@ -84,6 +84,49 @@ fn ghost_members_keep_their_status_and_labels() {
     assert_eq!(
         (ines.standing, &ines.labels),
         (Standing::Unsubscribed, &slugs(&["paid"]))
+    );
+}
+
+#[test]
+fn khalid_export_reads_back_the_same() {
+    let readers = vec![
+        Reader {
+            email: "lena@example.com".to_owned(),
+            standing: Standing::Confirmed,
+            since: Some(Utc.with_ymd_and_hms(2026, 11, 1, 9, 0, 0).unwrap()),
+            lists: slugs(&["main", "weekly"]),
+            labels: slugs(&["paid"]),
+        },
+        Reader {
+            email: "=sum@example.com".to_owned(),
+            standing: Standing::Pending,
+            since: None,
+            lists: slugs(&["main"]),
+            labels: Vec::new(),
+        },
+        Reader {
+            email: "ines@example.org".to_owned(),
+            standing: Standing::Unsubscribed,
+            since: None,
+            lists: Vec::new(),
+            labels: Vec::new(),
+        },
+    ];
+    let text = write_readers(&readers);
+    assert!(
+        text.starts_with("email,status,created_at,lists,labels\n"),
+        "{text}"
+    );
+    assert!(
+        text.contains("\n'=sum@example.com,pending,,main,\n"),
+        "{text}"
+    );
+    let read = read_readers(&text).unwrap();
+    assert_eq!(read.source, ReaderSource::Khalid);
+    assert_eq!(read.unread, []);
+    assert_eq!(
+        only_readers(&read.readers),
+        readers.iter().collect::<Vec<_>>()
     );
 }
 

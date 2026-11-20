@@ -8,6 +8,9 @@ use khalid_core::{Locale, Slug, SlugMode};
 
 use crate::csv::{CsvError, rows};
 
+/// The columns of Khalid's own export, in order.
+const KHALID_COLUMNS: [&str; 5] = ["email", "status", "created_at", "lists", "labels"];
+
 /// Where a reader stands, as the source said.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Standing {
@@ -151,7 +154,7 @@ impl<'r> Fields<'r> {
     fn get(&self, name: &str) -> &'r str {
         let index = self.header.iter().position(|column| column.trim() == name);
         let field = index.and_then(|index| self.fields.get(index));
-        field.map_or("", |value| value.trim())
+        field.map_or("", |value| unguarded(value.trim()))
     }
 }
 
@@ -251,4 +254,54 @@ fn ghost_labels(value: &str) -> Vec<Slug> {
     names
         .filter_map(|name| Slug::from_title(name, &english, SlugMode::Ascii).ok())
         .collect()
+}
+
+/// `value` without the quote [`write_readers`] puts before a field a
+/// spreadsheet would run as a formula.
+fn unguarded(value: &str) -> &str {
+    match value.strip_prefix('\'') {
+        Some(rest) if rest.starts_with(['=', '+', '-', '@']) => rest,
+        _ => value,
+    }
+}
+
+/// `readers` as Khalid's export: a header, then one row each, in order.
+/// A field a spreadsheet would run as a formula gets a quote before it,
+/// which [`read_readers`] takes off again.
+pub fn write_readers(readers: &[Reader]) -> String {
+    let mut text = KHALID_COLUMNS.join(",");
+    text.push('\n');
+    for reader in readers {
+        let names = |slugs: &[Slug]| {
+            let names: Vec<&str> = slugs.iter().map(Slug::as_str).collect();
+            names.join(" ")
+        };
+        let since = reader.since.map(|at| at.to_rfc3339()).unwrap_or_default();
+        let fields = [
+            reader.email.as_str(),
+            reader.standing.as_str(),
+            since.as_str(),
+            &names(&reader.lists),
+            &names(&reader.labels),
+        ];
+        let fields: Vec<String> = fields.iter().map(|field| csv_field(field)).collect();
+        text.push_str(&fields.join(","));
+        text.push('\n');
+    }
+    text
+}
+
+/// `value` as one CSV field: quoted when it holds a comma, a quote or a
+/// line break, with a quote first when it starts like a formula.
+fn csv_field(value: &str) -> String {
+    let guarded = if value.starts_with(['=', '+', '-', '@']) {
+        format!("'{value}")
+    } else {
+        value.to_owned()
+    };
+    if guarded.contains([',', '"', '\n', '\r']) {
+        format!("\"{}\"", guarded.replace('"', "\"\""))
+    } else {
+        guarded
+    }
 }
