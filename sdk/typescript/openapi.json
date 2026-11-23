@@ -180,6 +180,66 @@
         ]
       }
     },
+    "/api/admin/v1/alerts/": {
+      "get": {
+        "tags": [
+          "admin alerts"
+        ],
+        "summary": "Lists the alerts still raised for the site's owner: a site that\nstopped answering or answers slowly, a certificate near its end, a\nburst of 404s, stale posts, a scheduled post the linter refused, a\ncrawler that stopped coming. Each says what happened, why it matters\nand what to do. The list is empty on a server with no database. Needs\n`settings:write`.",
+        "operationId": "list_alerts",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The alerts still raised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/analytics/ai-bots/": {
       "get": {
         "tags": [
@@ -16694,6 +16754,22 @@
           "takeaways"
         ]
       },
+      "AlertList": {
+        "type": "object",
+        "description": "The alerts still raised. A problem that clears, such as a renewed\ncertificate, leaves the list at the next check; one that happens once,\nsuch as a burst of 404s, stays 30 days.",
+        "required": [
+          "alerts"
+        ],
+        "properties": {
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RaisedAlert"
+            },
+            "description": "One alert per kind, in the order alerts go out."
+          }
+        }
+      },
       "Alias": {
         "type": "string",
         "description": "An old address on this site that redirects to the post, such as\n`/2019/05/old-title/`, so a moved post keeps its links.",
@@ -21354,6 +21430,72 @@
             "type": "string",
             "description": "A link to the page that explains this kind of problem.",
             "example": "https://khalid.dev/problems/not-found"
+          }
+        }
+      },
+      "RaisedAlert": {
+        "type": "object",
+        "description": "The findings of one kind still raised.",
+        "required": [
+          "kind",
+          "what",
+          "why",
+          "fix",
+          "raised_at",
+          "findings"
+        ],
+        "properties": {
+          "findings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RaisedFinding"
+            },
+            "description": "Each problem, newest first."
+          },
+          "fix": {
+            "type": "string",
+            "description": "What to do, in one sentence.",
+            "example": "Read each post below, update what has changed, and save it."
+          },
+          "kind": {
+            "type": "string",
+            "description": "What the alert is about: the `kind` of the `alert.raised` webhook.",
+            "example": "stale-post"
+          },
+          "raised_at": {
+            "type": "string",
+            "description": "When its newest finding was raised, in UTC.",
+            "example": "2026-11-03T09:00:00Z"
+          },
+          "what": {
+            "type": "string",
+            "description": "What happened, in one sentence.",
+            "example": "Some live posts have not changed for a long time."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters, in one sentence.",
+            "example": "Old facts and dead links make readers and search engines trust a post less."
+          }
+        }
+      },
+      "RaisedFinding": {
+        "type": "object",
+        "description": "One problem an alert raised.",
+        "required": [
+          "key",
+          "line"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Stays the same while the problem lasts.",
+            "example": "stale-post:en.old-post"
+          },
+          "line": {
+            "type": "string",
+            "description": "The problem in one line.",
+            "example": "Old post (en.old-post), last changed 2024-03-01"
           }
         }
       },

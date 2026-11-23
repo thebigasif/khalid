@@ -385,6 +385,8 @@ watch_minutes = 5        # how often the speed and uptime watch looks; 0 switche
 slow_ms = 1000           # a slower middle answer time over an hour, or three looks, is an alert; 0 switches it off
 ```
 
+With neither, you still see them: the admin's dashboard lists the alerts still raised, each with what happened, why it matters and what to do. A problem that clears leaves the list at the next check, and one that happens once, such as a burst of 404s, stays 30 days. The running server answers the same list at `GET /api/admin/v1/alerts/` for a key with `settings:write`, and agents reach it through `khalid mcp` as the `list_alerts` tool.
+
 ### Speed and uptime
 
 Once the server answers more than its own computer, with `--domain`, `--https` or a `--listen` address such as `0.0.0.0:8080`, it looks at the blog's home page at its public address every 5 minutes, the way a reader's browser would: through DNS, the certificate and any proxy in front. Three failed looks in a row send a "site down" alert. An hour whose middle answer time is over 1 second sends a "slow site" alert. Both are sent once, and again only after the site has recovered.

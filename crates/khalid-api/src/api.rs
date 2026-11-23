@@ -37,8 +37,8 @@ use crate::serpdad_store::SerpdadStore;
 use crate::session_check::{SessionCheck, StaffRoutes};
 use crate::webhook_store::WebhookStore;
 use crate::{
-    admin_analytics, admin_api, admin_api_keys, admin_audit, admin_authors, admin_calendar,
-    admin_categories, admin_check, admin_comments, admin_consent, admin_design,
+    admin_alerts, admin_analytics, admin_api, admin_api_keys, admin_audit, admin_authors,
+    admin_calendar, admin_categories, admin_check, admin_comments, admin_consent, admin_design,
     admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_forms, admin_glossary,
     admin_newsletters, admin_not_found, admin_pages, admin_redirect_csv, admin_redirects,
     admin_schema_copy, admin_schema_templates, admin_serpdad, admin_site_settings, admin_snippets,
@@ -401,6 +401,7 @@ fn assemble(
         .merge(admin_follow_ups::routes(desks.follow_ups, door.clone()))
         .merge(admin_forms::routes(desks.forms, door.clone()))
         .merge(admin_uptime::routes(desks.uptime, door.clone()))
+        .merge(admin_alerts::routes(desks.alerts, door.clone()))
         .merge(admin_serpdad::routes(serpdad, door.clone()))
         .merge(admin_ai::routes(ai, door.clone()));
     if let Some(staff) = routes {
