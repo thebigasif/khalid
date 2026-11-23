@@ -5,8 +5,10 @@
 //! Unknown fields and values of the wrong kind are refused.
 
 use chrono::NaiveDate;
-use khalid_core::{AbsoluteUrl, PageSchemaType, Slug};
+use khalid_core::{AbsoluteUrl, PageSchemaType, RobotsDirectives, Slug};
 use serde::Deserialize;
+
+use crate::{LeadImage, ShareCards};
 
 /// A page, such as About, in `pages/`.
 #[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
@@ -27,6 +29,20 @@ pub struct PageFront {
     /// Makes the page the hub of a topic: its body is the topic's pillar
     /// intro, followed by its chapters and the topic's latest posts.
     pub hub: Option<PageHub>,
+    /// The page's own robots directives, such as `noindex`, in place of
+    /// the site's defaults.
+    pub robots: Option<RobotsDirectives>,
+    /// The address search engines should credit instead of this page.
+    pub canonical: Option<AbsoluteUrl>,
+    /// The image at the top of the page and in its link previews.
+    pub image: Option<LeadImage>,
+    /// How the page looks when shared on X and Facebook.
+    #[serde(default)]
+    pub share_cards: ShareCards,
+    /// Old paths that redirect here, such as `/blog/about-us/`, so a page
+    /// whose address changed keeps its links.
+    #[serde(default, deserialize_with = "crate::post::aliases")]
+    pub aliases: Vec<String>,
 }
 
 /// What makes a page a topic's hub.

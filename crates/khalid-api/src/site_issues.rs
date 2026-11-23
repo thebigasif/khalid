@@ -50,6 +50,9 @@ pub struct SiteIssue {
     why: String,
     /// What to do.
     fix: String,
+    /// The address of the guide that explains the rule at length.
+    #[schema(example = "https://serpdad.com/khalid/docs/lint-rules/#image-descriptions")]
+    guide: String,
     /// The identity of one post it fires on, to open first.
     #[schema(example = "en.choosing-anchor-text")]
     example: String,
@@ -81,6 +84,7 @@ pub fn top_issues(report: &Report) -> Vec<SiteIssue> {
             what: first.message().what().to_owned(),
             why: first.message().why().to_owned(),
             fix: first.message().fix().to_owned(),
+            guide: first.message().guide_url(),
             // The identity the Admin API gives a post: its language, a full stop, its slug.
             example: format!("{}.{}", first.location().locale, first.location().slug),
         })
@@ -124,6 +128,10 @@ mod tests {
         assert_eq!(first.posts, 2, "{issues:?}");
         assert_eq!(first.example, "en.anchor-text");
         assert!(!first.what.is_empty() && !first.fix.is_empty());
+        assert!(
+            first.guide.starts_with(khalid_lint::GUIDE_PAGE),
+            "{first:?}"
+        );
         let weights: Vec<IssueWeight> = issues.iter().map(|issue| issue.weight).collect();
         assert!(weights.is_sorted(), "{weights:?}");
     }

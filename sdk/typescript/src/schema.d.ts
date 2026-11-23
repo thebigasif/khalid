@@ -71,6 +71,14 @@ export type AdminAuthor = {
   updated_at: string;
 };
 
+/** One page of the authors. */
+export type AdminAuthorList = {
+  /** The authors on this page. */
+  authors: AdminAuthor[];
+  /** Where this page sits in the list. */
+  meta: Meta;
+};
+
 /** Authors as the Admin API wraps them. */
 export type AdminAuthors = {
   /** The author or authors. */
@@ -281,6 +289,8 @@ export type AdminGlossary = {
 export type AdminIssues = {
   /** Up to ten problems, those that stop posts going live first. */
   issues: SiteIssue[];
+  /** Where this page sits in the list. */
+  meta: Meta;
 };
 
 /** A key that works, in Admin API shape. The secret is shown once, when the key is made, and never again. */
@@ -299,6 +309,14 @@ export type AdminKey = {
   role?: string | null;
   /** An integration key's scopes, such as `posts:write`. */
   scopes: string[];
+};
+
+/** One page of the keys that work. */
+export type AdminKeyList = {
+  /** The keys on this page, oldest first. */
+  keys: AdminKey[];
+  /** Where this page sits in the list. */
+  meta: Meta;
 };
 
 /** Keys as the Admin API wraps them. */
@@ -403,12 +421,22 @@ export type AdminPage = {
   markdown: string;
   /** Where readers find it on the site, such as a redirect leads from once the page is deleted. */
   path?: string | null;
+  /** Its robots directives, canonical address, feature image and share cards. */
+  seo: PageSeo;
   /** The last part of the page's address. */
   slug: string;
   /** The title readers see. */
   title: string;
   /** When the page last changed. An edit or delete sends it back. */
   updated_at: string;
+};
+
+/** One page of the site's pages. */
+export type AdminPageList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The pages on this page of the list. */
+  pages: AdminPage[];
 };
 
 /** The views of one page from one assistant. */
@@ -479,6 +507,14 @@ export type AdminRedirect = {
   to?: string | null;
 };
 
+/** One page of the stored redirects. */
+export type AdminRedirectList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The redirects on this page, oldest first. */
+  redirects: AdminRedirect[];
+};
+
 /** Redirects as the Admin API wraps them. */
 export type AdminRedirects = {
   /** The redirects, oldest first. */
@@ -519,6 +555,8 @@ export type AdminSettings = {
   address: string;
   /** The site's own code from `[code]`, one object per entry as written: `head`, `body`, the `category` it waits for (`preferences`, `analytics`, `marketing` or `no-tracking`), the `vendor` and its `policy` link. An entry with no `category` counts as Marketing. The old single `[code]` table reads as one entry. */
   code: (Record<string, unknown>)[];
+  /** Whether readers may comment, from `[comments]`, defaults filled in. */
+  comments: CommentsSetting;
   cta?: CtaSetting | null;
   /** The language a reader gets first, such as `en`. */
   default_language: string;
@@ -566,6 +604,14 @@ export type AdminSnippet = {
   title: string;
   /** When the snippet last changed. An edit or delete sends it back. */
   updated_at: string;
+};
+
+/** One page of the snippets. */
+export type AdminSnippetList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The snippets on this page. */
+  snippets: AdminSnippet[];
 };
 
 /** Snippets as the Admin API wraps them. */
@@ -624,6 +670,14 @@ export type AdminTag = {
   slug: string;
   /** When the last of those posts changed. A rename or removal sends it back, so a post tagged since is never changed unseen. */
   updated_at: string;
+};
+
+/** One page of the tags. */
+export type AdminTagList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The tags on this page. */
+  tags: AdminTag[];
 };
 
 /** Tags as the Admin API wraps them. */
@@ -752,6 +806,14 @@ export type AdminWebhook = {
   url: string;
 };
 
+/** One page of the webhooks that are on. */
+export type AdminWebhookList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
+  /** The webhooks on this page, oldest first. */
+  webhooks: AdminWebhook[];
+};
+
 /** Webhooks as the Admin API wraps them. */
 export type AdminWebhooks = {
   /** The webhooks, oldest first. */
@@ -772,6 +834,12 @@ export type AiState = {
 
 /** What a suggestion is for. */
 export type AiTask = "seo_title" | "meta_description" | "share_title" | "share_description" | "alt_text" | "lint_fix" | "takeaways";
+
+/** The alerts still raised. A problem that clears, such as a renewed certificate, leaves the list at the next check; one that happens once, such as a burst of 404s, stays 30 days. */
+export type AlertList = {
+  /** One alert per kind, in the order alerts go out. */
+  alerts: RaisedAlert[];
+};
 
 /** An old address on this site that redirects to the post, such as `/2019/05/old-title/`, so a moved post keeps its links. */
 export type Alias = string;
@@ -983,6 +1051,22 @@ export type CommentStatus = "pending" | "approved" | "spam" | "trash";
 
 /** Who wrote a comment. */
 export type CommentWriter = "reader" | "staff";
+
+/** A change to `[comments]`: only the parts sent change. */
+export type CommentsChange = {
+  /** Whether owners and admins get an email about each new comment. */
+  notify?: boolean | null;
+  /** Whether readers may comment: `open`, `closed` or `off`. */
+  state?: "open" | "closed" | "off";
+};
+
+/** `[comments]`: whether readers may comment on a post that does not say otherwise, and whether owners and admins get an email about each new reader's comment. */
+export type CommentsSetting = {
+  /** Whether owners and admins get an email about each new comment. */
+  notify: boolean;
+  /** Whether readers may comment: `open`, `closed` or `off`. */
+  state: "open" | "closed" | "off";
+};
 
 /** A collection in one language, in API shape: the folder's name and the title and description its `_index.md` gives, when it has one. */
 export type ContentCollection = {
@@ -1621,6 +1705,8 @@ export type NewPage = {
   language?: string | null;
   /** The body, in markdown. */
   markdown: string;
+  /** Its search settings, all unset when left out. */
+  seo?: PageSeo;
   /** The last part of the address, such as `about`. */
   slug: string;
   /** The title readers see. */
@@ -1819,6 +1905,9 @@ export type PageEdit = {
   description?: string | null;
   /** A new body, in markdown. */
   markdown?: string | null;
+  seo?: PageSeoEdit | null;
+  /** A new last part of the address. The old address then answers with a 301 to the new one, so links to it keep working. */
+  slug?: string | null;
   /** A new title. */
   title?: string | null;
   /** The `updated_at` of the copy this edit was made on. */
@@ -1829,6 +1918,27 @@ export type PageEdit = {
 export type PageEdits = {
   /** The one edit. */
   pages: PageEdit[];
+};
+
+/** A page's search settings. Each is `null`, or a card with nothing set, until someone sets it. */
+export type PageSeo = {
+  /** The address search engines should credit instead of this page. */
+  canonical?: string | null;
+  feature_image?: FeatureImage | null;
+  /** The page's own robots directives, such as `noindex`, in place of the site's. */
+  robots?: string | null;
+  /** How the page looks when shared on X and Facebook. */
+  share_cards?: ShareCards;
+};
+
+/** New values for some of a page's search settings. A setting left out keeps its value, and `null` clears it. */
+export type PageSeoEdit = {
+  /** A new canonical address, or `null` for the page's own. */
+  canonical?: string | null;
+  feature_image?: FeatureImage | null;
+  /** New robots directives, or `null` for the site's. */
+  robots?: string | null;
+  share_cards?: ShareCards | null;
 };
 
 export type Pages = {
@@ -2160,6 +2270,8 @@ export type PostSettings = {
   category?: string | null;
   /** The other authors' slugs, after the author. */
   co_authors: string[];
+  /** Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state. */
+  comments?: "open" | "closed" | "off" | null;
   /** The day the post is dated, as shown to readers. */
   date?: string | null;
   excerpt?: NonBlank | null;
@@ -2209,6 +2321,8 @@ export type PostVersion = {
 
 /** Earlier versions, wrapped the way the Admin API wraps resources. */
 export type PostVersions = {
+  /** Where this page sits in the list. */
+  meta: Meta;
   /** The newest first. */
   versions: PostVersion[];
 };
@@ -2261,6 +2375,30 @@ export type Problem = {
   title: string;
   /** A link to the page that explains this kind of problem. */
   type: string;
+};
+
+/** The findings of one kind still raised. */
+export type RaisedAlert = {
+  /** Each problem, newest first. */
+  findings: RaisedFinding[];
+  /** What to do, in one sentence. */
+  fix: string;
+  /** What the alert is about: the `kind` of the `alert.raised` webhook. */
+  kind: string;
+  /** When its newest finding was raised, in UTC. */
+  raised_at: string;
+  /** What happened, in one sentence. */
+  what: string;
+  /** Why it matters, in one sentence. */
+  why: string;
+};
+
+/** One problem an alert raised. */
+export type RaisedFinding = {
+  /** Stays the same while the problem lasts. */
+  key: string;
+  /** The problem in one line. */
+  line: string;
 };
 
 /** One reader feature a template turns on or off. */
@@ -2499,6 +2637,7 @@ export type SettingsChange = {
   address?: string | null;
   /** Every entry of `[code]`, in place of the old ones, written as a `[[code]]` list. An empty list removes `[code]`. A list that differs from the saved one needs `admin:all`. */
   code?: (Record<string, unknown>)[] | null;
+  comments?: CommentsChange | null;
   cta?: CtaSetting | null;
   /** A new default language, which `languages` must include. */
   default_language?: string | null;
@@ -2538,6 +2677,8 @@ export type SettingsEdit = {
   category?: string | null;
   /** The other authors' slugs, all of them. */
   co_authors?: string[] | null;
+  /** Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state. */
+  comments?: "open" | "closed" | "off" | null;
   /** A new date, as `YYYY-MM-DD`, or `null` for none. */
   date?: string | null;
   /** A new excerpt, or `null` for none. */
@@ -2631,6 +2772,8 @@ export type SiteIssue = {
   example: string;
   /** What to do. */
   fix: string;
+  /** The address of the guide that explains the rule at length. */
+  guide: string;
   /** How many posts it fires on. */
   posts: number;
   /** The rule, such as `missing-alt`. */
@@ -2882,6 +3025,8 @@ export type TermEdits = {
 
 /** The trash as the Admin API wraps it. */
 export type TrashList = {
+  /** Where this page sits in the list. */
+  meta: Meta;
   /** The deleted posts and pages, the most recently deleted first. */
   trash: TrashedPost[];
 };
@@ -2975,6 +3120,16 @@ export interface Operations {
     };
     output: Offered;
   };
+  /** Lists the alerts still raised for the site's owner: a site that stopped answering or answers slowly, a certificate near its end, a burst of 404s, stale posts, a scheduled post the linter refused, a crawler that stopped coming. Each says what happened, why it matters and what to do. The list is empty on a server with no database. Needs `settings:write`. */
+  list_alerts: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+    };
+    output: AlertList;
+  };
   /** Counts how often each AI assistant's bots read the site in the last `days` days, beside the readers the assistant sent. Needs `settings:write`. */
   ai_bots: {
     input: {
@@ -3047,15 +3202,23 @@ export interface Operations {
     };
     output: AdminChanges;
   };
-  /** Lists every author in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  /** Lists the authors in every language: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_authors: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminAuthors;
+    output: AdminAuthorList;
   };
   /** Creates an author in the language it names or the site's default. Needs `posts:publish`. */
   create_author: {
@@ -3459,15 +3622,23 @@ export interface Operations {
     };
     output: null;
   };
-  /** Lists every key that works, oldest first, with what each may do and never its secret. Needs `admin:all`. */
+  /** Lists the keys that work, oldest first, with what each may do and never its secret: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=kind:integration`. Needs `admin:all`. */
   list_keys: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminKeys;
+    output: AdminKeyList;
   };
   /** Makes a content key or an integration key with the scopes it names. The answer shows the key this once; keep it, because only its hash is stored (RULES.md BL-SEC-3). Needs `admin:all`. */
   create_key: {
@@ -3494,9 +3665,17 @@ export interface Operations {
     };
     output: null;
   };
-  /** The live site's most common lint problems, for the dashboard's task list: each rule that fires, on how many posts, with what, why and fix and one post to open first. Those that stop posts going live come first, then those on the most posts. Every rule runs on every post, as `khalid lint` does, so the dashboard asks for it after the rest. Needs `posts:write`. */
+  /** The live site's most common lint problems, for the dashboard's task list: each rule that fires, on how many posts, with what, why and fix and one post to open first. Those that stop posts going live come first, then those on the most posts. `limit`, `page` and `filter`, such as `filter=weight:block`, narrow the list. Every rule runs on every post, as `khalid lint` does, so the dashboard asks for it after the rest. Needs `posts:write`. */
   list_issues: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
@@ -3709,15 +3888,23 @@ export interface Operations {
     };
     output: AdminRedirects;
   };
-  /** Lists every page in every language, ordered by language and slug. A site has tens of pages, so the list comes whole. Needs `posts:write`. */
+  /** Lists the pages in every language, ordered by language and slug: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_pages: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminPages;
+    output: AdminPageList;
   };
   /** Creates a page, live at once, in the language it names or the site's default. Needs `posts:publish`. */
   create_page: {
@@ -3744,7 +3931,7 @@ export interface Operations {
     };
     output: AdminPages;
   };
-  /** Edits one page: only the fields sent change. The edit carries the `updated_at` of the copy it was made on; when the page changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
+  /** Edits one page: only the fields sent change. A new slug moves the page, and its old address then answers with a 301. The edit carries the `updated_at` of the copy it was made on; when the page changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
   edit_page: {
     input: {
       path: {
@@ -3992,12 +4179,20 @@ export interface Operations {
     };
     output: PreviewLinks;
   };
-  /** Lists the title and text each edit of the post replaced, the newest first, up to the 100 newest. An edit that changed neither keeps none. Bringing one back is an ordinary edit with its title and text, which keeps the text it replaces in turn. Needs `posts:write`. */
+  /** Lists the title and text each edit of the post replaced, the newest first, up to the 100 newest: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=saved_at:>'2026-11-01'`. An edit that changed neither keeps none. Bringing one back is an ordinary edit with its title and text, which keeps the text it replaces in turn. Needs `posts:write`. */
   list_post_versions: {
     input: {
       path: {
         /** The post's identity */
         id: string;
+      };
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
       };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
@@ -4006,15 +4201,23 @@ export interface Operations {
     };
     output: PostVersions;
   };
-  /** Lists every stored redirect, oldest first. Aliases in front matter are not listed; they live in their posts. Needs `settings:write`. */
+  /** Lists the stored redirects, oldest first: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=status:410`. Aliases in front matter are not listed; they live in their posts. Needs `settings:write`. */
   list_redirects: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminRedirects;
+    output: AdminRedirectList;
   };
   /** Stores one redirect made by hand. It is checked against every stored redirect, so it can neither take an address that has one nor close a loop. Needs `settings:write`. */
   create_redirect: {
@@ -4389,15 +4592,23 @@ export interface Operations {
     };
     output: SiteAnswer;
   };
-  /** Lists every snippet in every language. A site has tens, so the list comes whole. Needs `posts:write`. */
+  /** Lists the snippets in every language: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_snippets: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminSnippets;
+    output: AdminSnippetList;
   };
   /** Creates a snippet in the language it names or the site's default. Needs `posts:publish`. */
   create_snippet: {
@@ -4627,15 +4838,23 @@ export interface Operations {
     };
     output: AdminSubscribers;
   };
-  /** Lists every tag the site's posts carry, drafts included, in every language, with how many posts have each. Needs `posts:write`. */
+  /** Lists every tag the site's posts carry, drafts included, in every language, with how many posts have each: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=language:de`. Needs `posts:write`. */
   list_tags: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminTags;
+    output: AdminTagList;
   };
   /** Renames a tag in every post that has it, drafts included; a name another tag has merges the two. The rename carries the tag's `updated_at`; when one of its posts changed since, the answer is a 409 and no post changes (RULES.md BL-API-7). Needs `posts:publish`. */
   rename_tag: {
@@ -4680,9 +4899,17 @@ export interface Operations {
     };
     output: TemplateList;
   };
-  /** Lists the deleted posts and pages, the most recently deleted first. Needs `posts:write`. */
+  /** Lists the deleted posts and pages, the most recently deleted first: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=kind:page`. Needs `posts:write`. */
   list_trash: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
@@ -4728,15 +4955,23 @@ export interface Operations {
     };
     output: UptimeReport;
   };
-  /** Lists every webhook that is switched on, oldest first, without their secrets. Needs `webhooks:manage`. */
+  /** Lists the webhooks that are switched on, oldest first, without their secrets: all of them, or one page with `limit` and `page`, and only those passing `filter`, such as `filter=event:post.published`. Needs `webhooks:manage`. */
   list_webhooks: {
     input: {
+      query?: {
+        /** `filter=status:301`, over the fields each item shows. */
+        filter?: string;
+        /** Items per page, 1 to 100, or `all`. Without it the whole list comes on one page. */
+        limit?: string;
+        /** `page=2`, counted from 1. */
+        page?: string;
+      };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */
         "Accept-Version"?: string;
       };
     };
-    output: AdminWebhooks;
+    output: AdminWebhookList;
   };
   /** Adds a webhook that sends one event to one address, signed with a new secret. The answer shows the secret once; keep it, because the receiver needs it to check each delivery. Needs `webhooks:manage`. */
   add_webhook: {

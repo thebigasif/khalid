@@ -78,20 +78,25 @@ async fn delete(router: &Router, key: &str, id: &str) {
 async fn a_deleted_post_is_listed_newest_first_with_the_status_it_had() {
     let router = router();
     let (status, json) = send(&router, WRITER, ("GET", "/trash/")).await;
-    assert_eq!((status, json), (StatusCode::OK, json!({"trash": []})));
+    assert_eq!((status, &json["trash"]), (StatusCode::OK, &json!([])));
     delete(&router, WRITER, "en.draft").await;
     delete(&router, PUBLISHER, "en.live").await;
     let (status, json) = send(&router, WRITER, ("GET", "/trash/")).await;
     assert_eq!(status, StatusCode::OK, "{json}");
-    let listed = json!({"trash": [
+    assert_eq!(json["meta"]["pagination"]["total"], 2, "{json}");
+    let listed = json!([
         {"key": "20261020T083000Z-en.live", "id": "en.live",
             "title": "A post", "status": "published", "trashed_at": LAST_CHANGE,
             "kind": "post"},
         {"key": "20261020T083000Z-en.draft", "id": "en.draft",
             "title": "A post", "status": "draft", "trashed_at": LAST_CHANGE,
             "kind": "post"},
-    ]});
-    assert_eq!(json, listed);
+    ]);
+    assert_eq!(json["trash"], listed);
+    let page = ("GET", "/trash/?filter=status:draft&limit=1");
+    let (_, json) = send(&router, WRITER, page).await;
+    assert_eq!(json["trash"][0]["id"], "en.draft", "{json}");
+    assert_eq!(json["trash"].as_array().map(Vec::len), Some(1));
 }
 
 #[tokio::test]
@@ -105,7 +110,7 @@ async fn a_deleted_draft_is_restored_where_it_was() {
     let (status, _) = send(&router, WRITER, ("GET", "/posts/en.draft/")).await;
     assert_eq!(status, StatusCode::OK);
     let (_, json) = send(&router, WRITER, ("GET", "/trash/")).await;
-    assert_eq!(json, json!({"trash": []}));
+    assert_eq!(json["trash"], json!([]));
     let (status, json) = send(&router, WRITER, restore).await;
     assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
 }
@@ -157,5 +162,5 @@ async fn deleting_for_good_needs_posts_publish_and_empties_the_trash() {
     let (status, json) = send(&router, PUBLISHER, purge).await;
     assert_eq!(status, StatusCode::NOT_FOUND, "{json}");
     let (_, json) = send(&router, WRITER, ("GET", "/trash/")).await;
-    assert_eq!(json, json!({"trash": []}));
+    assert_eq!(json["trash"], json!([]));
 }

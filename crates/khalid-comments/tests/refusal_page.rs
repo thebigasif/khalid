@@ -81,6 +81,51 @@ fn a_language_without_words_reads_english() {
 }
 
 #[test]
+fn the_sites_own_words_replace_the_built_in_ones_in_their_language() {
+    let own = [
+        (
+            "en".to_owned(),
+            toml::from_str("title = \"Not sent yet\"").unwrap(),
+        ),
+        (
+            "fr".to_owned(),
+            toml::from_str("send = \"Envoyer\"").unwrap(),
+        ),
+    ];
+    let pages = RefusalPages::load()
+        .unwrap()
+        .with_site(&own.into())
+        .unwrap();
+    let english = pages.page(
+        &"en".parse().unwrap(),
+        &Refusal::Unavailable,
+        &sent(),
+        LINKS,
+    );
+    assert!(english.contains("<h1>Not sent yet</h1>"), "{english}");
+    assert!(
+        english.contains("Comments cannot be sent right now"),
+        "{english}"
+    );
+    let french = pages.page(&"fr".parse().unwrap(), &Refusal::ParentGone, &sent(), LINKS);
+    assert!(french.contains(">Envoyer</button>"), "{french}");
+    assert!(
+        french.contains("<h1>Not sent yet</h1>"),
+        "French starts from the site's English"
+    );
+}
+
+#[test]
+fn a_word_the_page_never_shows_is_refused() {
+    let own = [("en".to_owned(), toml::from_str("headline = \"x\"").unwrap())];
+    let error = RefusalPages::load()
+        .unwrap()
+        .with_site(&own.into())
+        .unwrap_err();
+    assert!(error.to_string().contains("en"), "{error}");
+}
+
+#[test]
 fn every_language_file_has_the_same_words_and_no_em_dash() {
     let english = include_str!("../strings/en.toml");
     let german = include_str!("../strings/de.toml");

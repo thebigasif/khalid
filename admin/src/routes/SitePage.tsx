@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getRouteApi, Link } from "@tanstack/react-router";
+import { getRouteApi, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { failureMessage, isData } from "../api/call";
 import { type AdminPage, editPage, readPage } from "../api/pages";
@@ -19,6 +19,7 @@ export function SitePage() {
   const words = pagesWords.edit;
   const { id } = route.useParams();
   const queries = useQueryClient();
+  const navigate = useNavigate();
   const read = useQuery({ queryKey: [...PAGES, id], queryFn: () => readPage(id) }).data;
   const [said, setSaid] = useState<string | null>(null);
   const [failed, setFailed] = useState<UserMessage | null>(null);
@@ -33,6 +34,11 @@ export function SitePage() {
     setSaid(isData(reply) ? words.saved : null);
     setFailed(isData(reply) ? null : failureMessage(reply));
     await queries.invalidateQueries({ queryKey: PAGES });
+    // A new address gives the page a new identity, so its screen moves too.
+    const moved = isData(reply) ? reply.data[0]?.id : undefined;
+    if (moved !== undefined && moved !== page.id) {
+      await navigate({ to: "/pages/$id", params: { id: moved } });
+    }
   };
 
   const page = isData(read) ? read.data[0] : undefined;

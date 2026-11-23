@@ -4,8 +4,8 @@ use chrono::{DateTime, Utc};
 use khalid_core::{AbsoluteUrl, Locale, PageSchemaType, RobotsDirectives};
 
 use crate::{
-    Alternate, AuthorProfile, CustomSchema, Entity, FeedScope, ListEntry, MetaTemplate, PageNumber,
-    SchemaBlock, SeoComment, ShareImage, TranslationKey, UrlPath, Video,
+    Alternate, AuthorProfile, CardOverrides, CustomSchema, Entity, FeedScope, ListEntry,
+    MetaTemplate, PageNumber, SchemaBlock, SeoComment, ShareImage, TranslationKey, UrlPath, Video,
 };
 
 /// The kind of page, which picks its title template and index setting.
@@ -138,6 +138,8 @@ pub struct SeoPage {
     pub item_count: Option<u32>,
     /// The image link previews show, in place of the site's default.
     pub share_image: Option<ShareImage>,
+    /// The link previews the writer set by hand for Open Graph and for X.
+    pub cards: CardOverrides,
     /// When the page was first published.
     pub published: Option<DateTime<Utc>>,
     /// When the page last changed in a way a reader would notice.
@@ -235,6 +237,7 @@ impl SeoPage {
             robots: None,
             item_count: None,
             share_image: None,
+            cards: CardOverrides::default(),
             published: None,
             modified: None,
             translation: None,

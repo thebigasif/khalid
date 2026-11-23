@@ -4,7 +4,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use khalid_core::Locale;
-use khalid_render::{PageBody, PageKind, RenderError, Renderer};
+use khalid_render::{LocationWords, PageBody, PageKind, RenderError, Renderer, SiteWords};
 
 use crate::common::{demo_site, meta};
 
@@ -57,6 +57,55 @@ fn the_sites_words_reach_text_outside_templates() {
     assert_eq!(renderer.text(&locale("fr-CA"), "month_1"), Some("janvier"));
     assert_eq!(renderer.text(&locale("fr"), "month_2"), Some("February"));
     assert_eq!(renderer.text(&locale("en"), "month_1"), Some("January"));
+    let words = SiteWords::of_site(site.path()).unwrap();
+    assert_eq!(words.get(&locale("fr"), "month_1"), Some("janvier"));
+    assert_eq!(
+        renderer.words().get(&locale("fr"), "month_1"),
+        Some("janvier")
+    );
+    let card = LocationWords::of_site(&words, &locale("fr"));
+    assert_eq!(
+        card.days[0], "Monday",
+        "a key the file leaves out stays English"
+    );
+    assert_eq!(
+        SiteWords::builtin().unwrap().get(&locale("fr"), "month_1"),
+        Some("January")
+    );
+}
+
+#[test]
+fn the_tables_for_other_pages_are_kept_by_language_for_their_crates() {
+    let site = site_with_strings(&[
+        (
+            "fr.toml",
+            "month_1 = \"janvier\"\n\n[comments]\ntitle = \"Non envoyé\"\n",
+        ),
+        (
+            "en.toml",
+            "[notes]\nsearch = \"Search needs the server.\"\n",
+        ),
+    ]);
+    let words = SiteWords::of_site(site.path()).unwrap();
+    let comments = words.part("comments");
+    assert_eq!(comments.keys().collect::<Vec<_>>(), ["fr"]);
+    assert_eq!(comments["fr"]["title"].as_str(), Some("Non envoyé"));
+    assert_eq!(
+        words.part("notes")["en"]["search"].as_str(),
+        Some("Search needs the server.")
+    );
+    assert!(words.part("newsletter").is_empty());
+    assert_eq!(words.get(&locale("fr"), "month_1"), Some("janvier"));
+}
+
+#[test]
+fn a_table_no_page_reads_is_refused() {
+    let site = site_with_strings(&[("fr.toml", "[footer]\ntitle = \"Pied\"\n")]);
+    let error = SiteWords::of_site(site.path()).unwrap_err();
+    assert!(
+        matches!(&error, RenderError::SiteStrings { .. }),
+        "{error:?}"
+    );
 }
 
 #[test]

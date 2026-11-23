@@ -104,6 +104,7 @@ fn every_setting() -> Value {
         "aliases": ["/2019/05/anchor-text/"],
         "access": "members",
         "template": "wide",
+        "comments": "closed",
         "head_code": null,
         "seo_title": "Anchor text that says where it goes {sep} {site}",
         "focus_keyword": "anchor text",

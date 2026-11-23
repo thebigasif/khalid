@@ -79,6 +79,20 @@ async fn an_owner_lists_the_keys_without_their_secrets() {
 }
 
 #[tokio::test]
+async fn the_key_list_takes_a_filter_and_a_page() {
+    let router = site();
+    let scoped = format!("{KEYS}?filter=scopes:'posts:publish'&limit=1");
+    let (status, json) = send(&router, "GET", &scoped, OWNER, None).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(json["keys"][0]["id"], "2222333344445555", "{json}");
+    assert_eq!(json["meta"]["pagination"]["total"], 1, "{json}");
+    let second = format!("{KEYS}?limit=1&page=2");
+    let (_, json) = send(&router, "GET", &second, OWNER, None).await;
+    assert_eq!(json["keys"][0]["id"], "2222333344445555", "{json}");
+    assert_eq!(json["meta"]["pagination"]["pages"], 2, "{json}");
+}
+
+#[tokio::test]
 async fn a_new_integration_key_is_shown_once_and_works_with_its_scopes() {
     let router = site();
     let new =

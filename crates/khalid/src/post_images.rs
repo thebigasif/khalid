@@ -131,8 +131,8 @@ fn draw_page(
     lead(config, page, images)
 }
 
-/// Draws the lead image of a post, or the photo of an author, at the top
-/// of `page`, when it is a file beside the page's file with its sizes among
+/// Draws the lead image of a post or plain page, or the photo of an
+/// author, at the top of `page`, when it is a file beside the page's file with its sizes among
 /// `pictures`, or a file in the media library: fetched at once with high
 /// priority, as the one large image at the top (BL-WEB-5), and shared as
 /// the page's Open Graph and X image. Returns what it drew. An image
@@ -154,6 +154,7 @@ fn lead(
     match &mut page.body {
         PageBody::Post(post) => post.image = Some(drawn.clone()),
         PageBody::Author(author) => author.image = Some(drawn.clone()),
+        PageBody::Page(plain) => plain.image = Some(drawn.clone()),
         _ => return None,
     }
     // No network draws an SVG, so the page keeps its generated share card.

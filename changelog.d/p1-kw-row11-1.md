@@ -1,0 +1,2 @@
+Added
+Pages, such as About, take `robots` (for example `noindex`), `canonical`, a feature `image` shown under the heading and used in link previews, and `share_cards` for Facebook and X. A post's `share_cards` now reach its page too: the Facebook card sets the Open Graph title, description and image, and the X card adds `twitter:title`, `twitter:description` and `twitter:image`. Before, the build kept the cards in the file but never wrote them into the page.

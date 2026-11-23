@@ -1,5 +1,6 @@
 import type { AdminPost, PostEdit } from "../api/posts";
 import type { components } from "../api/schema";
+import { type ReachChoice, type ReachDraft, reachDraft, reachEdit, sameReach } from "./reach";
 import { localInput } from "./schedule";
 
 /** Where a post stands in review. */
@@ -30,6 +31,8 @@ export type SettingsDraft = {
   robots: string;
   aliases: string;
   unpublishAt: string;
+  /** `open`, `closed` or `off`, empty to follow the blog's setting. */
+  comments: string;
   xTitle: string;
   xDescription: string;
   xImage: string;
@@ -40,16 +43,17 @@ export type SettingsDraft = {
   focusKeyword: string;
   secondaryKeywords: string;
   schema: string;
-};
+} & ReachDraft;
 
 /** The settings whose field is free text. */
-export type TextSetting = Exclude<keyof SettingsDraft, "reviewState">;
+export type TextSetting = Exclude<keyof SettingsDraft, "reviewState" | ReachChoice>;
 
 const IMAGE = ["imageSrc", "imageAlt", "imageCaption"] as const;
 const CARDS = ["xTitle", "xDescription", "xImage"] as const;
 const FACEBOOK = ["facebookTitle", "facebookDescription", "facebookImage"] as const;
 const ONE_BY_ONE = ["slug", "author", "coAuthors", "date", "excerpt", "reviewState"] as const;
-const OTHERS = ["canonical", "robots", "aliases", "unpublishAt"] as const;
+const OTHERS = ["canonical", "robots", "aliases", "unpublishAt", "comments"] as const;
+const COMMENT_STATES = ["open", "closed", "off"] as const;
 const SEARCH = ["seoTitle", "focusKeyword", "secondaryKeywords", "schema"] as const;
 const KEYS = [...ONE_BY_ONE, ...OTHERS, ...IMAGE, ...CARDS, ...FACEBOOK, ...SEARCH];
 
@@ -71,6 +75,7 @@ export function settingsDraft(post: AdminPost): SettingsDraft {
     robots: settings.robots ?? "",
     aliases: settings.aliases.join("\n"),
     unpublishAt: post.unpublish_at ? localInput(post.unpublish_at) : "",
+    comments: settings.comments ?? "",
     xTitle: x?.title ?? "",
     xDescription: x?.description ?? "",
     xImage: x?.image ?? "",
@@ -81,6 +86,7 @@ export function settingsDraft(post: AdminPost): SettingsDraft {
     focusKeyword: settings.focus_keyword ?? "",
     secondaryKeywords: (settings.secondary_keywords ?? []).join("\n"),
     schema: settings.schema ?? "",
+    ...reachDraft(settings),
   };
 }
 
@@ -97,7 +103,7 @@ export function withSetting<K extends keyof SettingsDraft>(
 
 /** Whether two drafts hold the same settings. */
 export function sameSettings(a: SettingsDraft, b: SettingsDraft): boolean {
-  return KEYS.every((key) => a[key] === b[key]);
+  return KEYS.every((key) => a[key] === b[key]) && sameReach(a, b);
 }
 
 // Trimmed text, or null when nothing is left, which clears the setting.
@@ -163,6 +169,9 @@ function settingsChanged(saved: SettingsDraft, now: SettingsDraft): SettingsEdit
   if (changed("robots")) {
     settings.robots = orNull(now.robots);
   }
+  if (changed("comments")) {
+    settings.comments = COMMENT_STATES.find((state) => state === now.comments) ?? null;
+  }
   if (changed("seoTitle")) {
     settings.seo_title = orNull(now.seoTitle);
   }
@@ -175,7 +184,7 @@ function settingsChanged(saved: SettingsDraft, now: SettingsDraft): SettingsEdit
   if (changed("schema")) {
     settings.schema = orNull(now.schema);
   }
-  return settings;
+  return { ...settings, ...reachEdit(saved, now) };
 }
 
 /** The fields of an edit that change settings: only those that differ from `saved`. */

@@ -56,6 +56,7 @@ fn a_new_admin_post_is_a_draft_in_api_shape() {
                 "access": "public",
                 "password_protected": false,
                 "template": null,
+                "comments": null,
                 "head_code": null,
                 "seo_title": null,
                 "focus_keyword": null,

@@ -24,8 +24,8 @@ use crate::site_html::{Made, SearchShell, Served, Unrendered, Which, html_pages}
 use crate::unlock::Gate;
 use crate::{
     assets, build_gate, build_home, build_message, build_seo, categories, content_message,
-    home_images, look, own_descriptions, post_categories, post_lock, search_page, share_images,
-    site_outline,
+    home_images, imprint_page, look, own_descriptions, post_categories, post_lock, search_page,
+    share_images, site_outline,
 };
 
 /// Renders every page of one site from its files. Cloning shares it.
@@ -198,6 +198,11 @@ impl SitePages {
         self.0.forms.clone()
     }
 
+    /// The site folder the pages are made from.
+    pub(crate) fn folder(&self) -> &Path {
+        &self.0.folder
+    }
+
     /// The address of the stylesheet every page links; `None` when headless.
     pub(crate) fn stylesheet(&self) -> Option<String> {
         let settings = self.settings();
@@ -250,7 +255,8 @@ impl SitePages {
         home_images::attach(folder, (config, routes), content, &mut languages)?;
         search_page::link(config, &mut languages);
         own_descriptions::fill(config, &theme.renderer, &mut languages)?;
-        let seo_site = build_seo::site_on(config, self.0.clock.now().date_naive())?;
+        imprint_page::label(config, &theme.renderer, &mut languages);
+        let seo_site = build_seo::site_on(folder, config, self.0.clock.now().date_naive())?;
         let cards = share_images::attach(folder, config, &theme.tokens, &seo_site, &mut languages)?;
         // The home pages answer first, so their cards are drawn now; the
         // rest warm in the background once the pages are live (G14).

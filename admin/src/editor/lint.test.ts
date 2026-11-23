@@ -11,10 +11,12 @@ const NO_LINK = {
   what: "This post links to none of your other posts.",
   why: "Internal links are how readers and Google find the rest of your site.",
   fix: "Add one link to a related post.",
-  guide: "https://khalid.dev/lint/no-internal-link",
+  guide: "internal-links",
+  guide_url: "https://serpdad.com/khalid/docs/lint-rules/#internal-links",
   suggestions: [],
 };
 const FILLER = { ...NO_LINK, rule: "slug-filler-words", severity: "warn", subject: "a" };
+const TIP = { ...NO_LINK, rule: "long-paragraph", severity: "info" };
 
 function refused(findings: unknown[]): Problem {
   return {
@@ -37,8 +39,15 @@ describe("lint findings from a refused publish", () => {
     expect(findings[1]?.subject).toBe("a");
   });
 
+  it("keeps tips after the warnings, each with its guide", () => {
+    const findings = lintFindings(refused([TIP, FILLER, NO_LINK]));
+    expect(findings.map((finding) => finding.severity)).toEqual(["block", "warn", "info"]);
+    expect(findings[2]?.guide_url).toBe(NO_LINK.guide_url);
+  });
+
   it("skips anything that is not a finding", () => {
-    expect(lintFindings(refused([{ rule: "x" }, "text", null, NO_LINK]))).toHaveLength(1);
+    const odd = [{ rule: "x" }, "text", null, { ...NO_LINK, guide_url: 3 }, NO_LINK];
+    expect(lintFindings(refused(odd))).toHaveLength(1);
   });
 
   it("finds nothing in a problem without lint, or no problem", () => {

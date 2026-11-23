@@ -177,6 +177,7 @@ mod serve_sites;
 mod server_log;
 mod settings_events;
 mod settings_text;
+mod share_cards;
 mod share_images;
 mod site_addresses;
 mod site_audit;

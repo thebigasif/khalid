@@ -89,32 +89,42 @@ pub(crate) fn stored_moves(site: &Path) -> Result<Vec<RedirectRule>, UserMessage
     Ok(moves.cloned().collect())
 }
 
-/// Every alias of a dated post, moved to the address `routes` gives the
-/// post, as its page has, with each chain followed to its end, in the
+/// Every alias of a dated post or a page, moved to the address `routes`
+/// gives the post, or the page's own, with each chain followed to its end, in the
 /// order of the redirect table. `khalid serve` answers the same hops.
 pub(crate) fn hops(
     config: &Config,
     routes: &Routes,
     content: &SiteContent,
 ) -> Result<Vec<Hop>, UserMessage> {
-    let (mut rules, mut posts) = (Vec::new(), Vec::new());
+    let mut moved = Vec::new();
     for doc in content.posts.iter().filter(|doc| doc.front.date.is_some()) {
         let front = &doc.front;
         let (_, slug) = named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
         let entry = PostAddress::new(&doc.collection, &doc.locale, &slug, front.date);
         let rest = routed(config, routes, &doc.locale, &entry, &doc.path)?;
-        let to = path(&format!("/{}{rest}", prefix(config, &doc.locale)))?;
-        for alias in &front.aliases {
+        moved.push((&doc.path, &front.aliases, (&doc.locale, rest)));
+    }
+    // A page lives at `<slug>/`, as `khalid build` gives it.
+    for doc in &content.pages {
+        let front = &doc.front;
+        let (_, slug) = named(config, doc, front.slug.as_ref(), front.title.as_deref())?;
+        moved.push((&doc.path, &front.aliases, (&doc.locale, format!("{slug}/"))));
+    }
+    let (mut rules, mut posts) = (Vec::new(), Vec::new());
+    for (file, aliases, (locale, rest)) in moved {
+        let to = path(&format!("/{}{rest}", prefix(config, locale)))?;
+        for alias in aliases {
             let inside = alias
                 .strip_prefix(config.mount().trim_end_matches('/'))
                 .filter(|rest| rest.starts_with('/'))
-                .ok_or_else(|| build_message::alias_outside(&doc.path, alias, config.mount()))?;
+                .ok_or_else(|| build_message::alias_outside(file, alias, config.mount()))?;
             let redirect = Redirect::Move {
                 kind: Move::Permanent,
                 to: Destination::Path(to.clone()),
             };
             rules.push(RedirectRule::new(path(inside)?, redirect));
-            posts.push(doc.path.clone());
+            posts.push(file.clone());
         }
     }
     if rules.is_empty() {
