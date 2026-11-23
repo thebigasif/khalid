@@ -296,6 +296,35 @@ fn a_location_block_shows_the_address_hours_and_map_of_the_location_it_names() {
 }
 
 #[test]
+fn the_sites_own_strings_word_location_cards_the_locations_page_and_share_labels() {
+    let site = site(LOCATIONS);
+    put(
+        site.path(),
+        "theme/strings/en.toml",
+        "weekday_1 = \"Mon\"\nlocations_title = \"Find a practice\"\nwritten_by = \"Words by\"\n",
+    );
+    put(
+        site.path(),
+        "content/en/pages/visit.md",
+        "---\ntitle: Visit us\nslug: visit\n---\n\nFind us here.\n\n\
+         ::location{name=\"Mill Lane Dental\"}\n",
+    );
+    build(&site);
+    let visit = file(&site, "visit/index.html").unwrap();
+    assert!(
+        visit.contains("<th scope=\"row\">Mon</th><td>09:00 to 17:30</td>"),
+        "{visit}"
+    );
+    let page = file(&site, "locations/index.html").unwrap();
+    assert!(page.contains("<h1>Find a practice</h1>"), "{page}");
+    let post = file(&site, "post-1/index.html").unwrap();
+    assert!(
+        post.contains("<meta name=\"twitter:label1\" content=\"Words by\">"),
+        "{post}"
+    );
+}
+
+#[test]
 fn the_locations_page_lists_every_location_and_can_sort_the_nearest_first() {
     // Quay Street, the last location, gets a point too.
     let site = site(&format!(
