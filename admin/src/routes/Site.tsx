@@ -5,6 +5,7 @@ import { changeSite, readSite, type SiteChange, type SiteSettings } from "../api
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
 import { savedWords } from "../components/SettingsTabs";
+import { CommentsSetting } from "../site/CommentsSetting";
 import { HomeSections } from "../site/HomeSections";
 import { PictureSearches } from "../site/PictureSearches";
 import { SiteForm } from "../site/SiteForm";
@@ -52,6 +53,11 @@ export function Site() {
           key={site.updated_at}
           saved={site.home_sections ?? []}
           onSave={(sections) => send({ updated_at: site.updated_at, home_sections: sections })}
+        />
+        <CommentsSetting
+          key={`comments-${site.updated_at}`}
+          saved={site.comments ?? { state: "open", notify: true }}
+          onSave={(comments) => send({ updated_at: site.updated_at, comments })}
         />
         <PictureSearches />
       </>

@@ -433,6 +433,8 @@ When the site sends mail (`[mail]`), each new reader comment emails the site's o
 
 `closed` keeps the approved comments on each post and takes away the form, so no new comment comes in. `off` shows no comments and no form. One post can say otherwise in its front matter, which wins over the site: `comments: closed` closes a busy old post, and `comments: open` opens one post on a site where comments are off. The pages change as soon as you save; no restart is needed.
 
+You can also do both in the admin. The Comments part of the Settings screen sets `[comments]` for the whole site, with the email switch. In the editor, More settings has a Comments choice for the one post, where "Use the blog's setting" leaves the line out. Programs do the same through the Admin API: `comments` in `PUT /api/admin/v1/settings/` takes `{"state": "closed"}`, `{"notify": false}` or both, and a post's `settings.comments` takes `open`, `closed`, `off` or `null`.
+
 ## Request limits
 
 `khalid serve` limits how often one key or one reader may ask for work, so a busy script or a leaked key cannot slow the blog for everyone. Past a limit the answer is 429, "too many requests", with a `Retry-After` header that says how many seconds to wait. The usual numbers suit one blog on a small server. To change them, add a `[limits]` table to `site.toml` and restart the server:

@@ -27,13 +27,16 @@ export type SiteNav = Schemas["NavSetting"];
 /** Which menu: the header's main menu or the footer's. */
 export type MenuName = keyof SiteNav;
 
+/** Whether readers may comment, as `[comments]` holds it. */
+export type SiteComments = Schemas["CommentsSetting"];
+
 /** The site's one call to action, as `[template.cta]` holds it. */
 export type Cta = Schemas["CtaSetting"];
 
 type Settings = Schemas["AdminSettings"];
 
 /** Fields a server from before their screen sends none of. */
-type Later = "home_sections" | "nav" | "seo" | "cta";
+type Later = "home_sections" | "nav" | "seo" | "cta" | "comments";
 
 /** The site's core settings, as `site.toml` holds them. */
 export type SiteSettings = Omit<Settings, Later | "template" | "mode" | "privacy" | "code"> &

@@ -37,6 +37,8 @@ fn a_page_is_sent_in_api_shape() {
             "path": "/blog/about/",
             "description": "Who writes Field Notes.",
             "markdown": "Who writes here.",
+            "seo": {"robots": null, "canonical": null, "feature_image": null,
+                "share_cards": {"x": null, "facebook": null}},
             "updated_at": "2026-10-20T09:00:00Z",
         })
     );

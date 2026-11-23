@@ -66,4 +66,6 @@ export const dashboardWords = {
   onPosts: (count: number) => (count === 1 ? "1 post" : `${count} posts`),
   start: "Start here",
   startOn: (what: string) => `Start on: ${what}`,
+  guide: "Read the guide",
+  guideOn: (what: string) => `Read the guide, in a new tab: ${what}`,
 } as const;

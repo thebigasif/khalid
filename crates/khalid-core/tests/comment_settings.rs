@@ -46,3 +46,14 @@ fn an_unknown_state_is_refused() {
     let error = load(&text).unwrap_err();
     assert!(error.contains("maybe"), "{error}");
 }
+
+#[test]
+fn each_state_writes_the_name_it_reads() {
+    for state in CommentState::ALL {
+        let written = serde_json::to_value(state).unwrap();
+        assert_eq!(written, state.as_str());
+        assert_eq!(state.to_string(), state.as_str());
+        let read: CommentState = serde_json::from_value(written).unwrap();
+        assert_eq!(read, state);
+    }
+}

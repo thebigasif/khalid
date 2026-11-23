@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 
 use khalid_core::{AbsoluteUrl, Locale};
 use percent_encoding::{NON_ALPHANUMERIC, utf8_percent_encode};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::pages::PageWords;
 use crate::{BackPath, EmailAddress, Mail, PostalAddress, SendId, SubscriberToken};
@@ -22,7 +22,7 @@ const FILES: [(&str, &str); 2] = [
 /// One language's words: the confirmation email, where `{site}`,
 /// `{confirm}` and `{remove}` stand for the site's name and the two links,
 /// and the pages.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 struct Words {
     confirm_subject: String,
@@ -38,7 +38,7 @@ struct Words {
 /// The words of the emails and pages in every built-in language.
 #[derive(Debug, Clone)]
 pub struct NewsletterWords {
-    words: BTreeMap<&'static str, Words>,
+    words: BTreeMap<String, Words>,
 }
 
 impl NewsletterWords {
@@ -52,12 +52,47 @@ impl NewsletterWords {
         let mut words = BTreeMap::new();
         for (language, text) in FILES {
             let read = toml::from_str(text).map_err(|source| WordsError {
-                language,
+                language: language.to_owned(),
                 source: Box::new(source),
             })?;
-            words.insert(language, read);
+            words.insert(language.to_owned(), read);
         }
         Ok(Self { words })
+    }
+
+    /// These words with the site's own laid over them: `own` holds the
+    /// `[newsletter]` table of each of the site's strings files, by
+    /// language, with the pages' words under `[newsletter.page]`. A word
+    /// the table leaves out keeps the built-in one of its language, or the
+    /// site's English one when the language has no file.
+    ///
+    /// # Errors
+    ///
+    /// [`WordsError`] for a word no email or page shows, or one that is not
+    /// text.
+    pub fn with_site(mut self, own: &BTreeMap<String, toml::Table>) -> Result<Self, WordsError> {
+        // English first, so a language with no file starts from it.
+        let english = own.get_key_value(FALLBACK_LANGUAGE);
+        let others = own
+            .iter()
+            .filter(|(language, _)| *language != FALLBACK_LANGUAGE);
+        for (language, table) in english.into_iter().chain(others) {
+            let base =
+                (self.words.get(language.as_str())).or_else(|| self.words.get(FALLBACK_LANGUAGE));
+            let mut merged = match base.map(toml::Value::try_from) {
+                Some(Ok(toml::Value::Table(words))) => words,
+                _ => toml::Table::new(),
+            };
+            lay_over(&mut merged, table);
+            let read = toml::Value::Table(merged)
+                .try_into()
+                .map_err(|source| WordsError {
+                    language: language.clone(),
+                    source: Box::new(source),
+                })?;
+            self.words.insert(language.clone(), read);
+        }
+        Ok(self)
     }
 
     /// The confirmation email to `to` from the site called `site`, in
@@ -234,11 +269,25 @@ fn encoded(text: &str) -> String {
     utf8_percent_encode(text, NON_ALPHANUMERIC).to_string()
 }
 
-/// A built-in words file is not valid.
+/// `base` with each key of `own` laid over it, a table inside key by key,
+/// so `[newsletter.page]` changes one page word and keeps the rest.
+fn lay_over(base: &mut toml::Table, own: &toml::Table) {
+    for (key, value) in own {
+        match (base.get_mut(key), value) {
+            (Some(toml::Value::Table(inner)), toml::Value::Table(more)) => lay_over(inner, more),
+            _ => {
+                base.insert(key.clone(), value.clone());
+            }
+        }
+    }
+}
+
+/// A words file is not valid: a built-in one, or the `[newsletter]` table
+/// of a site's strings file, such as one naming a word no email shows.
 #[derive(Debug, thiserror::Error)]
-#[error("the {language} words of the newsletter emails cannot be read")]
+#[error("the {language} words of the newsletter emails cannot be read: {source}")]
 pub struct WordsError {
-    language: &'static str,
+    language: String,
     #[source]
     source: Box<toml::de::Error>,
 }

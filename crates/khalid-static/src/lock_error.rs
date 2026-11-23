@@ -4,8 +4,9 @@
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum LockError {
-    /// A built-in notes file is not valid. The crate's tests rule this out.
-    #[error("the static mode notes for {language} cannot be read")]
+    /// A notes file is not valid: a built-in one, which the crate's tests
+    /// rule out, or the `[notes]` table of a site's strings file.
+    #[error("the static mode notes for {language} cannot be read: {source}")]
     Notes {
         /// The file's language, such as `de`.
         language: String,

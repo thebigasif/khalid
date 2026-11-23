@@ -4,7 +4,7 @@
 
 use std::sync::Arc;
 
-use axum::extract::{OriginalUri, Path, State};
+use axum::extract::{OriginalUri, Path, Query, State};
 use axum::{Extension, Json, middleware};
 use khalid_core::UserMessage;
 use serde::Serialize;
@@ -17,6 +17,8 @@ use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
 use crate::link_suggestions::LinkSuggestion;
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::post_check::{PostCheck, PostChecks};
 use crate::problem::{Problem, ProblemType};
 use crate::site_health::SiteHealth;
@@ -122,19 +124,27 @@ async fn suggest_links(
 pub(crate) struct AdminIssues {
     /// Up to ten problems, those that stop posts going live first.
     issues: Vec<SiteIssue>,
+    /// Where this page sits in the list.
+    meta: Meta,
 }
+
+/// The fields the issues can be filtered on.
+const ISSUE_FIELDS: &[&str] = &["rule", "weight", "posts", "example"];
 
 /// The live site's most common lint problems, for the dashboard's task
 /// list: each rule that fires, on how many posts, with what, why and fix
 /// and one post to open first. Those that stop posts going live come
-/// first, then those on the most posts. Every rule runs on every post, as
-/// `khalid lint` does, so the dashboard asks for it after the rest. Needs
-/// `posts:write`.
+/// first, then those on the most posts. `limit`, `page` and `filter`,
+/// such as `filter=weight:block`, narrow the list. Every rule runs on
+/// every post, as `khalid lint` does, so the dashboard asks for it after
+/// the rest. Needs `posts:write`.
 #[utoipa::path(
     get, path = "/lint/issues/", tag = "admin posts",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
         (status = 200, description = "Up to ten problems, most pressing first", body = AdminIssues),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server checks no posts", body = Problem, content_type = "application/problem+json"),
@@ -143,12 +153,17 @@ pub(crate) struct AdminIssues {
 async fn list_issues(
     State(checks): State<Checks>,
     Extension(principal): Extension<Principal>,
+    Query(query): Query<PageQuery>,
 ) -> Result<Json<AdminIssues>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let checks = checks.ok_or_else(no_checks)?;
     let issues = checks.site_issues().await;
     let issues = issues.map_err(|e| Problem::internal(&e))?;
-    Ok(Json(AdminIssues { issues }))
+    let paged = query.page(issues, ISSUE_FIELDS)?;
+    Ok(Json(AdminIssues {
+        issues: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// The site's health score out of 100 from its last audit, for the
