@@ -1,53 +1,47 @@
 #!/usr/bin/env bash
-# Reports line coverage for the whole test run from the profiles its parts
-# wrote (scripts/ci/coverage-part.sh), and fails under the floor in
-# coverage.toml (BL-TST-6). Run it after a coverage build of the tests,
-# made as the parts made theirs, so the build's coverage map matches.
-# CI only: never run coverage on the shared build server.
+# Reports line coverage for the whole test run from the LCOV files its
+# parts wrote (scripts/ci/coverage-part.sh), and fails under the floor in
+# coverage.toml (BL-TST-6). It builds nothing and needs no Rust toolchain.
 #
-# Each part's profile goes where the tests write raw profiles, and then
-# `cargo llvm-cov report` runs exactly as it ran after one whole run: it
-# merges every profile there with llvm-profdata, which reads a profile by
-# its contents, not its name. Counters only add up, so the table and the
-# total are the ones one run of every test gives.
+# The parts hold every test exactly once, so a line is covered in the whole
+# run when any part ran it. The files join by source file and line: a line
+# counts once, and counts as covered when any part's count for it is above
+# zero. That is what one run of every test would report.
 #
-# Usage: scripts/ci/coverage-report.sh <folder of part profiles> <parts>
+# Usage: scripts/ci/coverage-report.sh <folder of part LCOV files> <parts>
 set -euo pipefail
 
-parts_dir="${1:?Name the folder that holds the part profiles.}"
+parts_dir="${1:?Name the folder that holds the part LCOV files.}"
 parts="${2:?Say how many parts the tests ran in.}"
 
 shopt -s nullglob
-found=("$parts_dir"/*.profdata)
+found=("$parts_dir"/*.lcov)
 if [ "${#found[@]}" -ne "$parts" ]; then
-  echo "Found ${#found[@]} part profiles in $parts_dir, expected $parts. Coverage of the whole run cannot be told."
+  echo "Found ${#found[@]} part LCOV files in $parts_dir, expected $parts. Coverage of the whole run cannot be told."
   exit 1
 fi
-
-eval "$(cargo llvm-cov show-env --sh)"
-pattern="${LLVM_PROFILE_FILE:?cargo llvm-cov show-env set no LLVM_PROFILE_FILE.}"
-dir="${pattern%/*}"
-name="${pattern##*/}"
-prefix="${name%%-%p*}"
-
-# Only the parts' profiles count, never a raw profile left from a build.
-rm -f "$dir/$prefix"-*.profraw
-for part in "${found[@]}"; do
-  base="${part##*/}"
-  cp "$part" "$dir/$prefix-${base%.profdata}.profraw"
-done
 
 floor=$(sed -n 's/^lines *= *\([0-9.]*\).*/\1/p' coverage.toml 2>/dev/null || echo 0)
-warnings="$(mktemp)"
-status=0
-cargo llvm-cov report --summary-only --fail-under-lines "$floor" 2> "$warnings" || status=$?
-cat "$warnings" >&2
 
-# A function whose build here differs from the parts' build loses its
-# counts, and the total would drop without a test changing. llvm-cov says
-# so as "mismatched data"; then the number is not the whole run's.
-if grep -q "mismatched data" "$warnings"; then
-  echo "The coverage build here differs from the parts' build, so some counts were dropped. Rebuild with the same toolchain, flags and cache as the rust job."
-  exit 1
-fi
-exit "$status"
+# DA:<line>,<count>[,<checksum>] under SF:<file>.
+awk -v floor="$floor" '
+  /^SF:/ { file = substr($0, 4); next }
+  /^DA:/ {
+    split(substr($0, 4), field, ",")
+    key = file SUBSEP field[1]
+    if (!(key in hit)) { hit[key] = 0; lines[file]++ }
+    if (field[2] + 0 > 0 && hit[key] == 0) { hit[key] = 1; covered[file]++ }
+  }
+  END {
+    total = 0; done = 0
+    for (f in lines) {
+      total += lines[f]; done += covered[f]
+      printf "%7.2f%%  %6d lines  %s\n", 100 * covered[f] / lines[f], lines[f], f | "sort -n"
+    }
+    close("sort -n")
+    if (total == 0) { print "The LCOV files hold no lines."; exit 1 }
+    percent = 100 * done / total
+    printf "\nTOTAL  %d of %d lines covered, %.2f%%. Floor %s%%.\n", done, total, percent, floor
+    if (percent < floor) { print "Line coverage is under the floor in coverage.toml (BL-TST-6)."; exit 1 }
+  }
+' "${found[@]}"

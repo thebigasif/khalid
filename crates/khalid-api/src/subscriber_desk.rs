@@ -72,7 +72,8 @@ pub trait SubscriberDesk: Send + Sync {
     /// Brings in the readers of `csv`, Khalid's own export or a Substack
     /// or Ghost list, each with the status the file gave them and no email
     /// to them. Readers the file names no newsletter for join `list`, or
-    /// main. An address the site has is left as it is.
+    /// main. An address the site has is left as it is. With
+    /// [`ImportMode::Check`] it answers the same counts and keeps nothing.
     ///
     /// # Errors
     ///
@@ -84,6 +85,7 @@ pub trait SubscriberDesk: Send + Sync {
         &'a self,
         csv: &'a str,
         list: Option<&'a Slug>,
+        mode: ImportMode,
     ) -> BoxFuture<'a, Result<SubscriberImport, SubscriberError>>;
 
     /// Every reader as Khalid's own CSV export, oldest first, which
@@ -150,6 +152,16 @@ pub enum LabelChange {
     Add,
     /// Take the label away.
     Remove,
+}
+
+/// Whether an import keeps its readers or only counts them.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ImportMode {
+    /// Add the readers.
+    Save,
+    /// Count what an import would do and keep nothing, so staff see the
+    /// numbers before they say yes.
+    Check,
 }
 
 /// Why a subscriber or newsletter request could not be done.

@@ -7,7 +7,7 @@ use chrono::{DateTime, Utc};
 use khalid_api::resources::{
     AdminSubscriber, NewSubscriber, ReaderFile, SkippedReader, SubscriberImport, SubscriberStatus,
 };
-use khalid_api::subscriber_desk::SubscriberError;
+use khalid_api::subscriber_desk::{ImportMode, SubscriberError};
 use khalid_core::Slug;
 use khalid_db::SubscriberTable;
 use khalid_import::subscribers::{Reader, ReaderSource, Standing, read_readers, write_readers};
@@ -41,11 +41,12 @@ pub(super) async fn add(
 /// Brings the readers of `csv` into `table` `at` that time. A reader the
 /// file names no newsletter for joins `list`, or `main`. A row whose
 /// address cannot take mail, or whose newsletter the site lacks, is
-/// skipped with why; the address is never repeated.
-pub(super) async fn import(
+/// skipped with why; the address is never repeated. A check counts the
+/// same way and keeps no one.
+pub(crate) async fn import(
     table: &SubscriberTable,
     lists: &Lists,
-    (csv, list): (&str, Option<&Slug>),
+    (csv, list, mode): (&str, Option<&Slug>, ImportMode),
     at: DateTime<Utc>,
 ) -> Result<SubscriberImport, SubscriberError> {
     if lists.find(list.map(Slug::as_str)).is_none() {
@@ -78,7 +79,10 @@ pub(super) async fn import(
             labels: reader.labels,
         });
     }
-    let added = table.bring_in(&readers, at).await;
+    let added = match mode {
+        ImportMode::Save => table.bring_in(&readers, at).await,
+        ImportMode::Check => table.count_in(&readers, at).await,
+    };
     let added = added.map_err(SubscriberError::store)?;
     let new = added.iter().filter(|id| id.is_some()).count();
     let count = |n: usize| u64::try_from(n).unwrap_or(u64::MAX);
@@ -93,7 +97,11 @@ pub(super) async fn import(
         ReaderSource::Khalid => ReaderFile::Khalid,
     };
     let totals = (count(new), count(added.len().saturating_sub(new)));
-    Ok(SubscriberImport::new(source, totals, skipped))
+    let done = SubscriberImport::new(source, totals, skipped);
+    Ok(match mode {
+        ImportMode::Save => done,
+        ImportMode::Check => done.only_counted(),
+    })
 }
 
 /// Every reader in `table` as Khalid's CSV export, oldest first.

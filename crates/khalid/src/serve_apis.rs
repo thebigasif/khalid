@@ -46,7 +46,7 @@ use crate::{draft_comment_mail, late_api, look, mounted, staff};
 
 pub(crate) mod ai_writer;
 pub(crate) mod schema_copier;
-mod subscriber_files;
+pub(crate) mod subscriber_files;
 mod subscribers;
 mod taxonomy_events;
 

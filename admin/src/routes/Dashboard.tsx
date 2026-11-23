@@ -8,6 +8,7 @@ import { readSiteHealth } from "../api/seo";
 import { blogName } from "../auth/blog";
 import { PageHeader } from "../components/PageHeader";
 import { Problem } from "../components/Problem";
+import { Alerts } from "../dashboard/Alerts";
 import { Metrics } from "../dashboard/Metrics";
 import { NeedsAttention } from "../dashboard/NeedsAttention";
 import { QuickActions } from "../dashboard/QuickActions";
@@ -57,6 +58,7 @@ export function Dashboard() {
         title={title}
         lede={stuck === 0 ? en.dashboard.calm : en.dashboard.blockedLede(stuck)}
       />
+      <Alerts />
       <Metrics
         live={live.pagination.total}
         drafts={drafts.pagination.total}

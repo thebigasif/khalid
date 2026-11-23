@@ -12,7 +12,7 @@ use khalid_api::resources::{
     AdminNewsletter, AdminSend, AdminSubscriber, NewSubscriber, NewsletterSend, PostStatus,
     SendReadiness, SubscriberFilter, SubscriberImport, SubscriberPage, SubscriberStatus,
 };
-use khalid_api::subscriber_desk::{LabelChange, SubscriberDesk, SubscriberError};
+use khalid_api::subscriber_desk::{ImportMode, LabelChange, SubscriberDesk, SubscriberError};
 use khalid_core::{Clock, Config, Slug, SystemClock};
 use khalid_db::SubscriberTable;
 use khalid_newsletter::{
@@ -156,11 +156,12 @@ impl SubscriberDesk for SiteSubscribers {
         &'a self,
         csv: &'a str,
         list: Option<&'a Slug>,
+        mode: ImportMode,
     ) -> BoxFuture<'a, Result<SubscriberImport, SubscriberError>> {
         Box::pin(async move {
             let lists = self.lists().await?;
             let at = SystemClock.now();
-            subscriber_files::import(&self.table, &lists, (csv, list), at).await
+            subscriber_files::import(&self.table, &lists, (csv, list, mode), at).await
         })
     }
 

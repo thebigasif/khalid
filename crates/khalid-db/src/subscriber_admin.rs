@@ -8,7 +8,7 @@ use chrono::{DateTime, Utc};
 use khalid_api::resources::{
     AdminSubscriber, NewSubscriber, SubscriberFilter, SubscriberPage, SubscriberStatus,
 };
-use khalid_api::subscriber_desk::LabelChange;
+use khalid_api::subscriber_desk::{ImportMode, LabelChange};
 use khalid_core::Slug;
 
 use crate::subscriber_table::stamp;
@@ -185,6 +185,32 @@ impl SubscriberTable {
         readers: &[NewSubscriber],
         at: DateTime<Utc>,
     ) -> Result<Vec<Option<i64>>, DbError> {
+        self.write_in(readers, at, ImportMode::Save).await
+    }
+
+    /// Answers what [`SubscriberTable::bring_in`] would for `readers` `at`
+    /// that time, and keeps none of them, so staff see the counts before
+    /// an import.
+    ///
+    /// # Errors
+    ///
+    /// [`DbError`] when the table cannot be read or written.
+    pub async fn count_in(
+        &self,
+        readers: &[NewSubscriber],
+        at: DateTime<Utc>,
+    ) -> Result<Vec<Option<i64>>, DbError> {
+        self.write_in(readers, at, ImportMode::Check).await
+    }
+
+    // Writes `readers` in one transaction, committed to save them and
+    // rolled back for a check.
+    async fn write_in(
+        &self,
+        readers: &[NewSubscriber],
+        at: DateTime<Utc>,
+        mode: ImportMode,
+    ) -> Result<Vec<Option<i64>>, DbError> {
         let mut tx = self.db.writer.begin().await?;
         let mut added = Vec::with_capacity(readers.len());
         for reader in readers {
@@ -240,7 +266,11 @@ impl SubscriberTable {
             }
             added.push(id);
         }
-        tx.commit().await?;
+        if mode == ImportMode::Save {
+            tx.commit().await?;
+        } else {
+            tx.rollback().await?;
+        }
         Ok(added)
     }
 

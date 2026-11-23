@@ -311,10 +311,11 @@ jobs:
             fi
             exec cargo nextest run --workspace --all-features --config-file scripts/ci/nextest.toml --partition "hash:$PART/$PARTS"
           '
-      # The part's raw profiles, joined into one small file for rust-coverage.
+      # The part's coverage, reported against its own build as an LCOV file
+      # for rust-coverage.
       - name: This part's coverage
         if: env.COVERAGE == 'true'
-        run: ./scripts/ci/coverage-part.sh "target/coverage-part/part-${{ matrix.part }}.profdata"
+        run: ./scripts/ci/coverage-part.sh "target/coverage-part/part-${{ matrix.part }}.lcov"
       - uses: actions/upload-artifact@v7
         if: env.COVERAGE == 'true'
         with:
@@ -323,13 +324,12 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-  # The coverage of the whole run, from the eight parts' profiles, held to
-  # the floor in coverage.toml (BL-TST-6). It builds the tests for coverage
-  # as each part did, from the parts' cache, so its coverage map is theirs,
-  # and runs the same `cargo llvm-cov report` one whole run ran. Joining
-  # profiles only adds their counters, so the table and the total are the
-  # ones one run of every test gives (ADR "main runs its coverage tests in
-  # eight parts").
+  # The coverage of the whole run, from the eight parts' LCOV files, held to
+  # the floor in coverage.toml (BL-TST-6). Each part reports against the
+  # binaries it built and ran; this job joins the files by source line and
+  # builds nothing. A rebuild here never matched the parts' builds exactly,
+  # so llvm-cov dropped counts and the job failed on every run (ADR "main
+  # runs its coverage tests in eight parts").
   rust-coverage:
     name: Rust test coverage
     needs: rust
@@ -340,26 +340,6 @@ jobs:
       PARTS: 8
     steps:
       - uses: actions/checkout@v7
-      - name: Toolchain from rust-toolchain.toml
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: 1.99.1
-          components: llvm-tools-preview
-      # The rust job's cache, read only: the same key the parts restored.
-      - name: Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          shared-key: rust
-          save-if: false
-      - name: Tools
-        uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-nextest,cargo-llvm-cov
-      - name: The tests, built for coverage as the parts built them
-        run: |
-          eval "$(cargo llvm-cov show-env --sh)"
-          cargo llvm-cov clean --workspace
-          cargo nextest run --workspace --all-features --no-run
       - uses: actions/download-artifact@v7
         with:
           pattern: coverage-part-*

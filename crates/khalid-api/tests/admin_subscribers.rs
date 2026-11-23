@@ -23,7 +23,7 @@ use khalid_api::resources::{
     SendReadiness, SkippedReader, SubscriberFilter, SubscriberImport, SubscriberPage,
     SubscriberStatus,
 };
-use khalid_api::subscriber_desk::{LabelChange, SubscriberDesk, SubscriberError};
+use khalid_api::subscriber_desk::{ImportMode, LabelChange, SubscriberDesk, SubscriberError};
 use khalid_core::Slug;
 use serde_json::{Value, json};
 use tower::ServiceExt;
@@ -86,6 +86,34 @@ impl Desk {
         added.labels.clone_from(&new.labels);
         readers.push(added.clone());
         Ok(added)
+    }
+
+    /// Adds the `email,status` rows of `csv`.
+    fn read_in(&self, csv: &str) -> Result<SubscriberImport, SubscriberError> {
+        let mut lines = csv.lines();
+        if lines.next() != Some("email,status") {
+            let why = "its first row is no header".to_owned();
+            return Err(SubscriberError::NotReaders(why));
+        }
+        let (mut added, mut already) = (0, 0);
+        for line in lines {
+            let (email, status) = line.split_once(',').unwrap();
+            let status = serde_json::from_value(json!(status)).unwrap();
+            let new = NewSubscriber {
+                email: email.to_owned(),
+                status,
+                created_at: None,
+                lists: Vec::new(),
+                labels: Vec::new(),
+            };
+            match self.put(&new) {
+                Ok(_) => added += 1,
+                Err(_) => already += 1,
+            }
+        }
+        let skipped = vec![SkippedReader::new(9, "it has no email address".to_owned())];
+        let totals = (added, already);
+        Ok(SubscriberImport::new(ReaderFile::Khalid, totals, skipped))
     }
 }
 
@@ -169,40 +197,22 @@ impl SubscriberDesk for Desk {
     }
 
     /// Reads `email,status` rows; a file with another header is refused.
+    /// A check puts the readers back as they were.
     fn import<'a>(
         &'a self,
         csv: &'a str,
         _list: Option<&'a Slug>,
+        mode: ImportMode,
     ) -> BoxFuture<'a, Result<SubscriberImport, SubscriberError>> {
-        let mut lines = csv.lines();
-        let answer = if lines.next() == Some("email,status") {
-            let (mut added, mut already) = (0, 0);
-            for line in lines {
-                let (email, status) = line.split_once(',').unwrap();
-                let status = serde_json::from_value(json!(status)).unwrap();
-                let new = NewSubscriber {
-                    email: email.to_owned(),
-                    status,
-                    created_at: None,
-                    lists: Vec::new(),
-                    labels: Vec::new(),
-                };
-                match self.put(&new) {
-                    Ok(_) => added += 1,
-                    Err(_) => already += 1,
-                }
-            }
-            let skipped = vec![SkippedReader::new(9, "it has no email address".to_owned())];
-            Ok(SubscriberImport::new(
-                ReaderFile::Khalid,
-                (added, already),
-                skipped,
-            ))
-        } else {
-            Err(SubscriberError::NotReaders(
-                "its first row is no header".to_owned(),
-            ))
-        };
+        let before = self.readers.lock().unwrap().clone();
+        let answer = self.read_in(csv);
+        if mode == ImportMode::Check {
+            *self.readers.lock().unwrap() = before;
+        }
+        let answer = answer.map(|done| match mode {
+            ImportMode::Check => done.only_counted(),
+            ImportMode::Save => done,
+        });
         Box::pin(async move { answer })
     }
 
@@ -631,7 +641,7 @@ async fn a_reader_list_comes_in_and_goes_out() {
     let skipped = json!([{"line": 9, "why": "it has no email address"}]);
     assert_eq!(
         json,
-        json!({"source": "khalid", "added": 1, "already": 1, "skipped": skipped})
+        json!({"source": "khalid", "added": 1, "already": 1, "skipped": skipped, "saved": true})
     );
     let (status, kind, text) = csv(&router, OWNER, ("GET", "/subscribers/export/"), "").await;
     assert_eq!(
@@ -643,6 +653,25 @@ async fn a_reader_list_comes_in_and_goes_out() {
         "{text}"
     );
     assert!(text.ends_with("kim@example.com,Confirmed\n"), "{text}");
+}
+
+#[tokio::test]
+async fn a_check_counts_the_readers_and_adds_no_one() {
+    let router = router(Some(three()));
+    let file = "email,status\nkim@example.com,confirmed\nlena@example.com,pending\n";
+    let route = ("POST", "/subscribers/import/?check=true");
+    let (status, _, text) = csv(&router, OWNER, route, file).await;
+    assert_eq!(status, StatusCode::OK, "{text}");
+    let json: Value = serde_json::from_str(&text).unwrap();
+    assert_eq!(
+        (&json["added"], &json["already"], &json["saved"]),
+        (&json!(1), &json!(1), &json!(false))
+    );
+    let (_, _, text) = csv(&router, OWNER, ("GET", "/subscribers/export/"), "").await;
+    assert!(!text.contains("kim@example.com"), "{text}");
+    let route = ("POST", "/subscribers/import/?check=maybe");
+    let (status, _, text) = csv(&router, OWNER, route, file).await;
+    assert_eq!(status, StatusCode::BAD_REQUEST, "{text}");
 }
 
 #[tokio::test]

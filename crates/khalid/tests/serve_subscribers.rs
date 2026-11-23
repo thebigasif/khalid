@@ -157,11 +157,16 @@ fn readers_come_in_with_their_status_and_no_email_and_go_out_as_csv() {
     };
 
     let import = format!("{SUBSCRIBERS}import/");
+    let (status, checked) = csv("POST", &format!("{import}?check=true"), SUBSTACK);
+    assert_eq!(status, 200, "{checked}");
+    assert!(checked.contains("\"added\":3,\"already\":0"), "{checked}");
+    assert!(checked.ends_with("\"saved\":false}"), "{checked}");
     let (status, answer) = csv("POST", &import, SUBSTACK);
     assert_eq!(status, 200, "{answer}");
     let answer: serde_json::Value = serde_json::from_str(&answer).unwrap();
     let skipped = json!([{"line": 5, "why": "its address cannot take mail"}]);
-    let expected = json!({"source": "substack", "added": 3, "already": 0, "skipped": skipped});
+    let expected =
+        json!({"source": "substack", "added": 3, "already": 0, "skipped": skipped, "saved": true});
     assert_eq!(answer, expected);
     let (_, listed) = server.admin("GET", &format!("{SUBSCRIBERS}?label=paid"), None);
     assert_eq!(
