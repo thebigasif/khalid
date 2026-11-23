@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { visitors } from "../../test/analytics";
 import { axeViolations, json, renderAt, serve, signedIn } from "../../test/render";
 import { listing, row, rowsPage } from "../../test/rows";
+import type { RaisedAlert } from "../api/alerts";
 import type { PostRow } from "../api/rows";
 import type { SiteHealth, SiteIssue } from "../api/seo";
 import { dashboardWords as words } from "../strings/dashboardWords";
@@ -30,6 +31,20 @@ type Blog = {
   issues?: SiteIssue[];
   /** The site's audits; none when the blog cannot send them. */
   health?: SiteHealth;
+  /** The alerts still raised; none when the blog cannot send them. */
+  alerts?: RaisedAlert[];
+};
+
+const STALE: RaisedAlert = {
+  kind: "stale-post",
+  what: "Some live posts have not changed for a long time.",
+  why: "Old facts make readers trust a post less.",
+  fix: "Read each post below and update it.",
+  raised_at: "2026-11-03T12:00:00Z",
+  findings: Array.from({ length: 7 }, (_, at) => ({
+    key: `stale-post:en.post-${at + 1}`,
+    line: `Post ${at + 1}`,
+  })),
 };
 
 /** An audit the blog kept, `score` out of 100, on `at`. */
@@ -55,6 +70,9 @@ function blog(given: Blog = {}) {
   serve((request) => {
     sent.push(request);
     const path = new URL(request.url).pathname;
+    if (path === "/api/admin/v1/alerts/" && given.alerts !== undefined) {
+      return json(200, { alerts: given.alerts });
+    }
     if (path === "/api/admin/v1/site/health/" && health !== undefined) {
       return json(200, health);
     }
@@ -206,6 +224,29 @@ describe("the dashboard", () => {
     renderAt("/");
     await screen.findByText(en.dashboard.calm);
     expect(screen.queryByRole("region", { name: words.issues })).toBeNull();
+  });
+
+  it("lists the raised alerts with why, the fix and at most five problems each", async () => {
+    signedIn();
+    blog({ alerts: [STALE] });
+    renderAt("/");
+    const panel = await screen.findByRole("region", { name: words.alerts });
+    expect(within(panel).getByText(STALE.what)).toBeVisible();
+    expect(within(panel).getByText(`${STALE.why} ${STALE.fix}`)).toBeVisible();
+    expect(within(panel).getAllByRole("listitem")).toHaveLength(1 + 5);
+    expect(within(panel).getByText("Post 1")).toBeVisible();
+    expect(within(panel).queryByText("Post 6")).toBeNull();
+    expect(within(panel).getByText(words.alertsMore(2))).toBeVisible();
+    expect(within(panel).getByText(words.alertSince("3 November 2026"))).toBeVisible();
+    expect(await axeViolations()).toEqual([]);
+  });
+
+  it("leaves the alerts panel out when nothing is raised", async () => {
+    signedIn();
+    blog({ alerts: [] });
+    renderAt("/");
+    await screen.findByText(en.dashboard.calm);
+    expect(screen.queryByRole("region", { name: words.alerts })).toBeNull();
   });
 
   it("shows the site health score, what the audit found and how the score moved", async () => {
