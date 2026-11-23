@@ -22,6 +22,7 @@ use serde_json::Value;
 use tokio::io::BufReader;
 
 use crate::account_author::SiteAuthorProfiles;
+use crate::alerts::SiteAlerts;
 use crate::cli::{Cli, Output};
 use crate::exit::Exit;
 use crate::mcp_content::FreshContent;
@@ -151,6 +152,7 @@ fn api_router(
             id,
             Arc::new(SystemClock),
         ))),
+        alerts: Some(Arc::new(SiteAlerts::new(database, id))),
         ..AdminDesks::none()
     };
     let (router, document) =

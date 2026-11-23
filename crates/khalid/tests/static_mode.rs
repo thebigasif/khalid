@@ -262,6 +262,46 @@ fn a_static_post_shows_one_note_where_comments_would_be() {
 }
 
 #[test]
+fn the_sites_own_notes_replace_the_built_in_ones() {
+    let site = demo("static");
+    let strings = at(site.path(), "theme/strings");
+    fs::create_dir_all(&strings).unwrap();
+    let english = "[notes]\ncomments = \"Write to us instead.\"\n";
+    fs::write(at(&strings, "en.toml"), english).unwrap();
+    let out = tempfile::tempdir().unwrap();
+    build(site.path(), out.path(), &[]);
+    let post = fs::read_to_string(at(out.path(), "what-a-sitemap-does/index.html")).unwrap();
+    assert!(
+        post.contains("data-feature=\"comments\">Write to us instead.</p>"),
+        "{post}"
+    );
+    let german =
+        fs::read_to_string(at(out.path(), "de/was-eine-sitemap-leistet/index.html")).unwrap();
+    assert!(german.contains("Kommentare sind auf dieser Website nicht möglich."));
+}
+
+#[test]
+fn a_note_no_form_has_stops_the_build_and_says_where() {
+    let site = demo("static");
+    let strings = at(site.path(), "theme/strings");
+    fs::create_dir_all(&strings).unwrap();
+    fs::write(at(&strings, "en.toml"), "[notes]\nfooter = \"x\"\n").unwrap();
+    let out = tempfile::tempdir().unwrap();
+    let output = Command::new(env!("CARGO_BIN_EXE_khalid"))
+        .arg("--site")
+        .arg(site.path())
+        .arg("build")
+        .arg("--out")
+        .arg(out.path())
+        .output()
+        .unwrap();
+    assert_ne!(output.status.code(), Some(0));
+    let said = String::from_utf8_lossy(&output.stderr);
+    assert!(said.contains("[notes]"), "{said}");
+    assert!(said.contains("khalid-static/strings/en.toml"), "{said}");
+}
+
+#[test]
 fn a_server_build_keeps_its_forms_and_lists_nothing_off() {
     let site = demo_with_forms("server");
     let out = tempfile::tempdir().unwrap();

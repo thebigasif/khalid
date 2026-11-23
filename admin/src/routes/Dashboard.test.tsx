@@ -44,6 +44,7 @@ const ISSUE: SiteIssue = {
   fix: "Describe each picture in a short sentence.",
   weight: "warn",
   posts: 4,
+  guide: "https://serpdad.com/khalid/docs/lint-rules/#image-descriptions",
   example: "en.anchor-words",
 };
 
@@ -194,6 +195,8 @@ describe("the dashboard", () => {
     expect(within(tasks).getByText(words.onPosts(4))).toBeVisible();
     const start = within(tasks).getByRole("link", { name: words.startOn(ISSUE.what) });
     expect(start).toHaveAttribute("href", "/admin/posts/en.anchor-words");
+    const guide = within(tasks).getByRole("link", { name: words.guideOn(ISSUE.what) });
+    expect(guide).toHaveAttribute("href", ISSUE.guide);
     expect(await axeViolations()).toEqual([]);
   });
 

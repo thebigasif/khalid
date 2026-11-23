@@ -127,6 +127,29 @@ fn every_page_links_to_the_imprint_from_its_footer() {
 }
 
 #[test]
+fn the_footer_link_takes_the_sites_own_word_for_the_imprint() {
+    let site = site(&format!("{SITE}{IMPRINT}"));
+    put(
+        site.path(),
+        "theme/strings/en.toml",
+        "imprint_title = \"Legal notice\"\n",
+    );
+    let (code, said) = build(&site);
+    assert_eq!(code, Some(0), "{said}");
+    let about = page(&site, "about/index.html");
+    let footer = footer_of(&about);
+    assert!(
+        footer.contains("<a href=\"/blog/impressum/\">Legal notice</a>"),
+        "{about}"
+    );
+    let german_home = page(&site, "de/index.html");
+    assert!(
+        footer_of(&german_home).contains(">Impressum</a>"),
+        "{german_home}"
+    );
+}
+
+#[test]
 fn a_site_without_the_table_has_no_imprint_and_no_link() {
     let site = site(SITE);
     let (code, said) = build(&site);

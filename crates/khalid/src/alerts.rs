@@ -6,7 +6,10 @@
 use std::fmt;
 use std::sync::Arc;
 
-use khalid_alerts::{Alert, Finding, Kind, Raised, fresh};
+use chrono::SecondsFormat;
+use khalid_alerts::{Alert, Finding, Kind, Raised, fresh, standing};
+use khalid_api::alerts::{AlertError, AlertList, AlertReader, RaisedAlert, RaisedFinding};
+use khalid_api::content_store::BoxFuture;
 use khalid_core::{Clock, Config, SystemClock};
 use khalid_db::{AlertTable, Database, SiteId};
 use khalid_newsletter::{EmailAddress, Mail, Mailer};
@@ -113,6 +116,44 @@ impl Alerting {
     }
 }
 
+/// The alerts still raised for one site, for the Admin API, so an owner
+/// with no email sees them on the dashboard (backlog row 15).
+pub(crate) struct SiteAlerts(Arc<dyn Raised>);
+
+impl SiteAlerts {
+    /// The alerts kept in site `id` of `database`.
+    pub(crate) fn new(database: &Database, id: SiteId) -> Self {
+        Self(Arc::new(AlertTable::new(database.clone(), id)))
+    }
+}
+
+impl AlertReader for SiteAlerts {
+    fn alerts(&self) -> BoxFuture<'_, Result<AlertList, AlertError>> {
+        Box::pin(async move {
+            let held = self.0.held().await;
+            let held = held.map_err(|error| AlertError::Internal(Box::new(error)))?;
+            let alerts = standing(held).iter().map(listed).collect();
+            Ok(AlertList { alerts })
+        })
+    }
+}
+
+/// `alert` as the Admin API lists it.
+fn listed(alert: &Alert) -> RaisedAlert {
+    let findings = alert.findings().iter().map(|finding| RaisedFinding {
+        key: finding.key.clone(),
+        line: finding.line.clone(),
+    });
+    RaisedAlert {
+        kind: alert.kind().as_str().to_owned(),
+        what: alert.what().to_owned(),
+        why: alert.why().to_owned(),
+        fix: alert.fix().to_owned(),
+        raised_at: alert.raised_at().to_rfc3339_opts(SecondsFormat::Secs, true),
+        findings: findings.collect(),
+    }
+}
+
 /// The body of an `alert.raised` delivery.
 #[derive(Serialize)]
 struct AlertBody<'a> {
@@ -210,5 +251,23 @@ mod tests {
             line,
             "en.a-weak-post, due at 2026-11-03T09:00:00Z, stays a draft"
         );
+    }
+
+    #[tokio::test]
+    async fn a_raised_alert_is_listed_for_the_admin_with_its_words() {
+        let raised: Arc<dyn Raised> = Arc::new(MemoryRaised::default());
+        let at = Utc.with_ymd_and_hms(2026, 11, 3, 9, 0, 0).unwrap();
+        fresh(&*raised, Kind::StalePost, stale("en.a"), at)
+            .await
+            .unwrap();
+        let list = SiteAlerts(raised).alerts().await.unwrap();
+        let alert = &list.alerts[0];
+        assert_eq!(alert.kind, "stale-post");
+        assert_eq!(alert.raised_at, "2026-11-03T09:00:00Z");
+        assert_eq!(
+            alert.what,
+            "Some live posts have not changed for a long time."
+        );
+        assert_eq!(alert.findings[0].line, "Post en.a");
     }
 }
