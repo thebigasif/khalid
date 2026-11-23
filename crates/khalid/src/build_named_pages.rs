@@ -11,7 +11,7 @@ use khalid_seo::{AuthorProfile, PageKind as SeoKind};
 
 use crate::build_pages::{Page, body_html, meta, named, page, path_of, routed};
 use crate::listed_post::ListedPost;
-use crate::{build_message, build_schema, build_seo, definition_text};
+use crate::{build_message, build_schema, build_seo, definition_text, share_cards};
 
 /// The page of every plain page in `locale`, such as About, at `/<slug>/`.
 pub(crate) fn plain_pages(
@@ -31,6 +31,9 @@ pub(crate) fn plain_pages(
         seo.excerpt.clone_from(&description);
         seo.translation = build_seo::translation(front.translation.as_deref())?;
         seo.page_type = front.page_type;
+        seo.robots.clone_from(&front.robots);
+        seo.canonical.clone_from(&front.canonical);
+        seo.cards = share_cards::overrides(config, &path, &front.share_cards);
         let rendered = render_linked(&doc.body, &doc.locale, config.slugs(), links)
             .map_err(|error| build_message::block(&doc.path, &error))?;
         // A page has no author, so a review or a score on it is the publisher's.
@@ -47,10 +50,14 @@ pub(crate) fn plain_pages(
             title,
             updated: None,
             body: BodyHtml::from_sanitised(build_seo::with_link_policy(config, rendered.html)),
+            // Drawn once its sizes are made, as a post's lead image is.
+            image: None,
             term: None,
         };
         let body = PageBody::Page(body);
-        pages.push(page(locale, config, &rest, meta, body, seo).made_from(&doc.path));
+        let mut page = page(locale, config, &rest, meta, body, seo).made_from(&doc.path);
+        page.lead.clone_from(&front.image);
+        pages.push(page);
     }
     Ok(pages)
 }
@@ -80,6 +87,7 @@ pub(crate) fn glossary_pages(
         seo.translation = build_seo::translation(front.translation.as_deref())?;
         let meta = meta(config, term.clone(), description, path, PageKind::Website)?;
         let body = RenderPage {
+            image: None,
             title: term,
             updated: None,
             body: definition,

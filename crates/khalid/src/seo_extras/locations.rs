@@ -4,25 +4,27 @@
 
 use khalid_core::{Config, UserMessage};
 use khalid_render::{
-    BodyHtml, LocationWords, LocationsPage, PageBody, PageKind, RenderPage, place_locations,
+    BodyHtml, LocationWords, LocationsPage, PageBody, PageKind, RenderPage, SiteWords,
+    place_locations,
 };
 use khalid_seo::PageKind as SeoKind;
 
 use crate::build_pages::{LanguagePages, meta, page, path_of};
-use crate::{build_message, build_seo};
+use crate::build_seo;
 
 /// Where the locations page sits in each language's folder.
 const PAGE: &str = "locations/";
 
 /// Adds the locations page to each language of a site with locations,
-/// unless `[seo.local] page = false` or the site has its own page there.
+/// unless `[seo.local] page = false` or the site has its own page there,
+/// worded as the site's `words` have it.
 ///
 /// # Errors
 ///
-/// What, why and fix when the built-in words cannot be read or the
-/// page's address cannot be made.
+/// What, why and fix when the page's address cannot be made.
 pub(crate) fn add_page(
     config: &Config,
+    words: &SiteWords,
     languages: &mut [LanguagePages],
 ) -> Result<(), UserMessage> {
     let locations = &config.seo().locations;
@@ -35,8 +37,7 @@ pub(crate) fn add_page(
         if language.pages.iter().any(|page| page.meta.path == path) {
             continue;
         }
-        let made =
-            LocationsPage::new(locations, locale).map_err(|error| build_message::render(&error))?;
+        let made = LocationsPage::new(locations, words, locale);
         let mut seo = build_seo::page(SeoKind::Page, locale, PAGE, &made.title)?;
         seo.excerpt.clone_from(&made.description);
         // The page is the same list in every language, so its versions pair.
@@ -49,6 +50,7 @@ pub(crate) fn add_page(
             PageKind::Website,
         )?;
         let body = PageBody::Page(RenderPage {
+            image: None,
             title: made.title,
             updated: None,
             body: BodyHtml::from_sanitised(made.body),
@@ -62,17 +64,13 @@ pub(crate) fn add_page(
 }
 
 /// Swaps each location mark in the posts and pages of `languages` for its
-/// card, in the page's language. A name the site does not list leaves no
-/// card, and the build says which, so the person building can fix it.
-///
-/// # Errors
-///
-/// What, why and fix when the built-in words cannot be read.
-pub(crate) fn fill(config: &Config, languages: &mut [LanguagePages]) -> Result<(), UserMessage> {
+/// card, in the page's language as the site words it. A name the site does
+/// not list leaves no card, and the build says which, so the person
+/// building can fix it.
+pub(crate) fn fill(config: &Config, site_words: &SiteWords, languages: &mut [LanguagePages]) {
     let locations = &config.seo().locations;
     for language in languages {
-        let words = LocationWords::for_locale(&language.site.locale)
-            .map_err(|error| build_message::render(&error))?;
+        let words = LocationWords::of_site(site_words, &language.site.locale);
         for page in &mut language.pages {
             let body = match &mut page.body {
                 PageBody::Post(post) => &mut post.body,
@@ -92,5 +90,4 @@ pub(crate) fn fill(config: &Config, languages: &mut [LanguagePages]) -> Result<(
             }
         }
     }
-    Ok(())
 }

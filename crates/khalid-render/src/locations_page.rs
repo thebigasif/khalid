@@ -6,7 +6,7 @@
 use khalid_core::{Locale, LocationSettings};
 
 use crate::escape::attribute;
-use crate::{LocationWords, RenderError, builtin_strings, location_card};
+use crate::{LocationWords, SiteWords, location_card};
 
 /// The locations page of one language: its title, its description and
 /// the HTML of its body.
@@ -22,15 +22,11 @@ pub struct LocationsPage {
 }
 
 impl LocationsPage {
-    /// The page of `locations` in `locale`'s language, or English.
-    ///
-    /// # Errors
-    ///
-    /// [`RenderError::Strings`] when a built-in strings file cannot be read.
-    pub fn new(locations: &[LocationSettings], locale: &Locale) -> Result<Self, RenderError> {
-        let table = builtin_strings(locale)?;
-        let word = |key: &str| table.get(key).cloned().unwrap_or_default();
-        let card_words = LocationWords::for_locale(locale)?;
+    /// The page of `locations` in `locale`'s language, or English, worded
+    /// as the site's `words` have it.
+    pub fn new(locations: &[LocationSettings], words: &SiteWords, locale: &Locale) -> Self {
+        let word = |key: &str| words.get(locale, key).unwrap_or_default().to_owned();
+        let card_words = LocationWords::of_site(words, locale);
         let description = word("locations_intro");
         let mut body = ["<p>", &escape(&description), "</p>\n"].concat();
         let pinned = locations.iter().filter(|location| location.geo.is_some());
@@ -50,11 +46,11 @@ impl LocationsPage {
             body.extend(["<li>\n", &location_card(location, &card_words), "</li>\n"]);
         }
         body.push_str("</ol>\n");
-        Ok(Self {
+        Self {
             title: word("locations_title"),
             description,
             body,
-        })
+        }
     }
 }
 
@@ -70,6 +66,7 @@ mod tests {
     use khalid_core::{Locale, LocationSettings};
 
     use super::LocationsPage;
+    use crate::SiteWords;
 
     fn locations(pins: usize) -> Vec<LocationSettings> {
         #[derive(serde::Deserialize)]
@@ -94,7 +91,8 @@ mod tests {
     #[test]
     fn every_location_is_listed_in_order_with_a_sort_button_for_two_pins() {
         let english = Locale::try_new("en").unwrap();
-        let page = LocationsPage::new(&locations(2), &english).unwrap();
+        let words = SiteWords::builtin().unwrap();
+        let page = LocationsPage::new(&locations(2), &words, &english);
         assert_eq!(page.title, "Our locations");
         assert_eq!(page.body.matches("<li>").count(), 3);
         let first = page.body.find("Shop 0").unwrap();
@@ -104,9 +102,9 @@ mod tests {
             "{}",
             page.body
         );
-        let one = LocationsPage::new(&locations(1), &english).unwrap();
+        let one = LocationsPage::new(&locations(1), &words, &english);
         assert!(!one.body.contains("<button"), "{}", one.body);
-        let german = LocationsPage::new(&locations(0), &Locale::try_new("de").unwrap()).unwrap();
+        let german = LocationsPage::new(&locations(0), &words, &Locale::try_new("de").unwrap());
         assert_eq!(german.title, "Unsere Standorte");
     }
 }

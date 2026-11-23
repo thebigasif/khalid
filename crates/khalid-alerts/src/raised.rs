@@ -1,6 +1,6 @@
 //! What was raised already, so each problem is sent once while it lasts.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::error::Error;
 use std::pin::Pin;
 
@@ -21,16 +21,24 @@ pub trait Raised: Send + Sync {
     /// [`RaisedError`] when the keys cannot be read.
     fn raised(&self, kind: Kind) -> BoxFuture<'_, Result<BTreeSet<String>, RaisedError>>;
 
-    /// Keeps `keys` as raised at `at`.
+    /// Keeps the keys of `findings`, with their lines, as raised at `at`.
     ///
     /// # Errors
     ///
     /// [`RaisedError`] when the keys cannot be written.
     fn remember<'a>(
         &'a self,
-        keys: &'a [String],
+        findings: &'a [Finding],
         at: DateTime<Utc>,
     ) -> BoxFuture<'a, Result<(), RaisedError>>;
+
+    /// Every finding raised and not forgotten, of every kind, so an owner
+    /// with no email sees them too.
+    ///
+    /// # Errors
+    ///
+    /// [`RaisedError`] when the keys cannot be read.
+    fn held(&self) -> BoxFuture<'_, Result<Vec<Held>, RaisedError>>;
 
     /// Drops `keys`, so each is raised again if it comes back.
     ///
@@ -97,11 +105,65 @@ pub async fn fresh(
         .into_iter()
         .filter(|finding| !before.contains(&finding.key))
         .collect();
-    let keys: Vec<String> = new.iter().map(|finding| finding.key.clone()).collect();
-    if !keys.is_empty() {
-        store.remember(&keys, at).await?;
+    if !new.is_empty() {
+        store.remember(&new, at).await?;
     }
     Ok(Alert::new(kind, new, at))
+}
+
+/// One finding a store still holds as raised.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Held {
+    /// The finding's key, such as `stale-post:en.old-post`.
+    pub key: String,
+    /// The finding's line, or empty when it was raised before lines were
+    /// kept.
+    pub line: String,
+    /// When it was raised.
+    pub raised_at: DateTime<Utc>,
+}
+
+/// The `held` findings as one alert per kind, in [`Kind::ALL`] order. Each
+/// alert lists its findings newest first and carries the newest one's
+/// time. A finding raised before lines were kept shows its key's subject,
+/// and a key of a kind this version does not know is left out.
+pub fn standing(held: Vec<Held>) -> Vec<Alert> {
+    let mut by_kind: BTreeMap<Kind, Vec<Held>> = BTreeMap::new();
+    for one in held {
+        if let Some(kind) = Kind::ALL.into_iter().find(|kind| kind.owns(&one.key)) {
+            by_kind.entry(kind).or_default().push(one);
+        }
+    }
+    let mut alerts = Vec::new();
+    for kind in Kind::ALL {
+        let Some(mut found) = by_kind.remove(&kind) else {
+            continue;
+        };
+        found.sort_by(|a, b| b.raised_at.cmp(&a.raised_at).then(a.key.cmp(&b.key)));
+        let Some(newest) = found.first().map(|one| one.raised_at) else {
+            continue;
+        };
+        let findings = found.into_iter().map(|one| finding_of(kind, one)).collect();
+        alerts.extend(Alert::new(kind, findings, newest));
+    }
+    alerts
+}
+
+/// `held` as a finding, its line falling back to the key's subject.
+fn finding_of(kind: Kind, held: Held) -> Finding {
+    let line = if held.line.is_empty() {
+        let prefix = kind.key("");
+        held.key
+            .strip_prefix(&prefix)
+            .unwrap_or(&held.key)
+            .to_owned()
+    } else {
+        held.line
+    };
+    Finding {
+        key: held.key,
+        line,
+    }
 }
 
 #[cfg(any(test, feature = "test-util"))]
@@ -112,14 +174,17 @@ mod memory {
     use std::collections::BTreeMap;
     use std::sync::{Mutex, PoisonError};
 
-    use super::{BTreeSet, BoxFuture, DateTime, Kind, Raised, RaisedError, Utc};
+    use super::{BTreeSet, BoxFuture, DateTime, Finding, Held, Kind, Raised, RaisedError, Utc};
+
+    /// Each raised key with its line and time.
+    type Keys = BTreeMap<String, (String, DateTime<Utc>)>;
 
     /// Raised keys in memory, for tests.
     #[derive(Debug, Default)]
-    pub struct MemoryRaised(Mutex<BTreeMap<String, DateTime<Utc>>>);
+    pub struct MemoryRaised(Mutex<Keys>);
 
     impl MemoryRaised {
-        fn keys(&self) -> std::sync::MutexGuard<'_, BTreeMap<String, DateTime<Utc>>> {
+        fn keys(&self) -> std::sync::MutexGuard<'_, Keys> {
             self.0.lock().unwrap_or_else(PoisonError::into_inner)
         }
     }
@@ -137,11 +202,27 @@ mod memory {
 
         fn remember<'a>(
             &'a self,
-            keys: &'a [String],
+            findings: &'a [Finding],
             at: DateTime<Utc>,
         ) -> BoxFuture<'a, Result<(), RaisedError>> {
-            self.keys().extend(keys.iter().map(|key| (key.clone(), at)));
+            let kept = findings
+                .iter()
+                .map(|found| (found.key.clone(), (found.line.clone(), at)));
+            self.keys().extend(kept);
             Box::pin(async { Ok(()) })
+        }
+
+        fn held(&self) -> BoxFuture<'_, Result<Vec<Held>, RaisedError>> {
+            let held = self
+                .keys()
+                .iter()
+                .map(|(key, (line, at))| Held {
+                    key: key.clone(),
+                    line: line.clone(),
+                    raised_at: *at,
+                })
+                .collect();
+            Box::pin(async move { Ok(held) })
         }
 
         fn forget<'a>(&'a self, keys: &'a [String]) -> BoxFuture<'a, Result<(), RaisedError>> {
@@ -153,7 +234,7 @@ mod memory {
         }
 
         fn forget_before(&self, before: DateTime<Utc>) -> BoxFuture<'_, Result<(), RaisedError>> {
-            self.keys().retain(|_, at| *at >= before);
+            self.keys().retain(|_, (_, at)| *at >= before);
             Box::pin(async { Ok(()) })
         }
     }

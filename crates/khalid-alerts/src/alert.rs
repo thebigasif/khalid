@@ -199,6 +199,26 @@ impl Alert {
         &self.findings
     }
 
+    /// What happened, in one sentence.
+    pub fn what(&self) -> &'static str {
+        self.what
+    }
+
+    /// Why it matters, in one sentence.
+    pub fn why(&self) -> &'static str {
+        self.why
+    }
+
+    /// What to do, in one sentence.
+    pub fn fix(&self) -> &'static str {
+        self.fix
+    }
+
+    /// When it was raised.
+    pub fn raised_at(&self) -> DateTime<Utc> {
+        self.raised_at
+    }
+
     /// An email's subject line for the site named `site`.
     pub fn subject(&self, site: &str) -> String {
         format!("{site}: {}", self.what.trim_end_matches('.'))

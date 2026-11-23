@@ -134,6 +134,7 @@ pub(crate) fn deliver(
         let clock = Arc::new(SystemClock);
         let flow = Newsletter::new(Arc::new(store), mailer, clock, newsletter::site(config));
         let flow = flow.map_err(|_| internal())?;
+        let flow = flow.with_words(newsletter::words(folder).map_err(failed)?);
         let flow = if mail.count_clicks {
             flow.with_click_counting()
         } else {

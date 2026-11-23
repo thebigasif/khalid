@@ -5,6 +5,7 @@
 //! cards").
 
 use std::fmt::Write as _;
+use std::path::Path;
 
 use khalid_core::{Config, Locale, Mode, UserMessage};
 use khalid_render::{PageBody, RenderComments};
@@ -12,6 +13,7 @@ use khalid_static::{LockError, Locks, ServerFeature};
 use serde::Serialize;
 
 use crate::build_pages::LanguagePages;
+use crate::site_chrome;
 
 #[path = "static_consent.rs"]
 pub(crate) mod consent;
@@ -131,22 +133,29 @@ pub(crate) fn comments(config: &Config, languages: &mut [LanguagePages]) {
     }
 }
 
-/// The notes that stand in for forms, when `mode` is static.
+/// The notes that stand in for forms, when `mode` is static, with the
+/// `[notes]` of the strings files in the site `folder` laid over them.
 ///
 /// # Errors
 ///
-/// A [`UserMessage`] when the built-in notes cannot be read.
-pub(crate) fn locks(mode: Mode) -> Result<Option<Locks>, UserMessage> {
+/// A [`UserMessage`] when the built-in notes cannot be read, or the site's
+/// `[notes]` names a note no form has.
+pub(crate) fn locks(folder: &Path, mode: Mode) -> Result<Option<Locks>, UserMessage> {
     if mode != Mode::Static {
         return Ok(None);
     }
-    Locks::load().map(Some).map_err(|error| {
+    let locks = Locks::load().map_err(|error| {
         UserMessage::new(
             format!("Khalid could not read its notes for static pages: {error}."),
             "Each static page needs them to stand in for its forms, so nothing was built.",
             "Report it at https://github.com/thebigasif/khalid/issues with the version number.",
         )
-    })
+    })?;
+    let own = site_chrome::own_words(folder, "notes");
+    locks
+        .with_site(&own)
+        .map(Some)
+        .map_err(|error| site_chrome::own_words_message("notes", "khalid-static", &error))
 }
 
 /// `html`, the page written to `file` in `locale`, with its forms locked

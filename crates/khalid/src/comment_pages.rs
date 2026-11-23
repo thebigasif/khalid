@@ -29,6 +29,7 @@ use serde::Serialize;
 use crate::announce::SiteAnnounce;
 use crate::build_pages::LanguagePages;
 use crate::reader_comment_mail::ReaderCommentMail;
+use crate::site_chrome;
 use crate::site_pages::SitePages;
 
 /// The approved comments each post page shows, by post file, and the post
@@ -319,7 +320,13 @@ pub(crate) async fn start(
         source: source.clone(),
         live: live.clone(),
     });
-    let Ok(refusals) = RefusalPages::load() else {
+    let own = site_chrome::own_words(source.folder(), "comments");
+    let refusals = RefusalPages::load().and_then(|pages| pages.with_site(&own));
+    let refusals = refusals.or_else(|error| {
+        tracing::warn!(%error, "the site's [comments] words are left out; the built-in ones show");
+        RefusalPages::load()
+    });
+    let Ok(refusals) = refusals else {
         return (
             Router::new(),
             Arc::new(ApiModeration::new(comments)),

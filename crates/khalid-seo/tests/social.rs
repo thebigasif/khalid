@@ -3,7 +3,7 @@
 mod common;
 
 use common::{demo_site, internal_links_post, internal_links_post_de, locale, path, url};
-use khalid_seo::{PageKind, SeoPage, ShareImage, TwitterHandle, UrlPath, head_tags};
+use khalid_seo::{CardOverride, PageKind, SeoPage, ShareImage, TwitterHandle, UrlPath, head_tags};
 
 fn default_image() -> ShareImage {
     ShareImage::new(
@@ -120,4 +120,48 @@ fn a_twitter_handle_is_checked() {
     assert!(TwitterHandle::try_new("@has space").is_err());
     assert!(TwitterHandle::try_new("@fifteen_letters").is_ok());
     assert!(TwitterHandle::try_new("@sixteen_letters1").is_err());
+}
+
+#[test]
+fn a_card_set_for_one_network_changes_only_that_networks_tags() {
+    let mut site = demo_site();
+    site.share_image = Some(default_image());
+    let mut post = internal_links_post();
+    post.cards.open_graph = CardOverride::new(
+        Some("Links, the short version".to_owned()),
+        Some("Five link fixes in one page.".to_owned()),
+        Some(url("https://cdn.example.com/links-facebook.png")),
+    );
+    post.cards.x = CardOverride::new(Some("Links on X".to_owned()), None, None);
+    let html = head_tags(&site, &post).unwrap().to_html();
+    for want in [
+        r#"<meta property="og:title" content="Links, the short version">"#,
+        r#"<meta property="og:description" content="Five link fixes in one page.">"#,
+        r#"<meta property="og:image" content="https://cdn.example.com/links-facebook.png">"#,
+        r#"<meta name="twitter:card" content="summary_large_image">"#,
+        r#"<meta name="twitter:title" content="Links on X">"#,
+    ] {
+        assert!(html.contains(want), "{want} missing from {html}");
+    }
+    // The site's default image measures 1200 by 630; the card's own may not.
+    assert!(!html.contains("share-default.png"), "{html}");
+    assert!(!html.contains("og:image:width"), "{html}");
+    assert!(!html.contains("twitter:description"), "{html}");
+    assert!(!html.contains("twitter:image"), "{html}");
+}
+
+#[test]
+fn an_image_on_the_x_card_alone_makes_a_large_card() {
+    let mut post = internal_links_post();
+    post.cards.x = CardOverride::new(None, None, Some(url("https://cdn.example.com/x.png")));
+    let html = head_tags(&demo_site(), &post).unwrap().to_html();
+    assert!(
+        html.contains(r#"<meta name="twitter:card" content="summary_large_image">"#),
+        "{html}"
+    );
+    assert!(
+        html.contains(r#"<meta name="twitter:image" content="https://cdn.example.com/x.png">"#),
+        "{html}"
+    );
+    assert!(!html.contains("og:image"), "{html}");
 }

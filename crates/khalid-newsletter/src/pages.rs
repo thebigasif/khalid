@@ -2,12 +2,12 @@
 //! most one form, so every step works with scripts off (plan decision 12).
 
 use khalid_core::Slug;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{BackPath, NewsletterSite, NewsletterWords, WordsError};
 
 /// One language's words for the pages. `{site}` stands for the site's name.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct PageWords {
     back: String,
@@ -101,6 +101,13 @@ impl Pages {
             site,
             words: NewsletterWords::load()?,
         })
+    }
+
+    /// These pages, written with `words`, such as the built-in words with
+    /// the site's own laid over them.
+    #[must_use]
+    pub fn with_words(self, words: NewsletterWords) -> Self {
+        Self { words, ..self }
     }
 
     /// The mount path the pages answer under, such as `/blog/`.

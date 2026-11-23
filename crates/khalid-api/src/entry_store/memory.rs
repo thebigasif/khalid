@@ -67,9 +67,15 @@ impl<T: Entry> MemoryEntries<T> {
     fn change(&self, id: &str, edit: T::Edit) -> Result<T, EntryError> {
         let mut entries = self.entries();
         let at = Self::current(&entries, id, T::seen(&edit))?;
+        let entry = entries.get(at).ok_or(EntryError::NotFound)?;
+        let edited = entry.clone().edited(edit, self.clock.now());
+        // An edit that moves the entry may not take another's identity.
+        if edited.id() != id && entries.iter().any(|kept| kept.id() == edited.id()) {
+            return Err(EntryError::Taken(edited.id().to_owned()));
+        }
         let entry = entries.get_mut(at).ok_or(EntryError::NotFound)?;
-        *entry = entry.clone().edited(edit, self.clock.now());
-        Ok(entry.clone())
+        entry.clone_from(&edited);
+        Ok(edited)
     }
 
     fn remove(&self, id: &str, seen: DateTime<Utc>) -> Result<(), EntryError> {

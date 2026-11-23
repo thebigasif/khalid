@@ -462,6 +462,7 @@ impl Demo {
         for term in self.content(lang, "glossary")? {
             let path = format!("{glossary}{}/", term.field("slug"));
             let page = RenderPage {
+                image: None,
                 title: term.field("term"),
                 updated: None,
                 body: markdown(&term.body, &glossary),

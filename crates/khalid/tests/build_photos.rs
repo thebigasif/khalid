@@ -213,6 +213,36 @@ fn a_photo_from_the_media_library_shows_like_one_beside_the_author() {
 }
 
 #[test]
+fn a_pages_feature_image_shows_under_its_heading_and_in_its_previews() {
+    let site = tempfile::tempdir().unwrap();
+    let demo = at(
+        Path::new(env!("CARGO_MANIFEST_DIR")),
+        "../../fixtures/demo-site",
+    );
+    copy(&demo, site.path());
+    let pages = at(site.path(), "content/en/pages");
+    let text = fs::read_to_string(at(&pages, "about.md")).unwrap();
+    let image = "---\nimage:\n  src: team.png\n  alt: The team at work\n\
+                 share_cards:\n  x:\n    title: Who writes Field Notes\n";
+    fs::remove_file(at(&pages, "about.md")).unwrap();
+    let folder = at(&pages, "about");
+    fs::create_dir_all(&folder).unwrap();
+    fs::write(at(&folder, "index.md"), text.replacen("---\n", image, 1)).unwrap();
+    let chart = "content/en/posts/2026-10-05-fixing-slow-pages/page-weight.png";
+    fs::copy(at(site.path(), chart), at(&folder, "team.png")).unwrap();
+    let out = build(site.path());
+    let about = page(out.path(), "about/index.html");
+    let after_heading = about.split_once("</h1>").unwrap().1;
+    let picture = after_heading.split_once("</picture>").unwrap().0;
+    assert!(picture.contains("alt=\"The team at work\""), "{about}");
+    assert!(picture.contains("fetchpriority=\"high\""), "{picture}");
+    let shared = "<meta property=\"og:image\" content=\"https://www.example.com/blog/media/";
+    assert!(about.contains(shared), "{about}");
+    let x = "<meta name=\"twitter:title\" content=\"Who writes Field Notes\">";
+    assert!(about.contains(x), "{about}");
+}
+
+#[test]
 fn a_library_photo_that_is_not_on_disk_is_left_out_without_failing() {
     let site = tempfile::tempdir().unwrap();
     let demo = at(

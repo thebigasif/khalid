@@ -4,7 +4,8 @@ use std::collections::BTreeMap;
 
 use chrono::{DateTime, TimeZone, Utc};
 use khalid_api::resources::{
-    AdminSettings, CtaSetting, NavSetting, SettingsChange, TemplateSetting, TemplateValue,
+    AdminSettings, CommentsSetting, CtaSetting, NavSetting, SettingsChange, TemplateSetting,
+    TemplateValue,
 };
 use khalid_api::settings_store::{MemorySettings, SettingsError, SettingsStore};
 use khalid_core::FixedClock;
@@ -35,6 +36,7 @@ fn demo() -> MemorySettings {
         code: Vec::new(),
         home_sections: Vec::new(),
         nav: NavSetting::default(),
+        comments: CommentsSetting::default(),
         updated_at: at(20),
         restart_needed: false,
     };
@@ -58,6 +60,7 @@ async fn the_settings_are_sent_in_api_shape() {
             "seo": {},
             "privacy": {}, "code": [], "home_sections": [],
             "nav": {"primary": [], "footer": []},
+            "comments": {"state": "open", "notify": true},
             "updated_at": "2026-10-20T09:00:00Z", "restart_needed": false,
         })
     );

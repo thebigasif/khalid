@@ -8,7 +8,7 @@ use khalid_render::{PageBody, PageKind, RenderImprint, Renderer};
 use khalid_seo::PageKind as SeoKind;
 
 use crate::build_pages::{self, LanguagePages, Page};
-use crate::{build_lists, build_seo, privacy_page};
+use crate::{build_lists, build_seo, privacy_page, site_chrome};
 
 /// The end of the page's address, after the mount and the language. The
 /// German word, which readers in German-speaking countries look for.
@@ -35,7 +35,28 @@ pub(crate) fn add(
             language.pages.push(page);
         }
     }
+    label(config, renderer, languages);
     Ok(())
+}
+
+/// Gives the footer link Khalid adds to the imprint the word for it in the
+/// site's own strings, such as "Imprint" on an English site, where the
+/// footer was made before the site's strings were read. A link the owner
+/// wrote keeps its label.
+pub(crate) fn label(config: &Config, renderer: &Renderer, languages: &mut [LanguagePages]) {
+    for language in languages {
+        let locale = &language.site.locale;
+        let Some(added) = site_chrome::imprint_link(config, locale) else {
+            continue;
+        };
+        let Some(word) = renderer.text(locale, "imprint_title") else {
+            continue;
+        };
+        let footer = language.site.nav.footer.iter_mut();
+        for link in footer.filter(|link| link.href == added.href) {
+            word.clone_into(&mut link.label);
+        }
+    }
 }
 
 /// The generated imprint of `locale`, or `None` when the site has no

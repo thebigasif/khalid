@@ -60,6 +60,8 @@ pub struct RenderPage {
     pub updated: Option<NaiveDate>,
     /// The page's HTML, already sanitised.
     pub body: BodyHtml,
+    /// The feature image, shown under the heading, if the page has one.
+    pub image: Option<RenderImage>,
     /// On a glossary term's page, the way back to the glossary and the
     /// terms and posts around it. `None` on every other page.
     pub term: Option<GlossaryLinks>,
