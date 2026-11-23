@@ -105,6 +105,7 @@ there, and the lint tests rewrite this page.
 
 ## Internal links
 
+- `broken-internal-link`: A link in this post opens an address on this site that has no page. Readers who follow it land on a page that does not exist, and search engines count it as a dead end. Change the link to the address of an existing page, or add a redirect from this address.
 - `no-internal-link`: This post links to none of your other posts. Internal links are how readers and Google find the rest of your site. Add one link to a related post on your site.
 - `nofollow-internal-link`: A link to another page of your own site tells Google not to follow it. Links between your pages help Google find them and judge their value, and this link passes nothing. Remove `nofollow` from the link, or add its host to `internal_domains` under `[seo.links]` in `site.toml`.
 - `one-inbound-link`: Only one other post links to this post. A post with few links pointing to it looks less important to Google. Link to this post from two or three more related posts.
