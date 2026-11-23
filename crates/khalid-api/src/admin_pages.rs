@@ -166,7 +166,8 @@ pub(crate) struct PageEdits {
     pages: Vec<PageEdit>,
 }
 
-/// Edits one page: only the fields sent change. The edit carries the
+/// Edits one page: only the fields sent change. A new slug moves the page,
+/// and its old address then answers with a 301. The edit carries the
 /// `updated_at` of the copy it was made on; when the page changed since,
 /// the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.
 #[utoipa::path(
@@ -179,7 +180,7 @@ pub(crate) struct PageEdits {
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:publish", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "No page has this identity, or this server keeps no pages", body = Problem, content_type = "application/problem+json"),
-        (status = 409, description = "The page changed after the copy the edit was made on", body = Problem, content_type = "application/problem+json"),
+        (status = 409, description = "The page changed after the copy the edit was made on, or another page in its language has the new slug", body = Problem, content_type = "application/problem+json"),
         (status = 422, description = "The body could not be read, or the title is empty", body = Problem, content_type = "application/problem+json"),
     )
 )]

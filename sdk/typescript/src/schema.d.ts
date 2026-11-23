@@ -421,6 +421,8 @@ export type AdminPage = {
   markdown: string;
   /** Where readers find it on the site, such as a redirect leads from once the page is deleted. */
   path?: string | null;
+  /** Its robots directives, canonical address, feature image and share cards. */
+  seo: PageSeo;
   /** The last part of the page's address. */
   slug: string;
   /** The title readers see. */
@@ -1703,6 +1705,8 @@ export type NewPage = {
   language?: string | null;
   /** The body, in markdown. */
   markdown: string;
+  /** Its search settings, all unset when left out. */
+  seo?: PageSeo;
   /** The last part of the address, such as `about`. */
   slug: string;
   /** The title readers see. */
@@ -1901,6 +1905,9 @@ export type PageEdit = {
   description?: string | null;
   /** A new body, in markdown. */
   markdown?: string | null;
+  seo?: PageSeoEdit | null;
+  /** A new last part of the address. The old address then answers with a 301 to the new one, so links to it keep working. */
+  slug?: string | null;
   /** A new title. */
   title?: string | null;
   /** The `updated_at` of the copy this edit was made on. */
@@ -1911,6 +1918,27 @@ export type PageEdit = {
 export type PageEdits = {
   /** The one edit. */
   pages: PageEdit[];
+};
+
+/** A page's search settings. Each is `null`, or a card with nothing set, until someone sets it. */
+export type PageSeo = {
+  /** The address search engines should credit instead of this page. */
+  canonical?: string | null;
+  feature_image?: FeatureImage | null;
+  /** The page's own robots directives, such as `noindex`, in place of the site's. */
+  robots?: string | null;
+  /** How the page looks when shared on X and Facebook. */
+  share_cards?: ShareCards;
+};
+
+/** New values for some of a page's search settings. A setting left out keeps its value, and `null` clears it. */
+export type PageSeoEdit = {
+  /** A new canonical address, or `null` for the page's own. */
+  canonical?: string | null;
+  feature_image?: FeatureImage | null;
+  /** New robots directives, or `null` for the site's. */
+  robots?: string | null;
+  share_cards?: ShareCards | null;
 };
 
 export type Pages = {
@@ -3903,7 +3931,7 @@ export interface Operations {
     };
     output: AdminPages;
   };
-  /** Edits one page: only the fields sent change. The edit carries the `updated_at` of the copy it was made on; when the page changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
+  /** Edits one page: only the fields sent change. A new slug moves the page, and its old address then answers with a 301. The edit carries the `updated_at` of the copy it was made on; when the page changed since, the answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`. */
   edit_page: {
     input: {
       path: {

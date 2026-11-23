@@ -410,6 +410,7 @@ A page in `pages/`, such as About, takes these fields too:
 | `canonical` | The full address search engines should credit instead of this page. |
 | `image` | The feature image under the page's heading, with `src`, `alt` and an optional `caption`. Link previews show it too. |
 | `share_cards` | The link previews for `facebook` and `x`, as above. |
+| `aliases` | Old addresses, such as `/blog/about-us/`, that answer with a 301 redirect to the page. Changing a page's address in the admin adds the old one here. |
 
 The video block takes an optional `thumbnail`, the picture search results show for the video when it should not be the poster:
 
