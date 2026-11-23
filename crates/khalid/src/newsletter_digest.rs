@@ -13,7 +13,7 @@ use khalid_newsletter::{Issue, NewsletterWords, SendNumbers, Sent, SubscriberSto
 use crate::cli::{Cli, Output};
 use crate::exit::Exit;
 use crate::newsletter_send::{self, Failed};
-use crate::{build_pages, index, report};
+use crate::{build_pages, index, newsletter, report};
 
 /// How far back the first digest of a newsletter looks.
 const FIRST_LOOK_BACK: TimeDelta = TimeDelta::days(7);
@@ -36,13 +36,21 @@ pub(crate) fn run(cli: &Cli, (folder, config): (&Path, &Config), asked: &Asked<'
         Ok(index) => index,
         Err(message) => return report::failure(output, &message, Exit::Failure),
     };
+    let words = match newsletter::words(folder) {
+        Ok(words) => words,
+        Err(message) => return report::failure(output, &message, Exit::Failure),
+    };
     let today = SystemClock.now().date_naive();
     let to = (asked.list, asked.labels);
     let sent = newsletter_send::deliver(cli, (folder, config), to, async |store| {
         let sends = store.sends().await.map_err(|_| unreadable())?;
-        let since = last_digest(&sends, asked.list).unwrap_or(today - FIRST_LOOK_BACK);
-        let posts = new_posts(&index, language, (since, today));
-        Ok(issue(config, asked.list, language, &posts))
+        Ok(next_issue(
+            (config, &words),
+            &index,
+            &sends,
+            (asked.list, language),
+            today,
+        ))
     });
     match (sent, output) {
         (Ok(Some(Sent::Now(totals))), Output::Human) => report::text(
@@ -70,6 +78,22 @@ pub(crate) fn run(cli: &Cli, (folder, config): (&Path, &Config), asked: &Asked<'
         (Ok(Some(_)), Output::Human) => report::text("Sent before.\n", Exit::Success),
         (Err((message, exit)), _) => report::failure(output, &message, exit),
     }
+}
+
+/// The digest of `list` on `today`: the posts in `language` in `index`
+/// dated after the newest post of the last digest in `sends`, or from the
+/// last seven days the first time, introduced with the site's `words`.
+/// `None` when nothing is new.
+pub(crate) fn next_issue(
+    (config, words): (&Config, &NewsletterWords),
+    index: &ContentIndex,
+    sends: &[SendNumbers],
+    (list, language): (&Slug, &Locale),
+    today: NaiveDate,
+) -> Option<Issue> {
+    let since = last_digest(sends, list).unwrap_or(today - FIRST_LOOK_BACK);
+    let posts = new_posts(index, language, (since, today));
+    issue((config, words), list, language, &posts)
 }
 
 /// The date of the newest post in the last digest of `list`, from its key.
@@ -101,9 +125,13 @@ fn new_posts<'a>(
 
 /// The digest of `posts` for `list`, or `None` when there are none. Its key
 /// names the newest post's date, so the next digest starts after it.
-fn issue(config: &Config, list: &Slug, language: &Locale, posts: &[&IndexedPost]) -> Option<Issue> {
+fn issue(
+    (config, words): (&Config, &NewsletterWords),
+    list: &Slug,
+    language: &Locale,
+    posts: &[&IndexedPost],
+) -> Option<Issue> {
     let newest = posts.last()?.date?;
-    let words = NewsletterWords::load().ok()?;
     let (subject, intro) = words.digest(language, config.name());
     let base = config.address().as_str().trim_end_matches('/');
     let lines: Vec<String> = posts

@@ -24,5 +24,5 @@ pub use crawl_checks::{
 };
 #[cfg(any(test, feature = "test-util"))]
 pub use raised::MemoryRaised;
-pub use raised::{BoxFuture, Raised, RaisedError, fresh};
+pub use raised::{BoxFuture, Held, Raised, RaisedError, fresh, standing};
 pub use watch::{Answer, Probe, site_down, slow_site};

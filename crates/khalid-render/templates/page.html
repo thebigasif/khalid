@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block main %}
 {% from "slots.html" import cta_band -%}
+{% from "image.html" import picture -%}
+{% from "picture_sizes.html" import slot_sizes -%}
 <article class="page">
 {% if page.term %}<p class="term-back"><a href="{{ page.term.glossary }}">{{ t.glossary_back }}</a></p>
 {% endif %}<h1>{{ page.title }}</h1>
-<div class="page-body">
+{% if page.image %}{{ picture(page.image, slot_sizes("lead")) }}
+{% endif %}<div class="page-body">
 {{ page.body | place_cta(cta_band(template.cta) if template.cta else "") }}
 </div>
 {% if page.updated %}<p class="page-updated">{{ t.updated }} <time datetime="{{ page.updated }}">{{ page.updated | date }}</time></p>

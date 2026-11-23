@@ -180,6 +180,66 @@
         ]
       }
     },
+    "/api/admin/v1/alerts/": {
+      "get": {
+        "tags": [
+          "admin alerts"
+        ],
+        "summary": "Lists the alerts still raised for the site's owner: a site that\nstopped answering or answers slowly, a certificate near its end, a\nburst of 404s, stale posts, a scheduled post the linter refused, a\ncrawler that stopped coming. Each says what happened, why it matters\nand what to do. The list is empty on a server with no database. Needs\n`settings:write`.",
+        "operationId": "list_alerts",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The alerts still raised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks settings:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/analytics/ai-bots/": {
       "get": {
         "tags": [
@@ -600,9 +660,36 @@
         "tags": [
           "admin authors"
         ],
-        "summary": "Lists every author in every language. A site has tens, so the list\ncomes whole. Needs `posts:write`.",
+        "summary": "Lists the authors in every language: all of them, or one page with\n`limit` and `page`, and only those passing `filter`, such as\n`filter=language:de`. Needs `posts:write`.",
         "operationId": "list_authors",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -615,11 +702,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every author",
+            "description": "The authors, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminAuthors"
+                  "$ref": "#/components/schemas/AdminAuthorList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -3227,9 +3324,36 @@
         "tags": [
           "admin keys"
         ],
-        "summary": "Lists every key that works, oldest first, with what each may do and\nnever its secret. Needs `admin:all`.",
+        "summary": "Lists the keys that work, oldest first, with what each may do and\nnever its secret: all of them, or one page with `limit` and `page`, and\nonly those passing `filter`, such as `filter=kind:integration`. Needs\n`admin:all`.",
         "operationId": "list_keys",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -3242,11 +3366,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every key that works",
+            "description": "The keys that work, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminKeys"
+                  "$ref": "#/components/schemas/AdminKeyList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -3447,9 +3581,36 @@
         "tags": [
           "admin posts"
         ],
-        "summary": "The live site's most common lint problems, for the dashboard's task\nlist: each rule that fires, on how many posts, with what, why and fix\nand one post to open first. Those that stop posts going live come\nfirst, then those on the most posts. Every rule runs on every post, as\n`khalid lint` does, so the dashboard asks for it after the rest. Needs\n`posts:write`.",
+        "summary": "The live site's most common lint problems, for the dashboard's task\nlist: each rule that fires, on how many posts, with what, why and fix\nand one post to open first. Those that stop posts going live come\nfirst, then those on the most posts. `limit`, `page` and `filter`,\nsuch as `filter=weight:block`, narrow the list. Every rule runs on\nevery post, as `khalid lint` does, so the dashboard asks for it after\nthe rest. Needs `posts:write`.",
         "operationId": "list_issues",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -3467,6 +3628,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AdminIssues"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -4872,9 +5043,36 @@
         "tags": [
           "admin pages"
         ],
-        "summary": "Lists every page in every language, ordered by language and slug. A\nsite has tens of pages, so the list comes whole. Needs `posts:write`.",
+        "summary": "Lists the pages in every language, ordered by language and slug: all\nof them, or one page with `limit` and `page`, and only those passing\n`filter`, such as `filter=language:de`. Needs `posts:write`.",
         "operationId": "list_pages",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -4887,11 +5085,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every page",
+            "description": "The pages, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminPages"
+                  "$ref": "#/components/schemas/AdminPageList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -5117,7 +5325,7 @@
         "tags": [
           "admin pages"
         ],
-        "summary": "Edits one page: only the fields sent change. The edit carries the\n`updated_at` of the copy it was made on; when the page changed since,\nthe answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.",
+        "summary": "Edits one page: only the fields sent change. A new slug moves the page,\nand its old address then answers with a 301. The edit carries the\n`updated_at` of the copy it was made on; when the page changed since,\nthe answer is a 409 (RULES.md BL-API-7). Needs `posts:publish`.",
         "operationId": "edit_page",
         "parameters": [
           {
@@ -5191,7 +5399,7 @@
             }
           },
           "409": {
-            "description": "The page changed after the copy the edit was made on",
+            "description": "The page changed after the copy the edit was made on, or another page in its language has the new slug",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -6623,7 +6831,7 @@
         "tags": [
           "admin posts"
         ],
-        "summary": "Lists the title and text each edit of the post replaced, the newest\nfirst, up to the 100 newest. An edit that changed neither keeps none.\nBringing one back is an ordinary edit with its title and text, which\nkeeps the text it replaces in turn. Needs `posts:write`.",
+        "summary": "Lists the title and text each edit of the post replaced, the newest\nfirst, up to the 100 newest: all of them, or one page with `limit` and\n`page`, and only those passing `filter`, such as\n`filter=saved_at:>'2026-11-01'`. An edit that changed neither keeps\nnone. Bringing one back is an ordinary edit with its title and text,\nwhich keeps the text it replaces in turn. Needs `posts:write`.",
         "operationId": "list_post_versions",
         "parameters": [
           {
@@ -6631,6 +6839,33 @@
             "in": "path",
             "description": "The post's identity",
             "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
             "schema": {
               "type": "string"
             }
@@ -6652,6 +6887,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PostVersions"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -6702,9 +6947,36 @@
         "tags": [
           "admin redirects"
         ],
-        "summary": "Lists every stored redirect, oldest first. Aliases in front matter are\nnot listed; they live in their posts. Needs `settings:write`.",
+        "summary": "Lists the stored redirects, oldest first: all of them, or one page with\n`limit` and `page`, and only those passing `filter`, such as\n`filter=status:410`. Aliases in front matter are not listed; they live\nin their posts. Needs `settings:write`.",
         "operationId": "list_redirects",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -6717,11 +6989,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every stored redirect",
+            "description": "The stored redirects, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminRedirects"
+                  "$ref": "#/components/schemas/AdminRedirectList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -9161,9 +9443,36 @@
         "tags": [
           "admin snippets"
         ],
-        "summary": "Lists every snippet in every language. A site has tens, so the list\ncomes whole. Needs `posts:write`.",
+        "summary": "Lists the snippets in every language: all of them, or one page with\n`limit` and `page`, and only those passing `filter`, such as\n`filter=language:de`. Needs `posts:write`.",
         "operationId": "list_snippets",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -9176,11 +9485,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every snippet",
+            "description": "The snippets, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminSnippets"
+                  "$ref": "#/components/schemas/AdminSnippetList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -10651,9 +10970,36 @@
         "tags": [
           "admin tags"
         ],
-        "summary": "Lists every tag the site's posts carry, drafts included, in every\nlanguage, with how many posts have each. Needs `posts:write`.",
+        "summary": "Lists every tag the site's posts carry, drafts included, in every\nlanguage, with how many posts have each: all of them, or one page with\n`limit` and `page`, and only those passing `filter`, such as\n`filter=language:de`. Needs `posts:write`.",
         "operationId": "list_tags",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -10666,11 +11012,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every tag",
+            "description": "The tags, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminTags"
+                  "$ref": "#/components/schemas/AdminTagList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -10999,9 +11355,36 @@
         "tags": [
           "admin trash"
         ],
-        "summary": "Lists the deleted posts and pages, the most recently deleted first.\nNeeds `posts:write`.",
+        "summary": "Lists the deleted posts and pages, the most recently deleted first: all\nof them, or one page with `limit` and `page`, and only those passing\n`filter`, such as `filter=kind:page`. Needs `posts:write`.",
         "operationId": "list_trash",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -11014,11 +11397,21 @@
         ],
         "responses": {
           "200": {
-            "description": "The deleted posts and pages",
+            "description": "The deleted posts and pages, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TrashList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -11293,9 +11686,36 @@
         "tags": [
           "admin webhooks"
         ],
-        "summary": "Lists every webhook that is switched on, oldest first, without their\nsecrets. Needs `webhooks:manage`.",
+        "summary": "Lists the webhooks that are switched on, oldest first, without their\nsecrets: all of them, or one page with `limit` and `page`, and only\nthose passing `filter`, such as `filter=event:post.published`. Needs\n`webhooks:manage`.",
         "operationId": "list_webhooks",
         "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "`filter=status:301`, over the fields each item shows.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Items per page, 1 to 100, or `all`. Without it the whole list comes\non one page.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "`page=2`, counted from 1.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "Accept-Version",
             "in": "header",
@@ -11308,11 +11728,21 @@
         ],
         "responses": {
           "200": {
-            "description": "Every webhook that is on",
+            "description": "The webhooks that are on, or one page of them",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AdminWebhooks"
+                  "$ref": "#/components/schemas/AdminWebhookList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A list parameter could not be read",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -14638,6 +15068,27 @@
           }
         }
       },
+      "AdminAuthorList": {
+        "type": "object",
+        "description": "One page of the authors.",
+        "required": [
+          "authors",
+          "meta"
+        ],
+        "properties": {
+          "authors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminAuthor"
+            },
+            "description": "The authors on this page."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          }
+        }
+      },
       "AdminAuthors": {
         "type": "object",
         "description": "Authors as the Admin API wraps them.",
@@ -15232,7 +15683,8 @@
         "type": "object",
         "description": "Issues as the Admin API wraps them.",
         "required": [
-          "issues"
+          "issues",
+          "meta"
         ],
         "properties": {
           "issues": {
@@ -15241,6 +15693,10 @@
               "$ref": "#/components/schemas/SiteIssue"
             },
             "description": "Up to ten problems, those that stop posts going live first."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
           }
         }
       },
@@ -15296,6 +15752,27 @@
             "example": [
               "posts:write"
             ]
+          }
+        }
+      },
+      "AdminKeyList": {
+        "type": "object",
+        "description": "One page of the keys that work.",
+        "required": [
+          "keys",
+          "meta"
+        ],
+        "properties": {
+          "keys": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminKey"
+            },
+            "description": "The keys on this page, oldest first."
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
           }
         }
       },
@@ -15580,6 +16057,7 @@
           "language",
           "title",
           "markdown",
+          "seo",
           "updated_at"
         ],
         "properties": {
@@ -15611,6 +16089,10 @@
             "description": "Where readers find it on the site, such as a redirect leads from\nonce the page is deleted.",
             "example": "/blog/about/"
           },
+          "seo": {
+            "$ref": "#/components/schemas/PageSeo",
+            "description": "Its robots directives, canonical address, feature image and share\ncards."
+          },
           "slug": {
             "type": "string",
             "description": "The last part of the page's address.",
@@ -15624,6 +16106,27 @@
             "type": "string",
             "format": "date-time",
             "description": "When the page last changed. An edit or delete sends it back."
+          }
+        }
+      },
+      "AdminPageList": {
+        "type": "object",
+        "description": "One page of the site's pages.",
+        "required": [
+          "pages",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminPage"
+            },
+            "description": "The pages on this page of the list."
           }
         }
       },
@@ -15826,6 +16329,27 @@
           }
         }
       },
+      "AdminRedirectList": {
+        "type": "object",
+        "description": "One page of the stored redirects.",
+        "required": [
+          "redirects",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
+          "redirects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminRedirect"
+            },
+            "description": "The redirects on this page, oldest first."
+          }
+        }
+      },
       "AdminRedirects": {
         "type": "object",
         "description": "Redirects as the Admin API wraps them.",
@@ -15944,6 +16468,7 @@
           "code",
           "home_sections",
           "nav",
+          "comments",
           "updated_at",
           "restart_needed"
         ],
@@ -15958,6 +16483,10 @@
               "type": "object"
             },
             "description": "The site's own code from `[code]`, one object per entry as written:\n`head`, `body`, the `category` it waits for (`preferences`,\n`analytics`, `marketing` or `no-tracking`), the `vendor` and its\n`policy` link. An entry with no `category` counts as Marketing. The\nold single `[code]` table reads as one entry."
+          },
+          "comments": {
+            "$ref": "#/components/schemas/CommentsSetting",
+            "description": "Whether readers may comment, from `[comments]`, defaults filled in."
           },
           "cta": {
             "oneOf": [
@@ -16078,6 +16607,27 @@
             "type": "string",
             "format": "date-time",
             "description": "When the snippet last changed. An edit or delete sends it back."
+          }
+        }
+      },
+      "AdminSnippetList": {
+        "type": "object",
+        "description": "One page of the snippets.",
+        "required": [
+          "snippets",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
+          "snippets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminSnippet"
+            },
+            "description": "The snippets on this page."
           }
         }
       },
@@ -16250,6 +16800,27 @@
             "type": "string",
             "format": "date-time",
             "description": "When the last of those posts changed. A rename or removal sends it\nback, so a post tagged since is never changed unseen."
+          }
+        }
+      },
+      "AdminTagList": {
+        "type": "object",
+        "description": "One page of the tags.",
+        "required": [
+          "tags",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminTag"
+            },
+            "description": "The tags on this page."
           }
         }
       },
@@ -16630,6 +17201,27 @@
           }
         }
       },
+      "AdminWebhookList": {
+        "type": "object",
+        "description": "One page of the webhooks that are on.",
+        "required": [
+          "webhooks",
+          "meta"
+        ],
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
+          "webhooks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminWebhook"
+            },
+            "description": "The webhooks on this page, oldest first."
+          }
+        }
+      },
       "AdminWebhooks": {
         "type": "object",
         "description": "Webhooks as the Admin API wraps them.",
@@ -16688,6 +17280,22 @@
           "lint_fix",
           "takeaways"
         ]
+      },
+      "AlertList": {
+        "type": "object",
+        "description": "The alerts still raised. A problem that clears, such as a renewed\ncertificate, leaves the list at the next check; one that happens once,\nsuch as a burst of 404s, stays 30 days.",
+        "required": [
+          "alerts"
+        ],
+        "properties": {
+          "alerts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RaisedAlert"
+            },
+            "description": "One alert per kind, in the order alerts go out."
+          }
+        }
       },
       "Alias": {
         "type": "string",
@@ -17340,6 +17948,52 @@
           "reader",
           "staff"
         ]
+      },
+      "CommentsChange": {
+        "type": "object",
+        "description": "A change to `[comments]`: only the parts sent change.",
+        "properties": {
+          "notify": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether owners and admins get an email about each new comment."
+          },
+          "state": {
+            "type": "string",
+            "description": "Whether readers may comment: `open`, `closed` or `off`.",
+            "enum": [
+              "open",
+              "closed",
+              "off"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CommentsSetting": {
+        "type": "object",
+        "description": "`[comments]`: whether readers may comment on a post that does not say\notherwise, and whether owners and admins get an email about each new\nreader's comment.",
+        "required": [
+          "state",
+          "notify"
+        ],
+        "properties": {
+          "notify": {
+            "type": "boolean",
+            "description": "Whether owners and admins get an email about each new comment."
+          },
+          "state": {
+            "type": "string",
+            "description": "Whether readers may comment: `open`, `closed` or `off`.",
+            "enum": [
+              "open",
+              "closed",
+              "off"
+            ]
+          }
+        }
       },
       "ConnectionsEdit": {
         "type": "object",
@@ -19434,6 +20088,10 @@
             "type": "string",
             "description": "The body, in markdown."
           },
+          "seo": {
+            "$ref": "#/components/schemas/PageSeo",
+            "description": "Its search settings, all unset when left out."
+          },
           "slug": {
             "type": "string",
             "description": "The last part of the address, such as `about`.",
@@ -20057,6 +20715,25 @@
             ],
             "description": "A new body, in markdown."
           },
+          "seo": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PageSeoEdit",
+                "description": "New values for some search settings; the rest keep theirs."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "slug": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new last part of the address. The old address then answers with\na 301 to the new one, so links to it keep working.",
+            "example": "team"
+          },
           "title": {
             "type": [
               "string",
@@ -20085,6 +20762,89 @@
               "$ref": "#/components/schemas/PageEdit"
             },
             "description": "The one edit."
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageSeo": {
+        "type": "object",
+        "description": "A page's search settings. Each is `null`, or a card with nothing set,\nuntil someone sets it.",
+        "properties": {
+          "canonical": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The address search engines should credit instead of this page.",
+            "example": "https://example.com/original/"
+          },
+          "feature_image": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FeatureImage",
+                "description": "The image under the page's heading, also used in link previews."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "robots": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The page's own robots directives, such as `noindex`, in place of\nthe site's.",
+            "example": "noindex"
+          },
+          "share_cards": {
+            "$ref": "#/components/schemas/ShareCards",
+            "description": "How the page looks when shared on X and Facebook."
+          }
+        },
+        "additionalProperties": false
+      },
+      "PageSeoEdit": {
+        "type": "object",
+        "description": "New values for some of a page's search settings. A setting left out\nkeeps its value, and `null` clears it.",
+        "properties": {
+          "canonical": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A new canonical address, or `null` for the page's own.",
+            "example": "https://example.com/original/"
+          },
+          "feature_image": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FeatureImage",
+                "description": "A new feature image, or `null` for none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "robots": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New robots directives, or `null` for the site's.",
+            "example": "noindex"
+          },
+          "share_cards": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ShareCards",
+                "description": "Both share cards; a card left out uses the page's own title,\ndescription and image."
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "additionalProperties": false
@@ -21279,6 +22039,19 @@
               "mira"
             ]
           },
+          "comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state.",
+            "enum": [
+              "open",
+              "closed",
+              "off",
+              null
+            ]
+          },
           "connections": {
             "$ref": "#/components/schemas/PostConnections",
             "description": "How the post ties to the blog's other posts."
@@ -21471,9 +22244,14 @@
         "type": "object",
         "description": "Earlier versions, wrapped the way the Admin API wraps resources.",
         "required": [
-          "versions"
+          "versions",
+          "meta"
         ],
         "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
           "versions": {
             "type": "array",
             "items": {
@@ -21623,6 +22401,72 @@
             "type": "string",
             "description": "A link to the page that explains this kind of problem.",
             "example": "https://khalid.dev/problems/not-found"
+          }
+        }
+      },
+      "RaisedAlert": {
+        "type": "object",
+        "description": "The findings of one kind still raised.",
+        "required": [
+          "kind",
+          "what",
+          "why",
+          "fix",
+          "raised_at",
+          "findings"
+        ],
+        "properties": {
+          "findings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RaisedFinding"
+            },
+            "description": "Each problem, newest first."
+          },
+          "fix": {
+            "type": "string",
+            "description": "What to do, in one sentence.",
+            "example": "Read each post below, update what has changed, and save it."
+          },
+          "kind": {
+            "type": "string",
+            "description": "What the alert is about: the `kind` of the `alert.raised` webhook.",
+            "example": "stale-post"
+          },
+          "raised_at": {
+            "type": "string",
+            "description": "When its newest finding was raised, in UTC.",
+            "example": "2026-11-03T09:00:00Z"
+          },
+          "what": {
+            "type": "string",
+            "description": "What happened, in one sentence.",
+            "example": "Some live posts have not changed for a long time."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters, in one sentence.",
+            "example": "Old facts and dead links make readers and search engines trust a post less."
+          }
+        }
+      },
+      "RaisedFinding": {
+        "type": "object",
+        "description": "One problem an alert raised.",
+        "required": [
+          "key",
+          "line"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Stays the same while the problem lasts.",
+            "example": "stale-post:en.old-post"
+          },
+          "line": {
+            "type": "string",
+            "description": "The problem in one line.",
+            "example": "Old post (en.old-post), last changed 2024-03-01"
           }
         }
       },
@@ -22335,6 +23179,17 @@
             },
             "description": "Every entry of `[code]`, in place of the old ones, written as a\n`[[code]]` list. An empty list removes `[code]`. A list that differs\nfrom the saved one needs `admin:all`."
           },
+          "comments": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CommentsChange",
+                "description": "A new `[comments]` state or mail switch. A part left out stays."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "cta": {
             "oneOf": [
               {
@@ -22497,6 +23352,19 @@
             "description": "The other authors' slugs, all of them.",
             "example": [
               "mira"
+            ]
+          },
+          "comments": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state.",
+            "enum": [
+              "open",
+              "closed",
+              "off",
+              null
             ]
           },
           "connections": {
@@ -22869,6 +23737,7 @@
           "what",
           "why",
           "fix",
+          "guide",
           "example"
         ],
         "properties": {
@@ -22880,6 +23749,11 @@
           "fix": {
             "type": "string",
             "description": "What to do."
+          },
+          "guide": {
+            "type": "string",
+            "description": "The address of the guide that explains the rule at length.",
+            "example": "https://serpdad.com/khalid/docs/lint-rules/#image-descriptions"
           },
           "posts": {
             "type": "integer",
@@ -23599,9 +24473,14 @@
         "type": "object",
         "description": "The trash as the Admin API wraps it.",
         "required": [
-          "trash"
+          "trash",
+          "meta"
         ],
         "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/Meta",
+            "description": "Where this page sits in the list."
+          },
           "trash": {
             "type": "array",
             "items": {

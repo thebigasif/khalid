@@ -19,6 +19,8 @@ const POST: AdminPost = {
     tags: ["internal links", "SEO"],
     category: "on-page-seo",
     share_cards: {},
+    connections: { main_post: false, related: [] },
+    listing: { keyword_synonyms: [], reviewed_by: [], sitemap: true },
     aliases: [],
     excerpt: "How to pick the words of a link.",
   },

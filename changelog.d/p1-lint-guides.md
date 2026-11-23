@@ -1,0 +1,2 @@
+Added
+Every lint message now links its guide. `khalid lint` ends each message with "Read more:" and the address of its section on the new "What the linter checks" page in the docs, `--json` and the Admin API give that address as `guide_url`, the dashboard's task list gives it as `guide`, and the editor's checks panel shows a "Read the guide" link under each finding. The editor also shows tips now, below the warnings, where it used to drop them.

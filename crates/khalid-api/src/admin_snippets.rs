@@ -19,6 +19,8 @@ use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::entry_store::Entry;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::Problem;
 use crate::resources::{AdminSnippet, NewSnippet, SnippetEdit};
 
@@ -48,13 +50,28 @@ pub(crate) struct AdminSnippets {
     snippets: Vec<AdminSnippet>,
 }
 
-/// Lists every snippet in every language. A site has tens, so the list
-/// comes whole. Needs `posts:write`.
+/// One page of the snippets.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminSnippetList {
+    /// The snippets on this page.
+    snippets: Vec<AdminSnippet>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields a snippet list can be filtered on.
+const SNIPPET_FIELDS: &[&str] = &["id", "slug", "language", "title", "updated_at"];
+
+/// Lists the snippets in every language: all of them, or one page with
+/// `limit` and `page`, and only those passing `filter`, such as
+/// `filter=language:de`. Needs `posts:write`.
 #[utoipa::path(
     get, path = "/snippets/", tag = "admin snippets",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every snippet", body = AdminSnippets),
+        (status = 200, description = "The snippets, or one page of them", body = AdminSnippetList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no snippets", body = Problem, content_type = "application/problem+json"),
@@ -63,11 +80,16 @@ pub(crate) struct AdminSnippets {
 async fn list_snippets(
     State(snippets): State<Kept<AdminSnippet>>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminSnippets>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminSnippetList>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let listed = SNIPPET.store(snippets.as_deref())?.list().await;
     let snippets = listed.map_err(|error| Problem::internal(&error))?;
-    Ok(Json(AdminSnippets { snippets }))
+    let paged = query.page(snippets, SNIPPET_FIELDS)?;
+    Ok(Json(AdminSnippetList {
+        snippets: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// A new snippet, wrapped the way the Admin API wraps snippets: exactly one.

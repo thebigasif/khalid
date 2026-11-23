@@ -31,10 +31,11 @@ const BEFORE_GUIDES: [&str; 5] = [
 ];
 
 /// The docs R13 publishes after the template guides.
-const AFTER_GUIDES: [&str; 7] = [
+const AFTER_GUIDES: [&str; 8] = [
     "routes",
     "seo-settings",
     "seo-tools",
+    "lint-rules",
     "reading",
     "newsletters",
     "charts-embeds-tracking",

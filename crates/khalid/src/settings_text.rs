@@ -42,6 +42,7 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
     settings.access = front.access;
     settings.password.clone_from(&front.password_hash);
     settings.template.clone_from(&front.template);
+    settings.comments = front.comments;
     settings.head_code.clone_from(&front.head_code);
     // A file edited by hand may hold a title or JSON-LD the API would
     // refuse; it reads as unset here, and the build names the mistake.
@@ -60,7 +61,7 @@ pub(crate) fn settings_of(front: &PostFront) -> PostSettings {
 
 /// The lead image in the API's shape. Front matter refuses a blank `src`
 /// or `alt`, so `None` only for a value made some other way.
-fn feature_image(image: &content::LeadImage) -> Option<FeatureImage> {
+pub(crate) fn feature_image(image: &content::LeadImage) -> Option<FeatureImage> {
     let src = NonBlank::try_new(&image.src)?;
     let alt = NonBlank::try_new(&image.alt)?;
     let mut feature = FeatureImage::new(src, alt);
@@ -69,7 +70,7 @@ fn feature_image(image: &content::LeadImage) -> Option<FeatureImage> {
 }
 
 /// One share card in the API's shape.
-fn share_card(card: &content::ShareCard) -> ShareCard {
+pub(crate) fn share_card(card: &content::ShareCard) -> ShareCard {
     let mut shared = ShareCard::default();
     shared.title = card.title.as_deref().and_then(NonBlank::try_new);
     shared.description = card.description.as_deref().and_then(NonBlank::try_new);
@@ -213,7 +214,7 @@ fn group(pairs: &[(&str, Option<String>)]) -> Option<String> {
 }
 
 /// The lead image as front matter writes it.
-fn image_text(image: &FeatureImage) -> String {
+pub(crate) fn image_text(image: &FeatureImage) -> String {
     let caption = image.caption.as_ref().map(|text| quoted(text.as_str()));
     let pairs = [
         ("src", Some(quoted(image.src.as_str()))),
@@ -225,7 +226,7 @@ fn image_text(image: &FeatureImage) -> String {
 
 /// The share cards as front matter writes them, or `None` when neither
 /// card says anything.
-fn cards_text(cards: &ShareCards) -> Option<String> {
+pub(crate) fn cards_text(cards: &ShareCards) -> Option<String> {
     let card = |card: Option<&ShareCard>| {
         let card = card?;
         let text = |value: Option<&NonBlank>| value.map(|value| quoted(value.as_str()));
@@ -241,9 +242,9 @@ fn cards_text(cards: &ShareCards) -> Option<String> {
     ])
 }
 
-/// Writes the access, password hash, template and head code that differ
-/// between `before` and `after`. Public access is the default, so it is
-/// written as no line at all.
+/// Writes the access, password hash, template, comment state and head
+/// code that differ between `before` and `after`. Public access and the
+/// site's comment state are the defaults, so they are written as no line.
 fn write_access(text: &mut PostText, before: &PostSettings, after: &PostSettings) {
     if after.access != before.access {
         let access = (after.access != PostAccess::Public).then(|| after.access.to_string());
@@ -259,6 +260,10 @@ fn write_access(text: &mut PostText, before: &PostSettings, after: &PostSettings
             "template",
             after.template.as_ref().map(ToString::to_string),
         );
+    }
+    if after.comments != before.comments {
+        let state = after.comments.map(|state| state.to_string());
+        put(text, "comments", state);
     }
     if after.head_code != before.head_code {
         let code = after

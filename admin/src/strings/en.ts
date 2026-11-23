@@ -393,6 +393,25 @@ export const en = {
     restart:
       "Restart Khalid on the server to use the new address, folder or languages. Khalid reads them only when it starts. Your other changes are already in use.",
     save: "Save settings",
+    comments: {
+      title: "Comments",
+      lede: "Whether readers may comment on your posts. A post can say otherwise under More settings in the editor.",
+      states: [
+        {
+          value: "open",
+          label: "Open",
+          hint: "Readers may comment. You approve each comment before it shows.",
+        },
+        {
+          value: "closed",
+          label: "Closed",
+          hint: "The comments readers already left stay. No new ones come in.",
+        },
+        { value: "off", label: "Off", hint: "No comments show and there is no comment form." },
+      ],
+      notify: "Email the owners and admins about each new comment",
+      save: "Save comment settings",
+    },
     saved: "Saved to site.toml.",
     live: LIVE,
     unchanged: "Nothing changed, so nothing was saved.",
@@ -622,6 +641,7 @@ export const en = {
         search: "Search engines and old addresses",
         x: "Share card on X",
         facebook: "Share card on Facebook",
+        comments: "Comments",
         down: "Taking it down",
       },
       fields: {
@@ -661,6 +681,10 @@ export const en = {
           label: "Image on Facebook",
           hint: "Leave it empty to use the feature image.",
         },
+        comments: {
+          label: "Comments on this post",
+          hint: "Closed keeps the comments readers already left and takes no new ones. Off hides them all.",
+        },
         unpublishAt: {
           label: "Take it down at",
           hint: "In your own time zone. At this time the post stops being public. Leave it empty to keep it up.",
@@ -670,6 +694,12 @@ export const en = {
         { value: "", label: "Use the blog's setting" },
         { value: "noindex", label: "Keep it out of search results" },
         { value: "noindex, nofollow", label: "Keep it out, and do not follow its links" },
+      ],
+      comments: [
+        { value: "", label: "Use the blog's setting" },
+        { value: "open", label: "Open: readers may comment" },
+        { value: "closed", label: "Closed: keep the comments, take no new ones" },
+        { value: "off", label: "Off: no comments at all" },
       ],
     },
   },
@@ -986,6 +1016,8 @@ export const en = {
     },
     blockTag: "Stops publishing",
     warnTag: "Warning, you can still publish",
+    tipTag: "Tip, it costs no points",
+    guide: "Read the guide (opens in a new tab)",
     here: "Here:",
     leave: "Some changes are not saved yet. Leaving now loses them.",
     stay: "Stay on this post",

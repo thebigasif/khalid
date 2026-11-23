@@ -17,6 +17,8 @@ use crate::admin_entries::Noun;
 use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::Problem;
 use crate::resources::{AdminTag, TagEdit};
 use crate::tag_store::TagStore;
@@ -49,13 +51,29 @@ pub(crate) struct AdminTags {
     tags: Vec<AdminTag>,
 }
 
+/// One page of the tags.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminTagList {
+    /// The tags on this page.
+    tags: Vec<AdminTag>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields a tag list can be filtered on.
+const TAG_FIELDS: &[&str] = &["id", "slug", "language", "name", "posts", "updated_at"];
+
 /// Lists every tag the site's posts carry, drafts included, in every
-/// language, with how many posts have each. Needs `posts:write`.
+/// language, with how many posts have each: all of them, or one page with
+/// `limit` and `page`, and only those passing `filter`, such as
+/// `filter=language:de`. Needs `posts:write`.
 #[utoipa::path(
     get, path = "/tags/", tag = "admin tags",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every tag", body = AdminTags),
+        (status = 200, description = "The tags, or one page of them", body = AdminTagList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no tags", body = Problem, content_type = "application/problem+json"),
@@ -64,11 +82,16 @@ pub(crate) struct AdminTags {
 async fn list_tags(
     State(tags): State<Tags>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminTags>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminTagList>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let listed = TAG.store(tags.as_deref())?.list().await;
     let tags = listed.map_err(|error| Problem::internal(&error))?;
-    Ok(Json(AdminTags { tags }))
+    let paged = query.page(tags, TAG_FIELDS)?;
+    Ok(Json(AdminTagList {
+        tags: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// A rename, wrapped the way the Admin API wraps tags: exactly one.

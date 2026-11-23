@@ -102,7 +102,7 @@ impl Finding {
 }
 
 /// The JSON shape of a finding: one flat object with the rule, where it is,
-/// the three sentences and the guide, so the CLI, the API and the admin
+/// the three sentences, the guide and its address, so the CLI, the API and the admin
 /// read the same fields.
 #[derive(Serialize)]
 struct FindingBody<'a> {
@@ -115,6 +115,7 @@ struct FindingBody<'a> {
     why: &'a str,
     fix: &'a str,
     guide: &'a str,
+    guide_url: String,
     suggestions: &'a [String],
 }
 
@@ -130,6 +131,7 @@ impl Serialize for Finding {
             why: self.message.why(),
             fix: self.message.fix(),
             guide: self.message.guide().as_str(),
+            guide_url: self.message.guide_url(),
             suggestions: &self.suggestions,
         }
         .serialize(serializer)

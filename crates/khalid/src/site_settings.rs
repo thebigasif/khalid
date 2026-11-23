@@ -12,7 +12,9 @@ use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use chrono::{DateTime, Utc};
 use khalid_api::content_store::BoxFuture;
 use khalid_api::entry_store::EntryStoreError;
-use khalid_api::resources::{AdminSettings, SettingsChange, TemplateSetting, TemplateValue};
+use khalid_api::resources::{
+    AdminSettings, CommentsSetting, SettingsChange, TemplateSetting, TemplateValue,
+};
 use khalid_api::settings_store::{SettingsError, SettingsStore};
 use khalid_core::{Config, ConfigError, Environment, Mode, OptionValue};
 use khalid_theme::Look;
@@ -134,6 +136,10 @@ impl SiteSettings {
             code: privacy::code_entries(text)?,
             home_sections: home::sections(&config),
             nav: nav::menus(&config),
+            comments: CommentsSetting {
+                state: config.comments().state,
+                notify: config.comments().notify,
+            },
             updated_at: changed,
             restart_needed,
         })
@@ -203,6 +209,13 @@ impl SiteSettings {
         }
         if let Some(entries) = change.code {
             privacy::set_code(&mut document, entries)?;
+        }
+        if let Some(comments) = change.comments {
+            let state = comments.state.map(|state| ("state", state.as_str().into()));
+            let notify = comments.notify.map(|notify| ("notify", notify.into()));
+            let sent = state.into_iter().chain(notify);
+            let sent = sent.map(|(key, value)| (key.to_owned(), Some(value)));
+            parts::set_parts(&mut document, "comments", sent.collect())?;
         }
         let text = document.to_string();
         self.checked(&text)?;
@@ -381,6 +394,31 @@ mod tests {
             "updated_at": read.updated_at});
         let saved = settings.change_now(serde_json::from_value(change).unwrap());
         assert!(!saved.unwrap().restart_needed, "the environment still wins");
+    }
+
+    #[test]
+    fn comments_close_for_the_site_and_the_mail_switch_stays() {
+        let (folder, settings) = site_with("", &Environment::empty());
+        let read = settings.read_now().unwrap();
+        assert_eq!(read.comments, CommentsSetting::default());
+        let change = serde_json::json!({"comments": {"state": "closed"},
+            "updated_at": read.updated_at});
+        let saved = settings.change_now(serde_json::from_value(change).unwrap());
+        let saved = saved.unwrap();
+        assert_eq!(
+            (saved.comments.state, saved.comments.notify),
+            (khalid_core::CommentState::Closed, true)
+        );
+        let mut file = folder.path().to_path_buf();
+        file.push(Config::FILE_NAME);
+        let text = fs::read_to_string(file).unwrap();
+        assert!(text.ends_with("[comments]\nstate = \"closed\"\n"), "{text}");
+        let change = serde_json::json!({"comments": {"notify": false},
+            "updated_at": saved.updated_at});
+        let saved = settings.change_now(serde_json::from_value(change).unwrap());
+        let saved = saved.unwrap().comments;
+        assert_eq!(saved.state, khalid_core::CommentState::Closed);
+        assert!(!saved.notify);
     }
 
     #[test]

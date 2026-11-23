@@ -3,7 +3,7 @@
 use khalid_api::resources::{
     Alias, FeatureImage, NonBlank, PostSettings, ReviewState, SettingsEdit, ShareCard, ShareCards,
 };
-use khalid_core::Slug;
+use khalid_core::{CommentState, Slug};
 use serde_json::{Value, json};
 
 #[cfg(test)]
@@ -20,7 +20,8 @@ fn settings_never_set_are_empty_false_and_draft() {
         "featured": false, "review_state": "draft", "reviewed": null, "canonical": null,
         "robots": null,
         "share_cards": {"x": null, "facebook": null}, "aliases": [], "access": "public",
-        "password_protected": false, "template": null, "head_code": null,
+        "password_protected": false, "template": null, "comments": null,
+        "head_code": null,
         "seo_title": null, "focus_keyword": null, "schema": null,
         "connections": {
             "translation": null, "related": [], "series": null, "cluster": null,
@@ -74,6 +75,25 @@ fn review_states_read_as_they_are_written() {
         published.is_err(),
         "published is a status, not a review state"
     );
+}
+
+#[test]
+fn a_post_closes_comments_and_follows_the_site_again() {
+    let read = |json: Value| serde_json::from_value::<SettingsEdit>(json);
+    let closed = read(json!({"comments": "closed"})).unwrap();
+    let after = closed.applied_to(PostSettings::default());
+    assert_eq!(after.comments, Some(CommentState::Closed));
+    let json = serde_json::to_value(&after).unwrap();
+    assert_eq!(json["comments"], "closed");
+    let copied = SettingsEdit::copying(&after).applied_to(PostSettings::default());
+    assert_eq!(copied.comments, Some(CommentState::Closed));
+    let kept = read(json!({"featured": true}))
+        .unwrap()
+        .applied_to(after.clone());
+    assert_eq!(kept.comments, Some(CommentState::Closed));
+    let site = read(json!({"comments": null})).unwrap().applied_to(after);
+    assert_eq!(site.comments, None);
+    assert!(read(json!({"comments": "maybe"})).is_err());
 }
 
 #[test]

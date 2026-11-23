@@ -9,8 +9,10 @@ pub(crate) mod term_seo;
 use std::path::Path;
 
 use khalid_core::{Config, UserMessage};
+use khalid_render::SiteWords;
 use khalid_routes::Routes;
 
+use crate::build_message;
 use crate::build_pages::LanguagePages;
 
 /// Removes the archives switched off, gives category and tag pages their
@@ -28,7 +30,8 @@ pub(crate) fn arrange(
 ) -> Result<(Vec<archives_off::Gone>, Vec<String>), UserMessage> {
     let gone = archives_off::remove(config, languages);
     let bare = term_seo::fill(site, (config, routes), languages)?;
-    locations::fill(config, languages)?;
-    locations::add_page(config, languages)?;
+    let words = SiteWords::of_site(site).map_err(|error| build_message::render(&error))?;
+    locations::fill(config, &words, languages);
+    locations::add_page(config, &words, languages)?;
     Ok((gone, bare))
 }

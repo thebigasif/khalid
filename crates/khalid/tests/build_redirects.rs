@@ -94,6 +94,22 @@ fn an_alias_lands_where_routes_toml_puts_the_post() {
 }
 
 #[test]
+fn a_moved_pages_old_address_answers_with_a_301() {
+    let site = site(&[("why-links-matter", &[])]);
+    let pages = at(site.path(), "content/en/pages");
+    fs::create_dir_all(&pages).unwrap();
+    let about =
+        "---\ntitle: Who we are\nslug: team\naliases: [\"/blog/about/\"]\n---\n\nThe team.\n";
+    fs::write(at(&pages, "about.md"), about).unwrap();
+    let output = build(&site);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert_eq!(output.status.code(), Some(0), "{stderr}");
+    let redirects = fs::read_to_string(at(site.path(), "public/_redirects")).unwrap();
+    assert_eq!(redirects, "/blog/about/ /blog/team/ 301\n");
+    assert!(at(site.path(), "public/team/index.html").is_file());
+}
+
+#[test]
 fn a_site_without_aliases_has_no_redirects_file() {
     let site = site(&[("why-links-matter", &[])]);
     assert_eq!(build(&site).status.code(), Some(0));

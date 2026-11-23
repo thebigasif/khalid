@@ -429,7 +429,7 @@ fn secondary_keywords<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<
 
 /// Reads old paths, each starting with `/`, with a message a writer
 /// understands. A blank `aliases:` line means no aliases.
-fn aliases<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
+pub(crate) fn aliases<'de, D: Deserializer<'de>>(deserializer: D) -> Result<Vec<String>, D::Error> {
     let paths: Vec<String> = blank::or_empty(deserializer)?;
     match paths
         .iter()

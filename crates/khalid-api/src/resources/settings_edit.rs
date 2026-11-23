@@ -2,14 +2,15 @@
 
 use chrono::NaiveDate;
 use khalid_core::{
-    AbsoluteUrl, HeadCode, PasswordHash, PostAccess, RobotsDirectives, Slug, TemplateName,
+    AbsoluteUrl, CommentState, HeadCode, PasswordHash, PostAccess, RobotsDirectives, Slug,
+    TemplateName,
 };
 use serde::{Deserialize, Deserializer};
 use utoipa::ToSchema;
 
 use super::post_connections::ConnectionsEdit;
 use super::post_listing::ListingEdit;
-use super::post_settings::access_schema;
+use super::post_settings::{access_schema, comments_schema};
 use super::seo_fields::{CustomJsonLd, SearchTitle};
 use super::{
     Alias, FeatureImage, MAX_SECONDARY_KEYWORDS, NonBlank, PostSettings, ReviewState, ShareCards,
@@ -85,6 +86,11 @@ pub struct SettingsEdit {
     #[serde(default)]
     #[schema(value_type = Option<String>, example = "wide")]
     template: Change<TemplateName>,
+    /// `open`, `closed` or `off` for this post, or `null` to follow the
+    /// site's `[comments]` state.
+    #[serde(default)]
+    #[schema(schema_with = comments_schema)]
+    comments: Change<CommentState>,
     /// New head code, or `null` for none. Owners and admins only.
     #[serde(default)]
     #[schema(value_type = Option<String>, example = "<meta name=\"verify\" content=\"x\">")]
@@ -130,6 +136,7 @@ impl SettingsEdit {
             access: Some(settings.access),
             password_hash: kept(settings.password.as_ref()),
             template: kept(settings.template.as_ref()),
+            comments: kept(settings.comments.as_ref()),
             seo_title: kept(settings.seo_title.as_ref()),
             focus_keyword: kept(settings.focus_keyword.as_ref()),
             secondary_keywords: Some(settings.secondary_keywords.clone()),
@@ -182,6 +189,7 @@ impl SettingsEdit {
             access: self.access.unwrap_or(settings.access),
             password: self.password_hash.applied_to(settings.password),
             template: self.template.applied_to(settings.template),
+            comments: self.comments.applied_to(settings.comments),
             head_code: self.head_code.applied_to(settings.head_code),
             date: self.date.applied_to(settings.date),
             co_authors: self.co_authors.unwrap_or(settings.co_authors),

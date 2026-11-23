@@ -104,7 +104,24 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:
   </div>
 
   <h2 id="edit">Opening a page</h2>
-  <p>Edit opens the page on its own screen: "This is the English page at the address about. Saving puts your change live at once." Below that sit its title, description and text, a Save page button, and "Delete this page", which says first that links to the page will lead nowhere.</p>
+  <p>Edit opens the page on its own screen: "This is the English page at the address about. Saving puts your change live at once." Below that sit its title, its address (changing it sends the old address to the new one with a 301 redirect), description and text, a Save page button, and "Delete this page", which says first that links to the page will lead nowhere.</p>
+
+  <p>Under the text, a folded section sets how search engines and social sites show the page. It starts closed, so the page's text stays the one focus:</p>
+  <details open>
+    <summary>Search and sharing</summary>
+    <p class="muted">How search engines and social sites show this page. A link preview is the card a social site shows when someone shares the page. Leave a field empty to use the page's own title, description and image.</p>
+    <div class="field"><label for="r">Search results</label><span class="hint">Whether search engines may list this page. Hide a page such as a thank-you page.</span>
+      <select id="r"><option>Show this page in search results</option><option>Keep it out of search results</option><option>Keep it out, and do not follow its links</option></select></div>
+    <div class="field"><label for="c">Original address</label><span class="hint">Only when the page first appeared somewhere else, such as https://example.com/about/. Search engines then credit that address.</span><input id="c"></div>
+    <div class="pair">
+      <div class="field"><label for="i">Feature image</label><span class="hint">Shown under the title and in link previews. A media path such as /media/team.jpg, or a full address.</span><input id="i" value="/media/team.jpg"></div>
+      <div class="field"><label for="a">Image description</label><span class="hint">What the image shows, for readers who cannot see it. Needed when there is an image.</span><input id="a" value="The two of us at the desk" required></div>
+      <div class="field"><label for="ft">Facebook title</label><span class="hint">The title Facebook and LinkedIn show when someone shares the page.</span><input id="ft"></div>
+      <div class="field"><label for="fd">Facebook description</label><span class="hint">The line under that title.</span><input id="fd"></div>
+      <div class="field"><label for="xt">X title</label><span class="hint">The title X shows when someone shares the page.</span><input id="xt" value="Who writes Field Notes"></div>
+      <div class="field"><label for="xd">X description</label><span class="hint">The line under that title.</span><input id="xd"></div>
+    </div>
+  </details>
 
   <p class="note">Mockup for the founder's review. Nothing on this page saves. The two pages are the demo site's About page in English and German. <a href="index.html">All mockups</a></p>
 </main>

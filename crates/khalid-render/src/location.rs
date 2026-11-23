@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 use khalid_core::{Locale, LocationSettings, WeekdaySetting};
 
 use crate::escape::attribute;
-use crate::{RenderError, builtin_strings};
+use crate::{RenderError, SiteWords};
 
 /// How `khalid-content` starts the mark of a `::location` block. A test
 /// checks it against that crate's own.
@@ -52,9 +52,14 @@ impl LocationWords {
     ///
     /// [`RenderError::Strings`] when a built-in strings file cannot be read.
     pub fn for_locale(locale: &Locale) -> Result<Self, RenderError> {
-        let table = builtin_strings(locale)?;
-        let word = |key: &str| table.get(key).cloned().unwrap_or_default();
-        Ok(Self {
+        Ok(Self::of_site(&SiteWords::builtin()?, locale))
+    }
+
+    /// The words of `locale`'s language as the site has them, with its own
+    /// `theme/strings/` file laid over the built-in words.
+    pub fn of_site(words: &SiteWords, locale: &Locale) -> Self {
+        let word = |key: &str| words.get(locale, key).unwrap_or_default().to_owned();
+        Self {
             hours: word("location_hours"),
             open_now: word("location_open_now"),
             closed_now: word("location_closed_now"),
@@ -62,7 +67,7 @@ impl LocationWords {
             map: word("location_map"),
             time_range: word("location_time_range"),
             days: ["1", "2", "3", "4", "5", "6", "7"].map(|day| word(&format!("weekday_{day}"))),
-        })
+        }
     }
 }
 
