@@ -1023,6 +1023,14 @@ export type CheckIn = {
 /** What a check-in asks for. */
 export type Claim = "join" | "take_over";
 
+/** The topic cluster a post belongs to, and its role in it. */
+export type ClusterMembership = {
+  /** The cluster's name, the same on every post in it. */
+  name: string;
+  /** `pillar` for the main post, or `member`, the default. */
+  role?: ClusterPlace;
+};
+
 /** A post's role in its topic cluster. */
 export type ClusterPlace = "pillar" | "member";
 
@@ -1066,6 +1074,20 @@ export type CommentsSetting = {
   notify: boolean;
   /** Whether readers may comment: `open`, `closed` or `off`. */
   state: "open" | "closed" | "off";
+};
+
+/** New values for some of a post's ties. A part left out keeps its value, and `null` clears one that may be empty. */
+export type ConnectionsEdit = {
+  cluster?: ClusterMembership | null;
+  /** Whether the post is its topic group's main post. */
+  main_post?: boolean | null;
+  /** Every pinned related post's slug, at most five; an empty list to let the build choose. */
+  related?: string[] | null;
+  series?: SeriesPart | null;
+  /** A new topic group, or `null` for none. */
+  topic_group?: string | null;
+  /** A new translation key, or `null` for none. */
+  translation?: string | null;
 };
 
 /** A collection in one language, in API shape: the folder's name and the title and description its `_index.md` gives, when it has one. */
@@ -1493,6 +1515,24 @@ export type LintCounts = {
   blocks: number;
   /** Findings the writer should see, which do not stop it. */
   warnings: number;
+};
+
+/** New values for some of how a post is listed. A part left out keeps its value, and `null` clears one that may be empty. */
+export type ListingEdit = {
+  /** The kind of article, as schema.org names it, or `null` for the collection's. */
+  article_type?: "BlogPosting" | "Article" | "NewsArticle" | "TechArticle" | "Report" | null;
+  /** A new breadcrumb name, or `null` for the post's title. */
+  breadcrumb_title?: string | null;
+  /** Every other word for the focus keyword; an empty list for none. */
+  keyword_synonyms?: string[] | null;
+  /** `false` to keep a news post out of the news sitemap, or `null` to follow its article type. */
+  news?: boolean | null;
+  /** The kind of web page, as schema.org names it, or `null` for `WebPage`. */
+  page_type?: "WebPage" | "FAQPage" | "ContactPage" | "AboutPage" | "QAPage" | "ItemPage" | "CollectionPage" | null;
+  /** Every reviewer's author slug; an empty list for none. */
+  reviewed_by?: string[] | null;
+  /** Whether the post is listed in the XML sitemap. */
+  sitemap?: boolean | null;
 };
 
 /** A page that gets search traffic though readers cannot use it. */
@@ -2132,6 +2172,20 @@ export type PostCheck = {
   words: number;
 };
 
+/** How a post ties to the blog's other posts. Every part has a value: `null`, an empty list or `false` when never set. */
+export type PostConnections = {
+  cluster?: ClusterMembership | null;
+  /** Whether this post is its topic group's main post, the one the group's other posts should link to. */
+  main_post: boolean;
+  /** The slugs of the posts shown under this one, in place of the ones chosen at build time. At most [`MAX_RELATED`]. */
+  related: string[];
+  series?: SeriesPart | null;
+  /** The topic group the post shares with others (P8), such as `internal-links`. */
+  topic_group?: string | null;
+  /** The key shared by the versions of this post in other languages, such as `anchor-text`, or `null` when it has none. */
+  translation?: string | null;
+};
+
 /** An edit to a post: the fields to change, and the `updated_at` of the copy it was made on. Fields left out keep their value, and `null` clears one that may be empty. A `status` of `published` publishes a draft, once the linter lets it through; `scheduled` with a future `published_at` publishes it then, and `draft` takes a scheduled post off its schedule and a live post down. */
 export type PostEdit = {
   /** A new author's slug, or `null` for none. */
@@ -2152,6 +2206,8 @@ export type PostEdit = {
   unpublish_at?: string | null;
   /** The `updated_at` of the copy the edit was made on. */
   updated_at: string;
+  /** Rewrites the note of the post's last real update, such as to fix a typo, and leaves its date alone. Only for a post with an updated date; `real_update` wins when both are sent. */
+  updated_note?: string | null;
 };
 
 /** How many of the blog's other posts a post links to, and how many link to it, each counted once. */
@@ -2160,6 +2216,24 @@ export type PostLinks = {
   inbound: number;
   /** Posts this one links to. */
   outbound: number;
+};
+
+/** How search engines list and describe a post. Every part has a value: `true` for the sitemap, and `null` or an empty list otherwise, when never set. */
+export type PostListing = {
+  /** The kind of article, as schema.org names it, or `null` for the collection's. */
+  article_type?: "BlogPosting" | "Article" | "NewsArticle" | "TechArticle" | "Report" | null;
+  /** A shorter name for the post in breadcrumb trails, or `null` for its title. */
+  breadcrumb_title?: string | null;
+  /** Other words for the focus keyword that count as using it, such as `site links` for `internal links`. */
+  keyword_synonyms: string[];
+  /** `false` keeps a news post out of the news sitemap; `null` lists it as its article type says. */
+  news?: boolean | null;
+  /** The kind of web page, as schema.org names it, or `null` for `WebPage`. */
+  page_type?: "WebPage" | "FAQPage" | "ContactPage" | "AboutPage" | "QAPage" | "ItemPage" | "CollectionPage" | null;
+  /** The slugs of the authors who checked the post, shown as "Reviewed by". */
+  reviewed_by: string[];
+  /** Whether the post is listed in the XML sitemap. `false` keeps it out, as for a thank-you post no one searches for. */
+  sitemap: boolean;
 };
 
 /** One post's numbers for the month. */
@@ -2272,6 +2346,8 @@ export type PostSettings = {
   co_authors: string[];
   /** Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state. */
   comments?: "open" | "closed" | "off" | null;
+  /** How the post ties to the blog's other posts. */
+  connections: PostConnections;
   /** The day the post is dated, as shown to readers. */
   date?: string | null;
   excerpt?: NonBlank | null;
@@ -2282,6 +2358,8 @@ export type PostSettings = {
   focus_keyword?: string | null;
   /** Checked HTML added to the post's page head, such as an analytics tag. Only owners and admins may change it. */
   head_code?: string | null;
+  /** How search engines list and describe the post. */
+  listing: PostListing;
   /** Whether a reader must give a password to read the body. The password itself is never sent back. */
   password_protected: boolean;
   /** Where the post stands in review. */
@@ -2593,6 +2671,14 @@ export type SeoScores = {
   seo: number;
 };
 
+/** The series a post is one part of, as an edit sends it. */
+export type SeriesPart = {
+  /** The series' name as readers see it, the same on every part. */
+  name: string;
+  /** The post's place in the series, counted from 1, or `null` to follow the numbered parts in date order. */
+  order?: number | null;
+};
+
 /** The connection, or `null` while it is off. */
 export type SerpdadConnection = {
   /** When the key `SerpDad` sends drafts with was made. */
@@ -2689,6 +2775,7 @@ export type SettingsEdit = {
   co_authors?: string[] | null;
   /** Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state. */
   comments?: "open" | "closed" | "off" | null;
+  connections?: ConnectionsEdit | null;
   /** A new date, as `YYYY-MM-DD`, or `null` for none. */
   date?: string | null;
   /** A new excerpt, or `null` for none. */
@@ -2700,6 +2787,7 @@ export type SettingsEdit = {
   focus_keyword?: string | null;
   /** New head code, or `null` for none. Owners and admins only. */
   head_code?: string | null;
+  listing?: ListingEdit | null;
   /** A new password of 8 to 128 characters that readers must give, or `null` to remove it. It is kept only as a hash. */
   password?: string | null;
   review_state?: ReviewState | null;

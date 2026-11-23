@@ -11,6 +11,8 @@ const SETTINGS: AdminPost["settings"] = {
   tags: ["internal links", "seo"],
   category: "on-page-seo",
   share_cards: {},
+  connections: { main_post: false, related: [] },
+  listing: { keyword_synonyms: [], reviewed_by: [], sitemap: true },
   aliases: [],
   template: "wide",
   head_code: null,

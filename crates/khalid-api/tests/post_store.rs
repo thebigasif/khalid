@@ -21,6 +21,18 @@ fn draft() -> AdminPost {
 
 #[test]
 fn a_new_admin_post_is_a_draft_in_api_shape() {
+    let empty_connections = || {
+        json!({
+            "translation": null, "related": [], "series": null, "cluster": null,
+            "topic_group": null, "main_post": false,
+        })
+    };
+    let empty_listing = || {
+        json!({
+            "sitemap": true, "news": null, "breadcrumb_title": null, "page_type": null,
+            "article_type": null, "keyword_synonyms": [], "reviewed_by": [],
+        })
+    };
     let post = draft();
     assert_eq!(post.status(), PostStatus::Draft);
     assert_eq!(post.id(), "anchor-text-draft");
@@ -61,6 +73,8 @@ fn a_new_admin_post_is_a_draft_in_api_shape() {
                 "seo_title": null,
                 "focus_keyword": null,
                 "schema": null,
+                "connections": empty_connections(),
+                "listing": empty_listing(),
             },
         })
     );

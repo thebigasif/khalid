@@ -26,6 +26,8 @@ const POST: AdminPost = {
     password_protected: false,
     tags: ["internal links"],
     share_cards: {},
+    connections: { main_post: false, related: [] },
+    listing: { keyword_synonyms: [], reviewed_by: [], sitemap: true },
     aliases: [],
     excerpt: "Why links between posts matter.",
   },
