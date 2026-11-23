@@ -22577,6 +22577,7 @@
           "what",
           "why",
           "fix",
+          "guide",
           "example"
         ],
         "properties": {
@@ -22588,6 +22589,11 @@
           "fix": {
             "type": "string",
             "description": "What to do."
+          },
+          "guide": {
+            "type": "string",
+            "description": "The address of the guide that explains the rule at length.",
+            "example": "https://serpdad.com/khalid/docs/lint-rules/#image-descriptions"
           },
           "posts": {
             "type": "integer",

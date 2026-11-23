@@ -2654,6 +2654,8 @@ export type SiteIssue = {
   example: string;
   /** What to do. */
   fix: string;
+  /** The address of the guide that explains the rule at length. */
+  guide: string;
   /** How many posts it fires on. */
   posts: number;
   /** The rule, such as `missing-alt`. */

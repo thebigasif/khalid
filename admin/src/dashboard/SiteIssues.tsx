@@ -31,7 +31,15 @@ export function SiteIssues() {
             <div>
               <strong>{issue.what}</strong>
               <span className="hint">
-                {issue.why} {issue.fix}
+                {issue.why} {issue.fix}{" "}
+                <a
+                  href={issue.guide}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={words.guideOn(issue.what)}
+                >
+                  {words.guide}
+                </a>
               </span>
             </div>
             <span className={PILL[issue.weight]}>{words.onPosts(issue.posts)}</span>
