@@ -44,7 +44,10 @@ fn moved_to(page: &str, site: &dyn SiteView) -> Option<Vec<String>> {
     if let Some(moved) = by_alias {
         return Some(moved.path.iter().cloned().collect());
     }
-    let stored = site.redirects().iter().find(|r| page_key(&r.from) == page)?;
+    let stored = site
+        .redirects()
+        .iter()
+        .find(|r| page_key(&r.from) == page)?;
     Some(vec![stored.to.clone()])
 }
 
