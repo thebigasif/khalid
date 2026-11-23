@@ -21,6 +21,8 @@ const POST: AdminPost = {
     password_protected: true,
     tags: ["seo"],
     share_cards: {},
+    connections: { main_post: false, related: [] },
+    listing: { keyword_synonyms: [], reviewed_by: [], sitemap: true },
     aliases: [],
   },
 };

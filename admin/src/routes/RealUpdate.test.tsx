@@ -22,6 +22,8 @@ const LIVE: AdminPost = {
     access: "public",
     password_protected: false,
     share_cards: {},
+    connections: { main_post: false, related: [] },
+    listing: { keyword_synonyms: [], reviewed_by: [], sitemap: true },
     aliases: [],
     tags: [],
   },

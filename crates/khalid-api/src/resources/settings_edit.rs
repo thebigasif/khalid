@@ -8,6 +8,8 @@ use khalid_core::{
 use serde::{Deserialize, Deserializer};
 use utoipa::ToSchema;
 
+use super::post_connections::ConnectionsEdit;
+use super::post_listing::ListingEdit;
 use super::post_settings::{access_schema, comments_schema};
 use super::seo_fields::{CustomJsonLd, SearchTitle};
 use super::{
@@ -109,6 +111,10 @@ pub struct SettingsEdit {
     #[serde(default)]
     #[schema(value_type = Option<String>, example = "{\"@type\": \"Event\", \"name\": \"Anchor text clinic\"}")]
     schema: Change<CustomJsonLd>,
+    /// New ties to the blog's other posts; the parts left out keep theirs.
+    connections: Option<ConnectionsEdit>,
+    /// New listing choices; the parts left out keep theirs.
+    listing: Option<ListingEdit>,
 }
 
 impl SettingsEdit {
@@ -202,6 +208,14 @@ impl SettingsEdit {
             focus_keyword: self.focus_keyword.applied_to(settings.focus_keyword),
             secondary_keywords: (self.secondary_keywords).unwrap_or(settings.secondary_keywords),
             schema: self.schema.applied_to(settings.schema),
+            connections: match self.connections {
+                Some(edit) => edit.applied_to(settings.connections),
+                None => settings.connections,
+            },
+            listing: match self.listing {
+                Some(edit) => edit.applied_to(settings.listing),
+                None => settings.listing,
+            },
         }
     }
 }

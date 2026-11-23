@@ -4,7 +4,7 @@
 use chrono::{DateTime, NaiveDate, SecondsFormat, Utc};
 use khalid_core::{Indexing, Slug};
 use khalid_lint::{ClusterRole, Report, Severity};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
 use super::{
@@ -207,7 +207,7 @@ pub struct PostRow {
 }
 
 /// A post's role in its topic cluster.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ClusterPlace {
     /// The cluster's main post, which covers the topic as a whole.

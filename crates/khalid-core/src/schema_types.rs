@@ -57,3 +57,16 @@ pub enum ArticleSchemaType {
     /// A report, such as a study or a yearly review.
     Report,
 }
+
+impl ArticleSchemaType {
+    /// The schema.org name, such as `NewsArticle`.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::BlogPosting => "BlogPosting",
+            Self::Article => "Article",
+            Self::NewsArticle => "NewsArticle",
+            Self::TechArticle => "TechArticle",
+            Self::Report => "Report",
+        }
+    }
+}
