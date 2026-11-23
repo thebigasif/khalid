@@ -18,6 +18,8 @@ use utoipa_axum::routes;
 use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::redirect_desk::{RedirectDesk, StoreRefusal};
 use crate::redirect_store::{Origin, StoredRedirect};
@@ -83,13 +85,37 @@ pub(crate) struct AdminRedirects {
     redirects: Vec<AdminRedirect>,
 }
 
-/// Lists every stored redirect, oldest first. Aliases in front matter are
-/// not listed; they live in their posts. Needs `settings:write`.
+/// One page of the stored redirects.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminRedirectList {
+    /// The redirects on this page, oldest first.
+    redirects: Vec<AdminRedirect>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields a redirect list can be filtered on.
+const REDIRECT_FIELDS: &[&str] = &[
+    "id",
+    "from",
+    "to",
+    "status",
+    "match",
+    "origin",
+    "created_at",
+];
+
+/// Lists the stored redirects, oldest first: all of them, or one page with
+/// `limit` and `page`, and only those passing `filter`, such as
+/// `filter=status:410`. Aliases in front matter are not listed; they live
+/// in their posts. Needs `settings:write`.
 #[utoipa::path(
     get, path = "/redirects/", tag = "admin redirects",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every stored redirect", body = AdminRedirects),
+        (status = 200, description = "The stored redirects, or one page of them", body = AdminRedirectList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks settings:write", body = Problem, content_type = "application/problem+json"),
     )
@@ -97,7 +123,8 @@ pub(crate) struct AdminRedirects {
 async fn list_redirects(
     State(desk): State<RedirectDesk>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminRedirects>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminRedirectList>, Problem> {
     require(&principal, Scope::SettingsWrite)?;
     let stored = desk
         .store
@@ -105,7 +132,11 @@ async fn list_redirects(
         .await
         .map_err(|error| Problem::internal(&error))?;
     let redirects = stored.iter().map(AdminRedirect::from).collect();
-    Ok(Json(AdminRedirects { redirects }))
+    let paged = query.page(redirects, REDIRECT_FIELDS)?;
+    Ok(Json(AdminRedirectList {
+        redirects: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// One new redirect, in the columns [`AdminRedirect`] shows.

@@ -95,21 +95,24 @@ async fn the_versions_route_lists_what_each_edit_replaced() {
     let versions = format!("{POST}versions/");
     let (status, json) = send(&router, ("GET", &versions), WRITER, None).await;
     assert_eq!(status, StatusCode::OK, "{json}");
-    assert_eq!(json, json!({ "versions": [] }));
+    assert_eq!(json["versions"], json!([]));
     let edit = json!({ "posts": [{ "markdown": "Anchor text names the page a link opens.",
         "updated_at": "2026-10-20T08:30:00Z" }] });
     let (status, json) = send(&router, ("PUT", POST), WRITER, Some(edit)).await;
     assert_eq!(status, StatusCode::OK, "{json}");
     let (status, json) = send(&router, ("GET", &versions), WRITER, None).await;
     assert_eq!(status, StatusCode::OK, "{json}");
-    let kept = json!({ "versions": [{
+    let kept = json!([{
         "saved_at": "2026-10-20T08:30:00Z",
         "saved_by": null,
         "saved_by_name": null,
         "title": "Choosing anchor text",
         "markdown": "Anchor text tells readers where a link goes.",
-    }] });
-    assert_eq!(json, kept);
+    }]);
+    assert_eq!(json["versions"], kept);
+    let filtered = format!("{versions}?filter=title:~anchor&limit=1");
+    let (_, json) = send(&router, ("GET", &filtered), WRITER, None).await;
+    assert_eq!(json["meta"]["pagination"]["total"], 1, "{json}");
 }
 
 #[tokio::test]
