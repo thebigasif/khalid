@@ -5,7 +5,7 @@ use khalid_core::{Locale, Slug};
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use super::display;
+use super::{PageSeo, PageSeoEdit, display};
 use crate::entry_store::Entry;
 
 /// A page in one language, such as About, in Admin API shape. It is live
@@ -32,6 +32,9 @@ pub struct AdminPage {
     description: Option<String>,
     /// The body, in markdown.
     markdown: String,
+    /// Its robots directives, canonical address, feature image and share
+    /// cards.
+    seo: PageSeo,
     /// When the page last changed. An edit or delete sends it back.
     updated_at: DateTime<Utc>,
 }
@@ -52,8 +55,20 @@ impl AdminPage {
             path: None,
             description: None,
             markdown: markdown.to_owned(),
+            seo: PageSeo::default(),
             updated_at,
         }
+    }
+
+    /// The same page with these search settings.
+    #[must_use]
+    pub fn with_seo(self, seo: PageSeo) -> Self {
+        Self { seo, ..self }
+    }
+
+    /// Its search settings.
+    pub fn seo(&self) -> &PageSeo {
+        &self.seo
     }
 
     /// The same page found at `path` on the site, such as `/blog/about/`.
@@ -63,6 +78,16 @@ impl AdminPage {
             path: Some(path),
             ..self
         }
+    }
+
+    /// Where readers find the page, such as `/blog/about/`, once known.
+    pub fn path(&self) -> Option<&str> {
+        self.path.as_deref()
+    }
+
+    /// The last part of the page's address.
+    pub fn slug(&self) -> &Slug {
+        &self.slug
     }
 
     /// The same page with this description.
@@ -92,6 +117,9 @@ pub struct NewPage {
     description: Option<String>,
     /// The body, in markdown.
     markdown: String,
+    /// Its search settings, all unset when left out.
+    #[serde(default)]
+    seo: PageSeo,
 }
 
 impl NewPage {
@@ -114,23 +142,39 @@ impl NewPage {
     pub fn markdown(&self) -> &str {
         &self.markdown
     }
+
+    /// The search settings.
+    pub fn seo(&self) -> &PageSeo {
+        &self.seo
+    }
 }
 
 /// A change to a page: only the fields sent change.
 #[derive(Debug, Clone, Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]
 pub struct PageEdit {
+    /// A new last part of the address. The old address then answers with
+    /// a 301 to the new one, so links to it keep working.
+    #[schema(value_type = Option<String>, example = "team")]
+    slug: Option<Slug>,
     /// A new title.
     title: Option<String>,
     /// A new description; an empty one removes it.
     description: Option<String>,
     /// A new body, in markdown.
     markdown: Option<String>,
+    /// New values for some search settings; the rest keep theirs.
+    seo: Option<PageSeoEdit>,
     /// The `updated_at` of the copy this edit was made on.
     updated_at: DateTime<Utc>,
 }
 
 impl PageEdit {
+    /// The new slug, if sent.
+    pub fn slug(&self) -> Option<&Slug> {
+        self.slug.as_ref()
+    }
+
     /// The new title, if sent.
     pub fn title(&self) -> Option<&str> {
         self.title.as_deref()
@@ -144,6 +188,14 @@ impl PageEdit {
     /// The new body, if sent.
     pub fn markdown(&self) -> Option<&str> {
         self.markdown.as_deref()
+    }
+
+    /// The search settings after this edit, from `before`.
+    pub fn seo_after(&self, before: &PageSeo) -> PageSeo {
+        match &self.seo {
+            Some(change) => change.clone().applied_to(before.clone()),
+            None => before.clone(),
+        }
     }
 }
 
@@ -170,16 +222,22 @@ impl Entry for AdminPage {
     fn made(new: NewPage, language: Locale, at: DateTime<Utc>) -> Self {
         Self::new((language, new.slug), &new.title, &new.markdown, at)
             .with_description(new.description.as_deref())
+            .with_seo(new.seo)
     }
 
     fn edited(self, edit: PageEdit, at: DateTime<Utc>) -> Self {
+        let seo = edit.seo_after(&self.seo);
         let description = match edit.description {
             Some(text) if text.is_empty() => None,
             Some(text) => Some(text),
             None => self.description,
         };
+        let slug = edit.slug.unwrap_or(self.slug);
         Self {
+            id: format!("{}.{slug}", self.language),
+            slug,
             title: edit.title.unwrap_or(self.title),
+            seo,
             markdown: edit.markdown.unwrap_or(self.markdown),
             description,
             updated_at: at,

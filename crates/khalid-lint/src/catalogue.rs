@@ -37,8 +37,8 @@ fn builtin_text() -> Result<&'static str, LintError> {
 /// A lint message: what is wrong, why it matters, what to do, and a guide.
 ///
 /// Each part is one plain sentence for a writer who is new to SEO
-/// (RULES.md BL-TXT-2). `guide` names the `SerpDad` guide that explains the
-/// rule at length; the docs map it to an address later.
+/// (RULES.md BL-TXT-2). `guide` names the section of the rules page that
+/// explains the rule at length; [`Message::guide_url`] gives its address.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Message {

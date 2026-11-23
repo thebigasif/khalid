@@ -18,6 +18,7 @@ mod comment;
 mod content_collection;
 mod media;
 mod menu;
+mod page_seo;
 mod post;
 mod post_head;
 mod post_row;
@@ -37,8 +38,8 @@ pub use admin_key::{AdminKey, NewKey, NewKeyKind};
 pub use admin_page::{AdminPage, NewPage, PageEdit};
 pub use admin_post::{AdminPost, NewPost, PostDraft, PostEdit, PostStatus};
 pub use admin_settings::{
-    AdminSettings, CtaChange, HomeSectionSetting, MenuLinkSetting, NavChange, NavSetting,
-    SettingsChange,
+    AdminSettings, CommentsChange, CommentsSetting, CtaChange, HomeSectionSetting, MenuLinkSetting,
+    NavChange, NavSetting, SettingsChange,
 };
 pub use admin_snippet::{AdminSnippet, NewSnippet, SnippetEdit};
 pub use admin_tag::{AdminTag, TagEdit};
@@ -56,6 +57,7 @@ pub use media::{
     MediaEditBody, MediaEdits, MediaFolder, MediaFolders, MediaItems, MediaList, PictureEditBody,
 };
 pub use menu::{Menu, MenuLink};
+pub use page_seo::{PageSeo, PageSeoEdit};
 pub use post::{Bodies, Post, PostSeries};
 pub use post_head::{HeadElement, HeadParts, PostHead};
 pub use post_row::{ClusterPlace, Gate, IndexStatus, LintCounts, PostLinks, PostRow};

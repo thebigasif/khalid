@@ -28,6 +28,7 @@ mod focus_shape;
 mod focus_spread;
 mod gate;
 mod german;
+mod guides;
 mod headings;
 mod inclusive;
 mod link_graph;
@@ -73,6 +74,7 @@ pub use catalogue::{Catalogue, Message};
 pub use entries::{EntryKind, LintEntry};
 pub use finding::{Finding, Location, LocationKind};
 pub use gate::{PublishGate, Verdict};
+pub use guides::{GUIDE_PAGE, rules_page};
 pub use lint_config::LintConfig;
 pub use lint_error::LintError;
 pub use lint_post::{

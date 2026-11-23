@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::rejection::JsonRejection;
-use axum::extract::{OriginalUri, Path, State};
+use axum::extract::{OriginalUri, Path, Query, State};
 use axum::http::StatusCode;
 use axum::{Extension, Json, middleware};
 use khalid_core::UserMessage;
@@ -19,6 +19,8 @@ use crate::api_version::negotiate_version;
 use crate::keys::{
     Access, KeyHashing, KeyId, KeyKind, KeyStore, KeyToken, Principal, Scope, StoredKey,
 };
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::{Problem, ProblemType};
 use crate::resources::{AdminKey, NewKey, NewKeyKind};
 
@@ -50,13 +52,29 @@ pub(crate) struct AdminKeys {
     keys: Vec<AdminKey>,
 }
 
-/// Lists every key that works, oldest first, with what each may do and
-/// never its secret. Needs `admin:all`.
+/// One page of the keys that work.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminKeyList {
+    /// The keys on this page, oldest first.
+    keys: Vec<AdminKey>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields a key list can be filtered on. Never the secret.
+const KEY_FIELDS: &[&str] = &["id", "name", "kind", "scopes", "role", "created_at"];
+
+/// Lists the keys that work, oldest first, with what each may do and
+/// never its secret: all of them, or one page with `limit` and `page`, and
+/// only those passing `filter`, such as `filter=kind:integration`. Needs
+/// `admin:all`.
 #[utoipa::path(
     get, path = "/keys/", tag = "admin keys",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every key that works", body = AdminKeys),
+        (status = 200, description = "The keys that work, or one page of them", body = AdminKeyList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks admin:all", body = Problem, content_type = "application/problem+json"),
     )
@@ -64,14 +82,19 @@ pub(crate) struct AdminKeys {
 async fn list_keys(
     State(keys): State<Keys>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminKeys>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminKeyList>, Problem> {
     require(&principal, Scope::AdminAll)?;
     let listed = keys
         .list()
         .await
         .map_err(|error| Problem::internal(&error))?;
     let keys = listed.into_iter().map(AdminKey::from).collect();
-    Ok(Json(AdminKeys { keys }))
+    let paged = query.page(keys, KEY_FIELDS)?;
+    Ok(Json(AdminKeyList {
+        keys: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// A new key, wrapped the way the Admin API wraps keys: exactly one.

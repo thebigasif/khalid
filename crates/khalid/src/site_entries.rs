@@ -41,8 +41,15 @@ pub(crate) trait EntryFile: Entry {
     /// The file of a new entry.
     fn text(new: &Self::New) -> PostText;
 
-    /// Writes `edit` into the file, leaving every other line as it was.
-    fn edit(text: &mut PostText, edit: &Self::Edit);
+    /// Writes `edit` into the file of `current`, leaving every other line
+    /// as it was.
+    fn edit(text: &mut PostText, current: &Self, edit: &Self::Edit);
+
+    /// The new slug `edit` moves the entry to, if any. Only a page moves.
+    fn moved_to(edit: &Self::Edit) -> Option<&Slug> {
+        let _ = edit;
+        None
+    }
 
     /// The same entry, told the `path` readers would find it at, such as
     /// `/blog/about/`. Only an entry with its own address keeps it.
@@ -228,11 +235,17 @@ impl<T: EntryFile> SiteEntries<T> {
     fn update_now(&self, id: &str, edit: &T::Edit) -> Result<T, EntryError> {
         let _writing = self.lock();
         let found = self.current(id, T::seen(edit))?;
+        // A move keeps the file where it is: only its `slug:` changes.
+        let language = id.split_once('.').map_or(id, |(language, _)| language);
+        let now = T::moved_to(edit).map_or_else(|| id.to_owned(), |to| format!("{language}.{to}"));
+        if now != id && self.find(&now)?.is_some() {
+            return Err(EntryError::Taken(now));
+        }
         let text = fs::read_to_string(&found.path).map_err(EntryStoreError::new)?;
         let mut text = PostText::parse(&text).ok_or_else(|| unreadable(&found.path))?;
-        T::edit(&mut text, edit);
+        T::edit(&mut text, &found.entry, edit);
         atomic::replace(&found.path, &text.to_text()).map_err(EntryStoreError::new)?;
-        self.written(id)
+        self.written(&now)
     }
 
     /// Moves entry `id` to the trash, or removes it when there is none,

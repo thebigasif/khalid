@@ -231,7 +231,7 @@ fn build(
     for size in post_images::attach(site, config, &beside, &mut languages, &mut shown)? {
         copy(&size.path, out, &size.file)?;
     }
-    let seo_site = build_seo::site_on(config, today)?;
+    let seo_site = build_seo::site_on(site, config, today)?;
     let cards = share_images::attach(site, config, &tokens, &seo_site, &mut languages)?;
     for file in share_images::draw_now(site, cards)? {
         let mut from = site.to_path_buf();
@@ -242,7 +242,7 @@ fn build(
     let seo_pages = build_seo::heads(&seo_site, &mut languages)?;
     build_sitemap::fill(config, &seo_site, &seo_pages, &mut languages)?;
     let mut written = 0;
-    let locks = static_mode::locks(config.mode())?;
+    let locks = static_mode::locks(site, config.mode())?;
     let mut code = PageCode::new(config, HeadNonce::Static);
     if let Some((renderer, css, sheets)) = &theme {
         write_asset(out, css)?;

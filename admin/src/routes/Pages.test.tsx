@@ -16,6 +16,12 @@ function page(fields: Partial<AdminPage> = {}): AdminPage {
     title: "About Field Notes",
     description: "Who writes Field Notes on SEO, and why.",
     markdown: "Field Notes is a small blog about search.\n",
+    seo: {
+      robots: null,
+      canonical: null,
+      feature_image: null,
+      share_cards: { x: null, facebook: null },
+    },
     updated_at: "2026-10-30T09:00:00Z",
     ...fields,
   };

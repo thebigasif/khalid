@@ -385,6 +385,8 @@ watch_minutes = 5        # how often the speed and uptime watch looks; 0 switche
 slow_ms = 1000           # a slower middle answer time over an hour, or three looks, is an alert; 0 switches it off
 ```
 
+With neither, you still see them: the admin's dashboard lists the alerts still raised, each with what happened, why it matters and what to do. A problem that clears leaves the list at the next check, and one that happens once, such as a burst of 404s, stays 30 days. The running server answers the same list at `GET /api/admin/v1/alerts/` for a key with `settings:write`, and agents reach it through `khalid mcp` as the `list_alerts` tool.
+
 ### Speed and uptime
 
 Once the server answers more than its own computer, with `--domain`, `--https` or a `--listen` address such as `0.0.0.0:8080`, it looks at the blog's home page at its public address every 5 minutes, the way a reader's browser would: through DNS, the certificate and any proxy in front. Three failed looks in a row send a "site down" alert. An hour whose middle answer time is over 1 second sends a "slow site" alert. Both are sent once, and again only after the site has recovered.
@@ -430,6 +432,8 @@ notify = false     # stop the email about each new comment (on by default)
 When the site sends mail (`[mail]`), each new reader comment emails the site's owners and admins with its text, the post's address and a link to the Comments screen, so no comment waits unseen. The reader's email address is never in it.
 
 `closed` keeps the approved comments on each post and takes away the form, so no new comment comes in. `off` shows no comments and no form. One post can say otherwise in its front matter, which wins over the site: `comments: closed` closes a busy old post, and `comments: open` opens one post on a site where comments are off. The pages change as soon as you save; no restart is needed.
+
+You can also do both in the admin. The Comments part of the Settings screen sets `[comments]` for the whole site, with the email switch. In the editor, More settings has a Comments choice for the one post, where "Use the blog's setting" leaves the line out. Programs do the same through the Admin API: `comments` in `PUT /api/admin/v1/settings/` takes `{"state": "closed"}`, `{"notify": false}` or both, and a post's `settings.comments` takes `open`, `closed`, `off` or `null`.
 
 ## Request limits
 

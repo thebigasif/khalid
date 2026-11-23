@@ -241,6 +241,7 @@ fn made(
     let (title, description) = (title.to_owned(), description.to_owned());
     let meta = meta(config, title.clone(), description, path, PageKind::Website)?;
     let body = PageBody::Page(RenderPage {
+        image: None,
         title,
         updated: None,
         body: BodyHtml::from_sanitised(body),

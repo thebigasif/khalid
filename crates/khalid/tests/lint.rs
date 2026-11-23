@@ -101,6 +101,8 @@ fn lint_blocks_a_post_with_no_date_and_says_why() {
     );
     assert!(said.contains("This post has no date."), "{said}");
     assert!(said.contains("Add `date:` to the header."), "{said}");
+    let guide = "Rule no-date. Read more: https://serpdad.com/khalid/docs/lint-rules/#post-dates";
+    assert!(said.contains(guide), "{said}");
 }
 
 #[test]
@@ -114,6 +116,10 @@ fn lint_json_prints_the_report_and_still_exits_1() {
     assert_eq!(first["rule"], "no-date");
     assert_eq!(first["slug"], "choosing-link-text");
     assert_eq!(first["guide"], "post-dates");
+    assert_eq!(
+        first["guide_url"],
+        "https://serpdad.com/khalid/docs/lint-rules/#post-dates"
+    );
 }
 
 #[test]

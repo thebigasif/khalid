@@ -3,7 +3,7 @@
 
 use std::sync::Arc;
 
-use axum::extract::{OriginalUri, Path, State};
+use axum::extract::{OriginalUri, Path, Query, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::{Extension, Json, middleware};
@@ -18,6 +18,8 @@ use crate::admin_api::AdminPosts;
 use crate::admin_key::{AdminDoor, require, require_admin_key, require_publish};
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::post_trash::{PostTrash, Restored, TrashError, Trashed, TrashedKind};
 use crate::problem::{Problem, ProblemType};
 use crate::resources::PostStatus;
@@ -61,15 +63,23 @@ pub(crate) struct TrashedPost {
 pub(crate) struct TrashList {
     /// The deleted posts and pages, the most recently deleted first.
     trash: Vec<TrashedPost>,
+    /// Where this page sits in the list.
+    meta: Meta,
 }
 
-/// Lists the deleted posts and pages, the most recently deleted first.
-/// Needs `posts:write`.
+/// The fields the trash can be filtered on.
+const TRASH_FIELDS: &[&str] = &["key", "id", "title", "status", "trashed_at", "kind"];
+
+/// Lists the deleted posts and pages, the most recently deleted first: all
+/// of them, or one page with `limit` and `page`, and only those passing
+/// `filter`, such as `filter=kind:page`. Needs `posts:write`.
 #[utoipa::path(
     get, path = "/trash/", tag = "admin trash",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "The deleted posts and pages", body = TrashList),
+        (status = 200, description = "The deleted posts and pages, or one page of them", body = TrashList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
     )
@@ -77,6 +87,7 @@ pub(crate) struct TrashList {
 async fn list_trash(
     State(trash): State<Trash>,
     Extension(principal): Extension<Principal>,
+    Query(query): Query<PageQuery>,
 ) -> Result<Json<TrashList>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let listed = trashed(trash.as_deref()).await?;
@@ -88,8 +99,10 @@ async fn list_trash(
         trashed_at: trashed.trashed_at,
         kind: trashed.kind,
     });
+    let paged = query.page(trash.collect(), TRASH_FIELDS)?;
     Ok(Json(TrashList {
-        trash: trash.collect(),
+        trash: paged.items,
+        meta: paged.meta,
     }))
 }
 

@@ -2,11 +2,14 @@
 //! reads them (ADR 0013), and the head every page carries: its tags, then
 //! its JSON-LD graph (ADR "the SEO head reaches templates as trusted HTML").
 
+use std::collections::BTreeMap;
+use std::path::Path;
+
 use chrono::{DateTime, NaiveDate, NaiveTime, Utc};
 use khalid_content::{PostFront, Sitemap};
 use khalid_core::{ArticleSchemaType, Config, Locale, Mode, UserMessage};
 use khalid_lint::StructuredDataGap;
-use khalid_render::{HeadHtml, PostCard, builtin_strings};
+use khalid_render::{HeadHtml, PostCard, SiteWords};
 use khalid_seo::{
     ArticleType, FeedScope, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError,
     SeoPage, SeoSite, SitemapListing, TemplateWords, Tracking, TranslationKey, UrlPath,
@@ -30,9 +33,8 @@ pub(crate) fn site(config: &Config) -> Result<SeoSite, UserMessage> {
         .iter()
         .filter(|locale| *locale != config.default_language());
     site.languages.extend(others.cloned());
-    for language in &site.languages {
-        site.words.insert(language.clone(), words(language)?);
-    }
+    let builtin = SiteWords::builtin().map_err(|_| serve_message::internal())?;
+    set_words(&mut site, &builtin);
     site.indexing = IndexPolicy::from(&config.seo().index);
     site.breadcrumb_home
         .clone_from(&config.seo().breadcrumbs.home);
@@ -41,21 +43,36 @@ pub(crate) fn site(config: &Config) -> Result<SeoSite, UserMessage> {
     Ok(site)
 }
 
-/// The site for the pages made on `today`, which the `{currentyear}` and
-/// `{currentmonth}` title variables read. A server site's post pages name
+/// The site in `folder` for the pages made on `today`, which the
+/// `{currentyear}` and `{currentmonth}` title variables read, worded with
+/// the site's own `theme/strings/` files. A server site's post pages name
 /// the card `/api/oembed` makes of them, in `khalid serve` and `khalid
 /// build` alike; a static site has no server to answer it.
-pub(crate) fn site_on(config: &Config, today: NaiveDate) -> Result<SeoSite, UserMessage> {
+pub(crate) fn site_on(
+    folder: &Path,
+    config: &Config,
+    today: NaiveDate,
+) -> Result<SeoSite, UserMessage> {
     let mut site = site(config)?;
+    let own = SiteWords::of_site(folder).map_err(|error| build_message::render(&error))?;
+    set_words(&mut site, &own);
     site.today = Some(today);
     site.oembed = config.mode() == Mode::Server;
     Ok(site)
 }
 
-/// The month names, date order and page line of `language`, from the
-/// built-in strings the templates show, for the title variables.
-fn words(language: &Locale) -> Result<TemplateWords, UserMessage> {
-    let strings = builtin_strings(language).map_err(|_| serve_message::internal())?;
+/// Gives each of `site`'s languages its title words from `words`.
+fn set_words(site: &mut SeoSite, words: &SiteWords) {
+    for language in &site.languages {
+        site.words
+            .insert(language.clone(), title_words(words.table(language)));
+    }
+}
+
+/// The month names, date order, page line and share labels in `strings`,
+/// one language's words as the templates show them, for the title
+/// variables and the X and Slack cards.
+fn title_words(strings: &BTreeMap<String, String>) -> TemplateWords {
     let mut words = TemplateWords::default();
     for (month, name) in words.months.iter_mut().enumerate() {
         if let Some(text) = strings.get(&format!("month_{}", month.saturating_add(1))) {
@@ -76,7 +93,7 @@ fn words(language: &Locale) -> Result<TemplateWords, UserMessage> {
             field.clone_from(text);
         }
     }
-    Ok(words)
+    words
 }
 
 /// `html`, a rendered body, with each link given the `rel` and `target` the
@@ -342,9 +359,34 @@ mod tests {
 
     #[test]
     fn the_title_words_are_the_languages_own() {
-        let german = words(&Locale::try_new("de").unwrap()).unwrap();
+        let builtin = SiteWords::builtin().unwrap();
+        let german = title_words(builtin.table(&Locale::try_new("de").unwrap()));
         assert_eq!(german.months[2], "März");
         assert_eq!(german.page_of, "Seite {current} von {total}");
+    }
+
+    #[test]
+    fn the_sites_own_strings_word_the_titles_and_share_labels() {
+        let folder = tempfile::tempdir().unwrap();
+        let mut file = folder.path().to_path_buf();
+        file.push("site.toml");
+        let toml = "name = \"Notes\"\naddress = \"https://www.example.com\"\n\
+                    default_language = \"en\"\nlanguages = [\"en\", \"fr\"]\n";
+        std::fs::write(&file, toml).unwrap();
+        file.set_file_name("theme/strings");
+        std::fs::create_dir_all(&file).unwrap();
+        file.push("fr.toml");
+        std::fs::write(&file, "month_3 = \"mars\"\nwritten_by = \"Écrit par\"\n").unwrap();
+        let config = Config::load(folder.path(), &Environment::empty()).unwrap();
+        let today = NaiveDate::from_ymd_opt(2026, 3, 1).unwrap();
+        let site = site_on(folder.path(), &config, today).unwrap();
+        let french = &site.words[&Locale::try_new("fr").unwrap()];
+        assert_eq!(french.months[2], "mars");
+        assert_eq!(french.written_by, "Écrit par");
+        assert_eq!(
+            site.words[&Locale::try_new("en").unwrap()].months[2],
+            "March"
+        );
     }
 
     #[test]

@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use std::fmt::Write;
 
 use khalid_core::Locale;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{CommentForm, FieldProblem};
 
@@ -37,7 +37,7 @@ pub enum Refusal {
 }
 
 /// One language's words, one sentence or label each.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 struct Words {
     title: String,
@@ -61,14 +61,16 @@ struct Words {
 /// The words in every built-in language, ready to write refusal pages.
 #[derive(Debug, Clone)]
 pub struct RefusalPages {
-    words: BTreeMap<&'static str, Words>,
+    words: BTreeMap<String, Words>,
 }
 
-/// A built-in words file is not valid, which this crate's tests rule out.
+/// A words file is not valid: a built-in one, which this crate's tests
+/// rule out, or the `[comments]` table of a site's strings file, such as
+/// one naming a word the page never shows.
 #[derive(Debug, thiserror::Error)]
-#[error("the comment words for {language:?} are not valid")]
+#[error("the comment words for {language:?} are not valid: {source}")]
 pub struct LoadWordsError {
-    language: &'static str,
+    language: String,
     #[source]
     source: toml::de::Error,
 }
@@ -82,11 +84,50 @@ impl RefusalPages {
     pub fn load() -> Result<Self, LoadWordsError> {
         let mut words = BTreeMap::new();
         for (language, text) in FILES {
-            let read =
-                toml::from_str(text).map_err(|source| LoadWordsError { language, source })?;
-            words.insert(language, read);
+            let read = toml::from_str(text).map_err(|source| LoadWordsError {
+                language: language.to_owned(),
+                source,
+            })?;
+            words.insert(language.to_owned(), read);
         }
         Ok(Self { words })
+    }
+
+    /// These words with the site's own laid over them: `own` holds the
+    /// `[comments]` table of each of the site's strings files, by language.
+    /// A word the table leaves out keeps the built-in one of its language,
+    /// or the site's English one when the language has no file.
+    ///
+    /// # Errors
+    ///
+    /// [`LoadWordsError`] for a word the page never shows, or one that is
+    /// not text.
+    pub fn with_site(
+        mut self,
+        own: &BTreeMap<String, toml::Table>,
+    ) -> Result<Self, LoadWordsError> {
+        // English first, so a language with no file starts from it.
+        let english = own.get_key_value(FALLBACK_LANGUAGE);
+        let others = own
+            .iter()
+            .filter(|(language, _)| *language != FALLBACK_LANGUAGE);
+        for (language, table) in english.into_iter().chain(others) {
+            let base =
+                (self.words.get(language.as_str())).or_else(|| self.words.get(FALLBACK_LANGUAGE));
+            let mut merged = match base.map(toml::Value::try_from) {
+                Some(Ok(toml::Value::Table(words))) => words,
+                _ => toml::Table::new(),
+            };
+            merged.extend(table.clone());
+            let read = toml::Value::Table(merged)
+                .try_into()
+                .map_err(|source| LoadWordsError {
+                    language: language.clone(),
+                    source,
+                })?;
+            self.words.insert(language.clone(), read);
+        }
+        Ok(self)
     }
 
     /// A whole HTML page in `locale`, linking the site's `stylesheet`,

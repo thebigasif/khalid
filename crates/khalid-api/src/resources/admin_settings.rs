@@ -7,6 +7,9 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use utoipa::ToSchema;
 
+use khalid_core::CommentState;
+
+use super::post_settings::comment_state_schema;
 use super::{CtaSetting, TemplateSetting};
 
 /// A field that was sent, `null` included, so `null` reaches `T` instead
@@ -92,6 +95,8 @@ pub struct AdminSettings {
     pub home_sections: Vec<HomeSectionSetting>,
     /// The header and footer menus from `[nav]`.
     pub nav: NavSetting,
+    /// Whether readers may comment, from `[comments]`, defaults filled in.
+    pub comments: CommentsSetting,
     /// When `site.toml` last changed. A change sends it back.
     pub updated_at: DateTime<Utc>,
     /// Whether `site.toml` changes a setting the running server reads only
@@ -146,8 +151,44 @@ pub struct SettingsChange {
     /// New menus. Each menu sent replaces the old one whole; a menu left
     /// out stays as it is.
     pub nav: Option<NavChange>,
+    /// A new `[comments]` state or mail switch. A part left out stays.
+    pub comments: Option<CommentsChange>,
     /// The `updated_at` of the copy this change was made on.
     pub updated_at: DateTime<Utc>,
+}
+
+/// `[comments]`: whether readers may comment on a post that does not say
+/// otherwise, and whether owners and admins get an email about each new
+/// reader's comment.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, ToSchema)]
+pub struct CommentsSetting {
+    /// `open`, `closed`, which keeps the approved comments and takes no
+    /// new ones, or `off`.
+    #[schema(schema_with = comment_state_schema)]
+    pub state: CommentState,
+    /// Whether owners and admins get an email about each new comment.
+    pub notify: bool,
+}
+
+impl Default for CommentsSetting {
+    /// Open, with the email on, as a site without `[comments]` has it.
+    fn default() -> Self {
+        Self {
+            state: CommentState::Open,
+            notify: true,
+        }
+    }
+}
+
+/// A change to `[comments]`: only the parts sent change.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, ToSchema)]
+#[serde(deny_unknown_fields)]
+pub struct CommentsChange {
+    /// A new state for posts that do not say otherwise.
+    #[schema(schema_with = comment_state_schema, required = false)]
+    pub state: Option<CommentState>,
+    /// Whether owners and admins get an email about each new comment.
+    pub notify: Option<bool>,
 }
 
 /// The menus every page shows, from `[nav]` in `site.toml`. The footer's

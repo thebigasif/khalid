@@ -18,6 +18,8 @@ use crate::admin_key::{AdminDoor, require, require_admin_key};
 use crate::api_version::negotiate_version;
 use crate::entry_store::Entry;
 use crate::keys::{Principal, Scope};
+use crate::list_page::PageQuery;
+use crate::pagination::Meta;
 use crate::problem::Problem;
 use crate::resources::{AdminAuthor, AuthorEdit, NewAuthor};
 
@@ -47,13 +49,28 @@ pub(crate) struct AdminAuthors {
     authors: Vec<AdminAuthor>,
 }
 
-/// Lists every author in every language. A site has tens, so the list
-/// comes whole. Needs `posts:write`.
+/// One page of the authors.
+#[derive(Debug, Serialize, ToSchema)]
+pub(crate) struct AdminAuthorList {
+    /// The authors on this page.
+    authors: Vec<AdminAuthor>,
+    /// Where this page sits in the list.
+    meta: Meta,
+}
+
+/// The fields an author list can be filtered on.
+const AUTHOR_FIELDS: &[&str] = &["id", "slug", "language", "name", "role", "updated_at"];
+
+/// Lists the authors in every language: all of them, or one page with
+/// `limit` and `page`, and only those passing `filter`, such as
+/// `filter=language:de`. Needs `posts:write`.
 #[utoipa::path(
     get, path = "/authors/", tag = "admin authors",
     security(("admin_key" = [])),
+    params(PageQuery),
     responses(
-        (status = 200, description = "Every author", body = AdminAuthors),
+        (status = 200, description = "The authors, or one page of them", body = AdminAuthorList),
+        (status = 400, description = "A list parameter could not be read", body = Problem, content_type = "application/problem+json"),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
         (status = 404, description = "This server keeps no authors", body = Problem, content_type = "application/problem+json"),
@@ -62,11 +79,16 @@ pub(crate) struct AdminAuthors {
 async fn list_authors(
     State(authors): State<Kept<AdminAuthor>>,
     Extension(principal): Extension<Principal>,
-) -> Result<Json<AdminAuthors>, Problem> {
+    Query(query): Query<PageQuery>,
+) -> Result<Json<AdminAuthorList>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let listed = AUTHOR.store(authors.as_deref())?.list().await;
     let authors = listed.map_err(|error| Problem::internal(&error))?;
-    Ok(Json(AdminAuthors { authors }))
+    let paged = query.page(authors, AUTHOR_FIELDS)?;
+    Ok(Json(AdminAuthorList {
+        authors: paged.items,
+        meta: paged.meta,
+    }))
 }
 
 /// A new author, wrapped the way the Admin API wraps authors: exactly one.

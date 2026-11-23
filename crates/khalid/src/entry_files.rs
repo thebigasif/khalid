@@ -5,14 +5,14 @@ use chrono::{DateTime, Utc};
 use khalid_api::entry_store::EntryStoreError;
 use khalid_api::resources::{
     AdminAuthor, AdminPage, AdminSnippet, AdminTerm, AuthorEdit, AuthorFile, NewAuthor, NewPage,
-    NewSnippet, NewTerm, PageEdit, SnippetEdit, TermEdit,
+    NewSnippet, NewTerm, PageEdit, PageSeo, SnippetEdit, TermEdit,
 };
 use khalid_content::{AuthorFront, GlossaryFront, PageFront, SnippetFront};
 use khalid_core::{AbsoluteUrl, Locale, Slug};
 use serde::de::DeserializeOwned;
 
 use crate::post_text::{PostText, quoted};
-use crate::settings_text::put;
+use crate::settings_text::{self, put};
 use crate::site_entries::EntryFile;
 
 /// The front matter of `text`, read with the schema the site's content
@@ -34,9 +34,10 @@ impl EntryFile for AdminPage {
         changed: DateTime<Utc>,
     ) -> Result<Self, EntryStoreError> {
         let front: PageFront = front(text)?;
-        let title = front.title.unwrap_or_default();
+        let title = front.title.clone().unwrap_or_default();
         let page = Self::new(key, &title, text.markdown(), changed);
-        Ok(page.with_description(front.description.as_deref()))
+        let page = page.with_description(front.description.as_deref());
+        Ok(page.with_seo(page_seo(&front)))
     }
 
     fn slug_in(text: &PostText) -> Result<Option<Slug>, EntryStoreError> {
@@ -54,10 +55,19 @@ impl EntryFile for AdminPage {
     fn text(new: &NewPage) -> PostText {
         let mut text = PostText::draft(new.title(), new.slug(), None, new.markdown());
         put(&mut text, "description", new.description().map(quoted));
+        write_seo(&mut text, &PageSeo::default(), new.seo());
         text
     }
 
-    fn edit(text: &mut PostText, edit: &PageEdit) {
+    fn moved_to(edit: &PageEdit) -> Option<&Slug> {
+        edit.slug()
+    }
+
+    fn edit(text: &mut PostText, current: &Self, edit: &PageEdit) {
+        if let Some(slug) = edit.slug().filter(|slug| *slug != current.slug()) {
+            write_move(text, current, slug);
+        }
+        write_seo(text, current.seo(), &edit.seo_after(current.seo()));
         if let Some(title) = edit.title() {
             text.set("title", &quoted(title));
         }
@@ -69,6 +79,71 @@ impl EntryFile for AdminPage {
         if let Some(markdown) = edit.markdown() {
             text.set_body(markdown);
         }
+    }
+}
+
+/// The search settings a page's `front` matter holds.
+fn page_seo(front: &PageFront) -> PageSeo {
+    let mut seo = PageSeo::default();
+    seo.robots.clone_from(&front.robots);
+    seo.canonical.clone_from(&front.canonical);
+    seo.feature_image = front.image.as_ref().and_then(settings_text::feature_image);
+    let cards = &front.share_cards;
+    seo.share_cards.x = cards.x.as_ref().map(settings_text::share_card);
+    seo.share_cards.facebook = cards.facebook.as_ref().map(settings_text::share_card);
+    seo
+}
+
+/// Writes the move of the page `current` to `slug` into `text`: its new
+/// `slug:`, and its old address added to `aliases`, so the old address
+/// answers with a 301 to the new one (KH-SEO-8). The new address leaves
+/// `aliases`, so moving back makes no loop.
+fn write_move(text: &mut PostText, current: &AdminPage, slug: &Slug) {
+    text.set("slug", slug.as_str());
+    let Some(old) = current.path() else {
+        return;
+    };
+    let folder = old
+        .strip_suffix(&format!("{}/", current.slug()))
+        .unwrap_or(old);
+    let new = format!("{folder}{slug}/");
+    // The file was read as a page a moment ago, so its front matter parses.
+    let mut aliases = front::<PageFront>(text)
+        .map(|f| f.aliases)
+        .unwrap_or_default();
+    aliases.retain(|alias| *alias != new);
+    if !aliases.iter().any(|alias| alias == old) {
+        aliases.push(old.to_owned());
+    }
+    let quoted: Vec<String> = aliases.iter().map(|alias| quoted(alias)).collect();
+    let list = (!quoted.is_empty()).then(|| format!("[{}]", quoted.join(", ")));
+    put(text, "aliases", list);
+}
+
+/// Writes into `text` each search setting that differs between `before`
+/// and `after`, leaving every other line as it was.
+fn write_seo(text: &mut PostText, before: &PageSeo, after: &PageSeo) {
+    if after.robots != before.robots {
+        let robots = after.robots.as_ref().map(|r| quoted(&r.to_string()));
+        put(text, "robots", robots);
+    }
+    if after.canonical != before.canonical {
+        put(
+            text,
+            "canonical",
+            after.canonical.as_ref().map(|url| quoted(url.as_str())),
+        );
+    }
+    if after.feature_image != before.feature_image {
+        let image = after.feature_image.as_ref().map(settings_text::image_text);
+        put(text, "image", image);
+    }
+    if after.share_cards != before.share_cards {
+        put(
+            text,
+            "share_cards",
+            settings_text::cards_text(&after.share_cards),
+        );
     }
 }
 
@@ -97,7 +172,7 @@ impl EntryFile for AdminSnippet {
         PostText::draft(new.title(), new.slug(), None, new.markdown())
     }
 
-    fn edit(text: &mut PostText, edit: &SnippetEdit) {
+    fn edit(text: &mut PostText, _: &Self, edit: &SnippetEdit) {
         if let Some(title) = edit.title() {
             text.set("title", &quoted(title));
         }
@@ -138,7 +213,7 @@ impl EntryFile for AdminTerm {
         text
     }
 
-    fn edit(text: &mut PostText, edit: &TermEdit) {
+    fn edit(text: &mut PostText, _: &Self, edit: &TermEdit) {
         if let Some(term) = edit.term() {
             text.set("term", &quoted(term));
         }
@@ -198,7 +273,7 @@ impl EntryFile for AdminAuthor {
         text
     }
 
-    fn edit(text: &mut PostText, edit: &AuthorEdit) {
+    fn edit(text: &mut PostText, _: &Self, edit: &AuthorEdit) {
         if let Some(name) = edit.name() {
             text.set("name", &quoted(name));
         }

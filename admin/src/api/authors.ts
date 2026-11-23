@@ -30,6 +30,13 @@ export function listAuthors(): Promise<Reply<AdminAuthor[]>> {
   return call("/authors/", {}, authors);
 }
 
+/** Every author's slug, each once and in the order the site lists them; none when the list cannot be read. */
+export async function authorSlugs(): Promise<string[]> {
+  const reply = await listAuthors();
+  const slugs = "data" in reply ? reply.data.map((author) => authorSlug(author.id)) : [];
+  return [...new Set(slugs.filter((slug) => slug !== undefined))];
+}
+
 /** One author, by language and slug. */
 export function readAuthor(id: string): Promise<Reply<AdminAuthor[]>> {
   return call(`/authors/${encodeURIComponent(id)}/`, {}, authors);
