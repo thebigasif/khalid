@@ -1,5 +1,7 @@
 //! The rest of the site, for rules that compare a post with its neighbours.
 
+use std::collections::BTreeSet;
+
 use chrono::NaiveDate;
 use khalid_core::{Locale, Slug, SlugMode};
 use serde::Deserialize;
@@ -85,6 +87,62 @@ pub trait SiteView {
     fn entries(&self) -> &[LintEntry] {
         &[]
     }
+
+    /// The addresses the site answers and the folders its posts and pages
+    /// sit in. `None` when unknown, and the rules that need them skip.
+    fn known_paths(&self) -> Option<&KnownPaths> {
+        None
+    }
+
+    /// The moves stored in the site's database, each from an old address
+    /// to where it now leads. Empty when the site keeps none.
+    fn redirects(&self) -> &[LintRedirect] {
+        &[]
+    }
+}
+
+/// The addresses a site answers, each from the site root, and the folders
+/// its posts and pages sit in, where a link to any other address is a
+/// link to nothing.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct KnownPaths {
+    /// Every address, such as `/blog/about/`: the posts, the pages and the
+    /// lists and other pages `khalid build` and `khalid serve` answer.
+    pub paths: BTreeSet<String>,
+    /// The folders that hold a post or a page, each without its final
+    /// slash, such as `/blog`.
+    pub folders: BTreeSet<String>,
+}
+
+impl KnownPaths {
+    /// The addresses `paths`, in the folders `folders`.
+    pub fn new(paths: BTreeSet<String>, folders: BTreeSet<String>) -> Self {
+        Self { paths, folders }
+    }
+}
+
+/// A stored move: an old address and where it now leads, each from the
+/// site root.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[serde(deny_unknown_fields)]
+#[non_exhaustive]
+pub struct LintRedirect {
+    /// The old address, such as `/blog/old-guide/`.
+    pub from: String,
+    /// Where it leads, such as `/blog/new-guide/`.
+    pub to: String,
+}
+
+impl LintRedirect {
+    /// The move from `from` to `to`.
+    pub fn new(from: impl Into<String>, to: impl Into<String>) -> Self {
+        Self {
+            from: from.into(),
+            to: to.into(),
+        }
+    }
 }
 
 /// A site's posts, pages and glossary, held in memory.
@@ -118,6 +176,10 @@ pub struct LintSite {
     pub authors: Option<Vec<PageRef>>,
     /// Every case study and changelog entry.
     pub entries: Vec<LintEntry>,
+    /// Every address the site answers, when known.
+    pub known_paths: Option<KnownPaths>,
+    /// The moves stored in the site's database.
+    pub redirects: Vec<LintRedirect>,
 }
 
 impl SiteView for LintSite {
@@ -171,6 +233,14 @@ impl SiteView for LintSite {
 
     fn entries(&self) -> &[LintEntry] {
         &self.entries
+    }
+
+    fn known_paths(&self) -> Option<&KnownPaths> {
+        self.known_paths.as_ref()
+    }
+
+    fn redirects(&self) -> &[LintRedirect] {
+        &self.redirects
     }
 }
 

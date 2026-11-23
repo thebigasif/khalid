@@ -81,7 +81,9 @@ pub use lint_post::{
     Cluster, ClusterRole, FormDestination, Heading, HeadingLevel, Image, LinkKind, LintBrief,
     LintForm, LintLink, LintPost, SectionShape, StructuredDataGap,
 };
-pub use lint_site::{GlossaryTerm, LintCollection, LintFact, LintSite, PageRef, SiteView};
+pub use lint_site::{
+    GlossaryTerm, KnownPaths, LintCollection, LintFact, LintRedirect, LintSite, PageRef, SiteView,
+};
 pub use linter::{Linter, Report};
 pub use page_kind::PageKind;
 pub use rule::{EntryRule, Hit, Rule, RuleId, SiteRule};

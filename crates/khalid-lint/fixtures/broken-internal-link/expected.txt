@@ -1,0 +1,4 @@
+warn redirecting-link: /blog/link-text-tips/ (suggest: /blog/choosing-link-text/)
+warn redirecting-link: /blog/old-guide/ (suggest: /blog/choosing-link-text/)
+warn broken-internal-link: /blog/link-juice-explained/
+warn broken-internal-link: https://www.example.com/blog/anchor-txt#tips
