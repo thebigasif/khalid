@@ -80,8 +80,7 @@ pub use lint_post::{
     LintForm, LintLink, LintPost, SectionShape, StructuredDataGap,
 };
 pub use lint_site::{
-    GlossaryTerm, KnownPaths, LintCollection, LintFact, LintRedirect, LintSite, PageRef,
-    SiteView,
+    GlossaryTerm, KnownPaths, LintCollection, LintFact, LintRedirect, LintSite, PageRef, SiteView,
 };
 pub use linter::{Linter, Report};
 pub use page_kind::PageKind;
