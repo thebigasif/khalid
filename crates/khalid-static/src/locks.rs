@@ -4,7 +4,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use khalid_core::Locale;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::section::{SectionKind, sections};
 use crate::{FormKind, LockError, ServerFeature, forms};
@@ -20,7 +20,7 @@ const FILES: [(&str, &str); 2] = [
 
 /// One language's notes, one sentence for each kind of form, and one for
 /// gated content.
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 struct Notes {
     comments: String,
@@ -70,7 +70,7 @@ struct Swap {
 /// The notes in every built-in language, ready to lock pages.
 #[derive(Debug, Clone)]
 pub struct Locks {
-    notes: BTreeMap<&'static str, Notes>,
+    notes: BTreeMap<String, Notes>,
 }
 
 /// A page after locking: its HTML, and the features its forms needed.
@@ -97,9 +97,43 @@ impl Locks {
                 language: language.to_owned(),
                 source,
             })?;
-            notes.insert(language, read);
+            notes.insert(language.to_owned(), read);
         }
         Ok(Self { notes })
+    }
+
+    /// These notes with the site's own laid over them: `own` holds the
+    /// `[notes]` table of each of the site's strings files, by language.
+    /// A note the table leaves out keeps the built-in one of its language,
+    /// or the site's English one when the language has no file.
+    ///
+    /// # Errors
+    ///
+    /// [`LockError::Notes`] for a note no form has, or one that is not text.
+    pub fn with_site(mut self, own: &BTreeMap<String, toml::Table>) -> Result<Self, LockError> {
+        // English first, so a language with no file starts from it.
+        let english = own.get_key_value(FALLBACK_LANGUAGE);
+        let others = own
+            .iter()
+            .filter(|(language, _)| *language != FALLBACK_LANGUAGE);
+        for (language, table) in english.into_iter().chain(others) {
+            let base =
+                (self.notes.get(language.as_str())).or_else(|| self.notes.get(FALLBACK_LANGUAGE));
+            let mut merged = match base.map(toml::Value::try_from) {
+                Some(Ok(toml::Value::Table(notes))) => notes,
+                _ => toml::Table::new(),
+            };
+            merged.extend(table.clone());
+            let read =
+                toml::Value::Table(merged)
+                    .try_into()
+                    .map_err(|source| LockError::Notes {
+                        language: language.clone(),
+                        source,
+                    })?;
+            self.notes.insert(language.clone(), read);
+        }
+        Ok(self)
     }
 
     /// `html`, a page in `locale`, with every form that sends to the site
@@ -175,8 +209,33 @@ mod tests {
     #[test]
     fn every_built_in_file_reads() {
         let locks = Locks::load().unwrap();
-        let languages: Vec<&str> = locks.notes.keys().copied().collect();
+        let languages: Vec<&String> = locks.notes.keys().collect();
         assert_eq!(languages, ["de", "en"]);
+    }
+
+    #[test]
+    fn the_sites_notes_replace_the_built_in_ones() {
+        let own = [
+            (
+                "en".to_owned(),
+                toml::from_str("search = \"Search is off.\"").unwrap(),
+            ),
+            (
+                "fr".to_owned(),
+                toml::from_str("forms = \"Formulaire fermé.\"").unwrap(),
+            ),
+        ];
+        let locks = Locks::load().unwrap().with_site(&own.into()).unwrap();
+        assert_eq!(locks.notes["en"].search, "Search is off.");
+        assert_eq!(locks.notes["fr"].forms, "Formulaire fermé.");
+        assert_eq!(locks.notes["fr"].search, "Search is off.");
+        assert_eq!(
+            locks.notes["de"].search,
+            Locks::load().unwrap().notes["de"].search
+        );
+        let wrong = [("en".to_owned(), toml::from_str("footer = \"x\"").unwrap())];
+        let error = Locks::load().unwrap().with_site(&wrong.into()).unwrap_err();
+        assert!(matches!(error, LockError::Notes { ref language, .. } if language == "en"));
     }
 
     #[test]

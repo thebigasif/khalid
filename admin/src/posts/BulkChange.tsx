@@ -9,7 +9,7 @@ import { FarewellChoice } from "./FarewellChoice";
 type Props = {
   /** The posts ticked in the table. */
   ticked: PostRow[];
-  /** The authors of the posts on the page, which "Set the author" offers. */
+  /** Every author of the site, which "Set the author" offers. */
   authors: string[];
   onDone: (result: BulkResult) => void;
 };
@@ -44,8 +44,14 @@ export function BulkChange({ ticked, authors, onDone }: Props) {
     category: categories[0]?.slug,
   };
   const offered = KINDS.filter((option) => first[option] !== undefined);
-  const [kind, setKind] = useState<BulkAction["kind"]>(offered[0] ?? "trash");
-  const [value, setValue] = useState(first[offered[0] ?? "addTag"] ?? "");
+  const [picked, setKind] = useState<BulkAction["kind"]>(offered[0] ?? "trash");
+  const [typed, setValue] = useState(first[offered[0] ?? "addTag"] ?? "");
+  // Ticking other posts can take away the tag or the action picked before;
+  // the form then shows, and sends, the first one the ticked posts have.
+  const kind = picked === "trash" || offered.includes(picked) ? picked : (offered[0] ?? "trash");
+  const stale = kind === "removeTag" && !tags.includes(typed);
+  const fresh = kind === "trash" ? "" : (first[kind] ?? "");
+  const value = stale || kind !== picked ? fresh : typed;
   const [farewell, setFarewell] = useState<Farewell>({ kind: "gone" });
   const [working, setWorking] = useState(false);
   const live = ticked.filter((row) => liveAddress(row) !== null);

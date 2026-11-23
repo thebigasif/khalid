@@ -453,7 +453,7 @@ async fn co_authors_image_review_and_share_cards_go_into_the_front_matter() {
 }
 
 #[tokio::test]
-async fn access_password_template_and_head_code_go_into_the_file() {
+async fn access_password_template_comments_and_head_code_go_into_the_file() {
     let (site, posts) = demo();
     let mut templates = within(site.path(), "theme/templates");
     fs::create_dir_all(&templates).unwrap();
@@ -464,6 +464,7 @@ async fn access_password_template_and_head_code_go_into_the_file() {
         "access": "members",
         "password": "generated-for-this-test",
         "template": "wide",
+        "comments": "off",
         "head_code": code,
     });
     let made = posts.create(good_draft(), "k", None).await.unwrap();
@@ -476,6 +477,7 @@ async fn access_password_template_and_head_code_go_into_the_file() {
         "access: members\n",
         "password_hash: \"$argon2id$",
         "template: wide\n",
+        "comments: off\n",
         "head_code: \"<script>\\n// a comment\\ngo(\\\"x\\\");\\n</script>\"\n",
     ] {
         assert!(text.contains(line), "{line} in {text}");
@@ -488,12 +490,18 @@ async fn access_password_template_and_head_code_go_into_the_file() {
         code
     );
 
-    let clear = json!({"access": "public", "password": null, "template": null, "head_code": null});
+    let clear = json!({"access": "public", "password": null, "template": null, "comments": null, "head_code": null});
     let mut change = edit(json!({"settings": clear, "updated_at": read.updated_at()}));
     change.hash_password().unwrap();
     posts.update(read.id(), change, "k").await.unwrap();
     let text = fs::read_to_string(&file).unwrap();
-    for field in ["access:", "password_hash:", "template:", "head_code:"] {
+    for field in [
+        "access:",
+        "password_hash:",
+        "template:",
+        "comments:",
+        "head_code:",
+    ] {
         assert!(!text.contains(field), "{field} in {text}");
     }
 }

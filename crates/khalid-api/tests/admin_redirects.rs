@@ -121,6 +121,37 @@ async fn the_list_shows_every_stored_redirect_with_its_columns() {
 }
 
 #[tokio::test]
+async fn the_list_takes_page_limit_and_filter() {
+    let desk =
+        desk("/blog/a/,/blog/,301\n/blog/b/,,410\n/blog/c/,/blog/,301\n/blog/d/,/blog/,301\n")
+            .await;
+    let uri = "/api/admin/v1/redirects/?filter=status:301&limit=2&page=2";
+    let (status, json) = send(desk.clone(), SETTINGS, get(uri)).await;
+    assert_eq!(status, StatusCode::OK, "{json}");
+    assert_eq!(
+        json["redirects"].as_array().map(Vec::len),
+        Some(1),
+        "{json}"
+    );
+    assert_eq!(json["redirects"][0]["from"], "/blog/d/");
+    let pagination = &json["meta"]["pagination"];
+    assert_eq!(
+        (pagination["total"].as_u64(), pagination["pages"].as_u64()),
+        (Some(3), Some(2))
+    );
+    let (_, whole) = send(desk.clone(), SETTINGS, get("/api/admin/v1/redirects/")).await;
+    assert_eq!(whole["redirects"].as_array().map(Vec::len), Some(4));
+    assert_eq!(whole["meta"]["pagination"]["limit"], "all");
+    let (status, json) = send(
+        desk,
+        SETTINGS,
+        get("/api/admin/v1/redirects/?filter=secret:1"),
+    )
+    .await;
+    assert_eq!(status, StatusCode::BAD_REQUEST, "{json}");
+}
+
+#[tokio::test]
 async fn redirects_need_the_settings_scope() {
     let desk = desk("/blog/sale/,/blog/offers/,302\n").await;
     let (status, json) = send(desk, POSTS_ONLY, get("/api/admin/v1/redirects/")).await;

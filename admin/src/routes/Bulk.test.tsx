@@ -61,6 +61,35 @@ describe("changing many posts at once", () => {
     expect(screen.queryByRole("form", { name: en.bulk.label })).toBeNull();
   });
 
+  it("offers every author of the site, not only the authors on this page", async () => {
+    signedIn();
+    const author = (id: string, name: string) => ({ id, name, language: "en" });
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([LINKS, CLUSTER]),
+      "GET /authors/": () =>
+        json(200, { authors: [author("en.mira", "Mira"), author("de.mira", "Mira")] }),
+      "PUT /posts/01JA/": () => json(200, { posts: [{ id: LINKS.id }] }),
+      "PUT /posts/01JB/": () => json(200, { posts: [{ id: CLUSTER.id }] }),
+    });
+    renderAt("/posts");
+    await tickBoth();
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    const choice = within(form).getByLabelText(en.bulk.newAuthor);
+    await within(choice).findByRole("option", { name: "mira" });
+    expect(
+      within(choice)
+        .getAllByRole("option")
+        .map((option) => option.textContent),
+    ).toEqual(["mira", "asif", "lena-vogt"]);
+    await userEvent.selectOptions(choice, "mira");
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(2) }));
+    expect(await screen.findByText(en.bulk.done(2))).toBeVisible();
+    const put = sent.find((request) => request.method === "PUT");
+    expect(await put?.json()).toEqual({
+      posts: [{ updated_at: LINKS.updated_at, author: "mira" }],
+    });
+  });
+
   it("moves the ticked posts to the trash from the copy each row was read from", async () => {
     signedIn();
     const sent = redirectsBlog({
@@ -177,6 +206,31 @@ describe("tagging and filing many posts at once", () => {
     const put = sent.find((request) => request.method === "PUT");
     expect(await put?.json()).toEqual({
       posts: [{ updated_at: TAGGED.updated_at, settings: { tags: ["clusters"] } }],
+    });
+  });
+
+  it("removes a tag the newly ticked posts have, not one picked for posts unticked since", async () => {
+    signedIn();
+    const SEO = row({ id: "01JC", slug: "seo-basics", title: "SEO basics", tags: ["seo"] });
+    const sent = redirectsBlog({
+      "GET /posts/": () => rowsPage([TAGGED, SEO]),
+      "PUT /posts/01JC/": () => json(200, { posts: [{ id: SEO.id }] }),
+    });
+    renderAt("/posts");
+    const tick = async (title: string) =>
+      userEvent.click(await screen.findByRole("checkbox", { name: en.bulk.tick(title) }));
+    await tick(TAGGED.title);
+    const form = screen.getByRole("form", { name: en.bulk.label });
+    await userEvent.selectOptions(within(form).getByLabelText(en.bulk.action), "removeTag");
+    await userEvent.selectOptions(within(form).getByLabelText(en.bulk.oldTag), "clusters");
+    await tick(SEO.title);
+    await tick(TAGGED.title);
+    expect(within(form).getByLabelText(en.bulk.oldTag)).toHaveValue("seo");
+    await userEvent.click(within(form).getByRole("button", { name: en.bulk.submit(1) }));
+    expect(await screen.findByText(en.bulk.done(1))).toBeVisible();
+    const put = sent.find((request) => request.method === "PUT");
+    expect(await put?.json()).toEqual({
+      posts: [{ updated_at: SEO.updated_at, settings: { tags: [] } }],
     });
   });
 

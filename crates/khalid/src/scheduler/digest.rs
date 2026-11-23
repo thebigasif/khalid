@@ -11,7 +11,9 @@ use std::sync::Arc;
 use chrono::{DateTime, Utc};
 use khalid_core::{Clock, Config, SystemClock};
 use khalid_db::{Database, SiteId, SubscriberTable};
-use khalid_newsletter::{Mailer, Newsletter, PostalAddress, Segment, Sent, SubscriberStore};
+use khalid_newsletter::{
+    Mailer, Newsletter, NewsletterWords, PostalAddress, Segment, Sent, SubscriberStore,
+};
 
 use crate::newsletter_files::digest_plan::{self, DigestPlan};
 use crate::{index, newsletter, newsletter_digest};
@@ -83,6 +85,9 @@ impl Digests {
             tracing::warn!("the posts could not be read, so the digests wait an hour");
             return;
         };
+        let Some(words) = self.words() else {
+            return;
+        };
         for (list, plan) in due {
             let language = plan
                 .language
@@ -90,7 +95,7 @@ impl Digests {
                 .unwrap_or_else(|| self.config.default_language());
             let today = now.date_naive();
             let issue = newsletter_digest::next_issue(
-                &self.config,
+                (&self.config, &words),
                 &index,
                 &sends,
                 (&list, language),
@@ -98,18 +103,38 @@ impl Digests {
             );
             let Some(issue) = issue else { continue };
             let segment = Segment::new(list.clone(), plan.labels.iter().cloned());
-            self.send(&issue, &segment).await;
+            self.send(&issue, &segment, &words).await;
         }
     }
 
-    /// Sends one digest `issue` to `segment`.
-    async fn send(&self, issue: &khalid_newsletter::Issue, segment: &Segment) {
+    /// The newsletter's words, with the site's own laid over them, or the
+    /// built-in ones alone when the site's cannot be used, which is logged.
+    fn words(&self) -> Option<NewsletterWords> {
+        newsletter::words(&self.folder)
+            .inspect_err(|message| {
+                tracing::warn!(
+                    what = message.what(),
+                    "the site's newsletter words are left out"
+                );
+            })
+            .ok()
+            .or_else(|| NewsletterWords::load().ok())
+    }
+
+    /// Sends one digest `issue` to `segment`, worded with `words`.
+    async fn send(
+        &self,
+        issue: &khalid_newsletter::Issue,
+        segment: &Segment,
+        words: &NewsletterWords,
+    ) {
         let clock: Arc<dyn Clock> = Arc::new(SystemClock);
         let store: Arc<dyn SubscriberStore> = Arc::new(self.table.clone());
         let site = newsletter::site(&self.config);
         let Ok(flow) = Newsletter::new(store, Arc::clone(&self.mailer), clock, site) else {
             return;
         };
+        let flow = flow.with_words(words.clone());
         let counting = self.config.mail().is_some_and(|mail| mail.count_clicks);
         let flow = if counting {
             flow.with_click_counting()

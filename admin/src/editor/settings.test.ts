@@ -68,6 +68,19 @@ describe("the settings panel's draft", () => {
   });
 });
 
+describe("comments on one post", () => {
+  it("follows the blog until the post says otherwise, and can follow it again", () => {
+    const saved = settingsDraft(POST);
+    expect(saved.comments).toBe("");
+    const closed = withSetting(saved, "comments", "closed");
+    expect(settingsEdit(saved, closed)).toEqual({ settings: { comments: "closed" } });
+    const own = settingsDraft({ ...POST, settings: { ...POST.settings, comments: "off" } });
+    expect(own.comments).toBe("off");
+    const blog = withSetting(own, "comments", "");
+    expect(settingsEdit(own, blog)).toEqual({ settings: { comments: null } });
+  });
+});
+
 describe("more settings", () => {
   const SHOWN: AdminPost = {
     ...POST,

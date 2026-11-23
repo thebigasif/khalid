@@ -115,4 +115,20 @@ describe("the Settings screen", () => {
     expect(changes).toEqual([{ updated_at: DEMO.updated_at, languages: ["en", "de", "fr"] }]);
     expect(await screen.findByText(en.site.restart)).toBeVisible();
   });
+
+  it("closes comments for the whole blog and keeps the email to staff", async () => {
+    signedIn();
+    const changes = blog();
+    renderAt("/settings");
+    const words = en.site.comments;
+    const open = await screen.findByRole("radio", { name: words.states[0].label });
+    expect(open).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: words.notify })).toBeChecked();
+    await userEvent.click(screen.getByRole("radio", { name: words.states[1].label }));
+    await userEvent.click(screen.getByRole("button", { name: words.save }));
+    expect(await screen.findByText(en.site.live)).toBeVisible();
+    const comments = { state: "closed", notify: true };
+    expect(changes).toEqual([{ updated_at: DEMO.updated_at, comments }]);
+    expect(await axeViolations()).toEqual([]);
+  });
 });
