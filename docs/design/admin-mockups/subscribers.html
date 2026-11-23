@@ -120,9 +120,11 @@ code.form{display:block;white-space:pre-wrap;background:var(--surface);padding:.
     </div>
     <div class="field">
       <label for="labels">Only readers with these labels <span class="hint">Leave empty to send to everyone on the newsletter. Separate labels with commas.</span></label>
-      <input id="labels" value="">
+      <input id="labels" value="paid">
     </div>
-    <button class="btn primary" type="submit">Send to 212 readers</button>
+    <p id="segment">38 readers of main carry every one of these labels.</p>
+    <button class="btn primary" type="submit" aria-describedby="segment">Send to 38 readers</button>
+    <p class="hint">With labels typed, the count comes from the blog before you send. When no reader carries them all, the line says so and the button is off.</p>
   </form>
 
   <h2>Sent emails</h2>

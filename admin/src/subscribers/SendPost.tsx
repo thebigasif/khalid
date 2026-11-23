@@ -1,9 +1,14 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { failureMessage, isData } from "../api/call";
 import { problemMessage } from "../api/posts";
 import { isFailure, isPage, useRows } from "../api/rows";
-import { type AdminNewsletter, type SendReadiness, sendPost } from "../api/subscribers";
+import {
+  type AdminNewsletter,
+  countReaders,
+  type SendReadiness,
+  sendPost,
+} from "../api/subscribers";
 import { Problem } from "../components/Problem";
 import { en, type UserMessage } from "../strings/en";
 import { subscriberWords } from "../strings/subscriberWords";
@@ -33,6 +38,21 @@ export function SendPost({ newsletters, sending }: Props) {
     : [];
   const labels = labelsOf(typed);
   const readers = newsletters.find((each) => each.name === list)?.confirmed ?? 0;
+  // A labelled send says how many it reaches before the button is pressed.
+  const segment = useQuery({
+    queryKey: ["segment", list, labels],
+    queryFn: () => countReaders(list, labels),
+    enabled: labels.length > 0,
+  });
+  const counted = labels.length > 0 && isData(segment.data) ? segment.data.data : null;
+  // An older blog without the count still sends; the button then names no number.
+  const counting = labels.length > 0 && segment.isPending;
+  let button: string = words.submit(readers);
+  if (counting) {
+    button = words.counting;
+  } else if (labels.length > 0) {
+    button = counted === null ? words.submitLabelled : words.submit(counted);
+  }
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -102,8 +122,14 @@ export function SendPost({ newsletters, sending }: Props) {
             onChange={(event) => setTyped(event.target.value)}
           />
         </div>
-        <button type="submit" className="btn primary" disabled={busy}>
-          {labels.length === 0 ? words.submit(readers) : words.submitLabelled}
+        {counted === null ? null : <p id="send-segment">{words.segment(counted, list)}</p>}
+        <button
+          type="submit"
+          className="btn primary"
+          disabled={busy || counting || counted === 0}
+          aria-describedby={counted === null ? undefined : "send-segment"}
+        >
+          {button}
         </button>
       </form>
     );
