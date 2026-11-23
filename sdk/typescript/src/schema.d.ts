@@ -2888,6 +2888,8 @@ export type SubscriberImport = {
   added: number;
   /** The readers left as they were, because the site already had their address. */
   already: number;
+  /** Whether the readers were kept. False after `check=true`: the counts say what an import would do, and nothing changed. */
+  saved: boolean;
   /** Each row left out, with why. */
   skipped: SkippedReader[];
   /** Which system wrote the file. */
@@ -4777,12 +4779,14 @@ export interface Operations {
     };
     output: string;
   };
-  /** Brings in a list of readers from Khalid, Substack or Ghost. Each keeps the status the file gave them, and no email goes out. An address the site has is left as it is. Needs `subscribers:write`. */
+  /** Brings in a list of readers from Khalid, Substack or Ghost. Each keeps the status the file gave them, and no email goes out. An address the site has is left as it is. With `check=true` it answers the same counts and keeps nothing. Needs `subscribers:write`. */
   import_subscribers: {
     input: {
       query?: {
         /** The newsletter readers join when the file names none, such as `weekly`. Left out, they join main. */
         list?: string;
+        /** True to count what the import would do and keep nothing, such as to show the number of readers before staff say yes. */
+        check?: boolean;
       };
       headers?: {
         /** The oldest API version the client accepts, such as v1.0. */

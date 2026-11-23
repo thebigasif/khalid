@@ -10590,7 +10590,7 @@
         "tags": [
           "admin subscribers"
         ],
-        "summary": "Brings in a list of readers from Khalid, Substack or Ghost. Each keeps\nthe status the file gave them, and no email goes out. An address the\nsite has is left as it is. Needs `subscribers:write`.",
+        "summary": "Brings in a list of readers from Khalid, Substack or Ghost. Each keeps\nthe status the file gave them, and no email goes out. An address the\nsite has is left as it is. With `check=true` it answers the same counts\nand keeps nothing. Needs `subscribers:write`.",
         "operationId": "import_subscribers",
         "parameters": [
           {
@@ -10600,6 +10600,15 @@
             "required": false,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "check",
+            "in": "query",
+            "description": "True to count what the import would do and keep nothing, such as\nto show the number of readers before staff say yes.",
+            "required": false,
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -23662,7 +23671,8 @@
           "source",
           "added",
           "already",
-          "skipped"
+          "skipped",
+          "saved"
         ],
         "properties": {
           "added": {
@@ -23676,6 +23686,10 @@
             "format": "int64",
             "description": "The readers left as they were, because the site already had their\naddress.",
             "minimum": 0
+          },
+          "saved": {
+            "type": "boolean",
+            "description": "Whether the readers were kept. False after `check=true`: the\ncounts say what an import would do, and nothing changed."
           },
           "skipped": {
             "type": "array",

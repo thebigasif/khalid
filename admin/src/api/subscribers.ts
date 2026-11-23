@@ -87,6 +87,41 @@ export function listNewsletters(): Promise<Reply<Newsletters>> {
   });
 }
 
+/** What an import of readers did, or would do when only checked. */
+export type ReaderImport = components["schemas"]["SubscriberImport"];
+
+/** Counts what importing `csv` would do, or with `save` adds its readers; those the file puts on no newsletter join `list`. */
+export function importReaders(
+  csv: string,
+  list: string,
+  save: boolean,
+): Promise<Reply<ReaderImport>> {
+  const params = new URLSearchParams({ list });
+  if (!save) {
+    params.set("check", "true");
+  }
+  const init = { method: "POST", headers: { "Content-Type": "text/csv" }, body: csv };
+  return call(`/subscribers/import/?${params}`, init, async (response) => {
+    const done: Partial<ReaderImport> = await response.json();
+    const { source, added, already, skipped, saved } = done;
+    if (
+      source === undefined ||
+      typeof added !== "number" ||
+      typeof already !== "number" ||
+      !Array.isArray(skipped) ||
+      typeof saved !== "boolean"
+    ) {
+      throw new TypeError("The answer has no import counts.");
+    }
+    return { source, added, already, skipped, saved };
+  });
+}
+
+/** Every reader as a CSV file, oldest first. */
+export function exportReaders(): Promise<Reply<string>> {
+  return call("/subscribers/export/", {}, (response) => response.text());
+}
+
 /** Sends a published post to a newsletter's readers who carry every one of `labels`, once. */
 export function sendPost(list: string, post: string, labels: string[]): Promise<Reply<string>> {
   const body: components["schemas"]["NewsletterSend"] = { post, labels };

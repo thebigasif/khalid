@@ -79,7 +79,7 @@ code.form{display:block;white-space:pre-wrap;background:var(--surface);padding:.
 </nav>
 <main id="main">
   <h1>Subscribers</h1>
-  <p class="lede">The readers who signed up for your newsletters. Readers join only through the sign-up form and the link in its email, so everyone here asked to be here. Only the owner and admins see this screen.</p>
+  <p class="lede">The readers who signed up for your newsletters. New readers join through the sign-up form and the link in its email, and readers you bring from another newsletter keep where they stood there. Only the owner and admins see this screen.</p>
 
   <h2>Your newsletters</h2>
   <ul class="lists">
@@ -168,6 +168,25 @@ code.form{display:block;white-space:pre-wrap;background:var(--surface);padding:.
   </div>
   <p class="row"><span class="muted">1 to 50 of 275 readers</span><a class="btn" href="#main">Next 50</a></p>
   <p class="muted">Forget removes a reader's address, newsletters and labels for good, for a reader who asks. A reader who wants fewer emails can unsubscribe with the link in any of them.</p>
+
+  <h2>Move readers in or out</h2>
+  <p class="muted">Bring your list from Substack, Ghost or another Khalid site as a CSV file (a spreadsheet saved as plain text). Each reader keeps where they stood there, and no email goes to them. Addresses already here stay as they are.</p>
+  <p><button class="btn" type="button">Download every reader (CSV)</button></p>
+  <form>
+    <div class="field">
+      <label for="readers-file">Reader file <span class="hint">Substack's email_list file, Ghost's members export, or a file you downloaded here.</span></label>
+      <input id="readers-file" type="file" accept=".csv,text/csv">
+    </div>
+    <div class="field">
+      <label for="readers-into">Readers the file puts on no newsletter join</label>
+      <select id="readers-into"><option>main</option><option>weekly</option></select>
+    </div>
+    <div class="focus" role="status">
+      <p><strong>This Substack file adds 1,204 readers.</strong> 12 are here already and stay as they are. Nothing is saved until you say yes.</p>
+      <details><summary>2 rows are left out</summary><div><ul><li>Line 5: its address cannot take mail</li><li>Line 88: it has no email address</li></ul></div></details>
+      <p class="row"><button class="btn primary" type="submit">Add 1,204 readers</button></p>
+    </div>
+  </form>
 
   <p class="note">Mockup for the founder's review. Nothing on this page saves. The posts are the demo site's; the readers, counts and numbers are examples. Built without waiting for a yes; ask for changes any time. <a href="index.html">All mockups</a></p>
 </main>
