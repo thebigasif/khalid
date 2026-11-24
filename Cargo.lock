@@ -3298,6 +3298,7 @@ dependencies = [
  "brotli",
  "insta",
  "khalid-core",
+ "png",
  "rustybuzz",
  "sha2 0.11.1",
  "tempfile",

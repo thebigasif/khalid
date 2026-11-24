@@ -570,6 +570,21 @@ A second JPEG width is not worth it. A 640 px JPEG beside the 1,024 px one would
 
 The page-weight check still passes on the packs measured (Almanac, Aperture, Atlas, Classic, Harbor, Keystone, Meridian, Wire, and from batch 5 Dispatch, Gazette, Glossy, Mosaic, Pantry, Quill), with the same numbers: Chromium took AVIF before and still does. `scripts/demo-check/fallback.mjs` opens each demo as a browser without AVIF sees it, every `<source type="image/avif">` taken out, and fails when a picture shows nothing; CI runs it in each Chromium layout job. On those 14 packs all 868 pictures on 82 pages showed their JPEG or PNG.
 
+## Share cards
+
+Each post's share card (`khalid-share-image`) is a 1200 by 630 PNG of one background, one text colour, one accent and the smoothed edges between them. Since task/share-cards-palette it is saved as an indexed PNG whenever its colours fit a palette of 256, which every card drawn so far does, and as 8-bit RGB otherwise. Both keep every pixel: the three pinned cards in `crates/khalid-share-image/tests/snapshots` decode to the same pixels as before. Before, it was 8-bit RGBA with the encoder's default settings.
+
+Measured on the build server, 300 cards of the three pinned titles drawn in turn, release build, best of two runs:
+
+| Encoding | Bytes per card | Time per card |
+|---|---|---|
+| RGBA, default (before) | 22,321 | 15.9 ms |
+| Indexed, compression High | 13,983 | 11.6 ms |
+| Indexed, compression Balanced (now) | 14,120 | 8.4 ms |
+| Indexed, compression Fast | 17,411 | 6.4 ms |
+
+Balanced keeps nearly all of High's saving in less time. The palette is built with a check of the previous pixel's colour first, since most pixels repeat it; without that check, High took 26.8 ms a card. The share cards were 83 MB of the unpacked demos ("Demo bundle").
+
 ## CSS weight
 
 Budget: each page downloads at most 10 KB of CSS, all the stylesheets it links together, compressed with Brotli at its best quality as Khalid serves them. It holds for the home page, a post, a category page and an author page of every template.
