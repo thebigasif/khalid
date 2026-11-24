@@ -204,6 +204,10 @@ jobs:
         run: cargo machete
       - name: Lint table proven to fire (BL-LNT-3)
         run: ./scripts/check-lints.sh
+      # The release runs these through scripts/check.sh. Running them here
+      # too means a pull request cannot pass and then stop the release.
+      - name: Source searches (scripts/check-gates.sh) and their proof
+        run: ./scripts/check-gates.sh && ./scripts/prove-check-gates.sh
       - name: Published crates package and build alone (cargo publish --dry-run, KH-LNT-6)
         run: cargo publish --dry-run --locked -p khalid-core -p khalid-lint
 

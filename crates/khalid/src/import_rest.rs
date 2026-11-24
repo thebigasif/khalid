@@ -64,8 +64,9 @@ async fn fetch_all(
             let Some(text) = fetch(client, &address).await? else {
                 break;
             };
-            let rows =
-                serde_json::from_str::<Vec<serde_json::Value>>(&text).map_or(0, |rows| rows.len());
+            // Only the number of rows matters, so none of them is kept.
+            let rows = serde_json::from_str::<Vec<serde::de::IgnoredAny>>(&text)
+                .map_or(0, |rows| rows.len());
             pages.push(text);
             if rows < size {
                 break;
