@@ -1,2 +1,0 @@
-Added
-A page's address can change. An Admin API edit that sends a new `slug` moves the page, and the admin's page screen has an Address field for it. The page's file stays where it is: its `slug:` changes and its old address joins a new `aliases` list in page front matter, so the old address answers with a 301 on `khalid serve` and in a static build's `_redirects`. A slug another page in that language holds is refused with a 409.
