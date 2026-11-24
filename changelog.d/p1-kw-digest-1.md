@@ -1,2 +1,0 @@
-Added
-`khalid serve` now sends the newsletter digest (new posts by email) on its own. Put `digest.toml` with `every = "week"` or `"day"` in a newsletter's folder, such as `content/newsletters/main/`; once an hour the server sends the posts published since the last digest when one is due, and nothing when nothing is new. `labels` and `language` in the file narrow it, as `--label` and `--language` do for `khalid newsletter digest`.
