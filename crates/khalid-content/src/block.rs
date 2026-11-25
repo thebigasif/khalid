@@ -426,7 +426,7 @@ pub(crate) fn markdown_blocks(lines: &[&str]) -> Vec<Block> {
                     )
                     .filter(|language| !language.is_empty()),
                 },
-                NodeValue::ThematicBreak => BlockKind::Divider,
+                NodeValue::ThematicBreak(_) => BlockKind::Divider,
                 NodeValue::Table(_) => BlockKind::Table,
                 NodeValue::FootnoteDefinition(_) => BlockKind::Footnote,
                 NodeValue::HtmlBlock(_) => BlockKind::Html,
