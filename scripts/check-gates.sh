@@ -7,6 +7,33 @@ set -euo pipefail
 
 step() { printf '\n==> %s\n' "$1"; }
 
+step "anyhow stays out of library crates (BL-ERR-1)"
+if git grep -nE 'anyhow' -- 'crates/*/src/**' ':!crates/khalid/**' >/dev/null; then
+  git grep -nE 'anyhow' -- 'crates/*/src/**' ':!crates/khalid/**'
+  echo "Libraries use their own thiserror enums. Only crates/khalid may wrap errors."
+  exit 1
+fi
+
+step "Disallowed methods and types are suppressed only where allowed (BL-RUN-1, BL-RUN-2, BL-RUN-8, BL-SEC-4)"
+# The clock, config, outbound and path modules may each suppress the rule
+# once, on the one line that has to break it. Nothing else may.
+allowed='crates/khalid-core/src/clock.rs crates/khalid-core/src/config.rs crates/khalid-core/src/site_path.rs crates/khalid-outbound/src/outbound.rs'
+bad=$(git grep -nE 'clippy::disallowed_(methods|types)' -- 'crates/**/*.rs' | grep -vE "^($(echo "$allowed" | tr ' ' '|')):" || true)
+for file in $allowed; do
+  if [ -f "$file" ] && [ "$(grep -cE 'clippy::disallowed_(methods|types)' "$file")" -gt 1 ]; then
+    bad="$bad"$'\n'"$file: more than one suppression"
+  fi
+done
+if [ -n "${bad//[$'\n']/}" ]; then
+  echo "$bad"
+  echo "Read time through Clock, settings through Config, the network through Outbound and paths through SitePath."
+  exit 1
+fi
+
+step "File size (BL-SIZE-1): hand-written Rust files under 600 lines"
+over=$(git ls-files 'crates/*/src/*.rs' 'crates/*/src/**/*.rs' | grep -v '/generated/' | xargs -I{} awk 'END{ if (NR>600) print FILENAME": "NR" lines" }' {} || true)
+if [ -n "$over" ]; then echo "$over"; echo "Split the file (BL-SIZE-1)."; exit 1; fi
+
 # How many lines in library and binary sources may name serde_json::Value.
 # A typed struct is the default; Value is for the edges only. Lower this
 # number when you remove one. Raising it needs a reason in the pull request.

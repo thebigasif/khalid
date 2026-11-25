@@ -11,6 +11,7 @@ publish.workspace = true
 [dependencies]
 brotli = "9"
 khalid-core.workspace = true
+png = "0.18"
 rustybuzz = "0.20"
 tiny-skia = "0.12"
 ttf-parser = "0.25"

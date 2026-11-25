@@ -4,6 +4,7 @@
 //! must not know about content files, templates, themes on disk or HTTP:
 //! callers hand it a [`ShareCard`].
 
+mod encode;
 mod render;
 mod share_cache;
 mod share_card;

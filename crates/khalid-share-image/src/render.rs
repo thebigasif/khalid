@@ -8,6 +8,7 @@ use rustybuzz::{Direction as ShapedDirection, UnicodeBuffer};
 use tiny_skia::{FillRule, Paint, Path, PathBuilder, Pixmap, Transform};
 use ttf_parser::{Face as TtfFace, GlyphId};
 
+use crate::encode::encode;
 use crate::{Direction, ShareCard, ShareImageError};
 
 /// The image's width in pixels, the size Open Graph and X cards expect.
@@ -31,7 +32,8 @@ const SITE_BASELINE: f32 = 550.0;
 const RULE_WIDTH: f32 = 96.0;
 const RULE_TOP: f32 = 478.0;
 
-/// Draws `card` as a [`WIDTH`] by [`HEIGHT`] PNG.
+/// Draws `card` as a [`WIDTH`] by [`HEIGHT`] PNG, indexed when its colours
+/// fit a palette (`encode.rs`).
 ///
 /// The title wraps at spaces, nothing runs off the card, and Arabic letters
 /// are shaped and set from the right. Drawing takes some CPU, so async
@@ -87,7 +89,7 @@ pub fn render(card: &ShareCard) -> Result<Vec<u8>, ShareImageError> {
             face,
         );
     }
-    pixmap.encode_png().map_err(|_| ShareImageError::Encode)
+    encode(&pixmap)
 }
 
 /// One filled band across the card, from `top` to `bottom`.

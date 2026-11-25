@@ -165,10 +165,10 @@ fn article_type_schema() -> Schema {
 
 /// A string schema that takes one of `names`, or `null`.
 fn names_or_null(names: &[&str], description: &str) -> Schema {
-    let values = names.iter().map(|name| serde_json::Value::from(*name));
+    let values = names.iter().map(|name| Some(*name)).chain([None]);
     let schema = ObjectBuilder::new()
         .schema_type(SchemaType::from_iter([Type::String, Type::Null]))
-        .enum_values(Some(values.chain([serde_json::Value::Null])))
+        .enum_values(Some(values))
         .description(Some(description));
     schema.into()
 }

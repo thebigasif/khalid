@@ -1,2 +1,0 @@
-Fixed
-Mail goes out through lettre 0.11.24, which fixes six SMTP flaws (forged STARTTLS replies, command injection through a bare line break, quoted addresses sent to the wrong mailbox, and three crashes or memory floods a hostile mail server could cause), and HTML that arrives in a post, through the API or by import is cleaned by ammonia 4.2.5, which closes a cross-site scripting hole through embedded SVG and MathML.
