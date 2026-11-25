@@ -9,7 +9,6 @@ use khalid_core::{
     TemplateName,
 };
 use serde::{Deserialize, Serialize, Serializer};
-use serde_json::Value;
 use utoipa::ToSchema;
 use utoipa::openapi::schema::{ObjectBuilder, Schema, SchemaType, Type};
 
@@ -274,10 +273,10 @@ pub(super) fn comment_state_schema() -> Schema {
 /// The schema for a post's [`CommentState`]: one of its names, or `null`
 /// for the site's.
 pub(super) fn comments_schema() -> Schema {
-    let names = CommentState::ALL.map(|state| Value::from(state.as_str()));
+    let names = CommentState::ALL.map(|state| Some(state.as_str()));
     let schema = ObjectBuilder::new()
         .schema_type(SchemaType::from_iter([Type::String, Type::Null]))
-        .enum_values(Some(names.into_iter().chain([Value::Null])))
+        .enum_values(Some(names.into_iter().chain([None])))
         .description(Some(
             "Whether readers may comment: `open`, `closed` or `off`, or `null` for the site's state.",
         ));

@@ -1,2 +1,0 @@
-Added
-The alerts `khalid serve` raises for the owner (site down, slow site, certificate near its end, a burst of 404s, stale posts, a refused scheduled post, a crawler that stopped coming) are now listed at `GET /api/admin/v1/alerts/` and by the `list_alerts` MCP tool, each with what happened, why it matters and what to do, so an owner with no email or webhook set up still sees them. Each finding now keeps its line in the database (migration 0034).
