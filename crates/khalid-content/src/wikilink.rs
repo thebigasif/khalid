@@ -239,9 +239,9 @@ pub(crate) fn resolve<'a>(root: &'a AstNode<'a>, links: &Wikilinks) {
                 text.value = NodeValue::Text(target.title.clone().into());
             }
         }
-        node.data.borrow_mut().value = NodeValue::Link(Box::new(NodeLink {
-            url: target.address.clone(),
-            title: String::new(),
-        }));
+        node.data.borrow_mut().value = NodeValue::Link(Box::new(NodeLink::new(
+            target.address.clone(),
+            String::new(),
+        )));
     }
 }

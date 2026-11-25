@@ -5,7 +5,6 @@ use std::fmt;
 use std::sync::{Mutex, PoisonError};
 
 use comrak::adapters::{HeadingAdapter, HeadingMeta};
-use comrak::nodes::Sourcepos;
 use khalid_core::{Locale, Slug, SlugMode};
 
 use super::Heading;
@@ -46,12 +45,7 @@ impl HeadingIds {
 }
 
 impl HeadingAdapter for HeadingIds {
-    fn enter(
-        &self,
-        output: &mut dyn fmt::Write,
-        heading: &HeadingMeta,
-        _: Option<Sourcepos>,
-    ) -> fmt::Result {
+    fn enter(&self, output: &mut dyn fmt::Write, heading: &HeadingMeta) -> fmt::Result {
         let mut state = self.state.lock().unwrap_or_else(PoisonError::into_inner);
         let base = Slug::from_title(&heading.content, &self.locale, self.slugs)
             .map_or_else(|_| "section".to_owned(), |slug| slug.as_str().to_owned());
