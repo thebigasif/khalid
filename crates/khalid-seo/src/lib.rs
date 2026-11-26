@@ -103,8 +103,9 @@ pub use schema::{
     site_graph,
 };
 pub use schema::{
-    AuditContext, CopiedSchema, CopySchemaError, FindingLevel, FixTarget, SchemaFinding, SchemaFix,
-    SchemaReport, SchemaReports, Vocabulary, audit_json_ld, schema_reports,
+    AuditContext, CopiedSchema, CopySchemaError, FindingLevel, FixTarget, PageMarkup,
+    SchemaFinding, SchemaFix, SchemaReport, SchemaReports, Vocabulary, audit_json_ld,
+    schema_reports,
 };
 pub use schema::{
     FoundAddress, FoundHours, FoundPrice, PostFacts, SchemaSuggestion, draft_schema, read_facts,

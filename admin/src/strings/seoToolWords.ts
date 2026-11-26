@@ -1,5 +1,27 @@
 // The words of the SEO tools: the bulk SEO editor and the workouts.
 export const seoToolWords = {
+  schemaCheck: {
+    nav: "Schema check",
+    title: "Check any page's schema",
+    lede: "Check the schema of a page on any site, or code you paste, before you rely on it. For example, check your old site's pages before you move them to Khalid.",
+    source: "What to check",
+    address: "A page address",
+    code: "Code you paste",
+    addressLabel: "Page address",
+    addressHint:
+      "The full address, such as https://www.example.com/recipes/lentil-soup/. Khalid fetches the page and checks every piece of schema on it.",
+    codeLabel: "Schema code",
+    codeHint: "JSON-LD, the code between the script tags. Fix buttons change it here.",
+    check: "Check the schema",
+    checking: "Checking",
+    results: "What Khalid found",
+    found: (types: string) => `Found on this page: ${types}.`,
+    failed: {
+      what: "Khalid could not check this.",
+      why: "The blog did not answer, or the answer could not be read.",
+      fix: "Check the address or the code, then try again.",
+    },
+  },
   bulk: {
     nav: "Bulk SEO",
     title: "Edit SEO in bulk",

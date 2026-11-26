@@ -14,11 +14,14 @@
 //! [`CustomSchema`]: crate::CustomSchema
 
 mod google;
+mod page;
 mod tree;
 mod values;
 mod visible;
 
 use khalid_core::UserMessage;
+
+pub use page::PageMarkup;
 use serde::Serialize;
 
 use crate::SeoError;

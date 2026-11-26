@@ -36,6 +36,7 @@ export type NavPath =
   | "/seo"
   | "/privacy"
   | "/bulk-seo"
+  | "/schema-check"
   | "/workouts"
   | "/team"
   | "/keys"
@@ -73,6 +74,7 @@ export const NAV: NavGroup[] = [
       { to: "/subscribers", label: subscriberWords.nav, icon: "mail" },
       { to: "/serpdad", label: en.nav.serpdad, icon: "link" },
       { to: "/bulk-seo", label: seoToolWords.bulk.nav, icon: "table" },
+      { to: "/schema-check", label: seoToolWords.schemaCheck.nav, icon: "braces" },
       { to: "/workouts", label: seoToolWords.workouts.nav, icon: "steps" },
     ],
   },

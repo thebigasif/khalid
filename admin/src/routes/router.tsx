@@ -271,6 +271,13 @@ const bulkSeo = createRoute({
   component: BulkSeo,
 });
 
+// The schema of any page address, or of pasted code, in two reports.
+const schemaCheck = createRoute({
+  getParentRoute: () => signedIn,
+  path: "/schema-check",
+  component: lazyRouteComponent(() => import("./SchemaCheck"), "SchemaCheck"),
+});
+
 // Step-by-step link work: orphaned posts and links to each cluster's main post.
 const workouts = createRoute({
   getParentRoute: () => signedIn,
@@ -324,6 +331,7 @@ const routeTree = root.addChildren([
     seo,
     privacy,
     bulkSeo,
+    schemaCheck,
     workouts,
     account,
     serpdad,

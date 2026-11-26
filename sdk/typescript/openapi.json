@@ -7702,7 +7702,7 @@
         "tags": [
           "admin posts"
         ],
-        "summary": "Checks JSON-LD twice: whether it is correct schema.org, and whether\nGoogle can show it as a rich result. Each finding says where it is, what\nis wrong and how to fix it, and carries the one change that settles it\nwhen there is one, such as renaming `pricecurrency` to `priceCurrency`.\nNothing is saved. Needs `posts:write`.",
+        "summary": "Checks JSON-LD twice: whether it is correct schema.org, and whether\nGoogle can show it as a rich result. Each finding says where it is, what\nis wrong and how to fix it, and carries the one change that settles it\nwhen there is one, such as renaming `pricecurrency` to `priceCurrency`.\nWith `url`, the page is fetched through the shared outbound client and\nevery JSON-LD script on it is checked against its visible text; each\npath then starts with its script when there are several. Addresses\ninside the server's network are refused. Nothing is saved. Needs\n`posts:write`.",
         "operationId": "check_schema",
         "parameters": [
           {
@@ -7756,8 +7756,18 @@
               }
             }
           },
+          "404": {
+            "description": "A url was sent, and this server fetches no pages",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
           "422": {
-            "description": "The markup is not JSON, or is longer than 64 KB",
+            "description": "The markup is not JSON or is longer than 64 KB, the address is not a public web address, or the page has no JSON-LD",
             "content": {
               "application/problem+json": {
                 "schema": {
@@ -7768,6 +7778,16 @@
           },
           "429": {
             "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "description": "The page could not be fetched, or answered with an error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -22937,14 +22957,14 @@
       },
       "SchemaCheckAsk": {
         "type": "object",
-        "description": "The markup to check.",
-        "required": [
-          "json_ld"
-        ],
+        "description": "The markup to check: pasted JSON-LD, or the address of a page.",
         "properties": {
           "json_ld": {
-            "type": "string",
-            "description": "The JSON-LD, as written: one node, a `@graph` or a list.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The JSON-LD, as written: one node, a `@graph` or a list. Send this\nor `url`, not both.",
             "example": "{\"@type\": \"Offer\", \"price\": 5, \"pricecurrency\": \"USD\"}"
           },
           "known_ids": {
@@ -22953,6 +22973,14 @@
               "type": "string"
             },
             "description": "`@id`s defined elsewhere on the page that the markup may point to,\nsuch as the site's organisation."
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The full address of a page whose JSON-LD scripts to check, with its\nvisible text, such as a page of a site you are moving to Khalid.",
+            "example": "https://www.example.com/recipes/lentil-soup/"
           },
           "visible_text": {
             "type": [

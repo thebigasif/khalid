@@ -104,6 +104,11 @@ impl Audit {
         }
     }
 
+    /// The `@id`s of the nodes the markup walked so far defines.
+    pub(crate) fn defined(&self) -> impl Iterator<Item = &String> {
+        self.defined.iter()
+    }
+
     /// The findings, with the `@id`s that point to nothing the markup or
     /// `known` defines.
     pub(crate) fn finish(mut self, known: &[String]) -> Vec<SchemaFinding> {

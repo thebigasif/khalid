@@ -9,9 +9,13 @@ use std::sync::Arc;
 use axum::body::{Body, to_bytes};
 use axum::http::{Request, StatusCode};
 use khalid_api::api::{self, AdminDesks};
+use khalid_api::content_store::BoxFuture;
 use khalid_api::keys::{KeyHashing, KeyToken, MemoryKeyStore, Scope, StoredKey};
 use khalid_api::post_store::MemoryPostStore;
 use khalid_api::publish_door::{PublishDoor, Silent};
+use khalid_api::schema_copy::SchemaCopier;
+use khalid_core::AbsoluteUrl;
+use khalid_seo::{CopiedSchema, CopySchemaError, PageMarkup};
 use serde_json::{Value, json};
 use tower::ServiceExt;
 
@@ -20,6 +24,36 @@ const WRITER: &str =
     "ki_1111222233334444_aaaabbbbccccddddeeeeffff00001111aaaabbbbccccddddeeeeffff00001111";
 const MEDIA: &str =
     "ki_5555666677778888_0000111122223333444455556666777788889999aaaabbbbccccddddeeeeffff";
+
+/// Pages by host: a shop page with a slip and a price it does not show,
+/// and a page with no schema.
+struct Pages;
+
+#[cfg(test)]
+impl SchemaCopier for Pages {
+    fn copy<'a>(
+        &'a self,
+        _url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<CopiedSchema, CopySchemaError>> {
+        Box::pin(async { Err(CopySchemaError::NoSchema) })
+    }
+
+    fn markup<'a>(
+        &'a self,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<PageMarkup, CopySchemaError>> {
+        let html = match url.host() {
+            "shop.example" => {
+                r#"<script type="application/ld+json">{"@type": "Product", "name": "Kit",
+                  "offers": {"@type": "Offer", "price": "29.99", "pricecurrency": "GBP"}}</script>
+                  <h1>Kit</h1><p>Only 19.99 pounds.</p>"#
+            }
+            _ => "<p>No schema here.</p>",
+        };
+        let page = PageMarkup::from_html(html).ok_or(CopySchemaError::NoSchema);
+        Box::pin(async move { page })
+    }
+}
 
 #[cfg(test)]
 fn router() -> axum::Router {
@@ -34,7 +68,10 @@ fn router() -> axum::Router {
     ]);
     let door = PublishDoor::new(Arc::new(MemoryPostStore::default()), Arc::new(Silent));
     let content = Arc::new(common::store());
-    let desks = AdminDesks::none();
+    let desks = AdminDesks {
+        schema_copier: Some(Arc::new(Pages)),
+        ..AdminDesks::none()
+    };
     let (router, _) = api::router_with_desks(content, Arc::new(door), Arc::new(keys), desks);
     router
 }
@@ -113,4 +150,33 @@ async fn text_that_is_not_json_is_refused_with_where() {
 async fn a_key_that_cannot_write_posts_is_refused() {
     let (status, body) = check(MEDIA, json!({ "json_ld": "{}" })).await;
     assert_eq!(status, StatusCode::FORBIDDEN, "{body}");
+}
+
+#[tokio::test]
+async fn a_page_address_is_fetched_and_checked_against_what_it_shows() {
+    let (status, body) = check(WRITER, json!({ "url": "https://shop.example/kit/" })).await;
+    assert_eq!(status, StatusCode::OK, "{body}");
+    assert_eq!(body["types"], json!(["Product"]));
+    assert_eq!(body["schema_org"][0]["path"], "offers.pricecurrency");
+    let unseen = body["google"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .any(|f| f["path"] == "offers.price");
+    assert!(unseen, "{body}");
+}
+
+#[tokio::test]
+async fn a_page_with_no_schema_or_a_bad_address_says_so() {
+    let (status, body) = check(WRITER, json!({ "url": "https://plain.example/" })).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{body}");
+    assert!(
+        body["detail"].as_str().unwrap().contains("no schema"),
+        "{body}"
+    );
+    let (status, body) = check(WRITER, json!({ "url": "plain.example" })).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{body}");
+    let both = json!({ "url": "https://shop.example/", "json_ld": "{}" });
+    let (status, body) = check(WRITER, both).await;
+    assert_eq!(status, StatusCode::UNPROCESSABLE_ENTITY, "{body}");
 }

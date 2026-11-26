@@ -4,8 +4,8 @@ import type { SchemaChange } from "./schemaFix";
 
 type Props = {
   checks: SchemaChecks;
-  /** Makes one change in the schema field. */
-  onChange: (change: SchemaChange) => void;
+  /** Makes one change in the schema field, or null when there is no field to change. */
+  onChange: ((change: SchemaChange) => void) | null;
 };
 
 /** The findings of one report, or a line saying there is nothing to fix. */
@@ -38,10 +38,10 @@ function Report({
               <strong>{finding.what}</strong>
             </p>
             <p>{finding.why}</p>
-            {change === null ? (
+            {change === null || onChange === null ? (
               <p>{finding.fix}</p>
             ) : (
-              <button type="button" onClick={() => onChange(change)}>
+              <button type="button" className="btn" onClick={() => onChange(change)}>
                 {change.label}
               </button>
             )}
