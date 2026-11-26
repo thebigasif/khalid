@@ -102,7 +102,10 @@ pub use schema::{
     SiteSearch, SoftwareApplication, TemplateScope, breadcrumb_list, check_graph, page_graph,
     site_graph,
 };
-pub use schema::{CopiedSchema, CopySchemaError, Vocabulary};
+pub use schema::{
+    AuditContext, CopiedSchema, CopySchemaError, FindingLevel, FixTarget, SchemaFinding, SchemaFix,
+    SchemaReport, Vocabulary, audit_json_ld,
+};
 pub use schema_map::{SchemaMap, schema_map_url, site_schema};
 pub use seo_error::SeoError;
 pub use site::SeoSite;

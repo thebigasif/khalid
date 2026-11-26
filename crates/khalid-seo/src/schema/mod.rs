@@ -1,6 +1,7 @@
 //! JSON-LD schema graphs (plan section 5.9).
 
 mod article;
+mod audit;
 mod author;
 mod blocks;
 mod book;
@@ -35,6 +36,9 @@ mod template;
 mod video_review;
 mod vocabulary;
 
+pub use audit::{
+    AuditContext, FindingLevel, FixTarget, SchemaFinding, SchemaFix, SchemaReport, audit_json_ld,
+};
 pub use author::{AuthorProfile, Entity, EntityRole};
 pub use blocks::SchemaBlock;
 pub use book::Book;

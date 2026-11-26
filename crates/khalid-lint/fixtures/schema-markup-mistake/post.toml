@@ -1,0 +1,8 @@
+# The post's hand-written JSON-LD has two mistakes, as `khalid-seo`'s check
+# against the schema.org vocabulary reports them: one finding each, and
+# each warns.
+extends = "clean"
+schema_mistakes = [
+  "offers.pricecurrency: pricecurrency is not a schema.org property; it looks like priceCurrency.",
+  "offers.price: The page does not show the price \"29.99\" that the markup gives.",
+]

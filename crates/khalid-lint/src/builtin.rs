@@ -69,6 +69,7 @@ fn blocking_and_structure_rules(thresholds: Thresholds, reviewed: Vec<Slug>) -> 
         }),
         Box::new(blocking::NoInternalLink),
         Box::new(blocking::InvalidStructuredData),
+        Box::new(blocking::SchemaMarkupMistake),
         Box::new(snippet::LongTitle {
             max: thresholds.title_max_chars,
         }),
