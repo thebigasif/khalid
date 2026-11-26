@@ -2,10 +2,12 @@
 //! its front matter and blocks already give it, each with the reason and a
 //! confidence.
 
+mod draft;
 mod facts;
 
 use serde::Serialize;
 
+pub use draft::draft_schema;
 pub use facts::{FoundAddress, FoundHours, FoundPrice, PostFacts, read_facts};
 
 use crate::schema::vocabulary::Vocabulary;

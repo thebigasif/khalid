@@ -24513,6 +24513,14 @@
             "example": 90,
             "minimum": 0
           },
+          "draft": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "JSON-LD for the type, filled in from what the post says: prices with\ntheir currency, addresses, phone numbers, opening hours, the author,\ndates, a breadcrumb trail and social profiles. Ready for the post's\nschema field after the writer checks it.",
+            "example": "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": []\n}"
+          },
           "kind": {
             "type": "string",
             "description": "The schema.org type, such as `Recipe`.",

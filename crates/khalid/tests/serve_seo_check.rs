@@ -435,6 +435,20 @@ fn the_check_suggests_schema_from_what_the_post_says() {
         "The post gives an address, 12 High Street and a phone number, 0113 496 0000."
     );
     assert_eq!(business["confidence"], 75);
+    // Its draft is filled in from the post and is JSON-LD the schema field takes.
+    let draft = business["draft"].as_str().unwrap();
+    for wanted in [
+        "\"streetAddress\": \"12 High Street\"",
+        "\"telephone\": \"0113 496 0000\"",
+    ] {
+        assert!(draft.contains(wanted), "{draft}");
+    }
+    let (status, post) = send(&server, &key, ("GET", ROUTE), "");
+    assert_eq!(status, 200, "{post}");
+    let edit = json!({"posts": [{"settings": {"schema": draft},
+        "updated_at": post["posts"][0]["updated_at"]}]});
+    let (status, saved) = send(&server, &key, ("PUT", ROUTE), &edit.to_string());
+    assert_eq!(status, 200, "{saved}");
     // The page is already a blog post, so an article is never suggested.
     assert!(
         !suggested

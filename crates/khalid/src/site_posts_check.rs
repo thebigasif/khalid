@@ -17,8 +17,8 @@ use khalid_audit::Run;
 use khalid_content::parse_post;
 use khalid_core::Slug;
 use khalid_seo::{
-    HeadTag, SchemaGraph, SchemaNode, SeoPage, SeoSite, head_tags, page_graph, read_facts,
-    suggest_schema,
+    HeadTag, SchemaGraph, SchemaNode, SeoPage, SeoSite, draft_schema, head_tags, page_graph,
+    read_facts, suggest_schema,
 };
 use serde_json::Value;
 
@@ -78,21 +78,24 @@ impl Site {
         let graph = page_graph(site, &page).map_err(PostStoreError::new)?;
         let schema: Value = serde_json::from_str(&graph.to_json()).map_err(PostStoreError::new)?;
         let check = PostCheck::new(id, report, snippet(site, &page)?, schema)
-            .with_schema_suggestions(suggestions(&graph, &post.body));
+            .with_schema_suggestions(suggestions(&graph, &post.body, &page.title));
         Ok(Some(check.with_words(words)))
     }
 }
 
 /// The schema types the markdown `body` suggests that `graph` does not
-/// already carry, most likely first.
-fn suggestions(graph: &SchemaGraph, body: &str) -> Vec<SuggestedSchema> {
+/// already carry, most likely first, each with JSON-LD filled in from the
+/// body and the post's `title`.
+fn suggestions(graph: &SchemaGraph, body: &str, title: &str) -> Vec<SuggestedSchema> {
     let present: Vec<&str> = graph.nodes().iter().map(SchemaNode::kind).collect();
-    suggest_schema(&read_facts(body), &present)
+    let facts = read_facts(body);
+    suggest_schema(&facts, &present)
         .into_iter()
         .map(|found| SuggestedSchema {
             kind: found.kind.to_owned(),
             reason: found.reason,
             confidence: found.confidence,
+            draft: draft_schema(found.kind, &facts, title),
         })
         .collect()
 }
