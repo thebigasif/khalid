@@ -1,11 +1,12 @@
 //! The page fetcher behind the Admin API's "copy schema from a URL" route
-//! (KH-SEO-4): the shared outbound client, with its private-network guard.
+//! (KH-SEO-4) and the schema check of a page address: the shared outbound
+//! client, with its private-network guard.
 
 use khalid_api::content_store::BoxFuture;
 use khalid_api::schema_copy::SchemaCopier;
 use khalid_core::AbsoluteUrl;
 use khalid_outbound::{Limits, Outbound};
-use khalid_seo::{CopiedSchema, CopySchemaError};
+use khalid_seo::{CopiedSchema, CopySchemaError, PageMarkup};
 
 use crate::cli::Cli;
 use crate::outbound;
@@ -31,5 +32,12 @@ impl SchemaCopier for PageCopier {
         url: &'a AbsoluteUrl,
     ) -> BoxFuture<'a, Result<CopiedSchema, CopySchemaError>> {
         Box::pin(CopiedSchema::fetch(&self.0, url))
+    }
+
+    fn markup<'a>(
+        &'a self,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<PageMarkup, CopySchemaError>> {
+        Box::pin(PageMarkup::fetch(&self.0, url))
     }
 }

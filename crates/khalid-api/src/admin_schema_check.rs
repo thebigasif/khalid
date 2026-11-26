@@ -1,15 +1,17 @@
 //! The schema check route of the Admin API, `POST /api/admin/v1/schema/checks/`:
 //! JSON-LD measured twice, once against the schema.org vocabulary and once
 //! against what Google needs for a rich result, with a fix for each finding
-//! that has one. It saves nothing. It needs `posts:write`, since its answer
-//! goes into a post's custom JSON-LD field.
+//! that has one. It takes pasted markup, or the address of any page, whose
+//! scripts it fetches. It saves nothing. It needs `posts:write`, since its
+//! answer goes into a post's custom JSON-LD field.
 
+use axum::extract::State;
 use axum::extract::rejection::JsonRejection;
 use axum::{Extension, Json, middleware};
-use khalid_core::UserMessage;
+use khalid_core::{AbsoluteUrl, UserMessage};
 use khalid_seo::{
-    AuditContext, FindingLevel, FixTarget, SchemaFinding, SchemaFix, SchemaReports, SeoError,
-    schema_reports,
+    AuditContext, CopySchemaError, FindingLevel, FixTarget, SchemaFinding, SchemaFix,
+    SchemaReports, SeoError, schema_reports,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
@@ -17,6 +19,7 @@ use utoipa_axum::router::OpenApiRouter;
 use utoipa_axum::routes;
 
 use crate::admin_key::{AdminDoor, require, require_admin_key};
+use crate::admin_schema_copy::Copier;
 use crate::api_version::negotiate_version;
 use crate::keys::{Principal, Scope};
 use crate::problem::{Problem, ProblemType};
@@ -24,13 +27,20 @@ use crate::problem::{Problem, ProblemType};
 /// The longest markup the route reads, in bytes, as for the custom field.
 const MAX_BYTES: usize = 64 * 1024;
 
-/// The markup to check.
+/// The markup to check: pasted JSON-LD, or the address of a page.
 #[derive(Debug, Deserialize, ToSchema)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct SchemaCheckAsk {
-    /// The JSON-LD, as written: one node, a `@graph` or a list.
+    /// The JSON-LD, as written: one node, a `@graph` or a list. Send this
+    /// or `url`, not both.
     #[schema(example = "{\"@type\": \"Offer\", \"price\": 5, \"pricecurrency\": \"USD\"}")]
-    json_ld: String,
+    #[serde(default)]
+    json_ld: Option<String>,
+    /// The full address of a page whose JSON-LD scripts to check, with its
+    /// visible text, such as a page of a site you are moving to Khalid.
+    #[schema(example = "https://www.example.com/recipes/lentil-soup/")]
+    #[serde(default)]
+    url: Option<String>,
     /// The text a reader sees on the page, to flag values the markup gives
     /// that the page never shows. Leave it out to skip that check.
     #[serde(default)]
@@ -156,18 +166,23 @@ fn fix(fix: SchemaFix) -> CheckFix {
 
 /// The check route, declared with `utoipa::path` (RULES.md BL-API-4),
 /// behind an integration key or staff token.
-pub(crate) fn routes(door: AdminDoor) -> OpenApiRouter {
+pub(crate) fn routes(copier: Copier, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(check_schema))
         .route_layer(middleware::from_fn_with_state(door, require_admin_key))
         .route_layer(middleware::from_fn(negotiate_version))
+        .with_state(copier)
 }
 
 /// Checks JSON-LD twice: whether it is correct schema.org, and whether
 /// Google can show it as a rich result. Each finding says where it is, what
 /// is wrong and how to fix it, and carries the one change that settles it
 /// when there is one, such as renaming `pricecurrency` to `priceCurrency`.
-/// Nothing is saved. Needs `posts:write`.
+/// With `url`, the page is fetched through the shared outbound client and
+/// every JSON-LD script on it is checked against its visible text; each
+/// path then starts with its script when there are several. Addresses
+/// inside the server's network are refused. Nothing is saved. Needs
+/// `posts:write`.
 #[utoipa::path(
     post, path = "/schema/checks/", tag = "admin posts",
     security(("admin_key" = [])),
@@ -176,24 +191,63 @@ pub(crate) fn routes(door: AdminDoor) -> OpenApiRouter {
         (status = 200, description = "The two reports", body = SchemaChecks),
         (status = 401, description = "No valid integration key or staff token", body = Problem, content_type = "application/problem+json"),
         (status = 403, description = "The key lacks posts:write", body = Problem, content_type = "application/problem+json"),
-        (status = 422, description = "The markup is not JSON, or is longer than 64 KB", body = Problem, content_type = "application/problem+json"),
+        (status = 404, description = "A url was sent, and this server fetches no pages", body = Problem, content_type = "application/problem+json"),
+        (status = 422, description = "The markup is not JSON or is longer than 64 KB, the address is not a public web address, or the page has no JSON-LD", body = Problem, content_type = "application/problem+json"),
+        (status = 502, description = "The page could not be fetched, or answered with an error", body = Problem, content_type = "application/problem+json"),
     )
 )]
 async fn check_schema(
+    State(copier): State<Copier>,
     Extension(principal): Extension<Principal>,
     body: Result<Json<SchemaCheckAsk>, JsonRejection>,
 ) -> Result<Json<SchemaChecks>, Problem> {
     require(&principal, Scope::PostsWrite)?;
     let Json(ask) = body.map_err(|rejection| unreadable(&rejection.body_text()))?;
-    if ask.json_ld.len() > MAX_BYTES {
-        return Err(unreadable("it is longer than 64 KB"));
-    }
-    let context = AuditContext {
-        visible_text: ask.visible_text.as_deref(),
-        known_ids: &ask.known_ids,
+    let reports = match (ask.json_ld.as_deref(), ask.url.as_deref()) {
+        (Some(text), None) => {
+            if text.len() > MAX_BYTES {
+                return Err(unreadable("it is longer than 64 KB"));
+            }
+            let context = AuditContext {
+                visible_text: ask.visible_text.as_deref(),
+                known_ids: &ask.known_ids,
+            };
+            schema_reports(text, &context).map_err(|error| not_json(&error))?
+        }
+        (None, Some(url)) => {
+            let copier = copier.ok_or_else(no_fetcher)?;
+            let url = AbsoluteUrl::parse(url.trim())
+                .map_err(|error| crate::admin_schema_copy::not_an_address(&error.to_string()))?;
+            let page = copier
+                .markup(&url)
+                .await
+                .map_err(|error| fetch_problem(&error))?;
+            page.reports()
+        }
+        _ => return Err(unreadable("send json_ld or url, one of the two")),
     };
-    let reports = schema_reports(&ask.json_ld, &context).map_err(|error| not_json(&error))?;
     Ok(Json(reports.into()))
+}
+
+fn fetch_problem(error: &CopySchemaError) -> Problem {
+    if matches!(error, CopySchemaError::NoSchema) {
+        let message = UserMessage::new(
+            "The page has no schema to check.",
+            "It carries no JSON-LD script, so search engines read no schema from it.",
+            "Check another page, or paste the code you want checked.",
+        );
+        return Problem::new(ProblemType::InvalidBody, &message);
+    }
+    crate::admin_schema_copy::problem(error)
+}
+
+fn no_fetcher() -> Problem {
+    let message = UserMessage::new(
+        "This server fetches no pages to check.",
+        "Checking a page address needs the site's own server, which fetches the page.",
+        "Paste the page's code, or send the request to the running khalid serve.",
+    );
+    Problem::new(ProblemType::NotFound, &message)
 }
 
 fn not_json(error: &SeoError) -> Problem {
@@ -208,8 +262,8 @@ fn not_json(error: &SeoError) -> Problem {
 fn unreadable(why: &str) -> Problem {
     let message = UserMessage::new(
         "The request could not be read as markup to check.",
-        format!("The check needs a json_ld field with the markup as text ({why})."),
-        "Send {\"json_ld\": \"...\"} with the JSON-LD as one string.",
+        format!("The check needs the markup as text, or a page address ({why})."),
+        "Send {\"json_ld\": \"...\"} with the JSON-LD as one string, or {\"url\": \"https://...\"}.",
     );
     Problem::new(ProblemType::InvalidBody, &message)
 }

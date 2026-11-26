@@ -48,13 +48,18 @@ pub(crate) struct SchemaCopy {
 }
 
 /// The copy route, declared with `utoipa::path` (RULES.md BL-API-4),
-/// behind an integration key or staff token.
+/// behind an integration key or staff token, with the schema check route,
+/// which fetches pages through the same copier.
 pub(crate) fn routes(copier: Copier, door: AdminDoor) -> OpenApiRouter {
     OpenApiRouter::new()
         .routes(routes!(copy_schema))
-        .route_layer(middleware::from_fn_with_state(door, require_admin_key))
+        .route_layer(middleware::from_fn_with_state(
+            door.clone(),
+            require_admin_key,
+        ))
         .route_layer(middleware::from_fn(negotiate_version))
-        .with_state(copier)
+        .with_state(copier.clone())
+        .merge(crate::admin_schema_check::routes(copier, door))
 }
 
 /// Fetches the page at `url` through the shared outbound client and
@@ -92,7 +97,8 @@ async fn copy_schema(
     }))
 }
 
-fn problem(error: &CopySchemaError) -> Problem {
+/// The problem a failed fetch of a page answers with.
+pub(crate) fn problem(error: &CopySchemaError) -> Problem {
     let fix = "Check the address in a browser, or write the JSON-LD by hand.";
     if let Some(host) = error.inward_host() {
         let message = UserMessage::new(
@@ -127,10 +133,11 @@ fn problem(error: &CopySchemaError) -> Problem {
     Problem::new(kind, &UserMessage::new(what, why, fix))
 }
 
-fn not_an_address(why: &str) -> Problem {
+/// The problem text that is not a full web address answers with.
+pub(crate) fn not_an_address(why: &str) -> Problem {
     let message = UserMessage::new(
         "That is not a full web address, such as https://www.example.com/page/.",
-        format!("Only an http or https page can be copied ({why})."),
+        format!("Only an http or https page can be read ({why})."),
         "Paste the page's whole address from the browser's address bar.",
     );
     Problem::new(ProblemType::InvalidBody, &message)

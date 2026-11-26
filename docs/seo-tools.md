@@ -45,6 +45,49 @@ Most blocks refuse to save without what Google needs, so the gap comes
 from the `schema` field, a schema template, or a recipe block with no
 `image`.
 
+## Checking schema you write by hand
+
+Khalid knows the whole schema.org vocabulary, release 30.1: every type,
+property and allowed value, made from schema.org's own published tables
+by `scripts/schema-vocabulary.py`. The JSON-LD in a post's `schema` field
+is checked against it. `khalid lint` warns with `schema-markup-mistake`
+when a name is not schema.org's, a property does not belong to its type,
+a value is not what the property expects (a date, a number, a web
+address, an allowed value such as `https://schema.org/InStock`, a
+three-letter currency code or a length of time such as `PT20M`), a nested
+item's type does not fit, an `@id` points to nothing on the page, a name
+has been replaced, or a price, name, phone number, street or ingredient
+never appears in the post. These warn; they never stop a post.
+
+The editor's Schema panel shows the same check as two reports when the
+writer leaves the schema field: "Is it correct schema.org?" and "Can
+Google show it as a rich result?". A finding with one clear fix has a
+button that makes it in the field. `POST /api/admin/v1/schema/checks/`
+with `{"json_ld": "..."}` answers both reports, each finding with its
+`change` when it has one.
+
+The panel also suggests schema from what the post says: a Recipe for
+ingredients and a method, an Article for a byline and a date, a Product
+for prices, a LocalBusiness for an address, and an FAQPage for headings
+that ask questions. Each names its reason and how sure Khalid is, and a
+type the page already carries is never suggested. A button fills the
+schema field from the post: prices with their currency, the address,
+phone number and opening hours, the author and date, a breadcrumb trail
+the post writes and links to social profiles. The post check answers
+them as `schema_suggestions`, each with its `draft`.
+
+## Schema check for any page
+
+The Schema check screen, under Grow in the admin menu, checks the schema
+of any page address, or of code you paste, with the same two reports. It
+suits checking an old site's pages before you move them to Khalid. For an
+address, Khalid fetches the page through its one outbound client, reads
+every JSON-LD script on it and checks the values against the page's
+visible text; each finding names its script when there are several. Fix
+buttons change pasted code in place. The API is the same route with
+`{"url": "https://..."}`. Addresses inside the server's own network are
+refused, and nothing is saved.
+
 ## Copy schema from a URL
 
 `POST /api/admin/v1/schema/copies/` with `{"url": "https://..."}` fetches

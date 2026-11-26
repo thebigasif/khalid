@@ -138,7 +138,7 @@ impl CopySchemaError {
 }
 
 /// The text inside each `<script type="application/ld+json">` of `html`.
-fn scripts(html: &str) -> impl Iterator<Item = &str> {
+pub(crate) fn scripts(html: &str) -> impl Iterator<Item = &str> {
     // ASCII lowercasing keeps every byte where it was, so offsets agree.
     let lower = html.to_ascii_lowercase();
     let mut found = Vec::new();

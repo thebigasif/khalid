@@ -38,8 +38,8 @@ mod video_review;
 mod vocabulary;
 
 pub use audit::{
-    AuditContext, FindingLevel, FixTarget, SchemaFinding, SchemaFix, SchemaReport, SchemaReports,
-    audit_json_ld, schema_reports,
+    AuditContext, FindingLevel, FixTarget, PageMarkup, SchemaFinding, SchemaFix, SchemaReport,
+    SchemaReports, audit_json_ld, schema_reports,
 };
 pub use author::{AuthorProfile, Entity, EntityRole};
 pub use blocks::SchemaBlock;

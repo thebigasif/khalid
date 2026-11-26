@@ -4,7 +4,7 @@
 //! client, so the private-network guard covers it (BL-RUN-8).
 
 use khalid_core::AbsoluteUrl;
-use khalid_seo::{CopiedSchema, CopySchemaError};
+use khalid_seo::{CopiedSchema, CopySchemaError, PageMarkup};
 
 use crate::content_store::BoxFuture;
 
@@ -21,4 +21,17 @@ pub trait SchemaCopier: Send + Sync {
         &'a self,
         url: &'a AbsoluteUrl,
     ) -> BoxFuture<'a, Result<CopiedSchema, CopySchemaError>>;
+
+    /// The JSON-LD scripts of the page at `url`, as written, and the text
+    /// a reader sees on it, for the schema check.
+    ///
+    /// # Errors
+    ///
+    /// The errors [`PageMarkup::fetch`] returns: the request failed or was
+    /// refused, the page answered with an error status, or it holds no
+    /// JSON-LD.
+    fn markup<'a>(
+        &'a self,
+        url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<PageMarkup, CopySchemaError>>;
 }

@@ -16,7 +16,7 @@ use khalid_api::publish_door::{PublishDoor, Silent};
 use khalid_api::schema_copy::SchemaCopier;
 use khalid_core::AbsoluteUrl;
 use khalid_outbound::OutboundError;
-use khalid_seo::{CopiedSchema, CopySchemaError};
+use khalid_seo::{CopiedSchema, CopySchemaError, PageMarkup};
 use serde_json::{Value, json};
 use tower::ServiceExt;
 
@@ -58,6 +58,14 @@ impl SchemaCopier for Pages {
             }),
         };
         Box::pin(async move { answer })
+    }
+
+    /// The copy route never reads a page's markup.
+    fn markup<'a>(
+        &'a self,
+        _url: &'a AbsoluteUrl,
+    ) -> BoxFuture<'a, Result<PageMarkup, CopySchemaError>> {
+        Box::pin(async { Err(CopySchemaError::NoSchema) })
     }
 }
 

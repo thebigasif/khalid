@@ -2578,12 +2578,14 @@ export type RoleChange = {
   role: string;
 };
 
-/** The markup to check. */
+/** The markup to check: pasted JSON-LD, or the address of a page. */
 export type SchemaCheckAsk = {
-  /** The JSON-LD, as written: one node, a `@graph` or a list. */
-  json_ld: string;
+  /** The JSON-LD, as written: one node, a `@graph` or a list. Send this or `url`, not both. */
+  json_ld?: string | null;
   /** `@id`s defined elsewhere on the page that the markup may point to, such as the site's organisation. */
   known_ids?: string[];
+  /** The full address of a page whose JSON-LD scripts to check, with its visible text, such as a page of a site you are moving to Khalid. */
+  url?: string | null;
   /** The text a reader sees on the page, to flag values the markup gives that the page never shows. Leave it out to skip that check. */
   visible_text?: string | null;
 };
@@ -4487,7 +4489,7 @@ export interface Operations {
     };
     output: SchemaTemplates;
   };
-  /** Checks JSON-LD twice: whether it is correct schema.org, and whether Google can show it as a rich result. Each finding says where it is, what is wrong and how to fix it, and carries the one change that settles it when there is one, such as renaming `pricecurrency` to `priceCurrency`. Nothing is saved. Needs `posts:write`. */
+  /** Checks JSON-LD twice: whether it is correct schema.org, and whether Google can show it as a rich result. Each finding says where it is, what is wrong and how to fix it, and carries the one change that settles it when there is one, such as renaming `pricecurrency` to `priceCurrency`. With `url`, the page is fetched through the shared outbound client and every JSON-LD script on it is checked against its visible text; each path then starts with its script when there are several. Addresses inside the server's network are refused. Nothing is saved. Needs `posts:write`. */
   check_schema: {
     input: {
       headers?: {
