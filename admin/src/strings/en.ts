@@ -5,6 +5,7 @@ import { passkeys } from "./passkeys";
 import { realUpdateWords } from "./realUpdateWords";
 import { records } from "./records";
 import { LIVE, WAITS } from "./restartWords";
+import { schemaCheckWords } from "./schemaCheckWords";
 import { serpdadWords } from "./serpdadWords";
 import { signInWords } from "./signInWords";
 import { sitesWords } from "./sites";
@@ -1047,6 +1048,7 @@ export const en = {
     own: "Your own schema",
     ownHint:
       "For a type Khalid does not write, such as an Event. Paste JSON-LD here; Khalid checks it before it saves. Most posts need nothing here.",
+    reports: schemaCheckWords,
   },
   signIn: signInWords,
   sites: sitesWords,

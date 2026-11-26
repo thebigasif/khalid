@@ -13,6 +13,7 @@
 //!
 //! [`CustomSchema`]: crate::CustomSchema
 
+mod google;
 mod tree;
 mod values;
 mod visible;
@@ -127,6 +128,43 @@ pub fn audit_json_ld(
         findings.extend(visible::unseen(&root, visible));
     }
     Ok(findings)
+}
+
+/// The two reports on one piece of markup: is it correct schema.org, and
+/// can Google show it as a rich result.
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize)]
+pub struct SchemaReports {
+    /// The `@type` of each node at the top, in the order written.
+    pub types: Vec<String>,
+    /// Whether the markup is correct schema.org: names, values, nested
+    /// types and references.
+    pub schema_org: Vec<SchemaFinding>,
+    /// Whether Google can show it: the properties Google needs and
+    /// recommends, and values the page does not show.
+    pub google: Vec<SchemaFinding>,
+}
+
+/// Both reports on the JSON-LD `text`. Blank text has empty reports.
+///
+/// # Errors
+///
+/// [`SeoError::CustomSchemaSyntax`] when `text` is not JSON.
+pub fn schema_reports(text: &str, context: &AuditContext<'_>) -> Result<SchemaReports, SeoError> {
+    if text.trim().is_empty() {
+        return Ok(SchemaReports::default());
+    }
+    let root = tree::read(text)?;
+    let mut audit = tree::Audit::default();
+    audit.root(&root);
+    let mut google = google::google_findings(&root);
+    if let Some(visible) = context.visible_text {
+        google.extend(visible::unseen(&root, visible));
+    }
+    Ok(SchemaReports {
+        types: google::top_types(&root),
+        schema_org: audit.finish(context.known_ids),
+        google,
+    })
 }
 
 /// A finding of `report` and `level` at `path`.
