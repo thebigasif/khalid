@@ -36,6 +36,7 @@ mod admin_plan;
 mod admin_presence;
 mod admin_redirect_csv;
 mod admin_redirects;
+mod admin_schema_check;
 mod admin_schema_copy;
 mod admin_schema_templates;
 mod admin_serpdad;

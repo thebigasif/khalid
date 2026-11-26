@@ -1,0 +1,2 @@
+Added
+- The editor's Schema panel now checks the schema you write by hand twice, in two reports: "Is it correct schema.org?" and "Can Google show it as a rich result?". Each finding says where it is, what is wrong and what to do, and a finding with one clear fix has a button that makes it, such as "Change pricecurrency to priceCurrency". The same check is in the Admin API at `POST /api/admin/v1/schema/checks/`.

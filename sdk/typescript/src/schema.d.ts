@@ -1014,11 +1014,46 @@ export type ChangelogEntries = {
   meta?: Meta | null;
 };
 
+/** One thing a check found. */
+export type CheckFinding = {
+  change?: CheckFix | null;
+  /** What to do. */
+  fix: string;
+  /** How much it matters. */
+  level: CheckLevel;
+  /** Where it is, such as `@graph[0].offers.priceCurrency`; empty for the whole markup. */
+  path: string;
+  /** What is wrong, in one sentence. */
+  what: string;
+  /** Why it matters. */
+  why: string;
+};
+
+/** One change that settles a finding. */
+export type CheckFix = {
+  /** The name or value as written. */
+  from: string;
+  /** The fix as a button says it. */
+  label: string;
+  /** Where, as in the finding's path. */
+  path: string;
+  /** What the fix changes. */
+  target: CheckFixTarget;
+  /** The name or value it becomes. */
+  to: string;
+};
+
+/** What a fix changes. */
+export type CheckFixTarget = "property" | "type" | "value";
+
 /** A check-in: what the editor asks for while the post is open. */
 export type CheckIn = {
   /** `join` takes the lock only when nobody holds it; `take_over` takes it from whoever does. `join` when left out. */
   claim?: Claim;
 };
+
+/** How much a finding matters. */
+export type CheckLevel = "error" | "warning";
 
 /** What a check-in asks for. */
 export type Claim = "join" | "take_over";
@@ -2539,6 +2574,26 @@ export type ReviewState = "draft" | "in_review" | "ready";
 export type RoleChange = {
   /** `admin`, `editor`, `writer` or `contributor`. */
   role: string;
+};
+
+/** The markup to check. */
+export type SchemaCheckAsk = {
+  /** The JSON-LD, as written: one node, a `@graph` or a list. */
+  json_ld: string;
+  /** `@id`s defined elsewhere on the page that the markup may point to, such as the site's organisation. */
+  known_ids?: string[];
+  /** The text a reader sees on the page, to flag values the markup gives that the page never shows. Leave it out to skip that check. */
+  visible_text?: string | null;
+};
+
+/** The two reports on one piece of markup. */
+export type SchemaChecks = {
+  /** Whether Google can show it as a rich result. */
+  google: CheckFinding[];
+  /** Whether the markup is correct schema.org. */
+  schema_org: CheckFinding[];
+  /** The `@type` of each node at the top, in the order written. */
+  types: string[];
 };
 
 /** Another page's JSON-LD, as text for a custom JSON-LD field. */
@@ -4417,6 +4472,17 @@ export interface Operations {
       body: TemplatesChange;
     };
     output: SchemaTemplates;
+  };
+  /** Checks JSON-LD twice: whether it is correct schema.org, and whether Google can show it as a rich result. Each finding says where it is, what is wrong and how to fix it, and carries the one change that settles it when there is one, such as renaming `pricecurrency` to `priceCurrency`. Nothing is saved. Needs `posts:write`. */
+  check_schema: {
+    input: {
+      headers?: {
+        /** The oldest API version the client accepts, such as v1.0. */
+        "Accept-Version"?: string;
+      };
+      body: SchemaCheckAsk;
+    };
+    output: SchemaChecks;
   };
   /** Fetches the page at `url` through the shared outbound client and answers with its JSON-LD, ready to edit in a post's custom JSON-LD field. Nothing is saved. Addresses inside the server's network are refused. Needs `posts:write`. */
   copy_schema: {

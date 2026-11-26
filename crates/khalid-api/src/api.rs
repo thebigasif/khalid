@@ -41,9 +41,9 @@ use crate::{
     admin_calendar, admin_categories, admin_check, admin_comments, admin_consent, admin_design,
     admin_draft_comments, admin_draft_threads, admin_follow_ups, admin_forms, admin_glossary,
     admin_newsletters, admin_not_found, admin_pages, admin_redirect_csv, admin_redirects,
-    admin_schema_copy, admin_schema_templates, admin_serpdad, admin_site_settings, admin_snippets,
-    admin_subscribers, admin_tags, admin_templates, admin_trash, admin_uptime, admin_webhooks,
-    api_version, content_api, oembed,
+    admin_schema_check, admin_schema_copy, admin_schema_templates, admin_serpdad,
+    admin_site_settings, admin_snippets, admin_subscribers, admin_tags, admin_templates,
+    admin_trash, admin_uptime, admin_webhooks, api_version, content_api, oembed,
 };
 
 pub use crate::audit_desk::AuditDesk;
@@ -386,6 +386,7 @@ fn assemble(
             door.clone(),
         ))
         .merge(admin_schema_copy::routes(desks.schema_copier, door.clone()))
+        .merge(admin_schema_check::routes(door.clone()))
         .merge(admin_pages::routes(desks.pages, door.clone()))
         .merge(admin_snippets::routes(desks.snippets, door.clone()))
         .merge(admin_glossary::routes(desks.glossary, door.clone()))

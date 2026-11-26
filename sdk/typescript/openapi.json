@@ -7697,6 +7697,86 @@
         ]
       }
     },
+    "/api/admin/v1/schema/checks/": {
+      "post": {
+        "tags": [
+          "admin posts"
+        ],
+        "summary": "Checks JSON-LD twice: whether it is correct schema.org, and whether\nGoogle can show it as a rich result. Each finding says where it is, what\nis wrong and how to fix it, and carries the one change that settles it\nwhen there is one, such as renaming `pricecurrency` to `priceCurrency`.\nNothing is saved. Needs `posts:write`.",
+        "operationId": "check_schema",
+        "parameters": [
+          {
+            "name": "Accept-Version",
+            "in": "header",
+            "description": "The oldest API version the client accepts, such as v1.0.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchemaCheckAsk"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "The two reports",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchemaChecks"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No valid integration key or staff token",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The key lacks posts:write",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The markup is not JSON, or is longer than 64 KB",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "security": [
+          {
+            "admin_key": []
+          }
+        ]
+      }
+    },
     "/api/admin/v1/schema/copies/": {
       "post": {
         "tags": [
@@ -17928,6 +18008,98 @@
           }
         }
       },
+      "CheckFinding": {
+        "type": "object",
+        "description": "One thing a check found.",
+        "required": [
+          "level",
+          "path",
+          "what",
+          "why",
+          "fix"
+        ],
+        "properties": {
+          "change": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CheckFix",
+                "description": "The one change that settles it, or `null` when there is none."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fix": {
+            "type": "string",
+            "description": "What to do."
+          },
+          "level": {
+            "$ref": "#/components/schemas/CheckLevel",
+            "description": "How much it matters."
+          },
+          "path": {
+            "type": "string",
+            "description": "Where it is, such as `@graph[0].offers.priceCurrency`; empty for the\nwhole markup.",
+            "example": "offers.pricecurrency"
+          },
+          "what": {
+            "type": "string",
+            "description": "What is wrong, in one sentence.",
+            "example": "pricecurrency is not a schema.org property; it looks like priceCurrency."
+          },
+          "why": {
+            "type": "string",
+            "description": "Why it matters."
+          }
+        }
+      },
+      "CheckFix": {
+        "type": "object",
+        "description": "One change that settles a finding.",
+        "required": [
+          "target",
+          "path",
+          "from",
+          "to",
+          "label"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "The name or value as written.",
+            "example": "pricecurrency"
+          },
+          "label": {
+            "type": "string",
+            "description": "The fix as a button says it.",
+            "example": "Change pricecurrency to priceCurrency"
+          },
+          "path": {
+            "type": "string",
+            "description": "Where, as in the finding's path.",
+            "example": "offers.pricecurrency"
+          },
+          "target": {
+            "$ref": "#/components/schemas/CheckFixTarget",
+            "description": "What the fix changes."
+          },
+          "to": {
+            "type": "string",
+            "description": "The name or value it becomes.",
+            "example": "priceCurrency"
+          }
+        }
+      },
+      "CheckFixTarget": {
+        "type": "string",
+        "description": "What a fix changes.",
+        "enum": [
+          "property",
+          "type",
+          "value"
+        ]
+      },
       "CheckIn": {
         "type": "object",
         "description": "A check-in: what the editor asks for while the post is open.",
@@ -17938,6 +18110,14 @@
           }
         },
         "additionalProperties": false
+      },
+      "CheckLevel": {
+        "type": "string",
+        "description": "How much a finding matters.",
+        "enum": [
+          "error",
+          "warning"
+        ]
       },
       "Claim": {
         "type": "string",
@@ -22746,6 +22926,70 @@
           }
         },
         "additionalProperties": false
+      },
+      "SchemaCheckAsk": {
+        "type": "object",
+        "description": "The markup to check.",
+        "required": [
+          "json_ld"
+        ],
+        "properties": {
+          "json_ld": {
+            "type": "string",
+            "description": "The JSON-LD, as written: one node, a `@graph` or a list.",
+            "example": "{\"@type\": \"Offer\", \"price\": 5, \"pricecurrency\": \"USD\"}"
+          },
+          "known_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`@id`s defined elsewhere on the page that the markup may point to,\nsuch as the site's organisation."
+          },
+          "visible_text": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The text a reader sees on the page, to flag values the markup gives\nthat the page never shows. Leave it out to skip that check."
+          }
+        },
+        "additionalProperties": false
+      },
+      "SchemaChecks": {
+        "type": "object",
+        "description": "The two reports on one piece of markup.",
+        "required": [
+          "types",
+          "schema_org",
+          "google"
+        ],
+        "properties": {
+          "google": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckFinding"
+            },
+            "description": "Whether Google can show it as a rich result."
+          },
+          "schema_org": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckFinding"
+            },
+            "description": "Whether the markup is correct schema.org."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `@type` of each node at the top, in the order written.",
+            "example": [
+              "Product"
+            ]
+          }
+        }
       },
       "SchemaCopy": {
         "type": "object",
