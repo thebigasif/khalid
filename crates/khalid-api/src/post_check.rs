@@ -88,6 +88,12 @@ pub struct SuggestedSchema {
     /// How sure the suggestion is, from 1 to 100.
     #[schema(example = 90)]
     pub confidence: u8,
+    /// JSON-LD for the type, filled in from what the post says: prices with
+    /// their currency, addresses, phone numbers, opening hours, the author,
+    /// dates, a breadcrumb trail and social profiles. Ready for the post's
+    /// schema field after the writer checks it.
+    #[schema(example = "{\n  \"@context\": \"https://schema.org\",\n  \"@graph\": []\n}")]
+    pub draft: Option<String>,
 }
 
 /// One post's check: findings and score, snippet and schema.

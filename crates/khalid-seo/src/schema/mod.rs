@@ -70,7 +70,8 @@ pub use site_graph::{SiteSearch, site_graph};
 pub(crate) use site_graph::{image_node, node_id, publisher_id, site_home};
 pub use software::{AppKind, SoftwareApplication};
 pub use suggest::{
-    FoundAddress, FoundHours, FoundPrice, PostFacts, SchemaSuggestion, read_facts, suggest_schema,
+    FoundAddress, FoundHours, FoundPrice, PostFacts, SchemaSuggestion, draft_schema, read_facts,
+    suggest_schema,
 };
 pub use template::{SchemaTemplate, SchemaType, TemplateScope};
 pub use video_review::{AggregateRating, Rating, Review};

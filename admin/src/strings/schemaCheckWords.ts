@@ -8,6 +8,9 @@ export const schemaCheckWords = {
   suggestedHint:
     "Khalid read the post and found things search engines understand better as schema.",
   sure: (confidence: number) => `${confidence} percent sure`,
+  fill: (kind: string) => `Fill your schema with a ${kind}`,
+  replace: (kind: string) => `Replace your schema with a ${kind}`,
+  filled: "Khalid filled your schema from the post. Check each value, then save.",
   error: "Fix",
   warning: "Check",
   where: (path: string) => `At ${path}`,

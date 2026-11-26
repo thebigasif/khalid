@@ -3066,6 +3066,8 @@ export type SubscriberStatus = "pending" | "confirmed" | "unsubscribed";
 export type SuggestedSchema = {
   /** How sure the suggestion is, from 1 to 100. */
   confidence: number;
+  /** JSON-LD for the type, filled in from what the post says: prices with their currency, addresses, phone numbers, opening hours, the author, dates, a breadcrumb trail and social profiles. Ready for the post's schema field after the writer checks it. */
+  draft?: string | null;
   /** The schema.org type, such as `Recipe`. */
   kind: string;
   /** Why, naming what the post says. */

@@ -19,7 +19,17 @@ type Props = {
 };
 
 /** The schema types the post's content suggests, each with its reason and how sure. */
-export function SchemaSuggestions({ suggestions }: { suggestions: SuggestedSchema[] }) {
+export function SchemaSuggestions({
+  suggestions,
+  filled,
+  onFill,
+}: {
+  suggestions: SuggestedSchema[];
+  /** Whether the writer's own schema field already holds something. */
+  filled: boolean;
+  /** Puts a suggestion's draft in the schema field. */
+  onFill: (draft: string) => void;
+}) {
   const words = en.schema.reports;
   if (suggestions.length === 0) {
     return null;
@@ -33,6 +43,13 @@ export function SchemaSuggestions({ suggestions }: { suggestions: SuggestedSchem
           <li key={suggestion.kind}>
             <strong>{suggestion.kind}</strong>: {suggestion.reason}{" "}
             <span className="hint">({words.sure(suggestion.confidence)})</span>
+            {suggestion.draft == null ? null : (
+              <p>
+                <button type="button" onClick={() => onFill(suggestion.draft ?? "")}>
+                  {filled ? words.replace(suggestion.kind) : words.fill(suggestion.kind)}
+                </button>
+              </p>
+            )}
           </li>
         ))}
       </ul>
@@ -77,7 +94,14 @@ export function SchemaPanel({ check, live, settings, onSetting, onBlur }: Props)
         <p className="hint">{words.lede}</p>
         {check === null ? null : (
           <>
-            <SchemaSuggestions suggestions={check.schema_suggestions ?? []} />
+            <SchemaSuggestions
+              suggestions={check.schema_suggestions ?? []}
+              filled={settings.schema.trim() !== ""}
+              onFill={(draft) => {
+                onSetting("schema", draft);
+                void recheck(draft).then(() => setNote(words.reports.filled));
+              }}
+            />
             <ul className="types" aria-label={words.types}>
               {schemaTypes(check.schema).map((kind) => (
                 <li key={kind}>{kind}</li>
