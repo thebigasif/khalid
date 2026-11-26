@@ -8,7 +8,7 @@ use std::path::PathBuf;
 use khalid_api::content_store::BoxFuture;
 use khalid_api::link_map::LinkMap;
 use khalid_api::link_suggestions::{LinkSuggestion, Topics, suggest};
-use khalid_api::post_check::{PostCheck, PostChecks, Snippet};
+use khalid_api::post_check::{PostCheck, PostChecks, Snippet, SuggestedSchema};
 use khalid_api::post_store::PostStoreError;
 use khalid_api::resources::PostStatus;
 use khalid_api::site_health::{HealthRun, SiteHealth};
@@ -16,7 +16,10 @@ use khalid_api::site_issues::{SiteIssue, top_issues};
 use khalid_audit::Run;
 use khalid_content::parse_post;
 use khalid_core::Slug;
-use khalid_seo::{HeadTag, SeoPage, SeoSite, head_tags, page_graph};
+use khalid_seo::{
+    HeadTag, SchemaGraph, SchemaNode, SeoPage, SeoSite, head_tags, page_graph, read_facts,
+    suggest_schema,
+};
 use serde_json::Value;
 
 use super::{Found, Site, SitePosts, blocking, failure};
@@ -74,9 +77,24 @@ impl Site {
             .ok_or_else(|| failure("the post's page cannot be made for its search preview"))?;
         let graph = page_graph(site, &page).map_err(PostStoreError::new)?;
         let schema: Value = serde_json::from_str(&graph.to_json()).map_err(PostStoreError::new)?;
-        let check = PostCheck::new(id, report, snippet(site, &page)?, schema);
+        let check = PostCheck::new(id, report, snippet(site, &page)?, schema)
+            .with_schema_suggestions(suggestions(&graph, &post.body));
         Ok(Some(check.with_words(words)))
     }
+}
+
+/// The schema types the markdown `body` suggests that `graph` does not
+/// already carry, most likely first.
+fn suggestions(graph: &SchemaGraph, body: &str) -> Vec<SuggestedSchema> {
+    let present: Vec<&str> = graph.nodes().iter().map(SchemaNode::kind).collect();
+    suggest_schema(&read_facts(body), &present)
+        .into_iter()
+        .map(|found| SuggestedSchema {
+            kind: found.kind.to_owned(),
+            reason: found.reason,
+            confidence: found.confidence,
+        })
+        .collect()
 }
 
 impl Site {

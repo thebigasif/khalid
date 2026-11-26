@@ -2199,6 +2199,8 @@ export type PostCheck = {
   lint: Record<string, unknown>;
   /** The JSON-LD the page would carry: `@context` and `@graph`. */
   schema: Record<string, unknown>;
+  /** Schema types the post's content suggests, most likely first: a recipe for ingredients and a method, a local business for an address, and so on. Empty when it suggests none. */
+  schema_suggestions: SuggestedSchema[];
   /** The SEO and readability scores, from the same findings. */
   scores: SeoScores;
   /** The search result the page would make. */
@@ -3059,6 +3061,16 @@ export type SubscriberList = {
 
 /** Where a subscriber stands. */
 export type SubscriberStatus = "pending" | "confirmed" | "unsubscribed";
+
+/** A schema type the post's content suggests, beyond what the page already carries. */
+export type SuggestedSchema = {
+  /** How sure the suggestion is, from 1 to 100. */
+  confidence: number;
+  /** The schema.org type, such as `Recipe`. */
+  kind: string;
+  /** Why, naming what the post says. */
+  reason: string;
+};
 
 /** One option, with its length checked. */
 export type Suggestion = {

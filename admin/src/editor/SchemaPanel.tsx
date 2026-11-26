@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { PostCheck } from "../api/check";
+import type { PostCheck, SuggestedSchema } from "../api/check";
 import { checkSchema, type SchemaChecks } from "../api/schemaCheck";
 import { en } from "../strings/en";
 import { SchemaReports } from "./SchemaReports";
@@ -17,6 +17,28 @@ type Props = {
   onSetting: (key: TextSetting, value: string) => void;
   onBlur: () => void;
 };
+
+/** The schema types the post's content suggests, each with its reason and how sure. */
+export function SchemaSuggestions({ suggestions }: { suggestions: SuggestedSchema[] }) {
+  const words = en.schema.reports;
+  if (suggestions.length === 0) {
+    return null;
+  }
+  return (
+    <section aria-labelledby="schema-suggested">
+      <h3 id="schema-suggested">{words.suggested}</h3>
+      <p className="hint">{words.suggestedHint}</p>
+      <ul>
+        {suggestions.map((suggestion) => (
+          <li key={suggestion.kind}>
+            <strong>{suggestion.kind}</strong>: {suggestion.reason}{" "}
+            <span className="hint">({words.sure(suggestion.confidence)})</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 /** The schema the page carries, a test for it, and the writer's own JSON-LD. */
 export function SchemaPanel({ check, live, settings, onSetting, onBlur }: Props) {
@@ -55,6 +77,7 @@ export function SchemaPanel({ check, live, settings, onSetting, onBlur }: Props)
         <p className="hint">{words.lede}</p>
         {check === null ? null : (
           <>
+            <SchemaSuggestions suggestions={check.schema_suggestions ?? []} />
             <ul className="types" aria-label={words.types}>
               {schemaTypes(check.schema).map((kind) => (
                 <li key={kind}>{kind}</li>
