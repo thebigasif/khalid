@@ -187,9 +187,9 @@ fn a_slip_message_names_the_place_and_the_fix() {
 }
 
 #[test]
-fn names_far_from_any_known_one_and_real_near_pairs_still_pass() {
-    // Rare types and properties the table does not hold pass, and so do real
-    // names one letter apart from each other.
+fn rare_names_and_real_near_pairs_still_pass() {
+    // Rare types and properties pass, since the whole schema.org vocabulary
+    // is known, and so do real names one letter apart from each other.
     let texts = [
         r#"{"@type": "TouristAttraction", "touristType": "families"}"#,
         r#"{"@type": "Resort", "name": "Sea view"}"#,

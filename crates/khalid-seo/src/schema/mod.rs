@@ -65,3 +65,4 @@ pub(crate) use site_graph::{image_node, node_id, publisher_id, site_home};
 pub use software::{AppKind, SoftwareApplication};
 pub use template::{SchemaTemplate, SchemaType, TemplateScope};
 pub use video_review::{AggregateRating, Rating, Review};
+pub use vocabulary::Vocabulary;
