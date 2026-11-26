@@ -41,6 +41,7 @@ const NO_SOURCE = {
 
 const CHECK: PostCheck = {
   id: POST.id,
+  schema_suggestions: [],
   lint: {
     blocks: false,
     findings: [NO_SOURCE],
