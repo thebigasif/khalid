@@ -219,6 +219,7 @@ there, and the lint tests rewrite this page.
 ## Structured data
 
 - `invalid-structured-data`: The search result details on this page miss a property Google needs. Google ignores details it cannot read in full, so the post loses its richer search result. Add the property this message names to the block it belongs to.
+- `schema-markup-mistake`: The search result details you wrote by hand have a name, a value or a detail that search engines cannot use. Search engines skip what they cannot read, and Google may ignore markup that describes what readers cannot see. Change what this message names in the post's `schema` field, or press its fix button in the editor.
 
 ## Topic clusters
 

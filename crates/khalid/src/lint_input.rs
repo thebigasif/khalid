@@ -238,11 +238,13 @@ pub(crate) fn lint_parts(
     let address = PostAddress::new(parts.collection, parts.locale, &slug, front.date);
     let path = input.routes.address(config, &address).ok();
     let rest = routed(config, &input.routes, parts.locale, &address, parts.path).ok();
-    let gaps = rest.map(|rest| gaps((parts, config, input), &rest, &slug, &rendered));
+    let checked = rest.map(|rest| gaps((parts, config, input), &rest, &slug, &rendered));
+    let (gaps, schema_mistakes) = checked.unwrap_or_default();
     let brief = input.briefs.get(&(parts.locale.clone(), slug.clone()));
     let mut post = LintPost::new(parts.locale.clone(), slug);
     post.brief = brief.cloned();
-    post.structured_data_gaps = gaps.unwrap_or_default();
+    post.structured_data_gaps = gaps;
+    post.schema_mistakes = schema_mistakes;
     post.path = path;
     post.collection = Some(parts.collection.to_owned());
     post.title.clone_from(&front.title);
@@ -307,26 +309,33 @@ pub(crate) fn lint_parts(
 /// becomes lacks, its address ending in `rest`, its slug `slug` and its
 /// body `rendered`, as `khalid-seo` checks the graph the build writes: its
 /// base graph, the schema of its blocks, its collection's schema templates
-/// and its hand-written JSON-LD (plan D-9). A post with no date has no page
-/// yet, and so no gaps.
+/// and its hand-written JSON-LD (plan D-9). Beside them, the mistakes in
+/// its hand-written JSON-LD, as the check against the whole schema.org
+/// vocabulary finds them. A post with no date has no page yet, and so
+/// neither.
 fn gaps(
     (parts, config, input): (&PostParts<'_>, &Config, &LintInput),
     rest: &str,
     slug: &Slug,
     rendered: &Rendered,
-) -> Vec<StructuredDataGap> {
+) -> (Vec<StructuredDataGap>, Vec<String>) {
     let (Some(site), Some(date)) = (&input.seo, parts.front.date) else {
-        return Vec::new();
+        return (Vec::new(), Vec::new());
     };
     let front = parts.front;
     let title = front.title.clone().unwrap_or_else(|| slug.to_string());
     let Ok(mut page) = build_seo::post(parts.locale, (rest, &title), front, date) else {
-        return Vec::new();
+        return (Vec::new(), Vec::new());
     };
     // A block or schema field the build cannot write stops `khalid build`
     // with its own message, so the check reads what could be written.
     let _ = with_schema(&mut page, (parts, config, input), rest, rendered);
-    build_seo::structured_data_gaps(site, &page)
+    let mistakes = front.schema.as_deref().map(|text| {
+        let visible = format!("{title}\n{}", plain_text(&rendered.html));
+        build_seo::schema_mistakes(site, &page, text, &visible)
+    });
+    let gaps = build_seo::structured_data_gaps(site, &page);
+    (gaps, mistakes.unwrap_or_default())
 }
 
 /// Fills `page`, the SEO page of the post made of `parts` at the address

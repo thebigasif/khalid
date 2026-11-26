@@ -11,9 +11,9 @@ use khalid_core::{ArticleSchemaType, Config, Locale, Mode, UserMessage};
 use khalid_lint::StructuredDataGap;
 use khalid_render::{HeadHtml, PostCard, SiteWords};
 use khalid_seo::{
-    ArticleType, FeedScope, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate, PageKind, SeoError,
-    SeoPage, SeoSite, SitemapListing, TemplateWords, Tracking, TranslationKey, UrlPath,
-    check_graph, head_tags, link_translations, page_graph,
+    ArticleType, AuditContext, FeedScope, IndexPolicy, IssueLevel, LinkPolicy, MetaTemplate,
+    PageKind, SeoError, SeoPage, SeoSite, SitemapListing, TemplateWords, Tracking, TranslationKey,
+    UrlPath, audit_json_ld, check_graph, head_tags, link_translations, page_graph,
 };
 
 use crate::build_pages::{self, LanguagePages};
@@ -203,6 +203,43 @@ pub(crate) fn structured_data_gaps(site: &SeoSite, page: &SeoPage) -> Vec<Struct
         .into_iter()
         .filter(|issue| issue.level() == IssueLevel::Blocks)
         .map(|issue| StructuredDataGap::new(issue.kind(), issue.property()))
+        .collect()
+}
+
+/// The mistakes in `text`, the hand-written JSON-LD of `page` on `site`,
+/// each as `path: what fix`, as `khalid-seo`'s check against the whole
+/// schema.org vocabulary finds them, with the values the page's `visible`
+/// text never shows. The `@id`s of the page's own graph, such as the site's
+/// publisher, count as defined. Text that is not JSON has none here: the
+/// build refuses it with its own message.
+pub(crate) fn schema_mistakes(
+    site: &SeoSite,
+    page: &SeoPage,
+    text: &str,
+    visible: &str,
+) -> Vec<String> {
+    let known: Vec<String> = page_graph(site, page)
+        .map(|graph| {
+            let ids = graph.nodes().iter().filter_map(|node| node.id());
+            ids.map(|id| id.as_str().to_owned()).collect()
+        })
+        .unwrap_or_default();
+    let context = AuditContext {
+        visible_text: Some(visible),
+        known_ids: &known,
+    };
+    let found = audit_json_ld(text, &context).unwrap_or_default();
+    found
+        .iter()
+        .map(|finding| {
+            let message = &finding.message;
+            let said = format!("{} {}", message.what(), message.fix());
+            if finding.path.is_empty() {
+                said
+            } else {
+                format!("{}: {said}", finding.path)
+            }
+        })
         .collect()
 }
 

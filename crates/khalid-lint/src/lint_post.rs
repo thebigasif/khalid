@@ -111,6 +111,11 @@ pub struct LintPost {
     /// as `khalid-seo`'s check of the page's graph reports them.
     #[serde(default)]
     pub structured_data_gaps: Vec<StructuredDataGap>,
+    /// Mistakes in the post's hand-written JSON-LD, each as `path: what`,
+    /// as `khalid-seo`'s check against the schema.org vocabulary reports
+    /// them.
+    #[serde(default)]
+    pub schema_mistakes: Vec<String>,
     /// The writer's plan for the post, when it has one: the questions it
     /// answers, the terms it uses and the pages it links to.
     pub brief: Option<LintBrief>,
@@ -151,6 +156,7 @@ impl LintPost {
             keyword_synonyms: Vec::new(),
             collection: None,
             structured_data_gaps: Vec::new(),
+            schema_mistakes: Vec::new(),
             brief: None,
         }
     }

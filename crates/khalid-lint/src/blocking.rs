@@ -143,6 +143,27 @@ impl Rule for InvalidStructuredData {
     }
 }
 
+/// A post whose hand-written JSON-LD has a mistake schema.org or Google
+/// would trip on, one hit per mistake. The caller runs `khalid-seo`'s
+/// check and passes what it found in [`LintPost::schema_mistakes`]. It
+/// warns: the markup still goes out, and the writer decides.
+#[derive(Debug)]
+pub(crate) struct SchemaMarkupMistake;
+
+impl Rule for SchemaMarkupMistake {
+    fn id(&self) -> RuleId {
+        RuleId::new("schema-markup-mistake")
+    }
+
+    fn default_severity(&self) -> Severity {
+        Severity::Warn
+    }
+
+    fn check(&self, post: &LintPost, _site: &dyn SiteView) -> Vec<Hit> {
+        post.schema_mistakes.iter().map(Hit::about).collect()
+    }
+}
+
 /// A post with no title, which is the page's main headline.
 #[derive(Debug)]
 pub(crate) struct NoTitle;

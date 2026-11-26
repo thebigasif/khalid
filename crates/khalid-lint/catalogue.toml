@@ -636,6 +636,12 @@ why = "Google ignores details it cannot read in full, so the post loses its rich
 fix = "Add the property this message names to the block it belongs to."
 guide = "structured-data"
 
+[schema-markup-mistake]
+what = "The search result details you wrote by hand have a name, a value or a detail that search engines cannot use."
+why = "Search engines skip what they cannot read, and Google may ignore markup that describes what readers cannot see."
+fix = "Change what this message names in the post's `schema` field, or press its fix button in the editor."
+guide = "structured-data"
+
 [section-wants-own-page]
 what = "A long section never names the post's subject, so it reads as a second topic."
 why = "A page on one subject is easier to find and to quote, and the side topic gets no page of its own."

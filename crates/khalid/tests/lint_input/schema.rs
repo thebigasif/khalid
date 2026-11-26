@@ -110,3 +110,42 @@ fn a_collection_schema_template_that_misses_a_required_property_blocks_its_posts
         "{report}"
     );
 }
+
+#[test]
+fn hand_written_json_ld_is_checked_against_the_whole_vocabulary() {
+    // The organisation's @id is the site's own, so it points to a node on
+    // the page; the speaker's points to nothing.
+    let event = "schema: |\n  {\"@type\": \"Event\", \"name\": \"Internal links clinic\", \
+                 \"startDate\": \"next Tuesday\", \"location\": \"Leeds\", \
+                 \"recipeIngredient\": \"salt\", \
+                 \"organizer\": {\"@id\": \"ORG\"}, \
+                 \"performer\": {\"@id\": \"https://elsewhere.example/#speaker\"}}\n";
+    let event = event.replace("ORG", "https://www.example.com/blog/#organization");
+    let text = post(
+        "Links clinic",
+        &event,
+        "Come along to the Internal links clinic.",
+    );
+    let posts = [("posts/clinic.md", text.as_str())];
+    let site = site(None, &posts);
+    let report = lint(site.path());
+    let found = found(&report, "schema-markup-mistake", "links-clinic");
+    let starts = [
+        "recipeIngredient: recipeIngredient is not a property of Event.",
+        "startDate: startDate is not written as Date or DateTime.",
+        "performer.@id: The @id https://elsewhere.example/#speaker points to nothing on this page.",
+        "recipeIngredient: The page does not show the recipeIngredient \"salt\" that the markup gives.",
+    ];
+    assert_eq!(found.len(), starts.len(), "{found:?}");
+    for (line, start) in found.iter().zip(starts) {
+        assert!(line.starts_with(start), "{found:?}");
+    }
+    let severities: Vec<&str> = report["findings"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|f| f["rule"] == "schema-markup-mistake")
+        .filter_map(|f| f["severity"].as_str())
+        .collect();
+    assert_eq!(severities, ["warn"; 4], "{report}");
+}

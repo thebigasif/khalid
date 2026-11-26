@@ -1,0 +1,2 @@
+warn schema-markup-mistake: offers.pricecurrency: pricecurrency is not a schema.org property; it looks like priceCurrency.
+warn schema-markup-mistake: offers.price: The page does not show the price "29.99" that the markup gives.
