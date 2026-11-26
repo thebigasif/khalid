@@ -4,6 +4,23 @@ What changed for people who use Khalid, one line per change. Each release is gro
 
 ## Unreleased
 
+## 1.11.0
+
+Khalid now knows the whole schema.org vocabulary, checks the schema you write by hand against it in two reports with one-click fixes, suggests and fills in schema from what a post says, and checks the schema of any page or pasted code in the admin. What changed, in plain words: `docs/releases/1.11.0.md`.
+
+### Added
+
+Khalid now knows the whole schema.org vocabulary (release 30.1): every type, property and allowed value. A typing slip in any schema name you write by hand, such as `TouristAtraction` for `TouristAttraction`, is now caught, not only slips in common names.
+`khalid lint` and the editor now check the schema you write by hand against the whole schema.org vocabulary. They warn when a property does not belong to its type, when a value is not what the property expects (a real date, a number, a web address, an allowed value such as `https://schema.org/InStock`, a three-letter currency code or a length of time such as `PT20M`), when a nested item has a type that does not fit, when an `@id` points to nothing on the page, when schema.org has replaced a name, and when a price, name or other detail in the markup never appears in the post. These are warnings: the post still publishes.
+The editor's Schema panel now checks the schema you write by hand twice, in two reports: "Is it correct schema.org?" and "Can Google show it as a rich result?". Each finding says where it is, what is wrong and what to do, and a finding with one clear fix has a button that makes it, such as "Change pricecurrency to priceCurrency". The same check is in the Admin API at `POST /api/admin/v1/schema/checks/`.
+The editor's Schema panel now suggests schema from what a post says, beyond what its post type gives it: a recipe for a list of ingredients and a method, an article for a byline and a date, a product for prices, a local business for an address, and a page of questions and answers for headings that ask questions. Each suggestion names the type, the reason and how sure Khalid is. A type the page already carries is never suggested.
+Each schema suggestion in the editor's Schema panel now has a button that fills your schema field from the post: prices with their currency, the address, phone number and opening hours, the author and date, the ingredients and steps, the questions and answers, a breadcrumb trail and links to social profiles. Check each value, then save.
+A new Schema check screen, under Grow in the admin menu, checks the schema of any page address, or of code you paste, in the same two reports as the editor: correct schema.org, and what Google needs for a rich result. Use it to check your old site's pages before you move them to Khalid. For an address, Khalid fetches the page, checks every piece of schema on it, and flags details the page never shows. Fix buttons change pasted code in place. The Admin API's `POST /api/admin/v1/schema/checks/` now also takes `{"url": "https://..."}`.
+
+### Changed
+
+Posts are turned into pages by comrak 1.1, up from 0.59, and ten other libraries take their latest small releases (clap, sqlx, regex, toml, bytes, fast_image_resize and others). Pages come out the same as before.
+
 ## 1.10.0
 
 Comments can be closed or turned off and email the owners, the newsletter digest sends itself, readers and comments come in from other platforms, the dashboard lists the alerts that need you, pages get search and sharing settings and can change address, every lint message links its guide, and share pictures are smaller. What changed, in plain words: `docs/releases/1.10.0.md`.
