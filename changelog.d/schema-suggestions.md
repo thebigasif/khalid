@@ -1,2 +1,0 @@
-Added
-- The editor's Schema panel now suggests schema from what a post says, beyond what its post type gives it: a recipe for a list of ingredients and a method, an article for a byline and a date, a product for prices, a local business for an address, and a page of questions and answers for headings that ask questions. Each suggestion names the type, the reason and how sure Khalid is. A type the page already carries is never suggested.

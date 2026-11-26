@@ -1,2 +1,0 @@
-Added
-- A new Schema check screen, under Grow in the admin menu, checks the schema of any page address, or of code you paste, in the same two reports as the editor: correct schema.org, and what Google needs for a rich result. Use it to check your old site's pages before you move them to Khalid. For an address, Khalid fetches the page, checks every piece of schema on it, and flags details the page never shows. Fix buttons change pasted code in place. The Admin API's `POST /api/admin/v1/schema/checks/` now also takes `{"url": "https://..."}`.
