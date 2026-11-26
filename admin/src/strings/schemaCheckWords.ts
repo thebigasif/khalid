@@ -4,6 +4,10 @@ export const schemaCheckWords = {
   schemaOrg: "Is it correct schema.org?",
   google: "Can Google show it as a rich result?",
   nothing: "Nothing to fix.",
+  suggested: "Schema your post could carry",
+  suggestedHint:
+    "Khalid read the post and found things search engines understand better as schema.",
+  sure: (confidence: number) => `${confidence} percent sure`,
   error: "Fix",
   warning: "Check",
   where: (path: string) => `At ${path}`,

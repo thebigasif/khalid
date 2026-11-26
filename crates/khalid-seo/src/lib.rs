@@ -106,6 +106,9 @@ pub use schema::{
     AuditContext, CopiedSchema, CopySchemaError, FindingLevel, FixTarget, SchemaFinding, SchemaFix,
     SchemaReport, SchemaReports, Vocabulary, audit_json_ld, schema_reports,
 };
+pub use schema::{
+    FoundAddress, FoundHours, FoundPrice, PostFacts, SchemaSuggestion, read_facts, suggest_schema,
+};
 pub use schema_map::{SchemaMap, schema_map_url, site_schema};
 pub use seo_error::SeoError;
 pub use site::SeoSite;

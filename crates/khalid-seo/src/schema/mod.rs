@@ -32,6 +32,7 @@ mod schema_node;
 mod schema_value;
 mod site_graph;
 mod software;
+mod suggest;
 mod template;
 mod video_review;
 mod vocabulary;
@@ -68,6 +69,9 @@ pub use schema_value::SchemaValue;
 pub use site_graph::{SiteSearch, site_graph};
 pub(crate) use site_graph::{image_node, node_id, publisher_id, site_home};
 pub use software::{AppKind, SoftwareApplication};
+pub use suggest::{
+    FoundAddress, FoundHours, FoundPrice, PostFacts, SchemaSuggestion, read_facts, suggest_schema,
+};
 pub use template::{SchemaTemplate, SchemaType, TemplateScope};
 pub use video_review::{AggregateRating, Rating, Review};
 pub use vocabulary::Vocabulary;

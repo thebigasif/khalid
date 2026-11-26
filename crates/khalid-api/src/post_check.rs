@@ -75,6 +75,21 @@ pub struct Snippet {
     pub description: String,
 }
 
+/// A schema type the post's content suggests, beyond what the page
+/// already carries.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, ToSchema)]
+pub struct SuggestedSchema {
+    /// The schema.org type, such as `Recipe`.
+    #[schema(example = "Recipe")]
+    pub kind: String,
+    /// Why, naming what the post says.
+    #[schema(example = "The post lists 6 ingredients and 4 steps.")]
+    pub reason: String,
+    /// How sure the suggestion is, from 1 to 100.
+    #[schema(example = 90)]
+    pub confidence: u8,
+}
+
 /// One post's check: findings and score, snippet and schema.
 #[derive(Debug, Clone, PartialEq, Serialize, ToSchema)]
 pub struct PostCheck {
@@ -95,6 +110,10 @@ pub struct PostCheck {
     /// The JSON-LD the page would carry: `@context` and `@graph`.
     #[schema(value_type = Object)]
     schema: Value,
+    /// Schema types the post's content suggests, most likely first: a
+    /// recipe for ingredients and a method, a local business for an
+    /// address, and so on. Empty when it suggests none.
+    schema_suggestions: Vec<SuggestedSchema>,
 }
 
 impl PostCheck {
@@ -107,7 +126,22 @@ impl PostCheck {
             words: 0,
             snippet,
             schema,
+            schema_suggestions: Vec::new(),
         }
+    }
+
+    /// The same check, with the schema types the post's content suggests.
+    #[must_use]
+    pub fn with_schema_suggestions(self, schema_suggestions: Vec<SuggestedSchema>) -> Self {
+        Self {
+            schema_suggestions,
+            ..self
+        }
+    }
+
+    /// The schema types the post's content suggests.
+    pub fn schema_suggestions(&self) -> &[SuggestedSchema] {
+        &self.schema_suggestions
     }
 
     /// The same check, counting `words` in the post's text.

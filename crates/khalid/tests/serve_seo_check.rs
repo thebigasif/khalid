@@ -411,3 +411,37 @@ fn the_site_health_sends_the_score_khalid_audit_kept() {
     assert_eq!(json["last"]["score"], 100, "{json}");
     assert_eq!(json["trend"].as_array().unwrap().len(), 1, "{json}");
 }
+
+#[test]
+fn the_check_suggests_schema_from_what_the_post_says() {
+    let site = demo_site();
+    let mut file = site.path().to_path_buf();
+    file.push(FILE);
+    let text = fs::read_to_string(&file).unwrap();
+    let visit = "\n\nVisit our clinic at 12 High Street, Leeds. Call us on 0113 496 0000.\n";
+    fs::write(&file, format!("{text}{visit}")).unwrap();
+    let key = writer_key(site.path());
+    let server = start(site.path());
+
+    let suggested = check(&server, &key)["schema_suggestions"].clone();
+    let business = suggested
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|s| s["kind"] == "LocalBusiness")
+        .unwrap_or_else(|| panic!("{suggested}"));
+    assert_eq!(
+        business["reason"],
+        "The post gives an address, 12 High Street and a phone number, 0113 496 0000."
+    );
+    assert_eq!(business["confidence"], 75);
+    // The page is already a blog post, so an article is never suggested.
+    assert!(
+        !suggested
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|s| s["kind"] == "Article"),
+        "{suggested}"
+    );
+}

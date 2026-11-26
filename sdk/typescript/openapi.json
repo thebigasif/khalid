@@ -21674,7 +21674,8 @@
           "scores",
           "words",
           "snippet",
-          "schema"
+          "schema",
+          "schema_suggestions"
         ],
         "properties": {
           "id": {
@@ -21688,6 +21689,13 @@
           "schema": {
             "type": "object",
             "description": "The JSON-LD the page would carry: `@context` and `@graph`."
+          },
+          "schema_suggestions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuggestedSchema"
+            },
+            "description": "Schema types the post's content suggests, most likely first: a\nrecipe for ingredients and a method, a local business for an\naddress, and so on. Empty when it suggests none."
           },
           "scores": {
             "$ref": "#/components/schemas/SeoScores",
@@ -24488,6 +24496,34 @@
           "confirmed",
           "unsubscribed"
         ]
+      },
+      "SuggestedSchema": {
+        "type": "object",
+        "description": "A schema type the post's content suggests, beyond what the page\nalready carries.",
+        "required": [
+          "kind",
+          "reason",
+          "confidence"
+        ],
+        "properties": {
+          "confidence": {
+            "type": "integer",
+            "format": "int32",
+            "description": "How sure the suggestion is, from 1 to 100.",
+            "example": 90,
+            "minimum": 0
+          },
+          "kind": {
+            "type": "string",
+            "description": "The schema.org type, such as `Recipe`.",
+            "example": "Recipe"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why, naming what the post says.",
+            "example": "The post lists 6 ingredients and 4 steps."
+          }
+        }
       },
       "Suggestion": {
         "type": "object",

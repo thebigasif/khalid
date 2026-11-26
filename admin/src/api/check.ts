@@ -5,6 +5,8 @@ import type { components } from "./schema";
 export type PostCheck = components["schemas"]["PostCheck"];
 /** A post's SEO and readability scores, each out of 100. */
 export type SeoScores = components["schemas"]["SeoScores"];
+/** A schema type the post's content suggests, with the reason and how sure. */
+export type SuggestedSchema = components["schemas"]["SuggestedSchema"];
 /** The lines of a search result for a post. */
 export type Snippet = components["schemas"]["Snippet"];
 
