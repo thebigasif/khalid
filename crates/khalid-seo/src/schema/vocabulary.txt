@@ -1,0 +1,3029 @@
+# schema.org 30.1, every type, enumeration member and property.
+# Made by scripts/schema-vocabulary.py from schema.org's published tables.
+# schema.org is published under CC BY-SA 3.0, https://schema.org/docs/terms.html
+T 3DModel MediaObject
+T AMRadioChannel RadioChannel
+T APIReference TechArticle
+T AboutPage WebPage
+T AcceptAction AllocateAction
+T Accommodation Place
+T AccountingService FinancialService
+T AchieveAction Action
+T Action Thing
+T ActionAccessSpecification Intangible
+T ActionStatusType StatusEnumeration
+T ActivateAction ControlAction
+T AddAction UpdateAction
+T AdministrativeArea Place
+T AdultEntertainment EntertainmentBusiness
+T AdultOrientedEnumeration Enumeration
+T AdvertiserContentArticle Article
+T AggregateOffer Offer
+T AggregateRating Rating
+T AgreeAction ReactAction
+T Airline Organization
+T Airport CivicStructure
+T AlignmentObject Intangible
+T AllocateAction OrganizeAction
+T AmpStory CreativeWork,MediaObject
+T AmusementPark EntertainmentBusiness
+T AnalysisNewsArticle NewsArticle
+T AnatomicalStructure MedicalEntity
+T AnatomicalSystem MedicalEntity
+T AnimalShelter LocalBusiness
+T Answer Comment
+T Apartment Accommodation
+T ApartmentComplex Residence
+T AppendAction InsertAction
+T ApplyAction OrganizeAction
+T ApprovedIndication MedicalIndication
+T Aquarium CivicStructure
+T ArchiveComponent CreativeWork
+T ArchiveOrganization LocalBusiness
+T ArriveAction MoveAction
+T ArtGallery EntertainmentBusiness
+T Artery Vessel
+T Article CreativeWork
+T AskAction CommunicateAction
+T AskPublicNewsArticle NewsArticle
+T AssessAction Action
+T AssignAction AllocateAction
+T Atlas CreativeWork
+T Attorney LegalService
+T Audience Intangible
+T AudioObject MediaObject
+T AudioObjectSnapshot AudioObject
+T Audiobook AudioObject,Book
+T AuthenticateAction ControlAction
+T AuthorizeAction AllocateAction
+T AutoBodyShop AutomotiveBusiness
+T AutoDealer AutomotiveBusiness
+T AutoPartsStore AutomotiveBusiness,Store
+T AutoRental AutomotiveBusiness
+T AutoRepair AutomotiveBusiness
+T AutoWash AutomotiveBusiness
+T AutomatedTeller FinancialService
+T AutomotiveBusiness LocalBusiness
+T BackgroundNewsArticle NewsArticle
+T Bakery FoodEstablishment
+T BankAccount FinancialProduct
+T BankOrCreditUnion FinancialService
+T BarOrPub FoodEstablishment
+T Barcode ImageObject
+T Beach CivicStructure
+T BeautySalon HealthAndBeautyBusiness
+T BedAndBreakfast LodgingBusiness
+T BedDetails Intangible
+T BedType QualitativeValue
+T BefriendAction InteractAction
+T BikeStore Store
+T BioChemEntity Thing
+T Blog CreativeWork
+T BlogPosting SocialMediaPosting
+T BloodTest MedicalTest
+T BoardingPolicyType Enumeration
+T BoatReservation Reservation
+T BoatTerminal CivicStructure
+T BoatTrip Trip
+T BodyMeasurementTypeEnumeration MeasurementTypeEnumeration
+T BodyOfWater Landform
+T Bone AnatomicalStructure
+T Book CreativeWork
+T BookFormatType Enumeration
+T BookSeries CreativeWorkSeries
+T BookStore Store
+T BookmarkAction OrganizeAction
+T Boolean -
+T BorrowAction TransferAction
+T BowlingAlley SportsActivityLocation
+T BrainStructure AnatomicalStructure
+T Brand Intangible
+T BreadcrumbList ItemList
+T Brewery FoodEstablishment
+T Bridge CivicStructure
+T BroadcastChannel Intangible
+T BroadcastEvent PublicationEvent
+T BroadcastFrequencySpecification Intangible
+T BroadcastService Service
+T BrokerageAccount InvestmentOrDeposit
+T BuddhistTemple PlaceOfWorship
+T BusOrCoach Vehicle
+T BusReservation Reservation
+T BusStation CivicStructure
+T BusStop CivicStructure
+T BusTrip Trip
+T BusinessAudience Audience
+T BusinessEntityType Enumeration
+T BusinessEvent Event
+T BusinessFunction Enumeration
+T BuyAction TradeAction
+T CDCPMDRecord StructuredValue
+T CableOrSatelliteService Service
+T CafeOrCoffeeShop FoodEstablishment
+T Campground CivicStructure,LodgingBusiness
+T CampingPitch Accommodation
+T Canal BodyOfWater
+T CancelAction PlanAction
+T Car Vehicle
+T CarUsageType Enumeration
+T Casino EntertainmentBusiness
+T CategoryCode DefinedTerm
+T CategoryCodeSet DefinedTermSet
+T CatholicChurch Church
+T Cemetery CivicStructure
+T Certification CreativeWork
+T CertificationStatusEnumeration Enumeration
+T Chapter CreativeWork
+T CheckAction FindAction
+T CheckInAction CommunicateAction
+T CheckOutAction CommunicateAction
+T CheckoutPage WebPage
+T ChemicalSubstance BioChemEntity
+T ChildCare LocalBusiness
+T ChildrensEvent Event
+T ChooseAction AssessAction
+T Church PlaceOfWorship
+T City AdministrativeArea
+T CityHall GovernmentBuilding
+T CivicStructure Place
+T Claim CreativeWork
+T ClaimReview Review
+T Class Intangible
+T Clip CreativeWork
+T ClothingStore Store
+T Code CreativeWork >SoftwareSourceCode
+T Collection CreativeWork
+T CollectionPage WebPage
+T CollegeOrUniversity EducationalOrganization
+T ComedyClub EntertainmentBusiness
+T ComedyEvent Event
+T ComicCoverArt ComicStory,CoverArt
+T ComicIssue PublicationIssue
+T ComicSeries Periodical
+T ComicStory CreativeWork
+T Comment CreativeWork
+T CommentAction CommunicateAction
+T CommunicateAction InteractAction
+T CompleteDataFeed DataFeed
+T CompoundPriceSpecification PriceSpecification
+T ComputerLanguage Intangible
+T ComputerStore Store
+T ConferenceEvent Event
+T ConfirmAction InformAction
+T Consortium Organization
+T ConstraintNode Intangible
+T ConsumeAction Action
+T ContactPage WebPage
+T ContactPoint StructuredValue
+T ContactPointOption Enumeration
+T Continent Landform
+T ControlAction Action
+T ConvenienceStore Store
+T Conversation CreativeWork
+T CookAction CreateAction
+T Cooperative Organization
+T Corporation Organization
+T CorrectionComment Comment
+T Country AdministrativeArea
+T Course CreativeWork,LearningResource
+T CourseInstance Event
+T Courthouse GovernmentBuilding
+T CoverArt VisualArtwork
+T CovidTestingFacility MedicalClinic
+T CreateAction Action
+T CreativeWork Thing
+T CreativeWorkSeason CreativeWork
+T CreativeWorkSeries CreativeWork,Series
+T Credential CreativeWork
+T CreditCard LoanOrCredit,PaymentCard
+T Crematorium CivicStructure
+T CriticReview Review
+T CssSelectorType Text
+T CurrencyConversionService FinancialProduct
+T DDxElement MedicalIntangible
+T DENonprofitType NonprofitType
+T DanceEvent Event
+T DanceGroup PerformingGroup
+T DataCatalog CreativeWork
+T DataDownload MediaObject
+T DataFeed Dataset
+T DataFeedItem Intangible
+T DataType -
+T Dataset CreativeWork
+T Date -
+T DateTime -
+T DatedMoneySpecification StructuredValue >MonetaryAmount
+T DayOfWeek Enumeration
+T DaySpa HealthAndBeautyBusiness
+T DeactivateAction ControlAction
+T DeclarationOfConformity Certification
+T DefenceEstablishment GovernmentBuilding
+T DefinedRegion Place,StructuredValue
+T DefinedTerm Intangible
+T DefinedTermSet CreativeWork
+T DeleteAction UpdateAction
+T DeliveryChargeSpecification PriceSpecification
+T DeliveryEvent Event
+T DeliveryMethod Enumeration
+T DeliveryTimeSettings StructuredValue >ShippingConditions
+T Demand Intangible
+T Dentist LocalBusiness,MedicalBusiness,MedicalOrganization
+T DepartAction MoveAction
+T DepartmentStore Store
+T DepositAccount BankAccount,InvestmentOrDeposit
+T DiagnosticLab MedicalOrganization
+T DiagnosticProcedure MedicalProcedure
+T Diet CreativeWork,LifestyleModification
+T DietarySupplement Product,Substance
+T DigitalDocument CreativeWork
+T DigitalDocumentPermission Intangible
+T DigitalDocumentPermissionType Enumeration
+T DigitalPlatformEnumeration Enumeration
+T DigitalProductPassport Certification
+T DisagreeAction ReactAction
+T DiscoverAction FindAction
+T DiscussionForumPosting SocialMediaPosting
+T DislikeAction ReactAction
+T Distance Quantity
+T Distillery FoodEstablishment
+T DonateAction TransferAction
+T DoseSchedule MedicalIntangible
+T DownloadAction TransferAction
+T DrawAction CreateAction
+T Drawing CreativeWork
+T DrinkAction ConsumeAction
+T DriveWheelConfigurationValue QualitativeValue
+T Drug Product,Substance
+T DrugClass MedicalEntity
+T DrugCost MedicalEntity
+T DrugCostCategory MedicalEnumeration
+T DrugLegalStatus MedicalIntangible
+T DrugPregnancyCategory MedicalEnumeration
+T DrugPrescriptionStatus MedicalEnumeration
+T DrugStrength MedicalIntangible
+T DryCleaningOrLaundry LocalBusiness
+T Duration Quantity
+T EUEnergyEfficiencyEnumeration EnergyEfficiencyEnumeration
+T EatAction ConsumeAction
+T EducationEvent Event
+T EducationalAudience Audience
+T EducationalOccupationalCredential Credential
+T EducationalOccupationalProgram Intangible
+T EducationalOrganization CivicStructure,Organization
+T Electrician HomeAndConstructionBusiness
+T ElectronicsStore Store
+T ElementarySchool EducationalOrganization
+T EmailMessage Message
+T Embassy GovernmentBuilding
+T EmergencyService LocalBusiness
+T EmployeeRole OrganizationRole
+T EmployerAggregateRating AggregateRating
+T EmployerReview Review
+T EmploymentAgency LocalBusiness
+T EndorseAction ReactAction
+T EndorsementRating Rating
+T Energy Quantity
+T EnergyConsumptionDetails Intangible
+T EnergyEfficiencyEnumeration Enumeration
+T EnergyStarEnergyEfficiencyEnumeration EnergyEfficiencyEnumeration
+T EngineSpecification StructuredValue
+T EntertainmentBusiness LocalBusiness
+T EntryPoint Intangible
+T Enumeration Intangible
+T EnvironmentalProductDeclaration Certification
+T Episode CreativeWork
+T Error InstantaneousEvent
+T Event Thing
+T EventAttendanceModeEnumeration Enumeration
+T EventReservation Reservation
+T EventSeries Event,Series
+T EventStatusType StatusEnumeration
+T EventVenue CivicStructure
+T ExchangeRateSpecification StructuredValue
+T ExerciseAction PlayAction
+T ExerciseGym SportsActivityLocation
+T ExercisePlan CreativeWork,PhysicalActivity
+T ExhibitionEvent Event
+T FAQPage WebPage
+T FMRadioChannel RadioChannel
+T False -
+T FastFoodRestaurant FoodEstablishment
+T Festival Event
+T FilmAction CreateAction
+T FinancialIncentive Intangible
+T FinancialProduct Service
+T FinancialService LocalBusiness
+T FindAction Action
+T FireStation CivicStructure,EmergencyService
+T Flight Trip
+T FlightReservation Reservation
+T Float Number
+T FloorPlan Intangible
+T Florist Store
+T FollowAction InteractAction
+T FoodEstablishment LocalBusiness
+T FoodEstablishmentReservation Reservation
+T FoodEvent Event
+T FoodService Service
+T FulfillmentTypeEnumeration Enumeration
+T FundingAgency Project
+T FundingScheme Organization
+T FurnitureStore Store
+T Game CreativeWork
+T GameAvailabilityEnumeration Enumeration
+T GamePlayMode Enumeration
+T GameServer Intangible
+T GameServerStatus StatusEnumeration
+T GardenStore Store
+T GasStation AutomotiveBusiness
+T GatedResidenceCommunity Residence
+T GenderType Enumeration
+T Gene BioChemEntity
+T GeneralContractor HomeAndConstructionBusiness
+T GeoCircle GeoShape
+T GeoCoordinates StructuredValue
+T GeoShape StructuredValue
+T GeospatialGeometry Intangible
+T GiveAction TransferAction
+T GolfCourse SportsActivityLocation
+T GovernmentBenefitsType Enumeration
+T GovernmentBuilding CivicStructure
+T GovernmentOffice LocalBusiness
+T GovernmentOrganization Organization
+T GovernmentPermit Permit
+T GovernmentService Service
+T Grant Intangible
+T GroceryStore Store
+T Guide CreativeWork
+T HVACBusiness HomeAndConstructionBusiness
+T Hackathon Event
+T HairSalon HealthAndBeautyBusiness
+T HardwareStore Store
+T HealthAndBeautyBusiness LocalBusiness
+T HealthAspectEnumeration Enumeration
+T HealthClub HealthAndBeautyBusiness,SportsActivityLocation
+T HealthInsurancePlan Intangible
+T HealthPlanCostSharingSpecification Intangible
+T HealthPlanFormulary Intangible
+T HealthPlanNetwork Intangible
+T HealthTopicContent WebContent
+T HighSchool EducationalOrganization
+T HinduTemple PlaceOfWorship
+T HobbyShop Store
+T HomeAndConstructionBusiness LocalBusiness
+T HomeGoodsStore Store
+T Hospital CivicStructure,EmergencyService,MedicalOrganization
+T Hostel LodgingBusiness
+T Hotel LodgingBusiness
+T HotelRoom Room
+T House Accommodation
+T HousePainter HomeAndConstructionBusiness
+T HowTo CreativeWork
+T HowToDirection CreativeWork,ListItem
+T HowToItem ListItem
+T HowToSection CreativeWork,ItemList,ListItem
+T HowToStep CreativeWork,ItemList,ListItem
+T HowToSupply HowToItem
+T HowToTip CreativeWork,ListItem
+T HowToTool HowToItem
+T HyperToc CreativeWork
+T HyperTocEntry CreativeWork
+T IPTCDigitalSourceEnumeration MediaEnumeration
+T ITNonprofitType NonprofitType
+T IceCreamShop FoodEstablishment
+T IgnoreAction AssessAction
+T ImageGallery MediaGallery
+T ImageObject MediaObject
+T ImageObjectSnapshot ImageObject
+T ImagingTest MedicalTest
+T IncentiveQualifiedExpenseType Enumeration
+T IncentiveStatus Enumeration
+T IncentiveType Enumeration
+T IndividualPhysician Physician
+T IndividualProduct Product
+T InfectiousAgentClass MedicalEnumeration
+T InfectiousDisease MedicalCondition
+T InformAction CommunicateAction
+T InsertAction AddAction
+T InstallAction ConsumeAction
+T InstantaneousEvent StructuredValue
+T InsuranceAgency FinancialService
+T Intangible Thing
+T Integer Number
+T InteractAction Action
+T InteractionCounter StructuredValue
+T InternetCafe LocalBusiness
+T InvestmentFund InvestmentOrDeposit
+T InvestmentOrDeposit FinancialProduct
+T InviteAction CommunicateAction
+T Invoice Intangible
+T ItemAvailability Enumeration
+T ItemList Intangible
+T ItemListOrderType Enumeration
+T ItemPage WebPage
+T JewelryStore Store
+T JobPosting Intangible
+T JoinAction InteractAction
+T Joint AnatomicalStructure
+T LakeBodyOfWater BodyOfWater
+T Landform Place
+T LandmarksOrHistoricalBuildings Place
+T Language Intangible
+T LearningResource CreativeWork
+T LeaveAction InteractAction
+T LegalForceStatus StatusEnumeration
+T LegalService LocalBusiness
+T LegalValueLevel Enumeration
+T Legislation CreativeWork
+T LegislationObject Legislation,MediaObject
+T LegislativeBuilding GovernmentBuilding
+T LendAction TransferAction
+T Library LocalBusiness
+T LibrarySystem Organization
+T LifestyleModification MedicalEntity
+T Ligament AnatomicalStructure
+T LikeAction ReactAction
+T LinkRole Role
+T LiquorStore Store
+T ListItem Intangible
+T ListenAction ConsumeAction
+T LiteraryEvent Event
+T LiveBlogPosting BlogPosting
+T LoanOrCredit FinancialProduct
+T LocalBusiness Organization,Place
+T LocationFeatureSpecification PropertyValue
+T Locksmith HomeAndConstructionBusiness
+T LodgingBusiness LocalBusiness
+T LodgingReservation Reservation
+T LoginAction ControlAction
+T LoseAction AchieveAction
+T LymphaticVessel Vessel
+T Manuscript CreativeWork
+T Map CreativeWork
+T MapCategoryType Enumeration
+T MarryAction InteractAction
+T Mass Quantity
+T MathSolver CreativeWork
+T MaximumDoseSchedule DoseSchedule
+T MeasurementMethodEnum Enumeration
+T MeasurementTypeEnumeration Enumeration
+T MediaEnumeration Enumeration
+T MediaGallery CollectionPage
+T MediaManipulationRatingEnumeration Enumeration
+T MediaObject CreativeWork
+T MediaReview Review
+T MediaReviewItem CreativeWork
+T MediaSubscription Intangible
+T MedicalAudience Audience,PeopleAudience
+T MedicalAudienceType MedicalEnumeration
+T MedicalBusiness LocalBusiness
+T MedicalCause MedicalEntity
+T MedicalClinic MedicalBusiness,MedicalOrganization
+T MedicalCode CategoryCode,MedicalIntangible
+T MedicalCondition MedicalEntity
+T MedicalConditionStage MedicalIntangible
+T MedicalContraindication MedicalEntity
+T MedicalDevice MedicalEntity
+T MedicalDevicePurpose MedicalEnumeration
+T MedicalEntity Thing
+T MedicalEnumeration Enumeration
+T MedicalEvidenceLevel MedicalEnumeration
+T MedicalGuideline MedicalEntity
+T MedicalGuidelineContraindication MedicalGuideline
+T MedicalGuidelineRecommendation MedicalGuideline
+T MedicalImagingTechnique MedicalEnumeration
+T MedicalIndication MedicalEntity
+T MedicalIntangible MedicalEntity
+T MedicalObservationalStudy MedicalStudy
+T MedicalObservationalStudyDesign MedicalEnumeration
+T MedicalOrganization Organization
+T MedicalProcedure MedicalEntity
+T MedicalProcedureType MedicalEnumeration
+T MedicalRiskCalculator MedicalRiskEstimator
+T MedicalRiskEstimator MedicalEntity
+T MedicalRiskFactor MedicalEntity
+T MedicalRiskScore MedicalRiskEstimator
+T MedicalScholarlyArticle ScholarlyArticle
+T MedicalSign MedicalSignOrSymptom
+T MedicalSignOrSymptom MedicalCondition
+T MedicalSpecialty MedicalEnumeration,Specialty
+T MedicalStudy MedicalEntity
+T MedicalStudyStatus MedicalEnumeration
+T MedicalSymptom MedicalSignOrSymptom
+T MedicalTest MedicalEntity
+T MedicalTestPanel MedicalTest
+T MedicalTherapy TherapeuticProcedure
+T MedicalTrial MedicalStudy
+T MedicalTrialDesign MedicalEnumeration
+T MedicalWebPage WebPage
+T MedicineSystem MedicalEnumeration
+T MeetingRoom Room
+T MemberProgram Intangible
+T MemberProgramTier Intangible
+T MensClothingStore Store
+T Menu CreativeWork
+T MenuItem Intangible
+T MenuSection CreativeWork
+T MerchantReturnEnumeration Enumeration
+T MerchantReturnPolicy Intangible
+T MerchantReturnPolicySeasonalOverride Intangible
+T Message CreativeWork
+T MiddleSchool EducationalOrganization
+T MobileApplication SoftwareApplication
+T MobilePhoneStore Store
+T MolecularEntity BioChemEntity
+T MonetaryAmount StructuredValue
+T MonetaryAmountDistribution QuantitativeValueDistribution
+T MonetaryGrant Grant
+T MoneyTransfer TransferAction
+T MortgageLoan LoanOrCredit
+T Mosque PlaceOfWorship
+T Motel LodgingBusiness
+T Motorcycle Vehicle
+T MotorcycleDealer AutomotiveBusiness
+T MotorcycleRepair AutomotiveBusiness
+T MotorizedBicycle Vehicle
+T Mountain Landform
+T MoveAction Action
+T Movie CreativeWork
+T MovieClip Clip
+T MovieRentalStore Store
+T MovieSeries CreativeWorkSeries
+T MovieTheater CivicStructure,EntertainmentBusiness
+T MovingCompany HomeAndConstructionBusiness
+T Muscle AnatomicalStructure
+T Museum CivicStructure
+T MusicAlbum MusicPlaylist
+T MusicAlbumProductionType Enumeration
+T MusicAlbumReleaseType Enumeration
+T MusicComposition CreativeWork
+T MusicEvent Event
+T MusicGroup PerformingGroup
+T MusicPlaylist CreativeWork
+T MusicRecording CreativeWork
+T MusicRelease MusicPlaylist
+T MusicReleaseFormatType Enumeration
+T MusicStore Store
+T MusicVenue CivicStructure
+T MusicVideoObject MediaObject
+T NGO Organization
+T NLNonprofitType NonprofitType
+T NailSalon HealthAndBeautyBusiness
+T Nerve AnatomicalStructure
+T NewsArticle Article
+T NewsMediaOrganization Organization
+T Newspaper Periodical
+T NightClub EntertainmentBusiness
+T NonprofitType Enumeration
+T Notary LegalService
+T NoteDigitalDocument DigitalDocument
+T Number -
+T NutritionInformation StructuredValue
+T Observation Intangible,QuantitativeValue
+T Occupation Intangible
+T OccupationalExperienceRequirements Intangible
+T OccupationalTherapy MedicalTherapy
+T OceanBodyOfWater BodyOfWater
+T Offer Intangible
+T OfferCatalog ItemList
+T OfferForLease Offer
+T OfferForPurchase Offer
+T OfferItemCondition Enumeration
+T OfferShippingDetails StructuredValue
+T OfficeEquipmentStore Store
+T OnDemandEvent PublicationEvent
+T OnlineBusiness Organization
+T OnlineMarketplace OnlineStore
+T OnlineStore OnlineBusiness
+T OpeningHoursSpecification StructuredValue
+T OperatingSystem SoftwareApplication
+T OpinionNewsArticle NewsArticle
+T Optician MedicalBusiness
+T Order Intangible
+T OrderAction TradeAction
+T OrderItem StructuredValue
+T OrderStatus StatusEnumeration
+T Organization Thing
+T OrganizationRole Role
+T OrganizeAction Action
+T OutletStore Store
+T OwnershipInfo StructuredValue
+T PaintAction CreateAction
+T Painting CreativeWork
+T PalliativeProcedure MedicalProcedure,MedicalTherapy
+T ParcelDelivery Intangible
+T ParentAudience PeopleAudience
+T Park CivicStructure
+T ParkingFacility CivicStructure
+T PathologyTest MedicalTest
+T Patient MedicalAudience,Person
+T PawnShop Store
+T PayAction TradeAction
+T PaymentCard FinancialProduct,PaymentMethod
+T PaymentChargeSpecification PriceSpecification
+T PaymentMethod Intangible
+T PaymentMethodType Enumeration
+T PaymentService FinancialProduct,PaymentMethod
+T PaymentStatusType StatusEnumeration
+T PeopleAudience Audience
+T PerformAction PlayAction
+T PerformanceRole Role
+T PerformingArtsEvent Event
+T PerformingArtsTheater CivicStructure
+T PerformingGroup Organization
+T Periodical CreativeWorkSeries
+T Permit Intangible
+T Person Thing
+T PetStore Store
+T Pharmacy MedicalBusiness,MedicalOrganization
+T Photograph CreativeWork
+T PhotographAction CreateAction
+T PhysicalActivity LifestyleModification
+T PhysicalActivityCategory Enumeration
+T PhysicalExam MedicalEnumeration,MedicalProcedure
+T PhysicalTherapy MedicalTherapy
+T Physician MedicalBusiness,MedicalOrganization
+T PhysiciansOffice Physician
+T Place Thing
+T PlaceOfWorship CivicStructure
+T PlanAction OrganizeAction
+T Play CreativeWork
+T PlayAction Action
+T PlayGameAction ConsumeAction
+T Playground CivicStructure
+T Plumber HomeAndConstructionBusiness
+T PodcastEpisode Episode
+T PodcastSeason CreativeWorkSeason
+T PodcastSeries CreativeWorkSeries
+T PoliceStation CivicStructure,EmergencyService
+T PoliticalParty Organization
+T Pond BodyOfWater
+T PostOffice GovernmentOffice
+T PostalAddress ContactPoint
+T PostalCodeRangeSpecification StructuredValue
+T Poster CreativeWork
+T PreOrderAction TradeAction
+T PrependAction InsertAction
+T Preschool EducationalOrganization
+T PresentationDigitalDocument DigitalDocument
+T PreventionIndication MedicalIndication
+T PriceComponentTypeEnumeration Enumeration
+T PriceSpecification StructuredValue
+T PriceTypeEnumeration Enumeration
+T Product Thing
+T ProductCollection Collection,Product
+T ProductGroup Product
+T ProductModel Product
+T ProductReturnEnumeration Enumeration >MerchantReturnEnumeration
+T ProductReturnPolicy Intangible >MerchantReturnPolicy
+T ProfessionalService LocalBusiness
+T ProfilePage WebPage
+T ProgramMembership Intangible
+T Project Organization
+T PronounceableText Text
+T Property Intangible
+T PropertyValue StructuredValue
+T PropertyValueSpecification Intangible
+T Protein BioChemEntity
+T PsychologicalTreatment TherapeuticProcedure
+T PublicSwimmingPool SportsActivityLocation
+T PublicToilet CivicStructure
+T PublicationEvent Event
+T PublicationIssue CreativeWork
+T PublicationVolume CreativeWork
+T PurchaseType Enumeration
+T QAPage WebPage
+T QualitativeValue Enumeration
+T QuantitativeValue StructuredValue
+T QuantitativeValueDistribution StructuredValue
+T Quantity -
+T Question Comment
+T Quiz LearningResource
+T Quotation CreativeWork
+T QuoteAction TradeAction
+T RVPark CivicStructure
+T RadiationTherapy MedicalTherapy
+T RadioBroadcastService BroadcastService
+T RadioChannel BroadcastChannel
+T RadioClip Clip
+T RadioEpisode Episode
+T RadioSeason CreativeWorkSeason
+T RadioSeries CreativeWorkSeries
+T RadioStation LocalBusiness
+T Rating Intangible
+T ReactAction AssessAction
+T ReadAction ConsumeAction
+T RealEstateAgent LocalBusiness
+T RealEstateListing WebPage
+T ReceiveAction TransferAction
+T Recipe HowTo
+T Recommendation Review
+T RecommendedDoseSchedule DoseSchedule
+T RecyclingCenter LocalBusiness
+T RefundTypeEnumeration Enumeration
+T RegisterAction InteractAction
+T RejectAction AllocateAction
+T RentAction TradeAction
+T RentalCarReservation Reservation
+T RepaymentSpecification StructuredValue
+T ReplaceAction UpdateAction
+T ReplyAction CommunicateAction
+T Report Article
+T ReportageNewsArticle NewsArticle
+T ReportedDoseSchedule DoseSchedule
+T ResearchOrganization Organization
+T ResearchProject Project
+T Researcher Audience
+T Reservation Intangible
+T ReservationPackage Reservation
+T ReservationStatusType StatusEnumeration
+T ReserveAction PlanAction
+T Reservoir BodyOfWater
+T ResetPasswordAction ControlAction
+T Residence Place
+T Resort LodgingBusiness
+T Restaurant FoodEstablishment
+T RestrictedDiet Enumeration
+T ResumeAction ControlAction
+T ReturnAction TransferAction
+T ReturnFeesEnumeration Enumeration
+T ReturnLabelSourceEnumeration Enumeration
+T ReturnMethodEnumeration Enumeration
+T Review CreativeWork
+T ReviewAction AssessAction
+T ReviewNewsArticle CriticReview,NewsArticle
+T RiverBodyOfWater BodyOfWater
+T Role Intangible
+T RoofingContractor HomeAndConstructionBusiness
+T Room Accommodation
+T RsvpAction InformAction
+T RsvpResponseType Enumeration
+T RuntimePlatform SoftwareApplication
+T SaleEvent Event
+T SatiricalArticle Article
+T Schedule Intangible
+T ScheduleAction PlanAction
+T ScholarlyArticle Article
+T School EducationalOrganization
+T SchoolDistrict AdministrativeArea
+T ScreeningEvent Event
+T Sculpture CreativeWork
+T SeaBodyOfWater BodyOfWater
+T SearchAction Action
+T SearchRescueOrganization Organization
+T SearchResultsPage WebPage
+T Season CreativeWork >CreativeWorkSeason
+T Seat Intangible
+T SeekToAction Action
+T SelfStorage LocalBusiness
+T SellAction TradeAction
+T SendAction TransferAction
+T SequentialArt Book,VisualArtwork
+T Series Intangible
+T Service Intangible
+T ServiceChannel Intangible
+T ServicePeriod StructuredValue
+T ShareAction CommunicateAction
+T SheetMusic CreativeWork
+T ShippingConditions StructuredValue
+T ShippingDeliveryTime StructuredValue
+T ShippingRateSettings StructuredValue
+T ShippingService StructuredValue
+T ShoeStore Store
+T ShoppingCenter LocalBusiness
+T ShortStory CreativeWork
+T SingleFamilyResidence House
+T SiteNavigationElement WebPageElement
+T SizeGroupEnumeration Enumeration
+T SizeSpecification QualitativeValue
+T SizeSystemEnumeration Enumeration
+T SkiResort Resort,SportsActivityLocation
+T SocialEvent Event
+T SocialMediaPosting Article
+T SoftwareApplication CreativeWork
+T SoftwareSourceCode CreativeWork
+T SolveMathAction Action
+T SomeProducts Product
+T SpeakableSpecification Intangible
+T SpecialAnnouncement CreativeWork
+T Specialty Enumeration
+T SportingGoodsStore Store
+T SportsActivityLocation LocalBusiness
+T SportsClub SportsActivityLocation
+T SportsEvent Event
+T SportsOrganization Organization
+T SportsTeam SportsOrganization
+T SpreadsheetDigitalDocument DigitalDocument
+T StadiumOrArena CivicStructure,SportsActivityLocation
+T State AdministrativeArea
+T Statement CreativeWork
+T StatisticalPopulation Intangible
+T StatisticalVariable ConstraintNode
+T StatusEnumeration Enumeration
+T SteeringPositionValue QualitativeValue
+T Store LocalBusiness
+T StructuredValue Intangible
+T StupidType Thing
+T SubscribeAction InteractAction
+T Substance MedicalEntity
+T SubwayStation CivicStructure
+T Suite Accommodation
+T SuperficialAnatomy MedicalEntity
+T SurgicalProcedure MedicalProcedure
+T SuspendAction ControlAction
+T Syllabus LearningResource
+T Synagogue PlaceOfWorship
+T TVClip Clip
+T TVEpisode Episode
+T TVSeason CreativeWork,CreativeWorkSeason
+T TVSeries CreativeWork,CreativeWorkSeries
+T Table WebPageElement
+T TakeAction TransferAction
+T TattooParlor HealthAndBeautyBusiness
+T Taxi Service >TaxiService
+T TaxiReservation Reservation
+T TaxiService Service
+T TaxiStand CivicStructure
+T Taxon Thing
+T TechArticle Article
+T TelevisionChannel BroadcastChannel
+T TelevisionStation LocalBusiness
+T TennisComplex SportsActivityLocation
+T Text -
+T TextDigitalDocument DigitalDocument
+T TextObject MediaObject
+T TheaterEvent Event
+T TheaterGroup PerformingGroup
+T TherapeuticProcedure MedicalProcedure
+T Thesis CreativeWork
+T Thing -
+T Ticket Intangible
+T TieAction AchieveAction
+T TierBenefitEnumeration Enumeration
+T Time -
+T TipAction TradeAction
+T TireShop Store
+T TouristAttraction Place
+T TouristDestination Place
+T TouristInformationCenter LocalBusiness
+T TouristTrip Trip
+T ToyStore Store
+T TrackAction FindAction
+T TradeAction Action
+T TrainReservation Reservation
+T TrainStation CivicStructure
+T TrainTrip Trip
+T TransferAction Action
+T TravelAction MoveAction
+T TravelAgency LocalBusiness
+T TreatmentIndication MedicalIndication
+T Trip Intangible
+T True -
+T TypeAndQuantityNode StructuredValue
+T UKNonprofitType NonprofitType
+T URL Text
+T USNonprofitType NonprofitType
+T UnRegisterAction InteractAction
+T UnitPriceSpecification PriceSpecification
+T UpdateAction Action
+T UseAction ConsumeAction
+T UserBlocks UserInteraction >InteractionCounter
+T UserCheckins UserInteraction >InteractionCounter
+T UserComments UserInteraction >InteractionCounter
+T UserDownloads UserInteraction >InteractionCounter
+T UserInteraction Event >InteractionCounter
+T UserLikes UserInteraction >InteractionCounter
+T UserPageVisits UserInteraction >InteractionCounter
+T UserPlays UserInteraction >InteractionCounter
+T UserPlusOnes UserInteraction >InteractionCounter
+T UserReview Review
+T UserTweets UserInteraction >InteractionCounter
+T VacationRental LodgingBusiness
+T Vehicle Product
+T Vein Vessel
+T Vessel AnatomicalStructure
+T VeterinaryCare MedicalOrganization
+T VideoGallery MediaGallery
+T VideoGame Game,SoftwareApplication
+T VideoGameClip Clip
+T VideoGameSeries CreativeWorkSeries
+T VideoObject MediaObject
+T VideoObjectSnapshot VideoObject
+T ViewAction ConsumeAction
+T VirtualLocation Intangible
+T VisualArtsEvent Event
+T VisualArtwork CreativeWork
+T VitalSign MedicalSign
+T Volcano Landform
+T VoteAction ChooseAction
+T WPAdBlock WebPageElement
+T WPFooter WebPageElement
+T WPHeader WebPageElement
+T WPSideBar WebPageElement
+T WantAction ReactAction
+T WarrantyPromise StructuredValue
+T WarrantyScope Enumeration
+T WatchAction ConsumeAction
+T Waterfall BodyOfWater
+T WearAction UseAction
+T WearableMeasurementTypeEnumeration MeasurementTypeEnumeration
+T WearableSizeGroupEnumeration SizeGroupEnumeration
+T WearableSizeSystemEnumeration SizeSystemEnumeration
+T WebAPI Service
+T WebApplication SoftwareApplication
+T WebContent CreativeWork
+T WebPage CreativeWork
+T WebPageElement CreativeWork
+T WebSite CreativeWork
+T WholesaleStore Store
+T WinAction AchieveAction
+T Winery FoodEstablishment
+T WorkBasedProgram EducationalOccupationalProgram
+T WorkersUnion Organization
+T WriteAction CreateAction
+T XPathType Text
+T Zoo CivicStructure
+E Abdomen PhysicalExam
+E ActivationFee PriceComponentTypeEnumeration
+E ActiveActionStatus ActionStatusType
+E ActiveNotRecruiting MedicalStudyStatus
+E AerobicActivity PhysicalActivityCategory
+E AlbumRelease MusicAlbumReleaseType
+E AlcoholConsideration AdultOrientedEnumeration
+E AlgorithmicMediaDigitalSource IPTCDigitalSourceEnumeration
+E AlgorithmicallyEnhancedDigitalSource IPTCDigitalSourceEnumeration
+E AllWheelDriveConfiguration DriveWheelConfigurationValue
+E AllergiesHealthAspect HealthAspectEnumeration
+E AnaerobicActivity PhysicalActivityCategory
+E AndroidPlatform DigitalPlatformEnumeration
+E Anesthesia MedicalSpecialty
+E Appearance PhysicalExam
+E AudiobookFormat BookFormatType
+E Audiology MedicalSpecialty
+E AuthoritativeLegalValue LegalValueLevel
+E Ayurvedic MedicineSystem
+E BackOrder ItemAvailability
+E Bacteria InfectiousAgentClass
+E Balance PhysicalActivityCategory
+E BasicIncome GovernmentBenefitsType
+E BenefitsHealthAspect HealthAspectEnumeration
+E BodyMeasurementArm BodyMeasurementTypeEnumeration
+E BodyMeasurementBust BodyMeasurementTypeEnumeration
+E BodyMeasurementChest BodyMeasurementTypeEnumeration
+E BodyMeasurementFoot BodyMeasurementTypeEnumeration
+E BodyMeasurementHand BodyMeasurementTypeEnumeration
+E BodyMeasurementHead BodyMeasurementTypeEnumeration
+E BodyMeasurementHeight BodyMeasurementTypeEnumeration
+E BodyMeasurementHips BodyMeasurementTypeEnumeration
+E BodyMeasurementInsideLeg BodyMeasurementTypeEnumeration
+E BodyMeasurementNeck BodyMeasurementTypeEnumeration
+E BodyMeasurementUnderbust BodyMeasurementTypeEnumeration
+E BodyMeasurementWaist BodyMeasurementTypeEnumeration
+E BodyMeasurementWeight BodyMeasurementTypeEnumeration
+E BroadcastRelease MusicAlbumReleaseType
+E BusinessSupport GovernmentBenefitsType
+E ByBankTransferInAdvance PaymentMethodType
+E ByInvoice PaymentMethodType
+E CDFormat MusicReleaseFormatType
+E COD PaymentMethodType
+E CT MedicalImagingTechnique
+E Cardiovascular MedicalSpecialty
+E CardiovascularExam PhysicalExam
+E CaseSeries MedicalObservationalStudyDesign
+E Cash PaymentMethodType
+E CassetteFormat MusicReleaseFormatType
+E CausesHealthAspect HealthAspectEnumeration
+E CertificationActive CertificationStatusEnumeration
+E CertificationInactive CertificationStatusEnumeration
+E CharitableIncorporatedOrganization UKNonprofitType
+E CheckInAdvance PaymentMethodType
+E Chiropractic MedicineSystem
+E CleaningFee PriceComponentTypeEnumeration
+E Clinician MedicalAudienceType
+E CoOp GamePlayMode
+E CohortStudy MedicalObservationalStudyDesign
+E CommentPermission DigitalDocumentPermissionType
+E CommunityHealth MedicalSpecialty
+E CompilationAlbum MusicAlbumProductionType
+E Completed MedicalStudyStatus
+E CompletedActionStatus ActionStatusType
+E CompositeCaptureDigitalSource IPTCDigitalSourceEnumeration
+E CompositeDigitalSource IPTCDigitalSourceEnumeration
+E CompositeSyntheticDigitalSource IPTCDigitalSourceEnumeration
+E CompositeWithTrainedAlgorithmicMediaDigitalSource IPTCDigitalSourceEnumeration
+E ContagiousnessHealthAspect HealthAspectEnumeration
+E CrossSectional MedicalObservationalStudyDesign
+E DECooperativeCharity DENonprofitType
+E DEFoundationCharity DENonprofitType
+E DEJointStockCompanyCharity DENonprofitType
+E DELimitedLiabilityCharity DENonprofitType
+E DENotRegisteredAssociationCharity DENonprofitType
+E DEPublicCharity DENonprofitType
+E DERegisteredAssociationCharity DENonprofitType
+E DJMixAlbum MusicAlbumProductionType
+E DVDFormat MusicReleaseFormatType
+E DamagedCondition OfferItemCondition
+E DangerousGoodConsideration AdultOrientedEnumeration
+E DataDrivenMediaDigitalSource IPTCDigitalSourceEnumeration
+E DecontextualizedContent MediaManipulationRatingEnumeration
+E DefinitiveLegalValue LegalValueLevel
+E DemoAlbum MusicAlbumProductionType
+E DemoGameAvailability GameAvailabilityEnumeration
+E Dentistry MedicalSpecialty
+E Dermatologic MedicalSpecialty >Dermatology
+E Dermatology MedicalSpecialty
+E DesktopWebPlatform DigitalPlatformEnumeration
+E DiabeticDiet RestrictedDiet
+E Diagnostic MedicalDevicePurpose
+E DietNutrition MedicalSpecialty
+E DigitalArtDigitalSource IPTCDigitalSourceEnumeration
+E DigitalAudioTapeFormat MusicReleaseFormatType
+E DigitalCaptureDigitalSource IPTCDigitalSourceEnumeration
+E DigitalFormat MusicReleaseFormatType
+E DirectDebit PaymentMethodType
+E DisabilitySupport GovernmentBenefitsType
+E Discontinued ItemAvailability
+E DistanceFee PriceComponentTypeEnumeration
+E DoubleBlindedTrial MedicalTrialDesign
+E Downpayment PriceComponentTypeEnumeration
+E DrivingSchoolVehicleUsage CarUsageType
+E EBook BookFormatType
+E EPRelease MusicAlbumReleaseType
+E EUEnergyEfficiencyCategoryA EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryA1Plus EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryA2Plus EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryA3Plus EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryB EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryC EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryD EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryE EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryF EUEnergyEfficiencyEnumeration
+E EUEnergyEfficiencyCategoryG EUEnergyEfficiencyEnumeration
+E Ear PhysicalExam
+E EditedOrCroppedContent MediaManipulationRatingEnumeration
+E EffectivenessHealthAspect HealthAspectEnumeration
+E Emergency MedicalSpecialty
+E Endocrine MedicalSpecialty
+E EnergyStarCertified EnergyStarEnergyEfficiencyEnumeration
+E EnrollingByInvitation MedicalStudyStatus
+E EventCancelled EventStatusType
+E EventMovedOnline EventStatusType
+E EventPostponed EventStatusType
+E EventRescheduled EventStatusType
+E EventScheduled EventStatusType
+E EvidenceLevelA MedicalEvidenceLevel
+E EvidenceLevelB MedicalEvidenceLevel
+E EvidenceLevelC MedicalEvidenceLevel
+E ExampleMeasurementMethodEnum MeasurementMethodEnum
+E ExchangeRefund RefundTypeEnumeration
+E Eye PhysicalExam
+E FDAcategoryA DrugPregnancyCategory
+E FDAcategoryB DrugPregnancyCategory
+E FDAcategoryC DrugPregnancyCategory
+E FDAcategoryD DrugPregnancyCategory
+E FDAcategoryX DrugPregnancyCategory
+E FDAnotEvaluated DrugPregnancyCategory
+E FailedActionStatus ActionStatusType
+E Female GenderType
+E Flexibility PhysicalActivityCategory
+E FourWheelDriveConfiguration DriveWheelConfigurationValue
+E FreeReturn ReturnFeesEnumeration
+E Friday DayOfWeek
+E FrontWheelDriveConfiguration DriveWheelConfigurationValue
+E FulfillmentTypeCollectionPoint FulfillmentTypeEnumeration
+E FulfillmentTypeDelivery FulfillmentTypeEnumeration
+E FulfillmentTypePickupDropoff FulfillmentTypeEnumeration
+E FulfillmentTypePickupInStore FulfillmentTypeEnumeration
+E FulfillmentTypeScheduledDelivery FulfillmentTypeEnumeration
+E FullGameAvailability GameAvailabilityEnumeration
+E FullRefund RefundTypeEnumeration
+E Fungus InfectiousAgentClass
+E Gastroenterologic MedicalSpecialty
+E GenericWebPlatform DigitalPlatformEnumeration
+E Genetic MedicalSpecialty
+E Genitourinary PhysicalExam
+E Geriatric MedicalSpecialty
+E GettingAccessHealthAspect HealthAspectEnumeration
+E GlutenFreeDiet RestrictedDiet
+E GraphicNovel BookFormatType
+E GroupBoardingPolicy BoardingPolicyType
+E Gynecologic MedicalSpecialty
+E HalalDiet RestrictedDiet
+E Hardcover BookFormatType
+E Head PhysicalExam
+E HealthCare GovernmentBenefitsType
+E HealthcareConsideration AdultOrientedEnumeration
+E HearingImpairedSupported ContactPointOption
+E Hematologic MedicalSpecialty
+E HinduDiet RestrictedDiet
+E Homeopathic MedicineSystem
+E HowItWorksHealthAspect HealthAspectEnumeration
+E HowOrWhereHealthAspect HealthAspectEnumeration
+E IOSPlatform DigitalPlatformEnumeration
+E ITAmateurSportsClubCharity ITNonprofitType
+E ITAssociativeNetworkCharity ITNonprofitType
+E ITCooperativeCharity ITNonprofitType >ITSocialCooperativeCharity
+E ITMutualAidCharity ITNonprofitType
+E ITOtherThirdSectorEntityCharity ITNonprofitType
+E ITPhilanthropicEntityCharity ITNonprofitType
+E ITSocialCompanyCharity ITNonprofitType >ITSocialEnterpriseCharity
+E ITSocialCooperativeCharity ITNonprofitType
+E ITSocialEnterpriseCharity ITNonprofitType
+E ITSocialPromotionCharity ITNonprofitType
+E ITSportCompanyCharity ITNonprofitType >ITAmateurSportsClubCharity
+E ITVolunteerAssociationCharity ITNonprofitType
+E InForce LegalForceStatus
+E InStock ItemAvailability
+E InStoreOnly ItemAvailability
+E InStorePrepay PaymentMethodType
+E IncentiveQualifiedExpenseTypeGoodsOnly IncentiveQualifiedExpenseType
+E IncentiveQualifiedExpenseTypeGoodsOrServices IncentiveQualifiedExpenseType
+E IncentiveQualifiedExpenseTypeServicesOnly IncentiveQualifiedExpenseType
+E IncentiveQualifiedExpenseTypeUtilityBill IncentiveQualifiedExpenseType
+E IncentiveStatusActive IncentiveStatus
+E IncentiveStatusInDevelopment IncentiveStatus
+E IncentiveStatusOnHold IncentiveStatus
+E IncentiveStatusRetired IncentiveStatus
+E IncentiveTypeLoan IncentiveType
+E IncentiveTypeRebateOrSubsidy IncentiveType
+E IncentiveTypeTaxCredit IncentiveType
+E IncentiveTypeTaxDeduction IncentiveType
+E IncentiveTypeTaxWaiver IncentiveType
+E Infectious MedicalSpecialty
+E IngredientsHealthAspect HealthAspectEnumeration
+E Installment PriceComponentTypeEnumeration
+E InternationalTrial MedicalTrialDesign
+E InvoicePrice PriceTypeEnumeration
+E ItemListOrderAscending ItemListOrderType
+E ItemListOrderDescending ItemListOrderType
+E ItemListUnordered ItemListOrderType
+E KeepProduct ReturnMethodEnumeration
+E KosherDiet RestrictedDiet
+E LaboratoryScience MedicalSpecialty
+E LaserDiscFormat MusicReleaseFormatType
+E LeftHandDriving SteeringPositionValue
+E LeisureTimeActivity PhysicalActivityCategory
+E LimitedAvailability ItemAvailability
+E LimitedByGuaranteeCharity UKNonprofitType
+E ListPrice PriceTypeEnumeration
+E LiveAlbum MusicAlbumProductionType
+E LivingWithHealthAspect HealthAspectEnumeration
+E LockerDelivery DeliveryMethod
+E Longitudinal MedicalObservationalStudyDesign
+E LowCalorieDiet RestrictedDiet
+E LowFatDiet RestrictedDiet
+E LowLactoseDiet RestrictedDiet
+E LowSaltDiet RestrictedDiet
+E Lung PhysicalExam
+E MRI MedicalImagingTechnique
+E MSRP PriceTypeEnumeration
+E MadeToOrder ItemAvailability
+E Male GenderType
+E MaximumRetailPrice PriceTypeEnumeration
+E MayTreatHealthAspect HealthAspectEnumeration
+E MedicalResearcher MedicalAudienceType
+E MerchantReturnFiniteReturnWindow MerchantReturnEnumeration
+E MerchantReturnNotPermitted MerchantReturnEnumeration
+E MerchantReturnUnlimitedWindow MerchantReturnEnumeration
+E MerchantReturnUnspecified MerchantReturnEnumeration
+E Midwifery MedicalSpecialty
+E MinimumAdvertisedPrice PriceTypeEnumeration
+E MinorHumanEditsDigitalSource IPTCDigitalSourceEnumeration
+E MisconceptionsHealthAspect HealthAspectEnumeration
+E MixedEventAttendanceMode EventAttendanceModeEnumeration
+E MixtapeAlbum MusicAlbumProductionType
+E MobileWebPlatform DigitalPlatformEnumeration
+E Monday DayOfWeek
+E MultiCenterTrial MedicalTrialDesign
+E MultiFrameComputationalCaptureDigitalSource IPTCDigitalSourceEnumeration
+E MultiPlayer GamePlayMode
+E MulticellularParasite InfectiousAgentClass
+E Musculoskeletal MedicalSpecialty
+E MusculoskeletalExam PhysicalExam
+E NarcoticConsideration AdultOrientedEnumeration
+E Neck PhysicalExam
+E NegativeFilmDigitalSource IPTCDigitalSourceEnumeration
+E Neuro PhysicalExam
+E Neurologic MedicalSpecialty
+E NewCondition OfferItemCondition
+E NoninvasiveProcedure MedicalProcedureType
+E Nonprofit501a USNonprofitType
+E Nonprofit501c1 USNonprofitType
+E Nonprofit501c10 USNonprofitType
+E Nonprofit501c11 USNonprofitType
+E Nonprofit501c12 USNonprofitType
+E Nonprofit501c13 USNonprofitType
+E Nonprofit501c14 USNonprofitType
+E Nonprofit501c15 USNonprofitType
+E Nonprofit501c16 USNonprofitType
+E Nonprofit501c17 USNonprofitType
+E Nonprofit501c18 USNonprofitType
+E Nonprofit501c19 USNonprofitType
+E Nonprofit501c2 USNonprofitType
+E Nonprofit501c20 USNonprofitType
+E Nonprofit501c21 USNonprofitType
+E Nonprofit501c22 USNonprofitType
+E Nonprofit501c23 USNonprofitType
+E Nonprofit501c24 USNonprofitType
+E Nonprofit501c25 USNonprofitType
+E Nonprofit501c26 USNonprofitType
+E Nonprofit501c27 USNonprofitType
+E Nonprofit501c28 USNonprofitType
+E Nonprofit501c3 USNonprofitType
+E Nonprofit501c4 USNonprofitType
+E Nonprofit501c5 USNonprofitType
+E Nonprofit501c6 USNonprofitType
+E Nonprofit501c7 USNonprofitType
+E Nonprofit501c8 USNonprofitType
+E Nonprofit501c9 USNonprofitType
+E Nonprofit501d USNonprofitType
+E Nonprofit501e USNonprofitType
+E Nonprofit501f USNonprofitType
+E Nonprofit501k USNonprofitType
+E Nonprofit501n USNonprofitType
+E Nonprofit501q USNonprofitType
+E Nonprofit527 USNonprofitType
+E NonprofitANBI NLNonprofitType
+E NonprofitSBBI NLNonprofitType
+E Nose PhysicalExam
+E NotInForce LegalForceStatus
+E NotYetRecruiting MedicalStudyStatus
+E Nursing MedicalSpecialty
+E OTC DrugPrescriptionStatus
+E Observational MedicalObservationalStudyDesign
+E Obstetric MedicalSpecialty
+E OccupationalActivity PhysicalActivityCategory
+E OfficialLegalValue LegalValueLevel
+E OfflineEventAttendanceMode EventAttendanceModeEnumeration
+E OfflinePermanently GameServerStatus
+E OfflineTemporarily GameServerStatus
+E OnSitePickup DeliveryMethod
+E Oncologic MedicalSpecialty
+E OneTimePayments GovernmentBenefitsType
+E Online GameServerStatus
+E OnlineEventAttendanceMode EventAttendanceModeEnumeration
+E OnlineFull GameServerStatus
+E OnlineOnly ItemAvailability
+E OpenTrial MedicalTrialDesign
+E Ophthalmology MedicalSpecialty
+E Optometric MedicalSpecialty
+E OrderCancelled OrderStatus
+E OrderDelivered OrderStatus
+E OrderInTransit OrderStatus
+E OrderPaymentDue OrderStatus
+E OrderPickupAvailable OrderStatus
+E OrderProblem OrderStatus
+E OrderProcessing OrderStatus
+E OrderReturned OrderStatus
+E OriginalMediaContent MediaManipulationRatingEnumeration
+E OriginalShippingFees ReturnFeesEnumeration
+E Osteopathic MedicineSystem
+E Otolaryngologic MedicalSpecialty
+E OutOfStock ItemAvailability
+E OverviewHealthAspect HealthAspectEnumeration
+E PET MedicalImagingTechnique
+E PaidLeave GovernmentBenefitsType
+E Pamphlet BookFormatType
+E Paperback BookFormatType
+E ParcelService DeliveryMethod
+E ParentalSupport GovernmentBenefitsType
+E ParkingMap MapCategoryType
+E PartiallyInForce LegalForceStatus
+E Pathology MedicalSpecialty
+E PatientExperienceHealthAspect HealthAspectEnumeration
+E PaymentAutomaticallyApplied PaymentStatusType
+E PaymentComplete PaymentStatusType
+E PaymentDeclined PaymentStatusType
+E PaymentDue PaymentStatusType
+E PaymentPastDue PaymentStatusType
+E Pediatric MedicalSpecialty
+E PercutaneousProcedure MedicalProcedureType
+E PharmacySpecialty MedicalSpecialty
+E PhoneCarrierPayment PaymentMethodType
+E Physiotherapy MedicalSpecialty
+E PlaceboControlledTrial MedicalTrialDesign
+E PlasticSurgery MedicalSpecialty
+E Podiatric MedicalSpecialty
+E PositiveFilmDigitalSource IPTCDigitalSourceEnumeration
+E PotentialActionStatus ActionStatusType
+E PreOrder ItemAvailability
+E PreSale ItemAvailability
+E PregnancyHealthAspect HealthAspectEnumeration
+E PrescriptionOnly DrugPrescriptionStatus
+E PreventionHealthAspect HealthAspectEnumeration
+E PrimaryCare MedicalSpecialty
+E PrintDigitalSource IPTCDigitalSourceEnumeration
+E Prion InfectiousAgentClass
+E ProductReturnFiniteReturnWindow ProductReturnEnumeration >MerchantReturnFiniteReturnWindow
+E ProductReturnNotPermitted ProductReturnEnumeration >MerchantReturnNotPermitted
+E ProductReturnUnlimitedWindow ProductReturnEnumeration >MerchantReturnUnlimitedWindow
+E ProductReturnUnspecified ProductReturnEnumeration >MerchantReturnUnspecified
+E PrognosisHealthAspect HealthAspectEnumeration
+E Protozoa InfectiousAgentClass
+E Psychiatric MedicalSpecialty
+E PublicHealth MedicalSpecialty
+E PublicHolidays DayOfWeek
+E Pulmonary MedicalSpecialty
+E PurchaseTypeLease PurchaseType
+E PurchaseTypeNewPurchase PurchaseType
+E PurchaseTypeTradeIn PurchaseType
+E PurchaseTypeUsedPurchase PurchaseType
+E Radiography MedicalImagingTechnique
+E RandomizedTrial MedicalTrialDesign
+E ReadPermission DigitalDocumentPermissionType
+E RearWheelDriveConfiguration DriveWheelConfigurationValue
+E Recruiting MedicalStudyStatus
+E ReducedRelevanceForChildrenConsideration AdultOrientedEnumeration
+E RefurbishedCondition OfferItemCondition
+E Registry MedicalObservationalStudyDesign
+E RegularPrice PriceTypeEnumeration
+E ReimbursementCap DrugCostCategory
+E RelatedTopicsHealthAspect HealthAspectEnumeration
+E RemixAlbum MusicAlbumProductionType
+E Renal MedicalSpecialty
+E RentalVehicleUsage CarUsageType
+E ReservationCancelled ReservationStatusType
+E ReservationConfirmed ReservationStatusType
+E ReservationHold ReservationStatusType
+E ReservationPending ReservationStatusType
+E Reserved ItemAvailability
+E RespiratoryTherapy MedicalSpecialty
+E RestockingFees ReturnFeesEnumeration
+E ResultsAvailable MedicalStudyStatus
+E ResultsNotAvailable MedicalStudyStatus
+E Retail DrugCostCategory
+E ReturnAtKiosk ReturnMethodEnumeration
+E ReturnByMail ReturnMethodEnumeration
+E ReturnFeesCustomerResponsibility ReturnFeesEnumeration
+E ReturnInStore ReturnMethodEnumeration
+E ReturnLabelCustomerResponsibility ReturnLabelSourceEnumeration
+E ReturnLabelDownloadAndPrint ReturnLabelSourceEnumeration
+E ReturnLabelInBox ReturnLabelSourceEnumeration
+E ReturnShippingFees ReturnFeesEnumeration
+E Rheumatologic MedicalSpecialty
+E RightHandDriving SteeringPositionValue
+E RisksOrComplicationsHealthAspect HealthAspectEnumeration
+E RsvpResponseMaybe RsvpResponseType
+E RsvpResponseNo RsvpResponseType
+E RsvpResponseYes RsvpResponseType
+E SRP PriceTypeEnumeration
+E SafetyHealthAspect HealthAspectEnumeration
+E SalePrice PriceTypeEnumeration
+E SatireOrParodyContent MediaManipulationRatingEnumeration
+E Saturday DayOfWeek
+E ScreenCaptureDigitalSource IPTCDigitalSourceEnumeration
+E ScreeningHealthAspect HealthAspectEnumeration
+E SeatingMap MapCategoryType
+E SeeDoctorHealthAspect HealthAspectEnumeration
+E SelfCareHealthAspect HealthAspectEnumeration
+E SexualContentConsideration AdultOrientedEnumeration
+E SideEffectsHealthAspect HealthAspectEnumeration
+E SingleBlindedTrial MedicalTrialDesign
+E SingleCenterTrial MedicalTrialDesign
+E SinglePlayer GamePlayMode
+E SingleRelease MusicAlbumReleaseType
+E SizeSystemImperial SizeSystemEnumeration
+E SizeSystemMetric SizeSystemEnumeration
+E Skin PhysicalExam
+E SoldOut ItemAvailability
+E SoundtrackAlbum MusicAlbumProductionType
+E SpeechPathology MedicalSpecialty
+E SpokenWordAlbum MusicAlbumProductionType
+E StagedContent MediaManipulationRatingEnumeration
+E StagesHealthAspect HealthAspectEnumeration
+E StoreCreditRefund RefundTypeEnumeration
+E StrengthTraining PhysicalActivityCategory
+E StrikethroughPrice PriceTypeEnumeration
+E StudioAlbum MusicAlbumProductionType
+E Subscription PriceComponentTypeEnumeration
+E Sunday DayOfWeek
+E Surgical MedicalSpecialty
+E Suspended MedicalStudyStatus
+E SymptomsHealthAspect HealthAspectEnumeration
+E TaxiVehicleUsage CarUsageType
+E Terminated MedicalStudyStatus
+E Therapeutic MedicalDevicePurpose
+E Throat PhysicalExam
+E Thursday DayOfWeek
+E TierBenefitLoyaltyPoints TierBenefitEnumeration
+E TierBenefitLoyaltyPrice TierBenefitEnumeration
+E TierBenefitLoyaltyReturns TierBenefitEnumeration
+E TierBenefitLoyaltyShipping TierBenefitEnumeration
+E TobaccoNicotineConsideration AdultOrientedEnumeration
+E TollFree ContactPointOption
+E Toxicologic MedicalSpecialty
+E TraditionalChinese MedicineSystem
+E TrainedAlgorithmicMediaDigitalSource IPTCDigitalSourceEnumeration
+E TransformedContent MediaManipulationRatingEnumeration
+E TransitMap MapCategoryType
+E TreatmentsHealthAspect HealthAspectEnumeration
+E TripleBlindedTrial MedicalTrialDesign
+E Tuesday DayOfWeek
+E TypesHealthAspect HealthAspectEnumeration
+E UKTrust UKNonprofitType
+E Ultrasound MedicalImagingTechnique
+E UnclassifiedAdultConsideration AdultOrientedEnumeration
+E UnemploymentSupport GovernmentBenefitsType
+E UnincorporatedAssociationCharity UKNonprofitType
+E UnofficialLegalValue LegalValueLevel
+E Urologic MedicalSpecialty
+E UsageOrScheduleHealthAspect HealthAspectEnumeration
+E UsedCondition OfferItemCondition
+E VeganDiet RestrictedDiet
+E VegetarianDiet RestrictedDiet
+E VenueMap MapCategoryType
+E VinylFormat MusicReleaseFormatType
+E ViolenceConsideration AdultOrientedEnumeration
+E VirtualRecordingDigitalSource IPTCDigitalSourceEnumeration
+E Virus InfectiousAgentClass
+E WeaponConsideration AdultOrientedEnumeration
+E WearableMeasurementBack WearableMeasurementTypeEnumeration
+E WearableMeasurementChestOrBust WearableMeasurementTypeEnumeration
+E WearableMeasurementCollar WearableMeasurementTypeEnumeration
+E WearableMeasurementCup WearableMeasurementTypeEnumeration
+E WearableMeasurementHeight WearableMeasurementTypeEnumeration
+E WearableMeasurementHips WearableMeasurementTypeEnumeration
+E WearableMeasurementInseam WearableMeasurementTypeEnumeration
+E WearableMeasurementLength WearableMeasurementTypeEnumeration
+E WearableMeasurementOutsideLeg WearableMeasurementTypeEnumeration
+E WearableMeasurementSleeve WearableMeasurementTypeEnumeration
+E WearableMeasurementWaist WearableMeasurementTypeEnumeration
+E WearableMeasurementWidth WearableMeasurementTypeEnumeration
+E WearableSizeGroupBig WearableSizeGroupEnumeration
+E WearableSizeGroupBoys WearableSizeGroupEnumeration
+E WearableSizeGroupExtraShort WearableSizeGroupEnumeration
+E WearableSizeGroupExtraTall WearableSizeGroupEnumeration
+E WearableSizeGroupGirls WearableSizeGroupEnumeration
+E WearableSizeGroupHusky WearableSizeGroupEnumeration
+E WearableSizeGroupInfants WearableSizeGroupEnumeration
+E WearableSizeGroupJuniors WearableSizeGroupEnumeration
+E WearableSizeGroupMaternity WearableSizeGroupEnumeration
+E WearableSizeGroupMens WearableSizeGroupEnumeration
+E WearableSizeGroupMisses WearableSizeGroupEnumeration
+E WearableSizeGroupPetite WearableSizeGroupEnumeration
+E WearableSizeGroupPlus WearableSizeGroupEnumeration
+E WearableSizeGroupRegular WearableSizeGroupEnumeration
+E WearableSizeGroupShort WearableSizeGroupEnumeration
+E WearableSizeGroupTall WearableSizeGroupEnumeration
+E WearableSizeGroupWomens WearableSizeGroupEnumeration
+E WearableSizeSystemAU WearableSizeSystemEnumeration
+E WearableSizeSystemBR WearableSizeSystemEnumeration
+E WearableSizeSystemCN WearableSizeSystemEnumeration
+E WearableSizeSystemContinental WearableSizeSystemEnumeration
+E WearableSizeSystemDE WearableSizeSystemEnumeration
+E WearableSizeSystemEN13402 WearableSizeSystemEnumeration
+E WearableSizeSystemEurope WearableSizeSystemEnumeration
+E WearableSizeSystemFR WearableSizeSystemEnumeration
+E WearableSizeSystemGS1 WearableSizeSystemEnumeration
+E WearableSizeSystemIT WearableSizeSystemEnumeration
+E WearableSizeSystemJP WearableSizeSystemEnumeration
+E WearableSizeSystemMX WearableSizeSystemEnumeration
+E WearableSizeSystemUK WearableSizeSystemEnumeration
+E WearableSizeSystemUS WearableSizeSystemEnumeration
+E Wednesday DayOfWeek
+E WesternConventional MedicineSystem
+E Wholesale DrugCostCategory
+E Withdrawn MedicalStudyStatus
+E WritePermission DigitalDocumentPermissionType
+E XRay MedicalImagingTechnique
+E ZoneBoardingPolicy BoardingPolicyType
+P about Certification,CommunicateAction,CreativeWork,DefinedTerm,DefinedTermSet,Event Thing
+P abridged Book Boolean
+P abstract CreativeWork Text
+P accelerationTime Vehicle QuantitativeValue
+P acceptedAnswer Question Answer,ItemList
+P acceptedOffer Order Offer
+P acceptedPaymentMethod Demand,Offer,Organization LoanOrCredit,PaymentMethod,Text
+P acceptsReservations FoodEstablishment Boolean,Text,URL
+P accessCode DeliveryEvent Text
+P accessMode CreativeWork Text
+P accessModeSufficient CreativeWork ItemList
+P accessibilityAPI CreativeWork Text
+P accessibilityControl CreativeWork Text
+P accessibilityFeature CreativeWork Text
+P accessibilityHazard CreativeWork Text
+P accessibilitySummary CreativeWork Text
+P accommodationCategory Accommodation Text
+P accommodationFloorPlan Accommodation,Residence FloorPlan
+P accountId Invoice Text
+P accountMinimumInflow BankAccount MonetaryAmount
+P accountOverdraftLimit BankAccount MonetaryAmount
+P accountablePerson CreativeWork Person
+P acquireLicensePage CreativeWork CreativeWork,URL
+P acquiredFrom OwnershipInfo Organization,Person
+P acrissCode BusOrCoach,Car Text
+P actionAccessibilityRequirement ConsumeAction ActionAccessSpecification
+P actionApplication EntryPoint SoftwareApplication
+P actionOption ChooseAction Text,Thing
+P actionPlatform EntryPoint DigitalPlatformEnumeration,Text,URL
+P actionProcess Action HowTo
+P actionStatus Action ActionStatusType
+P actionableFeedbackPolicy NewsMediaOrganization,Organization CreativeWork,URL
+P activeIngredient DietarySupplement,Drug,DrugStrength,Substance Text
+P activityDuration ExercisePlan Duration,QuantitativeValue
+P activityFrequency ExercisePlan QuantitativeValue,Text
+P actor Clip,CreativeWorkSeason,Episode,Event,Movie,MovieSeries,PodcastSeries,RadioSeries,TVSeries,VideoGame,VideoGameSeries,VideoObject PerformingGroup,Person
+P actors Clip,Episode,Movie,MovieSeries,RadioSeries,TVSeries,VideoGame,VideoGameSeries,VideoObject Person >actor
+P addOn Offer Offer
+P additionalName Person Text
+P additionalNumberOfGuests RsvpAction Number
+P additionalProperty MerchantReturnPolicy,Offer,Place,Product,QualitativeValue,QuantitativeValue PropertyValue
+P additionalType Thing Text,URL
+P additionalVariable ExercisePlan Text
+P address GeoCoordinates,GeoShape,Organization,Person,Place PostalAddress,Text
+P addressCountry DefinedRegion,GeoCoordinates,GeoShape,PostalAddress Country,Text
+P addressLocality PostalAddress Text
+P addressRegion DefinedRegion,PostalAddress AdministrativeArea,Text
+P administrationRoute Drug Text
+P advanceBookingRequirement Demand,Offer QuantitativeValue
+P adverseOutcome MedicalDevice,TherapeuticProcedure MedicalEntity
+P affectedBy MedicalTest Drug
+P affiliation Person Organization
+P afterMedia HowToDirection MediaObject,URL
+P agent Action Organization,Person
+P agentInteractionStatistic Organization,Person InteractionCounter
+P aggregateElement ItemList Thing
+P aggregateRating Brand,CreativeWork,Event,Offer,Organization,Place,Product,Service AggregateRating
+P aircraft Flight Text,Vehicle
+P album MusicGroup MusicAlbum
+P albumProductionType MusicAlbum MusicAlbumProductionType
+P albumRelease MusicAlbum MusicRelease
+P albumReleaseType MusicAlbum MusicAlbumReleaseType
+P albums MusicGroup MusicAlbum >album
+P alcoholWarning Drug Text
+P algorithm MedicalRiskScore Text
+P alignmentType AlignmentObject Text
+P alternateName Thing Text
+P alternativeHeadline CreativeWork Text
+P alternativeOf Gene Gene
+P alumni EducationalOrganization,Organization Person
+P alumniOf Person EducationalOrganization,Organization
+P amenityFeature Accommodation,FloorPlan,LodgingBusiness,Place LocationFeatureSpecification
+P amount DatedMoneySpecification,InvestmentOrDeposit,LoanOrCredit,MonetaryGrant,MoneyTransfer MonetaryAmount,Number
+P amountOfThisGood TypeAndQuantityNode Number
+P announcementLocation SpecialAnnouncement CivicStructure,LocalBusiness
+P annualPercentageRate FinancialProduct Number,QuantitativeValue
+P answerCount Question Integer
+P answerExplanation Answer Comment,WebContent
+P antagonist Muscle Muscle
+P appearance Claim CreativeWork
+P applicableCountry MerchantReturnPolicy Country,Text
+P applicableLocation DrugCost,DrugLegalStatus AdministrativeArea
+P applicantLocationRequirements JobPosting AdministrativeArea
+P application EntryPoint SoftwareApplication >actionApplication
+P applicationCategory SoftwareApplication Text,URL
+P applicationContact JobPosting ContactPoint
+P applicationDeadline EducationalOccupationalProgram Date,Text
+P applicationStartDate EducationalOccupationalProgram Date
+P applicationSubCategory SoftwareApplication Text,URL
+P applicationSuite SoftwareApplication Text
+P appliesToDeliveryMethod DeliveryChargeSpecification,PaymentChargeSpecification DeliveryMethod
+P appliesToPaymentMethod PaymentChargeSpecification PaymentMethod
+P archiveHeld ArchiveOrganization ArchiveComponent
+P archivedAt CreativeWork URL,WebPage
+P area BroadcastService Place >serviceArea
+P areaServed ContactPoint,DeliveryChargeSpecification,Demand,FinancialIncentive,Offer,Organization,Service AdministrativeArea,GeoShape,Place,Text
+P arrivalAirport Flight Airport
+P arrivalBoatTerminal BoatTrip BoatTerminal
+P arrivalBusStop BusTrip BusStation,BusStop
+P arrivalGate Flight Text
+P arrivalPlatform TrainTrip Text
+P arrivalStation TrainTrip TrainStation
+P arrivalTerminal Flight Text
+P arrivalTime Trip DateTime,Time
+P artEdition VisualArtwork Integer,Text
+P artMedium VisualArtwork Text,URL
+P arterialBranch Artery AnatomicalStructure
+P artform VisualArtwork Text,URL
+P articleBody Article Text
+P articleSection Article Text
+P artist ComicIssue,ComicStory,VisualArtwork Person
+P artworkSurface VisualArtwork Text,URL
+P asin Demand,Offer,Product Text,URL
+P aspect MedicalWebPage Text >mainContentOfPage
+P assembly APIReference Text >executableLibraryName
+P assemblyVersion APIReference Text
+P assesses CreativeWork,EducationEvent,LearningResource DefinedTerm,Text
+P associatedAnatomy MedicalCondition,PhysicalActivity AnatomicalStructure,AnatomicalSystem,SuperficialAnatomy
+P associatedArticle MediaObject NewsArticle
+P associatedClaimReview Review Review
+P associatedDisease BioChemEntity MedicalCondition,PropertyValue,URL
+P associatedMedia CreativeWork,HyperToc,HyperTocEntry MediaObject
+P associatedMediaReview Review Review
+P associatedPathophysiology AnatomicalStructure,AnatomicalSystem,SuperficialAnatomy Text
+P associatedReview Review Review
+P athlete SportsTeam Person
+P attendee Event Organization,Person
+P attendees Event Organization,Person >attendee
+P audience CreativeWork,Event,LodgingBusiness,PlayAction,Product,Service Audience
+P audienceType Audience Text
+P audio CreativeWork AudioObject,Clip,MusicRecording
+P auditDate Certification Date,DateTime
+P authenticator MediaSubscription Organization
+P author CreativeWork,Rating Organization,Person
+P authorizedRepresentative Organization,Product Organization,Person
+P availability Demand,Offer ItemAvailability
+P availabilityEnds ActionAccessSpecification,Demand,Offer Date,DateTime,Time
+P availabilityStarts ActionAccessSpecification,Demand,Offer Date,DateTime,Time
+P availableAtOrFrom Demand,Offer Place
+P availableChannel Service ServiceChannel
+P availableDeliveryMethod Demand,Offer DeliveryMethod
+P availableFrom DeliveryEvent DateTime
+P availableIn DrugStrength AdministrativeArea
+P availableLanguage ContactPoint,Course,LodgingBusiness,ServiceChannel,TouristAttraction Language,Text
+P availableOnDevice SoftwareApplication Text
+P availableService Hospital,MedicalClinic,Physician MedicalProcedure,MedicalTest,MedicalTherapy
+P availableStrength Drug DrugStrength
+P availableTest DiagnosticLab MedicalTest
+P availableThrough DeliveryEvent DateTime
+P award CreativeWork,Organization,Person,Product,Service Text
+P awards CreativeWork,Organization,Person,Product Text >award
+P awayTeam SportsEvent Person,SportsTeam
+P backstory Article CreativeWork,Text
+P bankAccountType BankAccount Text,URL
+P baseSalary EmployeeRole,JobPosting MonetaryAmount,Number,PriceSpecification
+P bccRecipient Message ContactPoint,Organization,Person
+P bed Accommodation,HotelRoom,Suite BedDetails,BedType,Text
+P beforeMedia HowToDirection MediaObject,URL
+P beneficiaryBank MoneyTransfer BankOrCreditUnion,Text
+P benefits JobPosting Text >jobBenefits
+P benefitsSummaryUrl HealthInsurancePlan URL
+P bestRating Rating Number,Text
+P billingAddress Order PostalAddress
+P billingDuration UnitPriceSpecification Duration,Number,QuantitativeValue
+P billingIncrement UnitPriceSpecification Number
+P billingPeriod Invoice Duration
+P billingStart UnitPriceSpecification Number
+P bioChemInteraction BioChemEntity BioChemEntity
+P bioChemSimilarity BioChemEntity BioChemEntity
+P biologicalRole BioChemEntity DefinedTerm
+P biomechnicalClass Joint Text
+P birthDate Person Date
+P birthPlace Person Place
+P bitrate MediaObject Text
+P blogPost Blog BlogPosting
+P blogPosts Blog BlogPosting >blogPost
+P bloodSupply Muscle Vessel
+P boardingGroup FlightReservation Text
+P boardingPolicy Airline,Flight BoardingPolicyType
+P bodyLocation AnatomicalStructure,MedicalProcedure Text
+P bodyType Vehicle QualitativeValue,Text,URL
+P bookEdition Book Text
+P bookFormat Book BookFormatType
+P bookingAgent Reservation Organization,Person >broker
+P bookingTime Reservation DateTime
+P borrower LendAction Person
+P box GeoShape Text
+P branch Nerve AnatomicalStructure >arterialBranch
+P branchCode Place Text
+P branchOf LocalBusiness Organization >parentOrganization
+P brand Organization,Person,Product,Service Brand,Organization
+P breadcrumb WebPage BreadcrumbList,Text
+P breastfeedingWarning Drug Text
+P broadcastAffiliateOf BroadcastService Organization
+P broadcastChannelId BroadcastChannel Text
+P broadcastDisplayName BroadcastService Text
+P broadcastFrequency BroadcastChannel,BroadcastService BroadcastFrequencySpecification,Text
+P broadcastFrequencyValue BroadcastFrequencySpecification Number,QuantitativeValue
+P broadcastOfEvent BroadcastEvent Event
+P broadcastServiceTier BroadcastChannel Text
+P broadcastSignalModulation BroadcastFrequencySpecification QualitativeValue,Text
+P broadcastSubChannel BroadcastFrequencySpecification Text
+P broadcastTimezone BroadcastService Text
+P broadcaster BroadcastService Organization
+P broker Invoice,Order,Reservation,Service Organization,Person
+P browserRequirements WebApplication Text
+P busName BusTrip Text
+P busNumber BusTrip Text
+P businessDays ServicePeriod,ShippingDeliveryTime DayOfWeek,OpeningHoursSpecification
+P businessFunction Demand,Offer,TypeAndQuantityNode BusinessFunction
+P buyer SellAction Organization,Person
+P byArtist MusicAlbum,MusicRecording MusicGroup,Person
+P byDay Schedule DayOfWeek,Text
+P byMonth Schedule Integer
+P byMonthDay Schedule Integer
+P byMonthWeek Schedule Integer
+P callSign BroadcastService,Person,Vehicle Text
+P calories NutritionInformation Energy
+P candidate VoteAction Person
+P caption AudioObject,ImageObject,VideoObject MediaObject,Text
+P carbohydrateContent NutritionInformation Mass
+P cargoVolume Vehicle QuantitativeValue
+P carrier Flight,ParcelDelivery Organization >provider
+P carrierRequirements MobileApplication Text
+P cashBack PaymentCard Boolean,Number
+P catalog Dataset DataCatalog >includedInDataCatalog
+P catalogNumber MusicRelease Text
+P category ActionAccessSpecification,Guide,Invoice,Offer,PhysicalActivity,Product,Recommendation,Service,SpecialAnnouncement CategoryCode,PhysicalActivityCategory,Text,Thing,URL
+P cause MedicalCondition MedicalCause
+P causeOf MedicalCause MedicalEntity
+P ccRecipient Message ContactPoint,Organization,Person
+P certificationIdentification Certification DefinedTerm,Text
+P certificationRating Certification Rating
+P certificationStatus Certification CertificationStatusEnumeration
+P character CreativeWork Person
+P characterAttribute Game,VideoGameSeries Thing
+P characterName PerformanceRole Text
+P cheatCode VideoGame,VideoGameSeries CreativeWork
+P checkinTime LodgingBusiness,LodgingReservation DateTime,Time
+P checkoutPageURLTemplate Offer Text
+P checkoutTime LodgingBusiness,LodgingReservation DateTime,Time
+P chemicalComposition ChemicalSubstance Text
+P chemicalRole ChemicalSubstance,MolecularEntity DefinedTerm
+P childMaxAge ParentAudience Number
+P childMinAge ParentAudience Number
+P childTaxon Taxon Taxon,Text,URL
+P children Person Person
+P cholesterolContent NutritionInformation Mass
+P circle GeoShape Text
+P citation CreativeWork CreativeWork,Text
+P claimInterpreter Claim Organization,Person
+P claimReviewed ClaimReview Text
+P clincalPharmacology Drug Text >clinicalPharmacology
+P clinicalPharmacology Drug Text
+P clipNumber Clip Integer,Text
+P closes OpeningHoursSpecification Time
+P coach SportsTeam Person
+P code MedicalEntity MedicalCode
+P codeRepository SoftwareSourceCode URL
+P codeSampleType SoftwareSourceCode Text
+P codeValue CategoryCode,MedicalCode Text
+P codingSystem MedicalCode Text
+P colleague Person Person,URL
+P colleagues Person Person >colleague
+P collection UpdateAction Thing >targetCollection
+P collectionSize Collection Integer
+P color Product Text
+P colorSwatch Product ImageObject,URL
+P colorist ComicIssue,ComicStory,VisualArtwork Person
+P comment CreativeWork,RsvpAction Comment
+P commentCount CreativeWork Integer
+P commentText UserComments Text
+P commentTime UserComments Date,DateTime
+P companyRegistration Organization Certification
+P competencyRequired EducationalOccupationalCredential,LearningResource DefinedTerm,Text,URL
+P competitor SportsEvent Person,SportsTeam
+P composer Event,MusicComposition Organization,Person
+P comprisedOf AnatomicalSystem AnatomicalStructure,AnatomicalSystem
+P conditionsOfAccess CreativeWork Text
+P confirmationNumber Invoice,Order Text
+P connectedTo AnatomicalStructure AnatomicalStructure
+P constraintProperty ConstraintNode Property,URL
+P consumerNotice Product Text,TextObject,URL,WebContent
+P contactOption ContactPoint ContactPointOption
+P contactPoint HealthInsurancePlan,Organization,Person ContactPoint
+P contactPoints Organization,Person ContactPoint >contactPoint
+P contactType ContactPoint Text
+P contactlessPayment PaymentCard Boolean
+P containedIn Place Place >containedInPlace
+P containedInPlace Place Place
+P containsPlace Place Place
+P containsSeason RadioSeries,TVSeries,VideoGameSeries CreativeWorkSeason
+P contentLocation CreativeWork Place
+P contentRating CreativeWork Rating,Text
+P contentReferenceTime CreativeWork DateTime
+P contentSize MediaObject Text
+P contentType EntryPoint Text
+P contentUrl MediaObject URL
+P contraindication MedicalDevice,MedicalTherapy MedicalContraindication,Text
+P contributor CreativeWork,Event Organization,Person
+P cookTime Recipe Duration
+P cookingMethod Recipe Text
+P copyrightHolder CreativeWork Organization,Person
+P copyrightNotice CreativeWork Text
+P copyrightYear CreativeWork Number
+P correction CreativeWork CorrectionComment,Text,URL
+P correctionsPolicy NewsMediaOrganization,Organization CreativeWork,URL
+P costCategory DrugCost DrugCostCategory
+P costCurrency DrugCost Text
+P costOrigin DrugCost Text
+P costPerUnit DrugCost Number,QualitativeValue,Text
+P countriesNotSupported SoftwareApplication Text
+P countriesSupported SoftwareApplication Text
+P countryOfAssembly Product Text
+P countryOfLastProcessing Product Text
+P countryOfOrigin CreativeWork,Movie,Product,TVEpisode,TVSeason,TVSeries Country
+P course ExerciseAction Place >exerciseCourse
+P courseCode Course Text
+P courseMode CourseInstance Text,URL
+P coursePrerequisites Course AlignmentObject,Course,Text
+P courseSchedule CourseInstance Schedule
+P courseWorkload CourseInstance Text
+P coverageEndTime LiveBlogPosting DateTime
+P coverageStartTime LiveBlogPosting DateTime
+P creativeWorkStatus CreativeWork DefinedTerm,Text
+P creator CreativeWork,UserComments Organization,Person
+P credentialCategory Credential DefinedTerm,Text,URL
+P creditText CreativeWork Text
+P creditedTo MusicRelease Organization,Person
+P cssSelector SpeakableSpecification,WebPageElement CssSelectorType
+P currenciesAccepted LocalBusiness Text
+P currency DatedMoneySpecification,ExchangeRateSpecification,LoanOrCredit,MonetaryAmount,MonetaryAmountDistribution Text
+P currentExchangeRate ExchangeRateSpecification UnitPriceSpecification
+P customer Invoice,Order Organization,Person
+P customerRemorseReturnFees MerchantReturnPolicy ReturnFeesEnumeration
+P customerRemorseReturnLabelSource MerchantReturnPolicy ReturnLabelSourceEnumeration
+P customerRemorseReturnShippingFeesAmount MerchantReturnPolicy MonetaryAmount
+P cutoffTime ServicePeriod,ShippingDeliveryTime Time
+P cvdCollectionDate CDCPMDRecord DateTime,Text
+P cvdFacilityCounty CDCPMDRecord Text
+P cvdFacilityId CDCPMDRecord Text
+P cvdNumBeds CDCPMDRecord Number
+P cvdNumBedsOcc CDCPMDRecord Number
+P cvdNumC19Died CDCPMDRecord Number
+P cvdNumC19HOPats CDCPMDRecord Number
+P cvdNumC19HospPats CDCPMDRecord Number
+P cvdNumC19MechVentPats CDCPMDRecord Number
+P cvdNumC19OFMechVentPats CDCPMDRecord Number
+P cvdNumC19OverflowPats CDCPMDRecord Number
+P cvdNumICUBeds CDCPMDRecord Number
+P cvdNumICUBedsOcc CDCPMDRecord Number
+P cvdNumTotBeds CDCPMDRecord Number
+P cvdNumVent CDCPMDRecord Number
+P cvdNumVentUse CDCPMDRecord Number
+P data InstantaneousEvent Thing
+P dataFeedElement DataFeed DataFeedItem,Text,Thing
+P dataset DataCatalog Dataset
+P datasetTimeInterval Dataset DateTime >temporalCoverage
+P dateCreated CreativeWork,DataFeedItem Date,DateTime
+P dateDeleted DataFeedItem Date,DateTime
+P dateIssued Ticket Date,DateTime
+P dateModified CreativeWork,DataFeedItem Date,DateTime
+P datePosted CDCPMDRecord,JobPosting,RealEstateListing,SpecialAnnouncement Date,DateTime
+P datePublished Certification,CreativeWork Date,DateTime
+P dateRead Message Date,DateTime
+P dateReceived Message DateTime
+P dateSent Message DateTime
+P dateVehicleFirstRegistered Vehicle Date
+P dateline NewsArticle Text
+P dayOfWeek EducationalOccupationalProgram,OpeningHoursSpecification DayOfWeek
+P deathDate Person Date
+P deathPlace Person Place
+P defaultValue PropertyValueSpecification Text,Thing
+P deliveryAddress ParcelDelivery PostalAddress
+P deliveryLeadTime Demand,Offer QuantitativeValue
+P deliveryMethod OrderAction,ReceiveAction,SendAction,TrackAction DeliveryMethod
+P deliveryStatus ParcelDelivery DeliveryEvent
+P deliveryTime DeliveryTimeSettings,OfferShippingDetails ShippingDeliveryTime
+P department Organization Organization
+P departureAirport Flight Airport
+P departureBoatTerminal BoatTrip BoatTerminal
+P departureBusStop BusTrip BusStation,BusStop
+P departureGate Flight Text
+P departurePlatform TrainTrip Text
+P departureStation TrainTrip TrainStation
+P departureTerminal Flight Text
+P departureTime Trip DateTime,Time
+P dependencies TechArticle Text
+P depth OfferShippingDetails,Product,ShippingConditions,VisualArtwork Distance,QuantitativeValue
+P description Thing Text,TextObject
+P device SoftwareApplication Text >availableOnDevice
+P diagnosis DDxElement,Patient MedicalCondition
+P diagram AnatomicalStructure ImageObject
+P diet ExerciseAction Diet
+P dietFeatures Diet Text
+P differentialDiagnosis MedicalCondition DDxElement
+P digitalSourceType CreativeWork IPTCDigitalSourceEnumeration
+P directApply JobPosting Boolean
+P director Clip,CreativeWorkSeason,Episode,Event,Movie,MovieSeries,RadioSeries,TVSeries,VideoGame,VideoGameSeries,VideoObject Person
+P directors Clip,Episode,Movie,MovieSeries,RadioSeries,TVSeries,VideoGame,VideoGameSeries,VideoObject Person >director
+P disambiguatingDescription Thing Text
+P discount Order Number,Text
+P discountCode Order Text
+P discountCurrency Order Text
+P discusses UserComments CreativeWork
+P discussionUrl CreativeWork URL
+P diseasePreventionInfo SpecialAnnouncement URL,WebContent
+P diseaseSpreadStatistics SpecialAnnouncement Dataset,Observation,URL,WebContent
+P displayLocation CreativeWork,Product Place
+P dissolutionDate Organization Date
+P distance ExerciseAction,TravelAction Distance
+P distinguishingSign DDxElement MedicalSignOrSymptom
+P distribution Dataset DataDownload
+P diversityPolicy NewsMediaOrganization,Organization CreativeWork,URL
+P diversityStaffingReport NewsMediaOrganization,Organization Article,URL
+P documentation WebAPI CreativeWork,URL
+P doesNotShip OfferShippingDetails,ShippingConditions,ShippingRateSettings Boolean
+P domainIncludes Property Class
+P domiciledMortgage MortgageLoan Boolean
+P doorTime Event DateTime,Time
+P dosageForm Drug Text
+P doseSchedule Drug,TherapeuticProcedure DoseSchedule
+P doseUnit DoseSchedule Text
+P doseValue DoseSchedule Number,QualitativeValue
+P downPayment RepaymentSpecification MonetaryAmount,Number
+P downloadUrl SoftwareApplication URL
+P downvoteCount Comment Integer
+P drainsTo Vein Vessel
+P driveWheelConfiguration Vehicle DriveWheelConfigurationValue,Text
+P dropoffLocation RentalCarReservation Place
+P dropoffTime RentalCarReservation DateTime
+P drug DrugClass,MedicalCondition,Patient,TherapeuticProcedure Drug
+P drugClass Drug DrugClass
+P drugUnit Drug,DrugCost Text
+P duns Organization,Person Text
+P duplicateTherapy MedicalTherapy MedicalTherapy
+P duration Audiobook,Episode,Event,MediaObject,Movie,MusicRecording,MusicRelease,QuantitativeValueDistribution,Schedule,ServicePeriod Duration,QuantitativeValue
+P durationOfWarranty WarrantyPromise QuantitativeValue
+P duringMedia HowToDirection MediaObject,URL
+P earlyPrepaymentPenalty RepaymentSpecification MonetaryAmount
+P editEIDR CreativeWork Text,URL
+P editor CreativeWork Person
+P eduQuestionType Question,SolveMathAction Text
+P educationRequirements JobPosting,Occupation EducationalOccupationalCredential,Text
+P educationalAlignment CreativeWork,LearningResource AlignmentObject
+P educationalCredentialAwarded Course,EducationalOccupationalProgram EducationalOccupationalCredential,Text,URL
+P educationalFramework AlignmentObject Text
+P educationalLevel CreativeWork,EducationEvent,EducationalOccupationalCredential,LearningResource DefinedTerm,Text,URL
+P educationalProgramMode EducationalOccupationalProgram Text,URL
+P educationalRole EducationalAudience Text
+P educationalUse CreativeWork,LearningResource DefinedTerm,Text
+P elevation GeoCoordinates,GeoShape Number,Text
+P eligibilityToWorkRequirement JobPosting Text
+P eligibleCustomerType Demand,Offer BusinessEntityType
+P eligibleDuration Demand,Offer QuantitativeValue
+P eligibleQuantity Demand,Offer,PriceSpecification QuantitativeValue
+P eligibleRegion ActionAccessSpecification,DeliveryChargeSpecification,Demand,Offer GeoShape,Place,Text
+P eligibleTransactionVolume Demand,Offer,PriceSpecification PriceSpecification
+P eligibleWithSupplier FinancialIncentive Organization
+P email ContactPoint,Organization,Person Text
+P embedUrl MediaObject URL
+P embeddedTextCaption AudioObject,ImageObject,VideoObject Text
+P emissionsCO2 Vehicle Number
+P employee Organization Person
+P employees Organization Person >employee
+P employerOverview JobPosting Text
+P employmentType JobPosting Text
+P employmentUnit JobPosting Organization
+P encodesBioChemEntity Gene BioChemEntity
+P encodesCreativeWork MediaObject CreativeWork
+P encoding CreativeWork MediaObject
+P encodingFormat CreativeWork,MediaObject Text,URL
+P encodingType EntryPoint Text
+P encodings CreativeWork MediaObject >encoding
+P endDate CreativeWorkSeason,CreativeWorkSeries,DatedMoneySpecification,EducationalOccupationalProgram,Event,MerchantReturnPolicySeasonalOverride,Role,Schedule Date,DateTime
+P endOffset Clip HyperTocEntry,Number
+P endTime Action,FoodEstablishmentReservation,InteractionCounter,MediaObject,Schedule DateTime,Time
+P endorsee EndorseAction Organization,Person
+P endorsers Diet Organization,Person
+P energyEfficiencyScaleMax EnergyConsumptionDetails EUEnergyEfficiencyEnumeration
+P energyEfficiencyScaleMin EnergyConsumptionDetails EUEnergyEfficiencyEnumeration
+P engineDisplacement EngineSpecification QuantitativeValue
+P enginePower EngineSpecification QuantitativeValue
+P engineType EngineSpecification QualitativeValue,Text,URL
+P entertainmentBusiness PerformAction EntertainmentBusiness
+P epidemiology MedicalCondition,PhysicalActivity Text
+P episode CreativeWorkSeason,RadioSeries,TVSeries,VideoGameSeries Episode
+P episodeNumber Episode Integer,Text
+P episodes CreativeWorkSeason,RadioSeries,TVSeries,VideoGameSeries Episode >episode
+P equal QualitativeValue QualitativeValue
+P error Action Thing
+P errorCode Error DefinedTerm,Integer,StatusEnumeration,Text
+P estimatedCost HowTo,HowToSupply MonetaryAmount,Text
+P estimatedFlightDuration Flight Duration,Text
+P estimatedSalary JobPosting,Occupation MonetaryAmount,MonetaryAmountDistribution,Number
+P estimatesRiskOf MedicalRiskEstimator MedicalEntity
+P ethicsPolicy NewsMediaOrganization,Organization CreativeWork,URL
+P event InformAction,InviteAction,JoinAction,LeaveAction,Organization,Place,PlayAction Event
+P eventAttendanceMode Event EventAttendanceModeEnumeration
+P eventSchedule Event Schedule
+P eventStatus Event EventStatusType
+P events Organization,Place Event >event
+P evidenceLevel MedicalGuideline MedicalEvidenceLevel
+P evidenceOrigin MedicalGuideline Text
+P exampleOfWork CreativeWork CreativeWork
+P exceptDate Schedule Date,DateTime
+P exchangeRateSpread ExchangeRateSpecification MonetaryAmount,Number
+P executableLibraryName APIReference Text
+P exerciseCourse ExerciseAction Place
+P exercisePlan ExerciseAction ExercisePlan
+P exerciseRelatedDiet ExerciseAction Diet
+P exerciseType ExerciseAction,ExercisePlan Text
+P exifData ImageObject PropertyValue,Text
+P expectedArrivalFrom ParcelDelivery Date,DateTime
+P expectedArrivalUntil ParcelDelivery Date,DateTime
+P expectedPrognosis MedicalCondition Text
+P expectsAcceptanceOf ActionAccessSpecification,ConsumeAction,MediaSubscription Offer
+P experienceInPlaceOfEducation JobPosting Boolean
+P experienceRequirements JobPosting,Occupation OccupationalExperienceRequirements,Text
+P expertConsiderations Diet Text
+P expires Certification,CreativeWork Date,DateTime
+P expressedIn Gene AnatomicalStructure,AnatomicalSystem,BioChemEntity,DefinedTerm
+P extendedAddress PostalAddress Text
+P familyName Person Text
+P fatContent NutritionInformation Mass
+P faxNumber ContactPoint,Organization,Person,Place Text
+P featureList SoftwareApplication Text,URL
+P feesAndCommissionsSpecification FinancialProduct,FinancialService Text,URL
+P fiberContent NutritionInformation Mass
+P fileFormat CreativeWork Text,URL >encodingFormat
+P fileSize SoftwareApplication Text
+P financialAidEligible Course,EducationalOccupationalProgram DefinedTerm,Text
+P firstAppearance Claim CreativeWork
+P firstPerformance MusicComposition Event
+P flightDistance Flight Distance,Text
+P flightNumber Flight Text
+P floorLevel Accommodation,LocalBusiness,Residence Text
+P floorLimit PaymentCard MonetaryAmount
+P floorSize Accommodation,FloorPlan QuantitativeValue
+P followee FollowAction Organization,Person
+P follows Person Person
+P followup MedicalProcedure Text
+P foodEstablishment CookAction FoodEstablishment,Place
+P foodEvent CookAction FoodEvent
+P foodWarning Drug Text
+P founder Organization Organization,Person
+P founders Organization Person >founder
+P foundingDate Organization Date
+P foundingLocation Organization Place
+P free PublicationEvent Boolean >isAccessibleForFree
+P freeShippingThreshold ShippingRateSettings DeliveryChargeSpecification,MonetaryAmount
+P frequency DoseSchedule Text
+P fromLocation ExerciseAction,MoveAction,TransferAction Place
+P fuelCapacity Vehicle QuantitativeValue
+P fuelConsumption Vehicle QuantitativeValue
+P fuelEfficiency Vehicle QuantitativeValue
+P fuelType EngineSpecification,Vehicle QualitativeValue,Text,URL
+P fulfillmentType ShippingService FulfillmentTypeEnumeration
+P functionalClass Joint MedicalEntity,Text
+P fundedItem Grant BioChemEntity,CreativeWork,Event,MedicalEntity,Organization,Person,Product
+P funder CreativeWork,Event,Grant,MonetaryGrant,Organization,Person Organization,Person
+P funding BioChemEntity,CreativeWork,Event,MedicalEntity,Organization,Person,Product Grant
+P game GameServer VideoGame
+P gameAvailabilityType PlayGameAction GameAvailabilityEnumeration,Text
+P gameEdition VideoGame Text
+P gameItem Game,VideoGameSeries Thing
+P gameLocation Game,VideoGameSeries Place,PostalAddress,URL
+P gamePlatform VideoGame,VideoGameSeries Text,Thing,URL
+P gameServer VideoGame GameServer
+P gameTip VideoGame CreativeWork
+P gender Person,SportsTeam GenderType,Text
+P genre BroadcastChannel,CreativeWork,MusicGroup DefinedTerm,Text,URL
+P geo Place GeoCoordinates,GeoShape
+P geoContains GeospatialGeometry,Place GeospatialGeometry,Place
+P geoCoveredBy GeospatialGeometry,Place GeospatialGeometry,Place
+P geoCovers GeospatialGeometry,Place GeospatialGeometry,Place
+P geoCrosses GeospatialGeometry,Place GeospatialGeometry,Place
+P geoDisjoint GeospatialGeometry,Place GeospatialGeometry,Place
+P geoEquals GeospatialGeometry,Place GeospatialGeometry,Place
+P geoIntersects GeospatialGeometry,Place GeospatialGeometry,Place
+P geoMidpoint GeoCircle GeoCoordinates
+P geoOverlaps GeospatialGeometry,Place GeospatialGeometry,Place
+P geoRadius GeoCircle Distance,Number,Text
+P geoTouches GeospatialGeometry,Place GeospatialGeometry,Place
+P geoWithin GeospatialGeometry,Place GeospatialGeometry,Place
+P geographicArea Audience AdministrativeArea
+P gettingTestedInfo SpecialAnnouncement URL,WebContent
+P givenName Person Text
+P globalLocationNumber Organization,Person,Place Text
+P governmentBenefitsInfo SpecialAnnouncement GovernmentService
+P gracePeriod LoanOrCredit Duration
+P grantee DigitalDocumentPermission Audience,ContactPoint,Organization,Person
+P greater QualitativeValue QualitativeValue
+P greaterOrEqual QualitativeValue QualitativeValue
+P gtin Demand,Offer,Product Text,URL
+P gtin12 Demand,Offer,Product Text
+P gtin13 Demand,Offer,Product Text
+P gtin14 Demand,Offer,Product Text
+P gtin8 Demand,Offer,Product Text
+P guideline MedicalEntity MedicalGuideline
+P guidelineDate MedicalGuideline Date
+P guidelineSubject MedicalGuideline MedicalEntity
+P handlingTime ShippingDeliveryTime,ShippingService QuantitativeValue,ServicePeriod
+P hasAdultConsideration Offer,Product AdultOrientedEnumeration
+P hasBioChemEntityPart BioChemEntity BioChemEntity
+P hasBioPolymerSequence Gene,Protein Text
+P hasBroadcastChannel BroadcastService BroadcastChannel
+P hasCategoryCode CategoryCodeSet CategoryCode
+P hasCertification Organization,Person,Place,Product,Service Certification
+P hasCourse EducationalOccupationalProgram Course
+P hasCourseInstance Course CourseInstance
+P hasCredential Organization,Person Credential
+P hasDefinedTerm DefinedTermSet,Taxon DefinedTerm
+P hasDeliveryMethod DeliveryEvent,ParcelDelivery DeliveryMethod
+P hasDigitalDocumentPermission DigitalDocument DigitalDocumentPermission
+P hasDigitalProductPassport Offer,Product DigitalProductPassport,URL
+P hasDriveThroughService Place Boolean
+P hasEnergyConsumptionDetails Product EnergyConsumptionDetails
+P hasEnergyEfficiencyCategory EnergyConsumptionDetails EnergyEfficiencyEnumeration
+P hasGS1DigitalLink Offer,Organization,Place,Product URL
+P hasHealthAspect HealthTopicContent HealthAspectEnumeration
+P hasMap Place Map,URL
+P hasMeasurement Certification,Offer,Product,SizeSpecification QuantitativeValue
+P hasMemberProgram Organization MemberProgram
+P hasMenu FoodEstablishment Menu,Text,URL
+P hasMenuItem Menu,MenuSection MenuItem
+P hasMenuSection Menu,MenuSection MenuSection
+P hasMerchantReturnPolicy Offer,Organization,Product MerchantReturnPolicy
+P hasMolecularFunction BioChemEntity DefinedTerm,PropertyValue,URL
+P hasOccupation Person Occupation
+P hasOfferCatalog Organization,Person,Service OfferCatalog
+P hasPOS Organization,Person Place
+P hasPart CreativeWork CreativeWork
+P hasParticipationOffer Event Offer
+P hasProductReturnPolicy Organization,Product ProductReturnPolicy >hasMerchantReturnPolicy
+P hasRepresentation BioChemEntity PropertyValue,Text,URL
+P hasShippingService OfferShippingDetails,Organization ShippingService
+P hasSponsorshipOffer Event Offer
+P hasStore OnlineMarketplace OnlineStore
+P hasTierBenefit MemberProgramTier TierBenefitEnumeration
+P hasTierRequirement MemberProgramTier CreditCard,MonetaryAmount,Text,UnitPriceSpecification
+P hasTiers MemberProgram MemberProgramTier
+P hasVariant ProductGroup Product
+P headline CreativeWork Text
+P healthCondition MedicalStudy,Patient,PeopleAudience MedicalCondition
+P healthPlanCoinsuranceOption HealthPlanCostSharingSpecification Text
+P healthPlanCoinsuranceRate HealthPlanCostSharingSpecification Number
+P healthPlanCopay HealthPlanCostSharingSpecification PriceSpecification
+P healthPlanCopayOption HealthPlanCostSharingSpecification Text
+P healthPlanCostSharing HealthPlanFormulary,HealthPlanNetwork Boolean,HealthPlanCostSharingSpecification
+P healthPlanDrugOption HealthInsurancePlan Text
+P healthPlanDrugTier HealthInsurancePlan,HealthPlanFormulary Text
+P healthPlanId HealthInsurancePlan Text
+P healthPlanMarketingUrl HealthInsurancePlan URL
+P healthPlanNetworkId HealthPlanNetwork,MedicalOrganization Text
+P healthPlanNetworkTier HealthPlanNetwork Text
+P healthPlanPharmacyCategory HealthPlanCostSharingSpecification Text
+P healthcareReportingData Hospital CDCPMDRecord,Dataset
+P height MediaObject,OfferShippingDetails,Person,Product,ShippingConditions,VisualArtwork Distance,QuantitativeValue
+P highPrice AggregateOffer Number,Text
+P hiringOrganization JobPosting Organization,Person
+P holdingArchive ArchiveComponent ArchiveOrganization
+P homeLocation Person ContactPoint,Place
+P homeTeam SportsEvent Person,SportsTeam
+P honorificPrefix Person Text
+P honorificSuffix Person Text
+P hospitalAffiliation Physician Hospital
+P hostingOrganization MemberProgram,ProgramMembership Organization
+P hoursAvailable ContactPoint,LocationFeatureSpecification,Service OpeningHoursSpecification
+P howPerformed MedicalProcedure Text
+P httpMethod EntryPoint Text
+P iataCode Airline,Airport Text
+P icaoCode Airport Text
+P identifier Thing PropertyValue,Text,URL
+P identifyingExam MedicalSign PhysicalExam
+P identifyingTest MedicalSign MedicalTest
+P illustrator Book Person
+P image Thing ImageObject,URL
+P imagingTechnique ImagingTest MedicalImagingTechnique
+P importer Product Organization,Person
+P inAlbum MusicRecording MusicAlbum
+P inBroadcastLineup BroadcastChannel CableOrSatelliteService
+P inChI MolecularEntity Text
+P inChIKey MolecularEntity Text
+P inCodeSet CategoryCode CategoryCodeSet,URL
+P inDefinedTermSet DefinedTerm DefinedTermSet,URL
+P inLanguage BroadcastService,CommunicateAction,CreativeWork,Event,LinkRole,PronounceableText,WriteAction Language,Text
+P inPlaylist MusicRecording MusicPlaylist
+P inProductGroupWithID Product Text
+P inStoreReturnsOffered MerchantReturnPolicy Boolean
+P inSupportOf Thesis Text
+P incentiveAmount FinancialIncentive LoanOrCredit,QuantitativeValue,UnitPriceSpecification
+P incentiveCompensation JobPosting Text
+P incentiveStatus FinancialIncentive IncentiveStatus
+P incentiveType FinancialIncentive IncentiveType
+P incentives JobPosting Text >incentiveCompensation
+P incentivizedItem FinancialIncentive DefinedTerm,Product
+P includedComposition MusicComposition MusicComposition
+P includedDataCatalog Dataset DataCatalog >includedInDataCatalog
+P includedInDataCatalog Dataset DataCatalog
+P includedInHealthInsurancePlan Drug HealthInsurancePlan
+P includedRiskFactor MedicalRiskEstimator MedicalRiskFactor
+P includesAttraction TouristDestination TouristAttraction
+P includesHealthPlanFormulary HealthInsurancePlan HealthPlanFormulary
+P includesHealthPlanNetwork HealthInsurancePlan HealthPlanNetwork
+P includesObject Demand,Offer,ProductCollection TypeAndQuantityNode
+P incomeLimit FinancialIncentive MonetaryAmount,Text
+P increasesRiskOf MedicalRiskFactor MedicalEntity
+P industry JobPosting DefinedTerm,Text
+P ineligibleRegion ActionAccessSpecification,DeliveryChargeSpecification,Demand,MediaObject,Offer GeoShape,Place,Text
+P infectiousAgent InfectiousDisease Text
+P infectiousAgentClass InfectiousDisease InfectiousAgentClass
+P ingredients Recipe Text >recipeIngredient
+P inker ComicIssue,ComicStory,VisualArtwork Person
+P insertion Muscle AnatomicalStructure
+P installUrl SoftwareApplication URL
+P instructor CourseInstance Person
+P instrument Action Thing
+P intensity ExercisePlan QuantitativeValue,Text
+P interactingDrug Drug Drug
+P interactionCount - - >interactionStatistic
+P interactionService InteractionCounter SoftwareApplication,WebSite
+P interactionStatistic CreativeWork,Organization,Person InteractionCounter
+P interactionType InteractionCounter Action
+P interactivityType CreativeWork Text
+P interestRate FinancialProduct Number,QuantitativeValue
+P interpretedAsClaim CreativeWork,MediaObject Claim
+P inventoryLevel Demand,Offer,SomeProducts QuantitativeValue
+P inverseOf Property Property
+P isAcceptingNewPatients MedicalOrganization Boolean
+P isAccessibleForFree CreativeWork,Event,Place Boolean
+P isAccessoryOrSparePartFor Product Product
+P isAvailableGenerically Drug Boolean
+P isBasedOn CreativeWork CreativeWork,Product,URL
+P isBasedOnUrl CreativeWork CreativeWork,Product,URL >isBasedOn
+P isConsumableFor Product Product
+P isEncodedByBioChemEntity BioChemEntity Gene
+P isFamilyFriendly CreativeWork,Offer,Product Boolean
+P isGift Order Boolean
+P isInvolvedInBiologicalProcess BioChemEntity DefinedTerm,PropertyValue,URL
+P isLiveBroadcast BroadcastEvent Boolean
+P isLocatedInSubcellularLocation BioChemEntity DefinedTerm,PropertyValue,URL
+P isOftenBoughtWith Product Product
+P isPartOf CreativeWork CreativeWork,URL
+P isPartOfBioChemEntity BioChemEntity BioChemEntity
+P isPlanForApartment FloorPlan Accommodation
+P isProprietary DietarySupplement,Drug Boolean
+P isRelatedTo Product,Service Product,Service
+P isResizable 3DModel Boolean
+P isSimilarTo Product,Service Product,Service
+P isStoreOn OnlineStore OnlineMarketplace
+P isTierOf MemberProgramTier MemberProgram
+P isUnlabelledFallback DeliveryTimeSettings,ShippingRateSettings Boolean
+P isVariantOf Product,ProductModel ProductGroup,ProductModel
+P isbn Book Text
+P isicV4 Organization,Person,Place Text
+P iso6523Code Organization Text
+P isrcCode MusicRecording Text
+P issn Blog,CreativeWorkSeries,Dataset,WebSite Text
+P issueNumber PublicationIssue Integer,Text
+P issuedBy Certification,Permit,Ticket Organization
+P issuedThrough Permit Service
+P iswcCode MusicComposition Text
+P item DataFeedItem,ListItem Thing
+P itemCondition Demand,MerchantReturnPolicy,Offer,Product OfferItemCondition
+P itemDefectReturnFees MerchantReturnPolicy ReturnFeesEnumeration
+P itemDefectReturnLabelSource MerchantReturnPolicy ReturnLabelSourceEnumeration
+P itemDefectReturnShippingFeesAmount MerchantReturnPolicy MonetaryAmount
+P itemListElement ItemList ListItem,Text,Thing
+P itemListOrder ItemList ItemListOrderType,Text
+P itemLocation ArchiveComponent Place,PostalAddress,Text
+P itemOffered Demand,Offer AggregateOffer,CreativeWork,Event,MenuItem,Product,Service,Trip
+P itemPopularity Offer Number,QuantitativeValue
+P itemReviewed AggregateRating,Review Thing
+P itemShipped ParcelDelivery Product
+P itinerary Trip ItemList,Place
+P iupacName MolecularEntity Text
+P jobBenefits JobPosting Text
+P jobDuration JobPosting Duration,QuantitativeValue
+P jobImmediateStart JobPosting Boolean
+P jobLocation JobPosting Place
+P jobLocationType JobPosting Text
+P jobStartDate JobPosting Date,Text
+P jobTitle Person DefinedTerm,Text
+P jurisdiction GovernmentService,Legislation AdministrativeArea,Text
+P keywords CreativeWork,Event,Organization,Place,Product DefinedTerm,Text,URL
+P knownVehicleDamages Vehicle Text
+P knows Person Person
+P knowsAbout Organization,Person Text,Thing,URL
+P knowsLanguage Organization,Person Language,Text
+P labelDetails Drug URL
+P landlord RentAction Organization,Person
+P language CommunicateAction,WriteAction Language >inLanguage
+P lastReviewed WebPage Date
+P latitude GeoCoordinates,Place Number,Text
+P layoutImage FloorPlan ImageObject,URL
+P learningResourceType CreativeWork,LearningResource DefinedTerm,Text
+P leaseLength Accommodation,Offer,RealEstateListing Duration,QuantitativeValue
+P legalAddress Organization PostalAddress
+P legalName Organization Text
+P legalRepresentative Organization Person
+P legalStatus DietarySupplement,Drug,MedicalEntity DrugLegalStatus,MedicalEnumeration,Text
+P legislationAmends Legislation Legislation
+P legislationApplies Legislation Legislation
+P legislationChanges Legislation Legislation
+P legislationCommences Legislation Legislation
+P legislationConsolidates Legislation Legislation
+P legislationCorrects Legislation Legislation
+P legislationCountersignedBy Legislation Organization,Person
+P legislationDate Legislation Date
+P legislationDateOfApplicability Legislation Date
+P legislationDateVersion Legislation Date
+P legislationEnsuresImplementationOf Legislation Legislation
+P legislationIdentifier Legislation Text,URL
+P legislationJurisdiction Legislation AdministrativeArea,Text
+P legislationLegalForce Legislation LegalForceStatus
+P legislationLegalValue LegislationObject LegalValueLevel
+P legislationPassedBy Legislation Organization,Person
+P legislationRepeals Legislation Legislation
+P legislationResponsible Legislation Organization,Person
+P legislationTransposes Legislation Legislation
+P legislationType Legislation CategoryCode,Text
+P leiCode Organization Text
+P lender BorrowAction Organization,Person
+P lesser QualitativeValue QualitativeValue
+P lesserOrEqual QualitativeValue QualitativeValue
+P letterer ComicIssue,ComicStory,VisualArtwork Person
+P license CreativeWork CreativeWork,URL
+P lifeEvent Person Event
+P line GeoShape Text
+P linkRelationship LinkRole Text
+P liveBlogUpdate LiveBlogPosting BlogPosting
+P loanMortgageMandateAmount MortgageLoan MonetaryAmount
+P loanPaymentAmount RepaymentSpecification MonetaryAmount
+P loanPaymentFrequency RepaymentSpecification Number
+P loanRepaymentForm LoanOrCredit RepaymentSpecification
+P loanTerm LoanOrCredit QuantitativeValue
+P loanType LoanOrCredit Text,URL
+P location Action,Event,InteractionCounter,Organization Place,PostalAddress,Text,VirtualLocation
+P locationCreated CreativeWork Place
+P lodgingUnitDescription LodgingReservation Text
+P lodgingUnitType LodgingReservation QualitativeValue,Text
+P logo Brand,Certification,Organization,Place,Product,Service ImageObject,URL
+P longitude GeoCoordinates,Place Number,Text
+P loser WinAction Person
+P lowPrice AggregateOffer Number,Text
+P lyricist MusicComposition Person
+P lyrics MusicComposition CreativeWork
+P mainContentOfPage WebPage WebPageElement
+P mainEntity CreativeWork Thing
+P mainEntityOfPage Thing CreativeWork,URL
+P maintainer CreativeWork Organization,Person
+P makesOffer Organization,Person Offer
+P manufacturer Product Organization
+P map Place URL >hasMap
+P mapType Map MapCategoryType
+P maps Place URL >hasMap
+P marginOfError Observation QuantitativeValue
+P masthead NewsMediaOrganization CreativeWork,URL
+P material CreativeWork,Product Product,Text,URL
+P materialExtent CreativeWork QuantitativeValue,Text
+P mathExpression MathSolver SolveMathAction,Text
+P maxPrice PriceSpecification Number
+P maxValue MonetaryAmount,PropertyValue,PropertyValueSpecification,QuantitativeValue Number
+P maximumAttendeeCapacity Event,Place Integer
+P maximumEnrollment EducationalOccupationalProgram Integer
+P maximumIntake DietarySupplement,Drug,DrugStrength,Substance MaximumDoseSchedule
+P maximumPhysicalAttendeeCapacity Event Integer
+P maximumVirtualAttendeeCapacity Event Integer
+P mealService Flight Text
+P measuredProperty Observation,StatisticalVariable Property
+P measurementDenominator Observation,StatisticalVariable StatisticalVariable
+P measurementMethod DataCatalog,DataDownload,Dataset,Observation,PropertyValue,StatisticalVariable DefinedTerm,MeasurementMethodEnum,Text,URL
+P measurementQualifier Observation,StatisticalVariable Enumeration
+P measurementTechnique DataCatalog,DataDownload,Dataset,Observation,PropertyValue,StatisticalVariable DefinedTerm,MeasurementMethodEnum,Text,URL
+P mechanismOfAction DietarySupplement,Drug Text
+P mediaAuthenticityCategory MediaReview MediaManipulationRatingEnumeration
+P mediaItemAppearance MediaReviewItem MediaObject
+P median QuantitativeValueDistribution Number
+P medicalAudience MedicalWebPage MedicalAudience,MedicalAudienceType
+P medicalSpecialty Hospital,MedicalClinic,MedicalOrganization,Physician MedicalSpecialty
+P medicineSystem MedicalEntity MedicineSystem
+P meetsEmissionStandard Vehicle QualitativeValue,Text,URL
+P member Organization,ProgramMembership Organization,Person
+P memberOf Organization,Person MemberProgramTier,Organization,ProgramMembership
+P members Organization,ProgramMembership Organization,Person >member
+P membershipNumber ProgramMembership Text
+P membershipPointsEarned MemberProgramTier,PriceSpecification,ProgramMembership Number,QuantitativeValue
+P memoryRequirements SoftwareApplication Text,URL
+P mentions CreativeWork Thing
+P menu FoodEstablishment Menu,Text,URL >hasMenu
+P menuAddOn MenuItem MenuItem,MenuSection
+P merchant Order Organization,Person >seller
+P merchantReturnDays MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride Date,DateTime,Integer
+P merchantReturnLink MerchantReturnPolicy URL
+P messageAttachment Message CreativeWork
+P mileageFromOdometer Vehicle QuantitativeValue
+P minPrice PriceSpecification Number
+P minValue MonetaryAmount,PropertyValue,PropertyValueSpecification,QuantitativeValue Number
+P minimumOrderValue ShippingRateSettings MonetaryAmount,Number,PriceSpecification
+P minimumPaymentDue Invoice MonetaryAmount,PriceSpecification
+P missionCoveragePrioritiesPolicy NewsMediaOrganization CreativeWork,URL
+P mobileUrl Offer,Product Text
+P model Product ProductModel,Text
+P modelDate Vehicle Date
+P modifiedTime Reservation DateTime
+P molecularFormula MolecularEntity Text
+P molecularWeight MolecularEntity QuantitativeValue,Text
+P monoisotopicMolecularWeight MolecularEntity QuantitativeValue,Text
+P monthlyMinimumRepaymentAmount PaymentCard MonetaryAmount,Number
+P monthsOfExperience OccupationalExperienceRequirements Number
+P mpn Demand,Offer,Product Text
+P multipleValues PropertyValueSpecification Boolean
+P muscleAction Muscle Text
+P musicArrangement MusicComposition MusicComposition
+P musicBy Clip,Episode,Movie,MovieSeries,RadioSeries,TVSeries,VideoGame,VideoGameSeries,VideoObject MusicGroup,Person
+P musicCompositionForm MusicComposition Text
+P musicGroupMember MusicGroup Person >member
+P musicReleaseFormat MusicRelease MusicReleaseFormatType
+P musicalKey MusicComposition Text
+P naics Organization,Person Text
+P name Thing Text
+P namedPosition Role Text,URL >roleName
+P nationality Person Country
+P naturalProgression MedicalCondition Text
+P negativeNotes Product,Review ItemList,ListItem,Text,WebContent
+P nerve Muscle Nerve
+P nerveMotor Nerve Muscle
+P netWorth Person MonetaryAmount,PriceSpecification
+P newsUpdatesAndGuidelines SpecialAnnouncement URL,WebContent
+P nextItem ListItem ListItem
+P noBylinesPolicy NewsMediaOrganization CreativeWork,URL
+P nonEqual QualitativeValue QualitativeValue
+P nonProprietaryName DietarySupplement,Drug Text
+P nonprofitStatus Organization NonprofitType
+P normalRange MedicalTest MedicalEnumeration,Text
+P nsn Product Text
+P numAdults LodgingReservation Integer,QuantitativeValue
+P numChildren LodgingReservation Integer,QuantitativeValue
+P numConstraints ConstraintNode Integer
+P numItems ShippingConditions QuantitativeValue
+P numTracks MusicPlaylist Integer
+P numberOfAccommodationUnits ApartmentComplex,FloorPlan QuantitativeValue
+P numberOfAirbags Vehicle Number,Text
+P numberOfAvailableAccommodationUnits ApartmentComplex,FloorPlan QuantitativeValue
+P numberOfAxles Vehicle Number,QuantitativeValue
+P numberOfBathroomsTotal Accommodation,FloorPlan Integer
+P numberOfBedrooms Accommodation,ApartmentComplex,FloorPlan Number,QuantitativeValue
+P numberOfBeds BedDetails Number
+P numberOfCredits Course,EducationalOccupationalProgram Integer,StructuredValue
+P numberOfDoors Vehicle Number,QuantitativeValue
+P numberOfEmployees BusinessAudience,Organization QuantitativeValue
+P numberOfEpisodes CreativeWorkSeason,RadioSeries,TVSeries,VideoGameSeries Integer
+P numberOfForwardGears Vehicle Number,QuantitativeValue
+P numberOfFullBathrooms Accommodation,FloorPlan Number
+P numberOfItems ItemList Integer
+P numberOfLoanPayments RepaymentSpecification Number
+P numberOfPages Book Integer
+P numberOfPartialBathrooms Accommodation,FloorPlan Number
+P numberOfPlayers Game,VideoGameSeries QuantitativeValue
+P numberOfPreviousOwners Vehicle Number,QuantitativeValue
+P numberOfRooms Accommodation,Apartment,FloorPlan,House,LodgingBusiness,SingleFamilyResidence,Suite Number,QuantitativeValue
+P numberOfSeasons RadioSeries,TVSeries,VideoGameSeries Integer
+P numberedPosition OrganizationRole Number
+P nutrition MenuItem,Recipe NutritionInformation
+P object Action Thing
+P observationAbout Observation Place,Thing
+P observationDate Observation Date,DateTime
+P observationPeriod Observation Text
+P occupancy Accommodation,Apartment,HotelRoom,SingleFamilyResidence,Suite QuantitativeValue
+P occupationLocation Occupation AdministrativeArea
+P occupationalCategory EducationalOccupationalProgram,JobPosting,Occupation,Physician,WorkBasedProgram CategoryCode,Text
+P occupationalCredentialAwarded Course,EducationalOccupationalProgram EducationalOccupationalCredential,Text,URL
+P offerCount AggregateOffer Integer
+P offeredBy Offer Organization,Person
+P offers AggregateOffer,CreativeWork,EducationalOccupationalProgram,Event,MenuItem,Product,Service,Trip Demand,Offer
+P offersPrescriptionByMail HealthPlanFormulary Boolean
+P openingHours CivicStructure,LocalBusiness Text
+P openingHoursSpecification Place OpeningHoursSpecification
+P opens OpeningHoursSpecification Time
+P operatingSystem SoftwareApplication OperatingSystem,Text
+P opponent ExerciseAction Person
+P option ChooseAction Text,Thing >actionOption
+P orderDate Order Date,DateTime
+P orderDelivery Order,OrderItem ParcelDelivery
+P orderItemNumber OrderItem Text
+P orderItemStatus OrderItem OrderStatus
+P orderNumber Order Text
+P orderPercentage ShippingRateSettings Number
+P orderQuantity OrderItem Number,QuantitativeValue
+P orderStatus Order OrderStatus
+P orderValue ShippingConditions MonetaryAmount
+P orderedItem Order,OrderItem OrderItem,Product,Service
+P organizer Event Organization,Person
+P originAddress ParcelDelivery PostalAddress
+P originalMediaContextDescription MediaReview Text
+P originalMediaLink MediaReview MediaObject,URL,WebPage
+P originatesFrom LymphaticVessel Vessel
+P overdosage Drug Text
+P ownedFrom OwnershipInfo DateTime
+P ownedThrough OwnershipInfo DateTime
+P owner Thing Organization,Person
+P ownershipFundingInfo NewsMediaOrganization,Organization AboutPage,CreativeWork,Text,URL
+P owns Organization,Person Thing
+P pageEnd Article,Chapter,PublicationIssue,PublicationVolume Integer,Text
+P pageStart Article,Chapter,PublicationIssue,PublicationVolume Integer,Text
+P pagination Article,Chapter,PublicationIssue,PublicationVolume Text
+P parent Person Person
+P parentItem Answer,Comment,Question Comment,CreativeWork
+P parentOrganization Organization Organization
+P parentService BroadcastService BroadcastService
+P parentTaxon Taxon Taxon,Text,URL
+P parents Person Person >parent
+P partOfEpisode Clip Episode
+P partOfInvoice Order Invoice
+P partOfOrder ParcelDelivery Order
+P partOfSeason Clip,Episode CreativeWorkSeason
+P partOfSeries Clip,CreativeWorkSeason,Episode CreativeWorkSeries
+P partOfSystem AnatomicalStructure AnatomicalSystem
+P partOfTVSeries TVClip,TVEpisode,TVSeason TVSeries >partOfSeries
+P partOfTrip Trip Trip
+P participant Action Organization,Person
+P partySize FoodEstablishmentReservation,TaxiReservation Integer,QuantitativeValue
+P passengerPriorityStatus FlightReservation QualitativeValue,Text
+P passengerSequenceNumber FlightReservation Text
+P pathophysiology MedicalCondition,PhysicalActivity Text
+P pattern CreativeWork,Product DefinedTerm,Text
+P payload Vehicle QuantitativeValue
+P paymentAccepted LocalBusiness Text
+P paymentDue Invoice,Order DateTime >paymentDueDate
+P paymentDueDate Invoice,Order Date,DateTime
+P paymentMethod Invoice,Order PaymentMethod,Text
+P paymentMethodId Invoice,Order Text
+P paymentMethodType PaymentMethod PaymentMethodType
+P paymentStatus Invoice PaymentStatusType,Text
+P paymentUrl Order URL
+P penciler ComicIssue,ComicStory,VisualArtwork Person
+P percentile10 QuantitativeValueDistribution Number
+P percentile25 QuantitativeValueDistribution Number
+P percentile75 QuantitativeValueDistribution Number
+P percentile90 QuantitativeValueDistribution Number
+P performTime HowTo,HowToDirection Duration
+P performer Event Organization,Person
+P performerIn Person Event
+P performers Event Organization,Person >performer
+P permissionType DigitalDocumentPermission DigitalDocumentPermissionType
+P permissions SoftwareApplication Text
+P permitAudience Permit Audience
+P permittedUsage Accommodation Text
+P petsAllowed Accommodation,ApartmentComplex,FloorPlan,LodgingBusiness Boolean,Text
+P phoneticText PronounceableText Text
+P photo Place ImageObject,Photograph
+P photos Place ImageObject,Photograph >photo
+P physicalRequirement JobPosting DefinedTerm,Text,URL
+P physiologicalBenefits Diet Text
+P pickupLocation RentalCarReservation,TaxiReservation Place
+P pickupTime RentalCarReservation,TaxiReservation DateTime
+P playMode VideoGame,VideoGameSeries GamePlayMode
+P playerType MediaObject Text
+P playersOnline GameServer Integer
+P polygon GeoShape Text
+P populationType StatisticalPopulation,StatisticalVariable Class
+P position CreativeWork,ListItem Integer,Text
+P positiveNotes Product,Review ItemList,ListItem,Text,WebContent
+P possibleComplication MedicalCondition Text
+P possibleTreatment MedicalCondition,MedicalSignOrSymptom Drug,DrugClass,LifestyleModification,MedicalTherapy
+P postOfficeBoxNumber PostalAddress Text
+P postOp MedicalDevice Text
+P postalCode DefinedRegion,GeoCoordinates,GeoShape,PostalAddress Text
+P postalCodeBegin PostalCodeRangeSpecification Text
+P postalCodeEnd PostalCodeRangeSpecification Text
+P postalCodePrefix DefinedRegion Text
+P postalCodeRange DefinedRegion PostalCodeRangeSpecification
+P potentialAction Thing Action
+P potentialUse ChemicalSubstance,MolecularEntity DefinedTerm
+P practicesAt IndividualPhysician MedicalOrganization
+P preOp MedicalDevice Text
+P predecessorOf ProductModel ProductModel
+P pregnancyCategory Drug DrugPregnancyCategory
+P pregnancyWarning Drug Text
+P prepTime HowTo,HowToDirection Duration
+P preparation MedicalProcedure MedicalEntity,Text
+P prescribingInfo Drug URL
+P prescriptionStatus Drug DrugPrescriptionStatus,Text
+P previousItem ListItem ListItem
+P previousStartDate Event Date,DateTime
+P price DonateAction,Offer,PriceSpecification,TradeAction Number,Text
+P priceComponent CompoundPriceSpecification PriceSpecification
+P priceComponentType UnitPriceSpecification PriceComponentTypeEnumeration
+P priceCurrency DonateAction,Offer,PriceSpecification,Reservation,Ticket,TradeAction Text
+P priceRange LocalBusiness Text
+P priceSpecification Demand,DonateAction,Offer,TradeAction PriceSpecification
+P priceType CompoundPriceSpecification,UnitPriceSpecification PriceTypeEnumeration,Text
+P priceValidUntil Offer Date
+P primaryImageOfPage WebPage ImageObject
+P primaryPrevention MedicalCondition MedicalTherapy
+P printColumn NewsArticle Text
+P printEdition NewsArticle Text
+P printPage NewsArticle Text
+P printSection NewsArticle Text
+P procedure MedicalDevice Text
+P procedureType MedicalProcedure MedicalProcedureType
+P processingTime ServiceChannel Duration
+P processorRequirements SoftwareApplication Text
+P producer CreativeWork Organization,Person
+P produces Service Thing >serviceOutput
+P productGroupID ProductGroup Text
+P productID Product Text
+P productReturnDays ProductReturnPolicy Integer >merchantReturnDays
+P productReturnLink ProductReturnPolicy URL >merchantReturnLink
+P productSupported ContactPoint Product,Text
+P productionCompany CreativeWorkSeason,Episode,MediaObject,Movie,MovieSeries,RadioSeries,TVSeries,VideoGameSeries Organization
+P productionDate Product,Vehicle Date
+P proficiencyLevel TechArticle Text
+P program ProgramMembership MemberProgram
+P programMembershipUsed Reservation ProgramMembership
+P programName ProgramMembership Text
+P programPrerequisites EducationalOccupationalProgram AlignmentObject,Course,EducationalOccupationalCredential,Text
+P programType EducationalOccupationalProgram DefinedTerm,Text
+P programmingLanguage SoftwareSourceCode ComputerLanguage,Text
+P programmingModel APIReference Text
+P pronouns Person DefinedTerm,StructuredValue,Text
+P propertyID PropertyValue Text,URL
+P proprietaryName DietarySupplement,Drug Text
+P proteinContent NutritionInformation Mass
+P provider Action,CreativeWork,EducationalOccupationalProgram,FinancialIncentive,Invoice,OfferShippingDetails,ParcelDelivery,Reservation,Service,Trip Organization,Person
+P providerMobility Service Text
+P providesBroadcastService BroadcastChannel BroadcastService
+P providesService ServiceChannel Service
+P publicAccess Place Boolean
+P publicTransportClosuresInfo SpecialAnnouncement URL,WebContent
+P publication CreativeWork PublicationEvent
+P publicationType MedicalScholarlyArticle Text
+P publishedBy PublicationEvent Organization,Person
+P publishedOn PublicationEvent BroadcastService
+P publisher CreativeWork,FinancialIncentive Organization,Person
+P publisherImprint CreativeWork Organization
+P publishingPrinciples CreativeWork,Organization,Person CreativeWork,URL
+P purchaseDate Product,Vehicle Date
+P purchasePriceLimit FinancialIncentive MonetaryAmount
+P purchaseType FinancialIncentive PurchaseType
+P qualifications JobPosting,Occupation Credential,Text
+P qualifiedExpense FinancialIncentive IncentiveQualifiedExpenseType
+P quarantineGuidelines SpecialAnnouncement URL,WebContent
+P query SearchAction Text
+P quest Game,VideoGameSeries Thing
+P question AskAction Question
+P rangeIncludes Property Class
+P ratingCount AggregateRating Integer
+P ratingExplanation Rating Text
+P ratingValue Rating Number,Text
+P readBy Audiobook Person
+P readonlyValue PropertyValueSpecification Boolean
+P realEstateAgent RentAction RealEstateAgent
+P recipe CookAction Recipe
+P recipeCategory Recipe Text
+P recipeCuisine Recipe Text
+P recipeIngredient Recipe ItemList,PropertyValue,Text
+P recipeInstructions Recipe CreativeWork,ItemList,Text
+P recipeYield Recipe QuantitativeValue,Text
+P recipient AuthorizeAction,CommunicateAction,DonateAction,GiveAction,Message,PayAction,ReturnAction,SendAction,TipAction Audience,ContactPoint,Organization,Person
+P recognizedBy Credential Organization
+P recognizingAuthority MedicalEntity Organization
+P recommendationStrength MedicalGuidelineRecommendation Text
+P recommendedIntake DietarySupplement RecommendedDoseSchedule
+P recordLabel MusicRelease Organization
+P recordedAs MusicComposition MusicRecording
+P recordedAt CreativeWork Event
+P recordedIn Event CreativeWork
+P recordingOf MusicRecording MusicComposition
+P recourseLoan LoanOrCredit Boolean
+P recycledContentPercentage Product Number
+P referee SportsEvent Person
+P referenceQuantity UnitPriceSpecification QuantitativeValue
+P referencesOrder Invoice Order
+P refundType MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride RefundTypeEnumeration
+P regionDrained LymphaticVessel,Vein AnatomicalStructure,AnatomicalSystem
+P regionsAllowed MediaObject Place
+P relatedAnatomy SuperficialAnatomy AnatomicalStructure,AnatomicalSystem
+P relatedCondition AnatomicalStructure,AnatomicalSystem,SuperficialAnatomy MedicalCondition
+P relatedDrug Drug Drug
+P relatedLink WebPage URL
+P relatedStructure AnatomicalSystem AnatomicalStructure
+P relatedTherapy AnatomicalStructure,AnatomicalSystem,SuperficialAnatomy MedicalTherapy
+P relatedTo Person Person
+P releaseDate Product Date
+P releaseNotes SoftwareApplication Text,URL
+P releaseOf MusicRelease MusicAlbum
+P releasedEvent CreativeWork PublicationEvent
+P relevantOccupation JobPosting Occupation
+P relevantSpecialty MedicalEntity MedicalSpecialty
+P remainingAttendeeCapacity Event Integer
+P renegotiableLoan LoanOrCredit Boolean
+P repeatCount Schedule Integer
+P repeatFrequency Schedule Duration,Text
+P repetitions ExercisePlan Number,QuantitativeValue
+P replacee ReplaceAction Thing
+P replacer ReplaceAction Thing
+P replyToUrl UserComments URL
+P reportNumber Report Text
+P representativeOfPage ImageObject Boolean
+P requiredCollateral LoanOrCredit Text,Thing
+P requiredGender PeopleAudience Text
+P requiredMaxAge PeopleAudience Integer
+P requiredMinAge PeopleAudience Integer
+P requiredQuantity HowToItem Number,QuantitativeValue,Text
+P requirements SoftwareApplication Text,URL >softwareRequirements
+P requiresSubscription ActionAccessSpecification,MediaObject Boolean,MediaSubscription
+P reservationFor Reservation Thing
+P reservationId Reservation Text
+P reservationStatus Reservation ReservationStatusType
+P reservedTicket Reservation Ticket
+P responsibilities JobPosting,Occupation Text
+P restPeriods ExercisePlan QuantitativeValue,Text
+P restockingFee MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride MonetaryAmount,Number
+P result Action Thing
+P resultComment CommentAction,ReplyAction Comment
+P resultReview ReviewAction Review
+P returnFees MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride ReturnFeesEnumeration
+P returnLabelSource MerchantReturnPolicy ReturnLabelSourceEnumeration
+P returnMethod MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride ReturnMethodEnumeration
+P returnPolicyCategory MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride MerchantReturnEnumeration
+P returnPolicyCountry MerchantReturnPolicy Country,Text
+P returnPolicySeasonalOverride MerchantReturnPolicy MerchantReturnPolicySeasonalOverride
+P returnShippingFeesAmount MerchantReturnPolicy,MerchantReturnPolicySeasonalOverride MonetaryAmount
+P review Brand,CreativeWork,Event,Offer,Organization,Place,Product,Service Review
+P reviewAspect Guide,Rating,Review StructuredValue,Text
+P reviewBody Review Text
+P reviewCount AggregateRating Integer
+P reviewRating Review Rating
+P reviewedBy WebPage Organization,Person
+P reviews CreativeWork,Offer,Organization,Place,Product Review >review
+P riskFactor MedicalCondition MedicalRiskFactor
+P risks Diet Text
+P roleName Role Text,URL
+P roofLoad BusOrCoach,Car QuantitativeValue
+P rsvpResponse RsvpAction RsvpResponseType
+P runsTo LymphaticVessel Vessel
+P runtime SoftwareSourceCode Text >runtimePlatform
+P runtimePlatform SoftwareApplication,SoftwareSourceCode RuntimePlatform,Text
+P rxcui Drug Text
+P safetyConsideration DietarySupplement Text
+P salaryCurrency EmployeeRole,JobPosting Text
+P salaryUponCompletion EducationalOccupationalProgram MonetaryAmountDistribution
+P sameAs Thing URL
+P sampleType SoftwareSourceCode Text >codeSampleType
+P saturatedFatContent NutritionInformation Mass
+P scheduleTimezone Schedule Text
+P scheduledPaymentDate Invoice Date
+P scheduledTime PlanAction Date,DateTime
+P schemaVersion CreativeWork Text,URL
+P schoolClosuresInfo SpecialAnnouncement URL,WebContent
+P screenCount MovieTheater Number
+P screenshot SoftwareApplication ImageObject,URL
+P sdDatePublished CreativeWork Date
+P sdLicense CreativeWork CreativeWork,URL
+P sdPublisher CreativeWork Organization,Person
+P season RadioSeries,TVSeries,VideoGameSeries CreativeWorkSeason,URL >containsSeason
+P seasonNumber CreativeWorkSeason Integer,Text
+P seasonalOverride ShippingConditions OpeningHoursSpecification
+P seasons RadioSeries,TVSeries,VideoGameSeries CreativeWorkSeason >season
+P seatNumber Seat Text
+P seatRow Seat Text
+P seatSection Seat Text
+P seatingCapacity Vehicle Number,QuantitativeValue
+P seatingType Seat QualitativeValue,Text
+P secondaryPrevention MedicalCondition Drug,DrugClass,LifestyleModification,MedicalTherapy
+P securityClearanceRequirement JobPosting Text,URL
+P securityScreening FlightReservation Text
+P seeks Organization,Person Demand
+P seller BuyAction,Demand,Flight,Offer,Order Organization,Person
+P sender Message,ReceiveAction Audience,Organization,Person
+P sensoryRequirement JobPosting DefinedTerm,Text,URL
+P sensoryUnit Nerve AnatomicalStructure,SuperficialAnatomy
+P serialNumber Demand,IndividualProduct,Offer Text
+P seriousAdverseOutcome MedicalDevice,MedicalTherapy MedicalEntity
+P serverStatus GameServer GameServerStatus
+P servesCuisine FoodEstablishment Text
+P serviceArea ContactPoint,Organization,Service AdministrativeArea,GeoShape,Place >areaServed
+P serviceAudience Service Audience >audience
+P serviceLocation ServiceChannel Place
+P serviceOperator GovernmentService Organization
+P serviceOutput Service Thing
+P servicePhone ServiceChannel ContactPoint
+P servicePostalAddress ServiceChannel PostalAddress
+P serviceSmsNumber ServiceChannel ContactPoint
+P serviceType Service GovernmentBenefitsType,Text
+P serviceUrl ServiceChannel URL
+P servingSize NutritionInformation Text
+P sha256 MediaObject Text
+P sharedContent Comment,SocialMediaPosting CreativeWork
+P shippingConditions ShippingService ShippingConditions
+P shippingDestination DeliveryTimeSettings,OfferShippingDetails,ShippingConditions,ShippingRateSettings DefinedRegion
+P shippingDetails Offer OfferShippingDetails
+P shippingLabel OfferShippingDetails,ShippingRateSettings Text
+P shippingOrigin OfferShippingDetails,ShippingConditions DefinedRegion
+P shippingRate OfferShippingDetails,ShippingConditions,ShippingRateSettings MonetaryAmount,ShippingRateSettings
+P shippingSettingsLink OfferShippingDetails URL
+P sibling Person Person
+P siblings Person Person >sibling
+P signDetected MedicalTest MedicalSign
+P signOrSymptom MedicalCondition MedicalSignOrSymptom
+P significance SuperficialAnatomy Text
+P significantLink WebPage URL
+P significantLinks WebPage URL >significantLink
+P size CreativeWork,Product DefinedTerm,QuantitativeValue,SizeSpecification,Text
+P sizeGroup SizeSpecification SizeGroupEnumeration,Text
+P sizeSystem SizeSpecification SizeSystemEnumeration,Text
+P skills JobPosting,Occupation,Organization,Person DefinedTerm,Text
+P sku Demand,Offer,Product Text
+P slogan Brand,Organization,Place,Product,Service Text
+P smiles MolecularEntity Text
+P smokingAllowed Place Boolean
+P sodiumContent NutritionInformation Mass
+P softwareAddOn SoftwareApplication SoftwareApplication
+P softwareHelp SoftwareApplication CreativeWork
+P softwareRequirements SoftwareApplication SoftwareApplication,Text,URL
+P softwareVersion SoftwareApplication Text
+P source InstantaneousEvent Thing
+P sourceOrganization CreativeWork Organization
+P sourcedFrom Nerve BrainStructure
+P spatial CreativeWork Place
+P spatialCoverage CreativeWork Place
+P speakable Article,WebPage SpeakableSpecification,URL
+P specialCommitments JobPosting Text
+P specialOpeningHoursSpecification Place OpeningHoursSpecification
+P specialty WebPage Specialty
+P specification Product PropertyValue
+P speechToTextMarkup PronounceableText Text
+P speed Vehicle QuantitativeValue
+P spokenByCharacter Quotation Organization,Person
+P sponsor CreativeWork,Event,Grant,MedicalStudy,Organization,Person Organization,Person
+P sport SportsEvent,SportsOrganization Text,URL
+P sportsActivityLocation ExerciseAction SportsActivityLocation
+P sportsEvent ExerciseAction SportsEvent
+P sportsTeam ExerciseAction SportsTeam
+P spouse Person Person
+P stage MedicalCondition MedicalConditionStage
+P stageAsNumber MedicalConditionStage Number
+P starRating FoodEstablishment,LodgingBusiness Rating
+P startDate CreativeWorkSeason,CreativeWorkSeries,DatedMoneySpecification,EducationalOccupationalProgram,Event,MerchantReturnPolicySeasonalOverride,Role,Schedule Date,DateTime
+P startOffset Clip,SeekToAction HyperTocEntry,Number
+P startTime Action,FoodEstablishmentReservation,InteractionCounter,MediaObject,Schedule DateTime,Time
+P statType StatisticalVariable Property,Text,URL
+P status MedicalCondition,MedicalProcedure,MedicalStudy EventStatusType,MedicalStudyStatus,Text
+P steeringPosition Vehicle SteeringPositionValue
+P step HowTo CreativeWork,HowToSection,HowToStep,Text
+P stepValue PropertyValueSpecification Number
+P steps HowTo,HowToSection CreativeWork,ItemList,Text >step
+P storageRequirements SoftwareApplication Text,URL
+P streetAddress PostalAddress Text
+P strengthUnit DrugStrength Text
+P strengthValue DrugStrength Number
+P structuralClass Joint Text
+P study MedicalEntity MedicalStudy
+P studyDesign MedicalObservationalStudy MedicalObservationalStudyDesign
+P studyLocation MedicalStudy AdministrativeArea
+P studySubject MedicalStudy MedicalEntity
+P stupidProperty StupidType,Vehicle QuantitativeValue
+P subEvent Event Event
+P subEvents Event Event >subEvent
+P subOrganization Organization Organization
+P subReservation ReservationPackage Reservation
+P subStageSuffix MedicalConditionStage Text
+P subStructure AnatomicalStructure AnatomicalStructure
+P subTest MedicalTestPanel MedicalTest
+P subTrip Trip Trip
+P subjectOf Thing CreativeWork,Event
+P substanceOfConcern Product ChemicalSubstance,DefinedTerm,Text,URL
+P subtitleLanguage BroadcastEvent,Movie,ScreeningEvent,TVEpisode Language,Text
+P successorOf ProductModel ProductModel
+P sugarContent NutritionInformation Mass
+P suggestedAge PeopleAudience,SizeSpecification QuantitativeValue
+P suggestedAnswer Question Answer,ItemList
+P suggestedGender PeopleAudience,SizeSpecification GenderType,Text
+P suggestedMaxAge PeopleAudience Number
+P suggestedMeasurement PeopleAudience,SizeSpecification QuantitativeValue
+P suggestedMinAge PeopleAudience Number
+P suitableForDiet MenuItem,Recipe Diet,RestrictedDiet
+P superEvent Event Event
+P supersededBy Class,Enumeration,Property Class,Enumeration,Property
+P supply HowTo,HowToDirection HowToSupply,Text
+P supplyTo Artery AnatomicalStructure
+P supportingData SoftwareApplication DataFeed
+P surface VisualArtwork Text,URL >artworkSurface
+P syllabusSections Course Syllabus
+P target Action EntryPoint,URL
+P targetCollection UpdateAction Thing
+P targetDescription AlignmentObject Text
+P targetName AlignmentObject Text
+P targetPlatform APIReference Text
+P targetPopulation DietarySupplement,DoseSchedule Text
+P targetProduct SoftwareSourceCode SoftwareApplication
+P targetUrl AlignmentObject URL
+P taxID Organization,Person Text
+P taxonRank Taxon PropertyValue,Text,URL
+P taxonomicRange BioChemEntity DefinedTerm,Taxon,Text,URL
+P teaches CreativeWork,EducationEvent,LearningResource DefinedTerm,Text
+P telephone ContactPoint,Organization,Person,Place Text
+P temporal CreativeWork DateTime,Text
+P temporalCoverage CreativeWork DateTime,Text,URL
+P termCode DefinedTerm Text
+P termDuration EducationalOccupationalProgram Duration
+P termsOfService Service Text,URL
+P termsPerYear EducationalOccupationalProgram Number
+P text CreativeWork Text
+P textValue PronounceableText Text
+P thumbnail CreativeWork ImageObject
+P thumbnailUrl CreativeWork URL
+P tickerSymbol Corporation Text
+P ticketNumber Ticket Text
+P ticketToken Ticket Text,URL
+P ticketedSeat Ticket Seat
+P timeOfDay EducationalOccupationalProgram Text
+P timeRequired CreativeWork Duration
+P timeToComplete EducationalOccupationalProgram Duration
+P timestamp InstantaneousEvent DateTime
+P tissueSample PathologyTest Text
+P title JobPosting Text
+P titleEIDR Movie,TVEpisode,TVSeason,TVSeries Text,URL
+P toLocation ExerciseAction,InsertAction,MoveAction,TransferAction Place
+P toRecipient Message Audience,ContactPoint,Organization,Person
+P tocContinuation HyperTocEntry HyperTocEntry
+P tocEntry HyperToc HyperTocEntry
+P tongueWeight Vehicle QuantitativeValue
+P tool HowTo,HowToDirection HowToTool,Text
+P torque EngineSpecification QuantitativeValue
+P totalHistoricalEnrollment Course Integer
+P totalJobOpenings JobPosting Integer
+P totalPaymentDue Invoice MonetaryAmount,PriceSpecification
+P totalPrice Reservation,Ticket Number,PriceSpecification,Text
+P totalTime HowTo,HowToDirection Duration
+P tourBookingPage Accommodation,ApartmentComplex,Place URL
+P touristType TouristAttraction,TouristDestination,TouristTrip Audience,Text
+P track MusicGroup,MusicPlaylist ItemList,MusicRecording
+P trackingNumber ParcelDelivery Text
+P trackingUrl ParcelDelivery URL
+P tracks MusicGroup,MusicPlaylist MusicRecording >track
+P trailer CreativeWorkSeason,Episode,Movie,MovieSeries,RadioSeries,TVSeries,VideoGame,VideoGameSeries VideoObject
+P trailerWeight Vehicle QuantitativeValue
+P trainName TrainTrip Text
+P trainNumber TrainTrip Text
+P trainingSalary EducationalOccupationalProgram,WorkBasedProgram MonetaryAmountDistribution
+P transFatContent NutritionInformation Mass
+P transcript AudioObject,VideoObject Text
+P transitTime ShippingConditions,ShippingDeliveryTime QuantitativeValue,ServicePeriod
+P transitTimeLabel DeliveryTimeSettings,OfferShippingDetails Text
+P translationOfWork CreativeWork CreativeWork
+P translator CreativeWork,Event Organization,Person
+P transmissionMethod InfectiousDisease Text
+P travelBans SpecialAnnouncement URL,WebContent
+P trialDesign MedicalTrial MedicalTrialDesign
+P tributary Vein AnatomicalStructure
+P tripOrigin Trip Place
+P typeOfBed BedDetails BedType,Text
+P typeOfGood OwnershipInfo,TypeAndQuantityNode Product,Service
+P typicalAgeRange CreativeWork,Event Text
+P typicalCreditsPerTerm EducationalOccupationalProgram Integer,StructuredValue
+P typicalTest MedicalCondition MedicalTest
+P underName Reservation,Ticket Organization,Person
+P unitCode PropertyValue,QuantitativeValue,TypeAndQuantityNode,UnitPriceSpecification Text,URL
+P unitText PropertyValue,QuantitativeValue,TypeAndQuantityNode,UnitPriceSpecification Text
+P unnamedSourcesPolicy NewsMediaOrganization,Organization CreativeWork,URL
+P unsaturatedFatContent NutritionInformation Mass
+P uploadDate MediaObject Date,DateTime
+P upvoteCount Comment Integer
+P url Thing URL
+P urlTemplate EntryPoint Text
+P usNPI Physician Text
+P usageInfo CreativeWork CreativeWork,URL
+P usedToDiagnose MedicalTest MedicalCondition
+P userInteractionCount InteractionCounter Integer
+P usesDevice MedicalTest MedicalDevice
+P usesHealthPlanIdStandard HealthInsurancePlan Text,URL
+P utterances HyperTocEntry Text
+P validFor Credential,Permit Duration
+P validForMemberTier MerchantReturnPolicy,Offer,OfferShippingDetails,PriceSpecification,ShippingService MemberProgramTier
+P validFrom Certification,Demand,FinancialIncentive,LocationFeatureSpecification,MonetaryAmount,Offer,OpeningHoursSpecification,Permit,PriceSpecification Date,DateTime
+P validIn Certification,Credential,Permit AdministrativeArea
+P validThrough Demand,FinancialIncentive,JobPosting,LocationFeatureSpecification,MonetaryAmount,Offer,OpeningHoursSpecification,PriceSpecification Date,DateTime
+P validUntil Permit Date
+P value MonetaryAmount,PropertyValue,QuantitativeValue Boolean,Number,QualitativeValue,StructuredValue,Text
+P valueAddedTaxIncluded PriceSpecification Boolean
+P valueGroup PropertyValue Text
+P valueMaxLength PropertyValueSpecification Number
+P valueMinLength PropertyValueSpecification Number
+P valueName PropertyValueSpecification Text
+P valuePattern PropertyValueSpecification Text
+P valueReference PropertyValue,QualitativeValue,QuantitativeValue DefinedTerm,Enumeration,MeasurementTypeEnumeration,PropertyValue,QualitativeValue,QuantitativeValue,StructuredValue,Text
+P valueRequired PropertyValueSpecification Boolean
+P variableMeasured Dataset,Observation Property,PropertyValue,StatisticalVariable,Text
+P variablesMeasured Dataset PropertyValue,Text
+P variantCover ComicIssue Text
+P variesBy ProductGroup DefinedTerm,PropertyValue,Text
+P vatID Organization,Person Text
+P vehicleConfiguration Vehicle Text
+P vehicleEngine Vehicle EngineSpecification
+P vehicleIdentificationNumber Vehicle Text
+P vehicleInteriorColor Vehicle Text
+P vehicleInteriorType Vehicle Text
+P vehicleModelDate Vehicle Date
+P vehicleSeatingCapacity Vehicle Number,QuantitativeValue
+P vehicleSpecialUsage Vehicle CarUsageType,Text
+P vehicleTransmission Vehicle QualitativeValue,Text,URL
+P vendor BuyAction Organization,Person >seller
+P verificationFactCheckingPolicy NewsMediaOrganization CreativeWork,URL
+P version CreativeWork Number,Text
+P video CreativeWork Clip,VideoObject
+P videoFormat BroadcastEvent,BroadcastService,ScreeningEvent Text
+P videoFrameSize VideoObject Text
+P videoQuality VideoObject Text
+P volumeNumber PublicationVolume Integer,Text
+P warning Drug Text,URL
+P warranty Demand,Offer WarrantyPromise
+P warrantyPromise BuyAction,SellAction WarrantyPromise >warranty
+P warrantyScope WarrantyPromise WarrantyScope
+P webCheckinTime Flight DateTime
+P webFeed PodcastSeries,SpecialAnnouncement DataFeed,URL
+P weight OfferShippingDetails,Person,Product,ShippingConditions,VisualArtwork Mass,QuantitativeValue
+P weightPercentage ShippingRateSettings Number
+P weightTotal Vehicle QuantitativeValue
+P wheelbase Vehicle QuantitativeValue
+P width MediaObject,OfferShippingDetails,Product,ShippingConditions,VisualArtwork Distance,QuantitativeValue
+P winner LoseAction Person
+P wordCount Article,CreativeWork Integer
+P workExample CreativeWork CreativeWork
+P workFeatured Event CreativeWork
+P workHours JobPosting Text
+P workLocation Person ContactPoint,Place
+P workPerformed Event CreativeWork
+P workPresented ScreeningEvent Movie
+P workTranslation CreativeWork CreativeWork
+P workload ExercisePlan Energy,QuantitativeValue
+P worksFor Person Organization
+P worstRating Rating Number,Text
+P xpath SpeakableSpecification,WebPageElement XPathType
+P yearBuilt Accommodation Number
+P yearlyRevenue BusinessAudience QuantitativeValue
+P yearsInOperation BusinessAudience QuantitativeValue
+P yield HowTo QuantitativeValue,Text
