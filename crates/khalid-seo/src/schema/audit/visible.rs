@@ -5,20 +5,35 @@
 use super::tree::{Json, place};
 use super::{FindingLevel, SchemaFinding, SchemaReport, finding};
 
-/// Properties whose text a reader should find on the page.
-const SHOWN: [&str; 11] = [
+/// Properties whose text a reader should find on the page. Ratings are
+/// left out: a page often shows them as stars or words, such as "False"
+/// for a rating of 1.
+const SHOWN: [&str; 8] = [
     "headline",
+    "highPrice",
+    "lowPrice",
     "name",
     "price",
-    "ratingCount",
-    "ratingValue",
     "recipeIngredient",
-    "reviewCount",
     "streetAddress",
     "telephone",
-    "lowPrice",
-    "highPrice",
 ];
+
+/// Properties checked only on a node at the top. The name of an author
+/// or publisher nested inside sits in the byline or the footer, not in
+/// the post's text.
+const TOP_ONLY: [&str; 2] = ["headline", "name"];
+
+/// Whether `at` is a property of a node at the top, such as `name` or
+/// `@graph[1].name`, not of a node inside one.
+fn at_the_top(at: &str) -> bool {
+    let rest = at.strip_prefix("@graph").unwrap_or(at);
+    let rest = match rest.strip_prefix('[') {
+        Some(inside) => inside.split_once("].").map_or(rest, |(_, after)| after),
+        None => rest,
+    };
+    !rest.contains(['.', '['])
+}
 
 /// Every value of a [`SHOWN`] property in `root` that `visible` does not
 /// contain, with the path to it.
@@ -57,11 +72,9 @@ impl Page {
                     });
                 tail.is_empty() || self.digits.contains(tail)
             }
-            "price" | "lowPrice" | "highPrice" | "ratingValue" | "ratingCount" | "reviewCount" => {
-                number_forms(value)
-                    .iter()
-                    .any(|form| self.words.contains(form.as_str()))
-            }
+            "price" | "lowPrice" | "highPrice" => number_forms(value)
+                .iter()
+                .any(|form| self.words.contains(form.as_str())),
             _ => {
                 let wanted = words(value);
                 wanted.trim().is_empty() || self.words.contains(&wanted)
@@ -147,6 +160,9 @@ fn check(
     let Some(name) = property.filter(|name| SHOWN.contains(name)) else {
         return;
     };
+    if TOP_ONLY.contains(&name) && !at_the_top(at) {
+        return;
+    }
     if page.shows(name, value) {
         return;
     }
@@ -163,7 +179,14 @@ fn check(
 
 #[cfg(test)]
 mod tests {
-    use super::Page;
+    use super::{Page, at_the_top};
+
+    #[test]
+    fn only_names_of_nodes_at_the_top_must_show() {
+        assert!(at_the_top("name") && at_the_top("@graph[1].name") && at_the_top("[0].name"));
+        assert!(!at_the_top("author.name") && !at_the_top("@graph[0].author.name"));
+        assert!(!at_the_top("mainEntity[0].name"));
+    }
 
     #[test]
     fn prices_phones_and_names_match_as_readers_see_them() {
